@@ -1,0 +1,1708 @@
+{
+    "swagger": "2.0",
+    "x-stoplight": {
+        "id": "mpmva0671drqf"
+    },
+    "info": {
+        "title": "Tonder",
+        "description": "Tonder API",
+        "termsOfService": "https://www.google.com/policies/terms/",
+        "contact": {
+            "email": "hello@tonder.io"
+        },
+        "version": "v1"
+    },
+    "host": "stage.tonder.io",
+    "schemes": [
+        "http"
+    ],
+    "basePath": "/",
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "Basic": {
+            "type": "basic"
+        }
+    },
+    "security": [
+        {
+            "Basic": []
+        }
+    ],
+    "paths": {
+        "/client-address/": {
+            "get": {
+                "operationId": "client_address_list",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ClientAddressList"
+                        }
+                    }
+                },
+                "tags": [
+                    "client-address"
+                ]
+            }
+        },
+        "/activate-customer/": {
+            "post": {
+                "operationId": "activate-customer_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ActivateCustomer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ActivateCustomer"
+                        }
+                    }
+                },
+                "tags": [
+                    "activate-customer"
+                ]
+            },
+            "parameters": []
+        },
+        "/business/{business}/connections/router": {
+            "get": {
+                "operationId": "business_connections_router_list",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "business"
+                ]
+            },
+            "patch": {
+                "operationId": "business_connections_router_partial_update",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "business"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "business",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/business/{business}/payments/": {
+            "get": {
+                "operationId": "business_payments_list",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "business"
+                ]
+            },
+            "patch": {
+                "operationId": "business_payments_partial_update",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "business"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "business",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/business/{business}/payments/payouts": {
+            "get": {
+                "operationId": "business_payments_payouts_list",
+                "description": "Vies for the reconciliation transactions",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "business"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "business",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/checkout/{api_key}/": {
+            "get": {
+                "operationId": "checkout_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "checkout"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "api_key",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/cities/": {
+            "get": {
+                "operationId": "cities_list",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ordering",
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "A search term.",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Cities"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "cities"
+                ]
+            },
+            "parameters": []
+        },
+        "/client-existence/{email}": {
+            "get": {
+                "operationId": "client-existence_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "client-existence"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "email",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/client-register/": {
+            "post": {
+                "operationId": "client-register_create",
+                "description": "Register a new customer type user in the system",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ClientRegistration"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ClientRegistration"
+                        }
+                    }
+                },
+                "tags": [
+                    "client-register"
+                ]
+            },
+            "parameters": []
+        },
+        "/countries/": {
+            "get": {
+                "operationId": "countries_list",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "ordering",
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "A search term.",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Country"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "countries"
+                ]
+            },
+            "parameters": []
+        },
+        "/customer-register/": {
+            "post": {
+                "operationId": "customer-register_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CustomerRegister"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/CustomerRegister"
+                        }
+                    }
+                },
+                "tags": [
+                    "customer-register"
+                ]
+            },
+            "parameters": []
+        },
+        "/my-profile/": {
+            "get": {
+                "operationId": "my-profile_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    }
+                },
+                "tags": [
+                    "my-profile"
+                ]
+            },
+            "put": {
+                "operationId": "my-profile_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    }
+                },
+                "tags": [
+                    "my-profile"
+                ]
+            },
+            "patch": {
+                "operationId": "my-profile_partial_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Client"
+                        }
+                    }
+                },
+                "tags": [
+                    "my-profile"
+                ]
+            },
+            "parameters": []
+        },
+        "/orders/": {
+            "post": {
+                "operationId": "orders_create",
+                "description": "View to create new Orders.",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                },
+                "tags": [
+                    "orders"
+                ]
+            },
+            "parameters": []
+        },
+        "/payments/business/{api_key}/": {
+            "get": {
+                "operationId": "payments_business_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "payments"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "api_key",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/resend-otp/": {
+            "post": {
+                "operationId": "resend-otp_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ResendCodeOTP"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ResendCodeOTP"
+                        }
+                    }
+                },
+                "tags": [
+                    "resend-otp"
+                ]
+            },
+            "parameters": []
+        },
+        "/states/": {
+            "get": {
+                "operationId": "states_list",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ordering",
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "A search term.",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/States"
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "states"
+                ]
+            },
+            "parameters": []
+        },
+        "/validate-otp/": {
+            "post": {
+                "operationId": "validate-otp_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ValidateOTP"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/ValidateOTP"
+                        }
+                    }
+                },
+                "tags": [
+                    "validate-otp"
+                ]
+            },
+            "parameters": []
+        },
+        "/client-update-phone/": {
+            "post": {
+                "operationId": "update_client_phone",
+                "tags": [
+                    "client-update-phone"
+                ],
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {}
+                    }
+                },
+                "parameters": [],
+            }
+        }
+    },
+    "definitions": {
+        "ClientAddressList": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/ClientAddress"
+            }
+        },
+        "ClientAddress": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "user": {
+                    "title": "User",
+                    "type": "integer"
+                },
+                "street_address": {
+                    "title": "Street Address",
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "city": {
+                    "title": "City",
+                    "type": "string",
+                    "maxLength": 50
+                }
+            },
+            "required": [
+                "id",
+                "user",
+                "street_address",
+                "city"
+            ]
+        },
+        "ActivateCustomer": {
+            "required": [
+                "email"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "email": {
+                    "title": "Dirección de correo electrónico",
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254,
+                    "minLength": 1
+                }
+            }
+        },
+        "Cities": {
+            "required": [
+                "name",
+                "state"
+            ],
+            "type": "object",
+            "properties": {
+                "pk": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "state": {
+                    "title": "State",
+                    "type": "integer"
+                }
+            }
+        },
+        "ClientRegistration": {
+            "required": [
+                "email",
+                "password",
+                "repeat_password",
+                "phone"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "Id",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "email": {
+                    "title": "Email",
+                    "type": "string",
+                    "format": "email",
+                    "minLength": 1
+                },
+                "password": {
+                    "title": "Password",
+                    "type": "string"
+                },
+                "repeat_password": {
+                    "title": "Repeat password",
+                    "type": "string"
+                },
+                "phone": {
+                    "title": "Phone",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "Country": {
+            "required": [
+                "name",
+                "phone_code"
+            ],
+            "type": "object",
+            "properties": {
+                "pk": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "maxLength": 140,
+                    "minLength": 1
+                },
+                "phone_code": {
+                    "title": "Phone code",
+                    "description": "Código de teléfono",
+                    "type": "string",
+                    "maxLength": 10,
+                    "minLength": 1
+                }
+            }
+        },
+        "CustomerRegister": {
+            "required": [
+                "email",
+                "password",
+                "repeat_password"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "email": {
+                    "title": "Email",
+                    "type": "string",
+                    "format": "email",
+                    "minLength": 1
+                },
+                "password": {
+                    "title": "Password",
+                    "type": "string"
+                },
+                "repeat_password": {
+                    "title": "Repeat password",
+                    "type": "string"
+                }
+            }
+        },
+        "ProfileClient": {
+            "required": [
+                "gender",
+                "date_birth"
+            ],
+            "type": "object",
+            "properties": {
+                "gender": {
+                    "title": "Gender",
+                    "type": "string",
+                    "enum": [
+                        "M",
+                        "F"
+                    ]
+                },
+                "date_birth": {
+                    "title": "Date birth",
+                    "type": "string",
+                    "format": "date"
+                },
+                "terms": {
+                    "title": "Terms",
+                    "type": "boolean",
+                    "readOnly": true
+                },
+                "phone": {
+                    "title": "Phone",
+                    "type": "string",
+                    "readOnly": true,
+                    "minLength": 1
+                }
+            }
+        },
+        "Client": {
+            "required": [
+                "name",
+                "first_name",
+                "last_name",
+                "client_profile"
+            ],
+            "type": "object",
+            "properties": {
+                "email": {
+                    "title": "Dirección de correo electrónico",
+                    "type": "string",
+                    "format": "email",
+                    "readOnly": true,
+                    "minLength": 1
+                },
+                "name": {
+                    "title": "Name of User",
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "first_name": {
+                    "title": "Nombre",
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1
+                },
+                "last_name": {
+                    "title": "Apellidos",
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1
+                },
+                "client_profile": {
+                    "$ref": "#/definitions/ProfileClient"
+                }
+            }
+        },
+        "OrderItem": {
+            "required": [
+                "description",
+                "product_reference",
+                "quantity",
+                "price_unit",
+                "discount",
+                "taxes",
+                "amount_total"
+            ],
+            "type": "object",
+            "properties": {
+                "description": {
+                    "title": "Description",
+                    "type": "string",
+                    "maxLength": 200,
+                    "minLength": 1
+                },
+                "product_reference": {
+                    "title": "Product reference",
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                },
+                "quantity": {
+                    "title": "Quantity",
+                    "type": "string",
+                    "format": "decimal"
+                },
+                "price_unit": {
+                    "title": "Price unit",
+                    "type": "string",
+                    "format": "decimal"
+                },
+                "discount": {
+                    "title": "Discount",
+                    "type": "string",
+                    "format": "decimal"
+                },
+                "taxes": {
+                    "title": "Taxes",
+                    "type": "string",
+                    "format": "decimal"
+                },
+                "amount_total": {
+                    "title": "Amount total",
+                    "type": "string",
+                    "format": "decimal"
+                }
+            }
+        },
+        "Order": {
+            "required": [
+                "business",
+                "client",
+                "amount",
+                "reference",
+                "items"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "created": {
+                    "title": "Created",
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true
+                },
+                "business": {
+                    "title": "Business",
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "client": {
+                    "title": "Client",
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "amount": {
+                    "title": "Amount",
+                    "type": "string",
+                    "format": "decimal"
+                },
+                "status": {
+                    "title": "Status",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "payment_method": {
+                    "title": "Payment method",
+                    "type": "string",
+                    "maxLength": 50,
+                    "x-nullable": true
+                },
+                "reference": {
+                    "title": "Reference",
+                    "type": "string",
+                    "maxLength": 80,
+                    "minLength": 1
+                },
+                "is_oneclick": {
+                    "title": "Is oneclick",
+                    "type": "boolean"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/OrderItem"
+                    }
+                },
+                "billing_address": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "title": "ID",
+                            "type": "integer",
+                            "readOnly": true
+                        },
+                        "created": {
+                            "title": "Created",
+                            "type": "string",
+                            "format": "date-time",
+                            "readOnly": true
+                        },
+                        "modified": {
+                            "title": "Modified",
+                            "type": "string",
+                            "format": "date-time",
+                            "readOnly": true
+                        },
+                        "street": {
+                            "title": "Street",
+                            "type": "string"
+                        },
+                        "number": {
+                            "title": "Number",
+                            "type": "string",
+                            "maxLength": 100
+                        },
+                        "suburb": {
+                            "title": "Suburb",
+                            "type": "string",
+                            "maxLength": 100
+                        },
+                        "zip_code": {
+                            "title": "Zip code",
+                            "type": "integer",
+                            "maximum": 2147483647,
+                            "minimum": -2147483648
+                        },
+                        "number_int": {
+                            "title": "Number int",
+                            "type": "string",
+                            "maxLength": 10
+                        },
+                        "number_ext": {
+                            "title": "Number ext",
+                            "type": "string",
+                            "maxLength": 10
+                        },
+                        "notes": {
+                            "title": "Notes",
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "state": {
+                            "required": [
+                                "key",
+                                "name"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "title": "ID",
+                                    "type": "integer",
+                                    "readOnly": true
+                                },
+                                "key": {
+                                    "title": "Key",
+                                    "type": "string",
+                                    "maxLength": 255,
+                                    "minLength": 1
+                                },
+                                "name": {
+                                    "title": "Name",
+                                    "type": "string",
+                                    "maxLength": 255,
+                                    "minLength": 1
+                                },
+                                "country": {
+                                    "required": [
+                                        "key",
+                                        "name",
+                                        "phone_code"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "title": "ID",
+                                            "type": "integer",
+                                            "readOnly": true
+                                        },
+                                        "key": {
+                                            "title": "Key",
+                                            "description": "Codigo Alpha 3",
+                                            "type": "string",
+                                            "maxLength": 3,
+                                            "minLength": 1
+                                        },
+                                        "name": {
+                                            "title": "Name",
+                                            "type": "string",
+                                            "maxLength": 140,
+                                            "minLength": 1
+                                        },
+                                        "phone_code": {
+                                            "title": "Phone code",
+                                            "description": "Código de teléfono",
+                                            "type": "string",
+                                            "maxLength": 10,
+                                            "minLength": 1
+                                        }
+                                    },
+                                    "readOnly": true
+                                }
+                            },
+                            "readOnly": true
+                        },
+                        "city": {
+                            "required": [
+                                "key",
+                                "name"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "title": "ID",
+                                    "type": "integer",
+                                    "readOnly": true
+                                },
+                                "key": {
+                                    "title": "Key",
+                                    "type": "string",
+                                    "maxLength": 255,
+                                    "minLength": 1
+                                },
+                                "name": {
+                                    "title": "Name",
+                                    "type": "string",
+                                    "maxLength": 255,
+                                    "minLength": 1
+                                },
+                                "state": {
+                                    "required": [
+                                        "key",
+                                        "name",
+                                        "country"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "title": "ID",
+                                            "type": "integer",
+                                            "readOnly": true
+                                        },
+                                        "key": {
+                                            "title": "Key",
+                                            "type": "string",
+                                            "maxLength": 255,
+                                            "minLength": 1
+                                        },
+                                        "name": {
+                                            "title": "Name",
+                                            "type": "string",
+                                            "maxLength": 255,
+                                            "minLength": 1
+                                        },
+                                        "country": {
+                                            "title": "Country",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "readOnly": true
+                                }
+                            },
+                            "readOnly": true
+                        },
+                        "user": {
+                            "required": [
+                                "password",
+                                "username"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "title": "ID",
+                                    "type": "integer",
+                                    "readOnly": true
+                                },
+                                "password": {
+                                    "title": "Contraseña",
+                                    "type": "string",
+                                    "maxLength": 128,
+                                    "minLength": 1
+                                },
+                                "last_login": {
+                                    "title": "Último inicio de sesión",
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "x-nullable": true
+                                },
+                                "is_superuser": {
+                                    "title": "Estado de superusuario",
+                                    "description": "Indica que este usuario tiene todos los permisos sin asignárselos explícitamente.",
+                                    "type": "boolean"
+                                },
+                                "username": {
+                                    "title": "Nombre de usuario",
+                                    "description": "Requerido. 150 carácteres como máximo. Únicamente letras, dígitos y @/./+/-/_ ",
+                                    "type": "string",
+                                    "pattern": "^[\\w.@+-]+$",
+                                    "maxLength": 150,
+                                    "minLength": 1
+                                },
+                                "first_name": {
+                                    "title": "Nombre",
+                                    "type": "string",
+                                    "maxLength": 150
+                                },
+                                "last_name": {
+                                    "title": "Apellidos",
+                                    "type": "string",
+                                    "maxLength": 150
+                                },
+                                "email": {
+                                    "title": "Dirección de correo electrónico",
+                                    "type": "string",
+                                    "format": "email",
+                                    "maxLength": 254
+                                },
+                                "is_staff": {
+                                    "title": "Es staff",
+                                    "description": "Indica si el usuario puede entrar en este sitio de administración.",
+                                    "type": "boolean"
+                                },
+                                "is_active": {
+                                    "title": "Activo",
+                                    "description": "Indica si el usuario debe ser tratado como activo. Desmarque esta opción en lugar de borrar la cuenta.",
+                                    "type": "boolean"
+                                },
+                                "date_joined": {
+                                    "title": "Fecha de alta",
+                                    "type": "string",
+                                    "format": "date-time"
+                                },
+                                "type": {
+                                    "title": "Type",
+                                    "type": "string",
+                                    "enum": [
+                                        "Cliente",
+                                        "Negocio",
+                                        "STAFF"
+                                    ]
+                                },
+                                "name": {
+                                    "title": "Name of User",
+                                    "type": "string",
+                                    "maxLength": 255
+                                },
+                                "groups": {
+                                    "type": "array",
+                                    "items": {
+                                        "required": [
+                                            "name"
+                                        ],
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "title": "ID",
+                                                "type": "integer",
+                                                "readOnly": true
+                                            },
+                                            "name": {
+                                                "title": "Nombre",
+                                                "type": "string",
+                                                "maxLength": 150,
+                                                "minLength": 1
+                                            },
+                                            "permissions": {
+                                                "type": "array",
+                                                "items": {
+                                                    "title": "Permisos",
+                                                    "type": "integer"
+                                                },
+                                                "uniqueItems": true
+                                            }
+                                        }
+                                    },
+                                    "readOnly": true
+                                },
+                                "user_permissions": {
+                                    "type": "array",
+                                    "items": {
+                                        "required": [
+                                            "name",
+                                            "codename",
+                                            "content_type"
+                                        ],
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "title": "ID",
+                                                "type": "integer",
+                                                "readOnly": true
+                                            },
+                                            "name": {
+                                                "title": "Nombre",
+                                                "type": "string",
+                                                "maxLength": 255,
+                                                "minLength": 1
+                                            },
+                                            "codename": {
+                                                "title": "Nombre en código",
+                                                "type": "string",
+                                                "maxLength": 100,
+                                                "minLength": 1
+                                            },
+                                            "content_type": {
+                                                "title": "Tipo de contenido",
+                                                "type": "integer"
+                                            }
+                                        }
+                                    },
+                                    "readOnly": true
+                                }
+                            },
+                            "readOnly": true
+                        }
+                    },
+                    "readOnly": true
+                },
+                "billing_address_id": {
+                    "title": "Billing address id",
+                    "type": "integer",
+                    "x-nullable": true
+                },
+                "shipping_address": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "title": "ID",
+                            "type": "integer",
+                            "readOnly": true
+                        },
+                        "created": {
+                            "title": "Created",
+                            "type": "string",
+                            "format": "date-time",
+                            "readOnly": true
+                        },
+                        "modified": {
+                            "title": "Modified",
+                            "type": "string",
+                            "format": "date-time",
+                            "readOnly": true
+                        },
+                        "street": {
+                            "title": "Street",
+                            "type": "string"
+                        },
+                        "number": {
+                            "title": "Number",
+                            "type": "string",
+                            "maxLength": 100
+                        },
+                        "suburb": {
+                            "title": "Suburb",
+                            "type": "string",
+                            "maxLength": 100
+                        },
+                        "zip_code": {
+                            "title": "Zip code",
+                            "type": "integer",
+                            "maximum": 2147483647,
+                            "minimum": -2147483648
+                        },
+                        "number_int": {
+                            "title": "Number int",
+                            "type": "string",
+                            "maxLength": 10
+                        },
+                        "number_ext": {
+                            "title": "Number ext",
+                            "type": "string",
+                            "maxLength": 10
+                        },
+                        "notes": {
+                            "title": "Notes",
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "state": {
+                            "required": [
+                                "key",
+                                "name"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "title": "ID",
+                                    "type": "integer",
+                                    "readOnly": true
+                                },
+                                "key": {
+                                    "title": "Key",
+                                    "type": "string",
+                                    "maxLength": 255,
+                                    "minLength": 1
+                                },
+                                "name": {
+                                    "title": "Name",
+                                    "type": "string",
+                                    "maxLength": 255,
+                                    "minLength": 1
+                                },
+                                "country": {
+                                    "required": [
+                                        "key",
+                                        "name",
+                                        "phone_code"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "title": "ID",
+                                            "type": "integer",
+                                            "readOnly": true
+                                        },
+                                        "key": {
+                                            "title": "Key",
+                                            "description": "Codigo Alpha 3",
+                                            "type": "string",
+                                            "maxLength": 3,
+                                            "minLength": 1
+                                        },
+                                        "name": {
+                                            "title": "Name",
+                                            "type": "string",
+                                            "maxLength": 140,
+                                            "minLength": 1
+                                        },
+                                        "phone_code": {
+                                            "title": "Phone code",
+                                            "description": "Código de teléfono",
+                                            "type": "string",
+                                            "maxLength": 10,
+                                            "minLength": 1
+                                        }
+                                    },
+                                    "readOnly": true
+                                }
+                            },
+                            "readOnly": true
+                        },
+                        "city": {
+                            "required": [
+                                "key",
+                                "name"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "title": "ID",
+                                    "type": "integer",
+                                    "readOnly": true
+                                },
+                                "key": {
+                                    "title": "Key",
+                                    "type": "string",
+                                    "maxLength": 255,
+                                    "minLength": 1
+                                },
+                                "name": {
+                                    "title": "Name",
+                                    "type": "string",
+                                    "maxLength": 255,
+                                    "minLength": 1
+                                },
+                                "state": {
+                                    "required": [
+                                        "key",
+                                        "name",
+                                        "country"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "title": "ID",
+                                            "type": "integer",
+                                            "readOnly": true
+                                        },
+                                        "key": {
+                                            "title": "Key",
+                                            "type": "string",
+                                            "maxLength": 255,
+                                            "minLength": 1
+                                        },
+                                        "name": {
+                                            "title": "Name",
+                                            "type": "string",
+                                            "maxLength": 255,
+                                            "minLength": 1
+                                        },
+                                        "country": {
+                                            "title": "Country",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "readOnly": true
+                                }
+                            },
+                            "readOnly": true
+                        },
+                        "user": {
+                            "required": [
+                                "password",
+                                "username"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "title": "ID",
+                                    "type": "integer",
+                                    "readOnly": true
+                                },
+                                "password": {
+                                    "title": "Contraseña",
+                                    "type": "string",
+                                    "maxLength": 128,
+                                    "minLength": 1
+                                },
+                                "last_login": {
+                                    "title": "Último inicio de sesión",
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "x-nullable": true
+                                },
+                                "is_superuser": {
+                                    "title": "Estado de superusuario",
+                                    "description": "Indica que este usuario tiene todos los permisos sin asignárselos explícitamente.",
+                                    "type": "boolean"
+                                },
+                                "username": {
+                                    "title": "Nombre de usuario",
+                                    "description": "Requerido. 150 carácteres como máximo. Únicamente letras, dígitos y @/./+/-/_ ",
+                                    "type": "string",
+                                    "pattern": "^[\\w.@+-]+$",
+                                    "maxLength": 150,
+                                    "minLength": 1
+                                },
+                                "first_name": {
+                                    "title": "Nombre",
+                                    "type": "string",
+                                    "maxLength": 150
+                                },
+                                "last_name": {
+                                    "title": "Apellidos",
+                                    "type": "string",
+                                    "maxLength": 150
+                                },
+                                "email": {
+                                    "title": "Dirección de correo electrónico",
+                                    "type": "string",
+                                    "format": "email",
+                                    "maxLength": 254
+                                },
+                                "is_staff": {
+                                    "title": "Es staff",
+                                    "description": "Indica si el usuario puede entrar en este sitio de administración.",
+                                    "type": "boolean"
+                                },
+                                "is_active": {
+                                    "title": "Activo",
+                                    "description": "Indica si el usuario debe ser tratado como activo. Desmarque esta opción en lugar de borrar la cuenta.",
+                                    "type": "boolean"
+                                },
+                                "date_joined": {
+                                    "title": "Fecha de alta",
+                                    "type": "string",
+                                    "format": "date-time"
+                                },
+                                "type": {
+                                    "title": "Type",
+                                    "type": "string",
+                                    "enum": [
+                                        "Cliente",
+                                        "Negocio",
+                                        "STAFF"
+                                    ]
+                                },
+                                "name": {
+                                    "title": "Name of User",
+                                    "type": "string",
+                                    "maxLength": 255
+                                },
+                                "groups": {
+                                    "type": "array",
+                                    "items": {
+                                        "required": [
+                                            "name"
+                                        ],
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "title": "ID",
+                                                "type": "integer",
+                                                "readOnly": true
+                                            },
+                                            "name": {
+                                                "title": "Nombre",
+                                                "type": "string",
+                                                "maxLength": 150,
+                                                "minLength": 1
+                                            },
+                                            "permissions": {
+                                                "type": "array",
+                                                "items": {
+                                                    "title": "Permisos",
+                                                    "type": "integer"
+                                                },
+                                                "uniqueItems": true
+                                            }
+                                        }
+                                    },
+                                    "readOnly": true
+                                },
+                                "user_permissions": {
+                                    "type": "array",
+                                    "items": {
+                                        "required": [
+                                            "name",
+                                            "codename",
+                                            "content_type"
+                                        ],
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "title": "ID",
+                                                "type": "integer",
+                                                "readOnly": true
+                                            },
+                                            "name": {
+                                                "title": "Nombre",
+                                                "type": "string",
+                                                "maxLength": 255,
+                                                "minLength": 1
+                                            },
+                                            "codename": {
+                                                "title": "Nombre en código",
+                                                "type": "string",
+                                                "maxLength": 100,
+                                                "minLength": 1
+                                            },
+                                            "content_type": {
+                                                "title": "Tipo de contenido",
+                                                "type": "integer"
+                                            }
+                                        }
+                                    },
+                                    "readOnly": true
+                                }
+                            },
+                            "readOnly": true
+                        }
+                    },
+                    "readOnly": true
+                },
+                "shipping_address_id": {
+                    "title": "Shipping address id",
+                    "type": "integer",
+                    "x-nullable": true
+                }
+            }
+        },
+        "ResendCodeOTP": {
+            "required": [
+                "email"
+            ],
+            "type": "object",
+            "properties": {
+                "email": {
+                    "title": "Dirección de correo electrónico",
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254,
+                    "minLength": 1
+                }
+            }
+        },
+        "States": {
+            "required": [
+                "name",
+                "country"
+            ],
+            "type": "object",
+            "properties": {
+                "pk": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "country": {
+                    "title": "Country",
+                    "type": "integer"
+                }
+            }
+        },
+        "ValidateOTP": {
+            "required": [
+                "email",
+                "code"
+            ],
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "ID",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "email": {
+                    "title": "Dirección de correo electrónico",
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254,
+                    "minLength": 1
+                },
+                "code": {
+                    "title": "Code",
+                    "type": "integer"
+                }
+            }
+        },
+        "PhoneUpdate": {
+            "type": "object",
+            "properties": {
+                "phone": {
+                    "type": "string",
+                    "maxLength": 20
+                }
+            },
+            "required": [
+                "phone"
+            ]
+        }
+    }
+}

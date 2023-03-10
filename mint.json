@@ -1,0 +1,129 @@
+{
+  "name": "Tonder",
+  "logo": {
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
+  },
+  "api": {
+    "baseUrl": [
+      "http://stage.tonder.io",
+      "https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148"
+    ],
+    "auth": {
+      "method": "bearer"
+    }
+  },
+  "favicon": "/favicon.png",
+  "colors": {
+    "primary": "#4698FF",
+    "light": "#92C2FF",
+    "dark": "#1258B0",
+    "anchors": { "from": "#7BB6FF", "to": "#2C89FF" }
+  },
+  "topbarCtaButton": {
+    "name": "Log in",
+    "url": "https://app.tonder.io/accounts/login/"
+  },
+  "topbarLinks": [
+    {
+      "name": "Get a demo",
+      "url": "https://tonder.io/us"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "API Reference",
+      "icon": "square-terminal",
+      "url": "reference"
+    },
+    {
+      "name": "Blog",
+      "icon": "newspaper",
+      "url": "https://merchanthour.substack.com/"
+    },
+    {
+      "name": "Contact Us",
+      "icon": "envelope",
+      "url": "mailto:hello@tonder.io"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Home",
+      "pages": ["home"]
+    },
+    {
+      "group": "Get Started",
+      "pages": ["get-started", "why-tonder", "payments", "features"]
+    },
+    {
+      "group": "Tonder API",
+      "pages": ["reference/overview"]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "reference/client-address",
+        "reference/activate-customer",
+        {
+          "group": "Business",
+          "pages": [
+            "reference/business/get-business-connection-router",
+            "reference/business/modify-business-connection-router",
+            "reference/business/list-business-payment",
+            "reference/business/modify-business-payment",
+            "reference/business/list-business-payment-payouts"
+          ]
+        },
+        "reference/checkout",
+        "reference/cities",
+        "reference/client-existence",
+        "reference/client-register",
+        "reference/countries",
+        "reference/customer-register",
+        {
+          "group": "My Profile",
+          "pages": [
+            "reference/my-profile/list",
+            "reference/my-profile/update",
+            "reference/my-profile/modify"
+          ]
+        },
+        "reference/orders",
+        "reference/payments",
+        "reference/resend-otp",
+        "reference/states",
+        "reference/client-update-phone",
+        "reference/schemas"
+      ]
+    },
+    {
+      "group": "Schemas",
+      "pages": [
+        "reference/schemas/client-address-list",
+        "reference/schemas/client-address",
+        "reference/schemas/activate-customer",
+        "reference/schemas/cities",
+        "reference/schemas/client-registration",
+        "reference/schemas/country",
+        "reference/schemas/customer-register",
+        "reference/schemas/profile-client",
+        "reference/schemas/client",
+        "reference/schemas/order-item",
+        "reference/schemas/order",
+        "reference/schemas/resend-code-otp",
+        "reference/schemas/states",
+        "reference/schemas/validate-otp",
+        "reference/schemas/phone-update"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/tonderio/",
+    "website": "https://tonder.io/us"
+  },
+  "backgroundImage": "/images/background.png",
+  "modeToggle": {
+    "default": "dark"
+  }
+}

@@ -1,0 +1,23 @@
+---
+title: "States"
+---
+
+<ResponseField name="pk" type="integer" />
+
+<ResponseField name="name" type="integer" required>
+  `>=1 characters` `<=255 characters`
+</ResponseField>
+
+<ResponseField name="country" type="integer" required />
+
+<ResponseExample>
+
+```json
+{
+  "pk": 0,
+  "name": "string",
+  "country": 0
+}
+```
+
+</ResponseExample>

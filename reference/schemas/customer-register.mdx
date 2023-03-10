@@ -1,0 +1,28 @@
+---
+title: "CustomerRegister"
+---
+
+<ResponseField name="id" type="integer">
+  read-only
+</ResponseField>
+
+<ResponseField name="email" type="string<email>" required>
+  `>= 1 characters`
+</ResponseField>
+
+<ResponseField name="password" type="string" required />
+
+<ResponseField name="repeat_password" type="string" required />
+
+<ResponseExample>
+
+```json
+{
+  "id": 0,
+  "email": "user@example.com",
+  "password": "string",
+  "repeat_password": "string"
+}
+```
+
+</ResponseExample>

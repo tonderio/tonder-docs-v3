@@ -1,0 +1,30 @@
+---
+title: "ClientAddress"
+---
+
+<ResponseField name="id" type="integer" required>
+  read-only
+</ResponseField>
+
+<ResponseField name="user" type="integer" required />
+
+<ResponseField name="street-address" type="string" required >
+`<=100 characters`
+</ResponseField>
+
+<ResponseField name="city" type="string" required >
+`<=50 characters`
+</ResponseField>
+
+<ResponseExample>
+
+```json
+{
+  "id": 0,
+  "user": 0,
+  "street_address": "string",
+  "city": "string"
+}
+```
+
+</ResponseExample>

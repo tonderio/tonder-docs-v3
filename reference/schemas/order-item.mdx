@@ -1,0 +1,33 @@
+---
+title: "OrderItem"
+---
+
+<ResponseField name="description" type="string" required>
+  `>=1 characters`
+</ResponseField>
+
+<ResponseField name="product_reference" type="string" required>
+  `>=1 characters`
+</ResponseField>
+
+<ResponseField name="quantity" type="string<decimal>" required />
+<ResponseField name="price_unit" type="string<decimal>" required />
+<ResponseField name="discount" type="string<decimal>" required />
+<ResponseField name="taxes" type="string<decimal>" required />
+<ResponseField name="amount_total" type="string" required />
+
+<ResponseExample>
+
+```json
+{
+  "description": "string",
+  "product_reference": "string",
+  "quantity": "string",
+  "price_unit": "string",
+  "discount": "string",
+  "taxes": "string",
+  "amount_total": "string"
+}
+```
+
+</ResponseExample>
