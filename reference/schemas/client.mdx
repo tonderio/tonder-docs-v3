@@ -1,0 +1,60 @@
+---
+title: "Client"
+---
+
+<ResponseField name="email" type="string<email>" required>
+  `>=1 characters`
+</ResponseField>
+
+<ResponseField name="name" type="string" required>
+  `>=1 characters` `<= 255 characters`
+</ResponseField>
+
+<ResponseField name="first_name" type="string" required>
+`>=1 characters` `<= 150 characters` 
+</ResponseField>
+
+<ResponseField name="last_name" type="string" required>
+`>=1 characters` `<= 150 characters`    
+</ResponseField>
+
+<ResponseField name="client_profile" type="object" >
+
+    <Expandable title="Show properties">
+
+        <ResponseField name="gender" type="string" required>
+        Allowed values: `M` `F`
+        </ResponseField>
+
+        <ResponseField name="date_birth" type="string<date>" required></ResponseField>
+
+        <ResponseField name="terms" type="boolean">
+        read-only
+        </ResponseField>
+
+        <ResponseField name="phone" type="string">
+        read-only `>= 1 characters`
+        </ResponseField>
+
+    </Expandable>
+
+</ResponseField>
+
+<ResponseExample>
+
+```json
+{
+  "email": "user@example.com",
+  "name": "string",
+  "first_name": "string",
+  "last_name": "string",
+  "client_profile": {
+    "gender": "M",
+    "date_birth": "2019-08-24",
+    "terms": true,
+    "phone": "string"
+  }
+}
+```
+
+</ResponseExample>

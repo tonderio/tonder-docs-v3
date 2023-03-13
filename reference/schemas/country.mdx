@@ -1,0 +1,25 @@
+---
+title: "Country"
+---
+
+<ResponseField name="pk" type="integer" />
+
+<ResponseField name="name" type="integer" required>
+  `>=1 characters` `<=254 characters`
+</ResponseField>
+
+<ResponseField name="phone_code" type="string" required >
+`>= 1 characters` `<= 10 characters`
+</ResponseField>
+
+<ResponseExample>
+
+```json
+{
+  "pk": 0,
+  "name": "string",
+  "phone_code": "string"
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,25 @@
+---
+title: "ValidateOTP"
+---
+
+<ResponseField name="id" type="integer">
+  read-only
+</ResponseField>
+
+<ResponseField name="email" type="string<email>" required>
+  `>= 1 characters` `<= 254 characters`
+</ResponseField>
+
+<ResponseField name="code" type="integer" required />
+
+<ResponseExample>
+
+```json
+{
+  "id": 0,
+  "email": "user@example.com",
+  "code": 0
+}
+```
+
+</ResponseExample>

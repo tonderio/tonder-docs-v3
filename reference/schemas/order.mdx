@@ -1,0 +1,348 @@
+---
+title: "Order"
+---
+
+<ResponseField name="id" type="intefer">
+  read-only
+</ResponseField>
+
+<ResponseField name="created" type="string<date-time>">
+  read-only
+</ResponseField>
+
+<ResponseField name="business" type="string" required>
+`>= 1 characters` `<= 100 characters`
+</ResponseField>
+
+<ResponseField name="client" type="string" required>
+`>= 1 characters` `<= 100 characters`
+</ResponseField>
+
+<ResponseField name="amount" type="string<decimal>" required />
+
+<ResponseField name="status" type="string">
+  read-only
+</ResponseField>
+
+<ResponseField name="payment_method" type="string or null">
+  `<= 50 characters`
+</ResponseField>
+
+<ResponseField name="reference" type="string" required>
+  `>= 1 characters` `<= 80 characters`
+</ResponseField>
+
+<ResponseField name="is_oneclick" type="boolean" />
+
+<ResponseField name="items" type="array[object]" required>
+
+    <Expandable title="Show properties" >
+
+        <ResponseField name="description" type="string" required>
+            `>= 1 characters` `<= 200 characters`
+        </ResponseField>
+
+        <ResponseField name="production_reference" type="string" required >
+            `>= 1 characters` `<= 200 characters`
+        </ResponseField>
+
+        <ResponseField name="quantity" type="string<decimal>" />
+        <ResponseField name="price_unit" type="string<decimal>" />
+        <ResponseField name="discount" type="string<decimal>" />
+        <ResponseField name="taxes" type="string<decimal>" />
+        <ResponseField name="amount_total" type="string<decimal>" />
+
+    </Expandable>
+
+</ResponseField>
+
+<ResponseField name="billing_address" type="object" >
+
+    <Expandable title="Show properties" >
+
+        <ResponseField name="id" type="integer" />
+        <ResponseField name="created" type="string<date-time>" />
+        <ResponseField name="modified" type="string<date-time>" />
+        <ResponseField name="street" type="string" />
+
+        <ResponseField name="number" type="string" >
+        `<=100 characters`
+        </ResponseField>
+
+        <ResponseField name="suburb" type="string" >
+        `<=100 characters`
+        </ResponseField>
+
+        <ResponseField name="zip_code" type="integer" >
+        `>= -2147483648` `<= 2147483647`
+        </ResponseField>
+
+        <ResponseField name="number_int" type="string" >
+        `<=10 characters`
+        </ResponseField>
+
+        <ResponseField name="number_ext" type="string" >
+        `<=10 characters`
+        </ResponseField>
+
+        <ResponseField name="notes" type="string" >
+        `<=255 characters`
+        </ResponseField>
+
+        <ResponseField name="state" type="object" >
+
+            <Expandable title="Show properties" >
+
+                <ResponseField name="id" type="integer" />
+                <ResponseField name="key" type="string" />
+                <ResponseField name="name" type="string" />
+                <ResponseField name="country" type="object" >
+
+                    <Expandable title="Show properties" >
+
+                        <ResponseField name="id" type="integer" />
+                        <ResponseField name="key" type="string" />
+
+                        <ResponseField name="name" type="integer" required>
+                        `>=1 characters` `<=254 characters`
+                        </ResponseField>
+
+                        <ResponseField name="phone_code" type="string" required >
+                        `>= 1 characters` `<= 10 characters`
+                        </ResponseField>
+
+                    </Expandable>
+                </ResponseField>
+
+            </Expandable>
+
+        </ResponseField>
+
+        <ResponseField name="city" type="object" >
+
+            <Expandable title="Show properties" >
+
+                <ResponseField name="id" type="integer" />
+                <ResponseField name="key" type="string" required />
+                <ResponseField name="name" type="string" required />
+
+                <ResponseField name="state" type="object" >
+
+                    <Expandable title="Show properties" >
+
+                        <ResponseField name="id" type="integer" />
+                        <ResponseField name="key" type="string" />
+
+                        <ResponseField name="name" type="integer" required>
+                        `>=1 characters` `<=254 characters`
+                        </ResponseField>
+
+                        <ResponseField name="country" type="integer" required />
+
+                    </Expandable>
+
+                </ResponseField>
+
+            </Expandable>
+
+        </ResponseField>
+
+        <ResponseField name="user" type="object" />
+
+    </Expandable>
+
+</ResponseField>
+
+<ResponseField name="billing_address_id" type="integer or null" />
+
+<ResponseField name="shipping_address" type="object">
+  read-only
+</ResponseField>
+
+<Expandable title="Show properties" >
+
+<ResponseField name="id" type="integer" />
+<ResponseField name="created" type="string<date-time>" />
+<ResponseField name="modified" type="string<date-time>" />
+<ResponseField name="street" type="string" />
+<ResponseField name="number" type="string" />
+<ResponseField name="suburb" type="string" />
+<ResponseField name="zip_code" type="integer" />
+<ResponseField name="number_int" type="string" />
+<ResponseField name="number_ext" type="string" />
+<ResponseField name="notes" type="string" />
+<ResponseField name="state" type="object" >
+
+    <Expandable title="Show properties" >
+
+        <ResponseField name="id" type="integer" />
+        <ResponseField name="key" type="string" />
+        <ResponseField name="name" type="string" />
+        <ResponseField name="country" type="object">
+
+            <Expandable title="Show properties" >
+
+                <ResponseField name="id" type="integer" />
+                <ResponseField name="key" type="string" />
+
+                <ResponseField name="name" type="integer" required>
+                `>=1 characters` `<=254 characters`
+                </ResponseField>
+
+                <ResponseField name="phone_code" type="string" required >
+                `>= 1 characters` `<= 10 characters`
+                </ResponseField>
+
+            </Expandable>
+        </ResponseField>
+
+    </Expandable>
+
+</ResponseField>
+</Expandable>
+
+<ResponseField name="city" type="object" >
+
+    <Expandable title="Show properties" >
+
+        <ResponseField name="id" type="integer" />
+        <ResponseField name="key" type="string" required />
+        <ResponseField name="name" type="string" required />
+
+        <ResponseField name="state" type="object" >
+
+            <Expandable title="Show properties" >
+
+                <ResponseField name="id" type="integer" />
+                <ResponseField name="key" type="string" />
+
+                <ResponseField name="name" type="integer" required>
+                `>=1 characters` `<=254 characters`
+                </ResponseField>
+
+                <ResponseField name="country" type="integer" required />
+
+            </Expandable>
+
+        </ResponseField>
+
+    </Expandable>
+
+</ResponseField>
+
+<ResponseField name="user" type="object" />
+
+<ResponseField name="shipping_address_id" type="integer or null" />
+
+<ResponseExample>
+
+```json
+{
+  "id": 0,
+  "created": "2019-08-24T14:15:22Z",
+  "business": "string",
+  "client": "string",
+  "amount": "string",
+  "status": "string",
+  "payment_method": "string",
+  "reference": "string",
+  "is_oneclick": true,
+  "items": [
+    {
+      "description": "string",
+      "product_reference": "string",
+      "quantity": "string",
+      "price_unit": "string",
+      "discount": "string",
+      "taxes": "string",
+      "amount_total": "string"
+    }
+  ],
+  "billing_address": {
+    "id": 0,
+    "created": "2019-08-24T14:15:22Z",
+    "modified": "2019-08-24T14:15:22Z",
+    "street": "string",
+    "number": "string",
+    "suburb": "string",
+    "zip_code": -2147483648,
+    "number_int": "string",
+    "number_ext": "string",
+    "notes": "string",
+    "state": {
+      "id": 0,
+      "key": "string",
+      "name": "string",
+      "country": {}
+    },
+    "city": {
+      "id": 0,
+      "key": "string",
+      "name": "string",
+      "state": {}
+    },
+    "user": {
+      "id": 0,
+      "password": "string",
+      "last_login": "2019-08-24T14:15:22Z",
+      "is_superuser": true,
+      "username": "string",
+      "first_name": "string",
+      "last_name": "string",
+      "email": "user@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-08-24T14:15:22Z",
+      "type": "Cliente",
+      "name": "string",
+      "groups": [{}],
+      "user_permissions": [{}]
+    }
+  },
+  "billing_address_id": 0,
+  "shipping_address": {
+    "id": 0,
+    "created": "2019-08-24T14:15:22Z",
+    "modified": "2019-08-24T14:15:22Z",
+    "street": "string",
+    "number": "string",
+    "suburb": "string",
+    "zip_code": -2147483648,
+    "number_int": "string",
+    "number_ext": "string",
+    "notes": "string",
+    "state": {
+      "id": 0,
+      "key": "string",
+      "name": "string",
+      "country": {}
+    },
+    "city": {
+      "id": 0,
+      "key": "string",
+      "name": "string",
+      "state": {}
+    },
+    "user": {
+      "id": 0,
+      "password": "string",
+      "last_login": "2019-08-24T14:15:22Z",
+      "is_superuser": true,
+      "username": "string",
+      "first_name": "string",
+      "last_name": "string",
+      "email": "user@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-08-24T14:15:22Z",
+      "type": "Cliente",
+      "name": "string",
+      "groups": [{}],
+      "user_permissions": [{}]
+    }
+  },
+  "shipping_address_id": 0
+}
+```
+
+</ResponseExample>

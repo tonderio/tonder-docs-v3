@@ -1,0 +1,30 @@
+---
+title: "ProfileClient"
+---
+
+<ResponseField name="gender" type="string" required>
+  Allowed values: `M` `F`
+</ResponseField>
+
+<ResponseField name="date_birth" type="string<date>" required />
+
+<ResponseField name="terms" type="boolean">
+  read-only
+</ResponseField>
+
+<ResponseField name="phone" type="string">
+  read-only `>= 1 characters`
+</ResponseField>
+
+<ResponseExample>
+
+```json
+{
+  "gender": "M",
+  "date_birth": "2019-08-24",
+  "terms": true,
+  "phone": "string"
+}
+```
+
+</ResponseExample>
