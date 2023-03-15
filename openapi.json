@@ -746,6 +746,175 @@
             },
             "parameters": []
         },
+        "/api/v1/payments/checkout/": {
+            "post": {
+                "operationId": "checkout-register_post",
+                "description": "",
+                "parameters": [
+                    
+                    {
+                    "name": "processor",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "card",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "name",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "last_name",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "email_client",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "phone_number",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "id_product",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "quantity_product",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "id_ship",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "instance_id_ship",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "amount",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "cost_ship",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "title_ship",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "description",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "device_session_id",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "token_id",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "order_id",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "business_id",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                },
+                {
+                    "name": "payment_id",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/Checkout"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "checkout"
+                ]
+            },
+            "parameters": []
+        },
         "/client-update-phone/": {
             "post": {
                 "operationId": "update_client_phone",
