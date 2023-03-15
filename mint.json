@@ -106,6 +106,7 @@
         "reference/schemas/client-address",
         "reference/schemas/activate-customer",
         "reference/schemas/cities",
+        "reference/schemas/checkout",
         "reference/schemas/client-registration",
         "reference/schemas/country",
         "reference/schemas/customer-register",
