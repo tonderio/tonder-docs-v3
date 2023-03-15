@@ -764,6 +764,12 @@
         }
     },
     "definitions": {
+        "Checkout": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Checkout"
+            }
+        },
         "ClientAddressList": {
             "type": "array",
             "items": {
