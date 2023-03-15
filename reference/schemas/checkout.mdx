@@ -1,0 +1,399 @@
+---
+title: "Checkout"
+---
+
+
+<ResponseField name="message" type="string<date-time>">
+  read-only
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+`>= 1 characters` `<= 100 characters`
+</ResponseField>
+
+<ResponseField name="client" type="string" required>
+`>= 1 characters` `<= 100 characters`
+</ResponseField>
+
+<ResponseField name="amount" type="string<decimal>" required />
+
+<ResponseField name="status" type="string">
+  read-only
+</ResponseField>
+
+<ResponseField name="payment_method" type="string or null">
+  `<= 50 characters`
+</ResponseField>
+
+<ResponseField name="reference" type="string" required>
+  `>= 1 characters` `<= 80 characters`
+</ResponseField>
+
+<ResponseField name="is_oneclick" type="boolean" />
+
+<ResponseField name="items" type="array[object]" required>
+
+    <Expandable title="Show properties" >
+
+        <ResponseField name="description" type="string" required>
+            `>= 1 characters` `<= 200 characters`
+        </ResponseField>
+
+        <ResponseField name="production_reference" type="string" required >
+            `>= 1 characters` `<= 200 characters`
+        </ResponseField>
+
+        <ResponseField name="quantity" type="string<decimal>" />
+        <ResponseField name="price_unit" type="string<decimal>" />
+        <ResponseField name="discount" type="string<decimal>" />
+        <ResponseField name="taxes" type="string<decimal>" />
+        <ResponseField name="amount_total" type="string<decimal>" />
+
+    </Expandable>
+
+</ResponseField>
+
+<ResponseField name="billing_address" type="object" >
+
+    <Expandable title="Show properties" >
+
+        <ResponseField name="id" type="integer" />
+        <ResponseField name="created" type="string<date-time>" />
+        <ResponseField name="modified" type="string<date-time>" />
+        <ResponseField name="street" type="string" />
+
+        <ResponseField name="number" type="string" >
+        `<=100 characters`
+        </ResponseField>
+
+        <ResponseField name="suburb" type="string" >
+        `<=100 characters`
+        </ResponseField>
+
+        <ResponseField name="zip_code" type="integer" >
+        `>= -2147483648` `<= 2147483647`
+        </ResponseField>
+
+        <ResponseField name="number_int" type="string" >
+        `<=10 characters`
+        </ResponseField>
+
+        <ResponseField name="number_ext" type="string" >
+        `<=10 characters`
+        </ResponseField>
+
+        <ResponseField name="notes" type="string" >
+        `<=255 characters`
+        </ResponseField>
+
+        <ResponseField name="state" type="object" >
+
+            <Expandable title="Show properties" >
+
+                <ResponseField name="id" type="integer" />
+                <ResponseField name="key" type="string" />
+                <ResponseField name="name" type="string" />
+                <ResponseField name="country" type="object" >
+
+                    <Expandable title="Show properties" >
+
+                        <ResponseField name="id" type="integer" />
+                        <ResponseField name="key" type="string" />
+
+                        <ResponseField name="name" type="integer" required>
+                        `>=1 characters` `<=254 characters`
+                        </ResponseField>
+
+                        <ResponseField name="phone_code" type="string" required >
+                        `>= 1 characters` `<= 10 characters`
+                        </ResponseField>
+
+                    </Expandable>
+                </ResponseField>
+
+            </Expandable>
+
+        </ResponseField>
+
+        <ResponseField name="city" type="object" >
+
+            <Expandable title="Show properties" >
+
+                <ResponseField name="id" type="integer" />
+                <ResponseField name="key" type="string" required />
+                <ResponseField name="name" type="string" required />
+
+                <ResponseField name="state" type="object" >
+
+                    <Expandable title="Show properties" >
+
+                        <ResponseField name="id" type="integer" />
+                        <ResponseField name="key" type="string" />
+
+                        <ResponseField name="name" type="integer" required>
+                        `>=1 characters` `<=254 characters`
+                        </ResponseField>
+
+                        <ResponseField name="country" type="integer" required />
+
+                    </Expandable>
+
+                </ResponseField>
+
+            </Expandable>
+
+        </ResponseField>
+
+        <ResponseField name="user" type="object" />
+
+    </Expandable>
+
+</ResponseField>
+
+<ResponseField name="billing_address_id" type="integer or null" />
+
+<ResponseField name="shipping_address" type="object">
+  read-only
+</ResponseField>
+
+<Expandable title="Show properties" >
+
+<ResponseField name="id" type="integer" />
+<ResponseField name="created" type="string<date-time>" />
+<ResponseField name="modified" type="string<date-time>" />
+<ResponseField name="street" type="string" />
+<ResponseField name="number" type="string" />
+<ResponseField name="suburb" type="string" />
+<ResponseField name="zip_code" type="integer" />
+<ResponseField name="number_int" type="string" />
+<ResponseField name="number_ext" type="string" />
+<ResponseField name="notes" type="string" />
+<ResponseField name="state" type="object" >
+
+    <Expandable title="Show properties" >
+
+        <ResponseField name="id" type="integer" />
+        <ResponseField name="key" type="string" />
+        <ResponseField name="name" type="string" />
+        <ResponseField name="country" type="object">
+
+            <Expandable title="Show properties" >
+
+                <ResponseField name="id" type="integer" />
+                <ResponseField name="key" type="string" />
+
+                <ResponseField name="name" type="integer" required>
+                `>=1 characters` `<=254 characters`
+                </ResponseField>
+
+                <ResponseField name="phone_code" type="string" required >
+                `>= 1 characters` `<= 10 characters`
+                </ResponseField>
+
+            </Expandable>
+        </ResponseField>
+
+    </Expandable>
+
+</ResponseField>
+</Expandable>
+
+<ResponseField name="city" type="object" >
+
+    <Expandable title="Show properties" >
+
+        <ResponseField name="id" type="integer" />
+        <ResponseField name="key" type="string" required />
+        <ResponseField name="name" type="string" required />
+
+        <ResponseField name="state" type="object" >
+
+            <Expandable title="Show properties" >
+
+                <ResponseField name="id" type="integer" />
+                <ResponseField name="key" type="string" />
+
+                <ResponseField name="name" type="integer" required>
+                `>=1 characters` `<=254 characters`
+                </ResponseField>
+
+                <ResponseField name="country" type="integer" required />
+
+            </Expandable>
+
+        </ResponseField>
+
+    </Expandable>
+
+</ResponseField>
+
+<ResponseField name="user" type="object" />
+
+<ResponseField name="shipping_address_id" type="integer or null" />
+
+<ResponseExample>
+
+```json
+{
+	"message": "Success",
+	"status": 200,
+	"data": {
+		"id": "pi_3MlgomAJngT1JIsH0fznnVA3",
+		"object": "payment_intent",
+		"amount": 300.0,
+		"amount_capturable": 0,
+		"amount_details": {
+			"tip": {}
+		},
+		"amount_received": 30000,
+		"application": null,
+		"application_fee_amount": null,
+		"automatic_payment_methods": null,
+		"canceled_at": null,
+		"cancellation_reason": null,
+		"capture_method": "automatic",
+		"charges": {
+			"object": "list",
+			"data": [
+				{
+					"id": "ch_3MlgomAJngT1JIsH0F8YvGhd",
+					"object": "charge",
+					"amount": 30000,
+					"amount_captured": 30000,
+					"amount_refunded": 0,
+					"application": null,
+					"application_fee": null,
+					"application_fee_amount": null,
+					"balance_transaction": "txn_3MlgomAJngT1JIsH0VeJFswz",
+					"billing_details": {
+						"address": {
+							"city": null,
+							"country": null,
+							"line1": null,
+							"line2": null,
+							"postal_code": null,
+							"state": null
+						},
+						"email": null,
+						"name": null,
+						"phone": null
+					},
+					"calculated_statement_descriptor": "ALLUXI SA DE CV",
+					"captured": true,
+					"created": 1678834785,
+					"currency": "mxn",
+					"customer": "cus_NWkJs4OItbiy20",
+					"description": "transaction",
+					"destination": null,
+					"dispute": null,
+					"disputed": false,
+					"failure_balance_transaction": null,
+					"failure_code": null,
+					"failure_message": null,
+					"fraud_details": {},
+					"invoice": null,
+					"livemode": false,
+					"metadata": {},
+					"on_behalf_of": null,
+					"order": null,
+					"outcome": {
+						"network_status": "approved_by_network",
+						"reason": null,
+						"risk_level": "normal",
+						"risk_score": 18,
+						"seller_message": "Payment complete.",
+						"type": "authorized"
+					},
+					"paid": true,
+					"payment_intent": "pi_3MlgomAJngT1JIsH0fznnVA3",
+					"payment_method": "pm_1MlgomAJngT1JIsHQSse86jE",
+					"payment_method_details": {
+						"card": {
+							"brand": "visa",
+							"checks": {
+								"address_line1_check": null,
+								"address_postal_code_check": null,
+								"cvc_check": null
+							},
+							"country": "US",
+							"exp_month": 5,
+							"exp_year": 2025,
+							"fingerprint": "M4yaHMeCj4ZsK75Z",
+							"funding": "credit",
+							"installments": null,
+							"last4": "4242",
+							"mandate": null,
+							"network": "visa",
+							"three_d_secure": null,
+							"wallet": null
+						},
+						"type": "card"
+					},
+					"receipt_email": null,
+					"receipt_number": null,
+					"receipt_url": "https://pay.stripe.com/receipts/payment/CAcaFwoVYWNjdF8xR3BPUVlBSm5nVDFKSXNIKOH4w6AGMgZidw49l4s6LBZBa4wrP69KeKxYTKhssxlJV6rezepOaGci5k0JVM3nJ6QmQMLTyZGJoXLe",
+					"refunded": false,
+					"refunds": {
+						"object": "list",
+						"data": [],
+						"has_more": false,
+						"total_count": 0,
+						"url": "/v1/charges/ch_3MlgomAJngT1JIsH0F8YvGhd/refunds"
+					},
+					"review": null,
+					"shipping": null,
+					"source": null,
+					"source_transfer": null,
+					"statement_descriptor": null,
+					"statement_descriptor_suffix": null,
+					"status": "succeeded",
+					"transfer_data": null,
+					"transfer_group": null
+				}
+			],
+			"has_more": false,
+			"total_count": 1,
+			"url": "/v1/charges?payment_intent=pi_3MlgomAJngT1JIsH0fznnVA3"
+		},
+		"client_secret": "pi_3MlgomAJngT1JIsH0fznnVA3_secret_0JOau1394g3V2CJyk1pZ81AGw",
+		"confirmation_method": "automatic",
+		"created": 1678834784,
+		"currency": "mxn",
+		"customer": "cus_NWkJs4OItbiy20",
+		"description": "transaction",
+		"invoice": null,
+		"last_payment_error": null,
+		"latest_charge": "ch_3MlgomAJngT1JIsH0F8YvGhd",
+		"livemode": false,
+		"metadata": {},
+		"next_action": null,
+		"on_behalf_of": null,
+		"payment_method": "pm_1MlgomAJngT1JIsHQSse86jE",
+		"payment_method_options": {
+			"card": {
+				"installments": null,
+				"mandate_options": null,
+				"network": null,
+				"request_three_d_secure": "automatic"
+			}
+		},
+		"payment_method_types": [
+			"card"
+		],
+		"processing": null,
+		"receipt_email": null,
+		"review": null,
+		"setup_future_usage": null,
+		"shipping": null,
+		"source": null,
+		"statement_descriptor": null,
+		"statement_descriptor_suffix": null,
+		"status": "succeeded",
+		"transfer_data": null,
+		"transfer_group": null
+	},
+	"transaction_status": "succeeded"
+}
+```
+
+</ResponseExample>
