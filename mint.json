@@ -1,8 +1,8 @@
 {
   "name": "Tonder",
   "logo": {
-    "light": "/logo/light.png",
-    "dark": "/logo/dark.png"
+    "light": "/logo/light.png?nf_resize=fit&w=800",
+    "dark": "/logo/dark.png?nf_resize=fit&w=800"
   },
   "api": {
     "baseUrl": [
@@ -54,7 +54,7 @@
     },
     {
       "group": "Get Started",
-      "pages": ["get-started", "why-tonder", "payments", "features"]
+      "pages": ["get-started", "why-tonder","first_steps", "payments", "features", "pci-compliance"]
     },
     {
       "group": "Tonder API",
@@ -94,8 +94,7 @@
         "reference/payments",
         "reference/resend-otp",
         "reference/states",
-        "reference/client-update-phone",
-        "reference/schemas"
+        "reference/client-update-phone"
       ]
     },
     {
