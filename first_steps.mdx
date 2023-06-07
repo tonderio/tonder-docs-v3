@@ -45,4 +45,14 @@ Here are all the options that you have and how to connect each one:
 
 </CardGroup>
 
+### Test your checkout
+
+To simulate a successful payment, use test cards depending on your PSP's connected, if you use prod keys the transactions would be declined.
+
+| Card | Cardholder     |  CVC  | Date | Stripe | Mercadopago | Openpay | Paypal | Conekta |
+|  :---: | :---:| :---: |:---: | :---:|:---:|:---:|:---:|:---:|
+| 4242424242424242 | Any name | Any 3 digits | Any future date  | ✔️| ❌ | ✔️ | ❌ | ✔️|
+| 5474925432670366 | APRO     | Any 3 digits | Any future date  | ❌| ✔️ | ❌ | ❌ | ❌|
+| 2223000048400011 | Any name | Any 3 digits | Any future date  | ❌| ❌ | ❌ | ✔️ | ❌|
+
 ### Integrate Tonder with ease 
