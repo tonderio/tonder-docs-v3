@@ -10,14 +10,15 @@ Mock Server: https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148
 
 ### Security
 
-**Basic Auth**
+**Token Auth**
 
-Basic authentication is a simple authentication scheme built into the HTTP
-protocol. To use it, send your HTTP requests with an Authorization header that
-contains the word Basic followed by a space and a base64-encoded string
-`username:password`.
+Token-based authentication is a secure method commonly used in web applications
+to authenticate clients. In this approach, an API key, which serves as the token,
+is generated and provided to the client. The token is a unique and confidential
+string that acts as a form of credentials. To use it, send your HTTP requests with
+an Authorization header that contains the word Token followed by a space and your token.
 
-Example: `Authorization: Basic ZGVtbzpwQDU1dzByZA==`
+Example: `Authorization: Token ed883bd42c31f669df054b7c239a89fc3a5f6cca`
 
 ### Additional Information
 
