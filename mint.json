@@ -39,11 +39,6 @@
       "url": "reference"
     },
     {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://merchanthour.substack.com/"
-    },
-    {
       "name": "Contact Us",
       "icon": "envelope",
       "url": "mailto:hello@tonder.io"
@@ -51,16 +46,27 @@
   ],
   "navigation": [
     {
-      "group": "Home",
+      "group": "Welcome",
       "pages": ["home"]
     },
     {
       "group": "Get Started",
-      "pages": ["get-started", "why-tonder","first_steps", "payments", "features", "pci-compliance"]
+      "pages": [ 
+      "overview","environments", "set-up","your-first-payment"]
+    },
+    {
+      "group"  :   "Features"  , 
+      "pages"  :   [ "dashboard", "transactions", "reconciliations", "connections", "routing" , "checkout" , "paymentLinks", "developers"] 
     },
     {
       "group": "Tonder API",
       "pages": ["reference/overview"]
+    },
+    { "group": "Plugins",
+      "pages": ["woo-commerce", "magento"] 
+    },
+    { "group": "Security",
+      "pages": ["tonder-security"] 
     },
     {
       "group": "API Reference",
