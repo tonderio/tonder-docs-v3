@@ -2,7 +2,61 @@
 title: "Getting Started"
 ---
 
-- *Set up your account (content)*
-- *Process your first payment (content)*
-- *Next step (content)*
-- **Environments** (sub-page)
+Tonder's payment infrastructure is designed specifically for digital commerce companies. This guide provides developers and businesses with a clear, step-by-step approach to creating their first payment and seamlessly integrating our solution into their platform.
+
+## Step 1: Set up your account
+
+This step will walk you through the initial setup of connections.
+
+<Note>
+ #### Creation of your sandbox account
+ The Tonder team will create a Sandbox account for you, where you can set up your organizational details and change your password.
+</Note>
+
+1. **Adding your first connections**: To integrate Tonder with payment providers, go to the Connections section. Select the payment providers you want to connect with and enter your payment provider Sandbox (test) API keys. Once done, click on the "Connect" button. Finally, check the "Your Connections" section to confirm that the PSPs have been successfully connected.
+
+### Adding your first connections
+
+To integrate Tonder with payment providers, do the following:
+
+1. Navigate to the [Connections](../dashboard/connections) section of the dashboard.
+2. Select the payment provider you want to connect.
+3. Enter the respective payment provider Sandbox(test) API Keys.
+4. Click the **Connect** button.
+
+<Check>
+ #### Your Connections
+ You can check if the connection is successful by going to the [**Your Connections**](../dashboard/connections#your-connections) section.
+</Check>
+
+## Step 2: Process your first payment
+
+To simulate a payment, we will guide you through creating a payment link and making the payment with a test card, to validate the connection and check the response from the provider inside the [Transactions](../dashboard/transactions) section of the dashboard.
+
+### Create a Payment link
+
+To create a payment link, perform the following steps:
+
+1. Access the [Payment Links](../dashboard/payment-links) section of the dashboard.
+2. Click the **+Create** button on the top-right corner.
+3. Fill in the required fields. As this is a simulation, any data will suffice.
+4. Click the **Create new Link** button at the top of the screen.
+
+### Executing the test payment
+
+To execute the payment, you need to:
+
+1. Access the payment link.
+2. Select **Pay with Credit/debit card**.
+3. Use one of the following cards:
+
+|                Provider                     |    Card Number   | Cardholder |        CVC       |       Date      |
+| :-----------------------------------------: | :--------------: | :--------: | :--------------: | :-------------: |
+|    Stripe<br></br>Openpay<br></br>Conekta   | 4242424242424242 |  Any name  | Any three digits | Any future date |
+|               Mercadopago                   | 5474925432670366 |    APRO    | Any three digits | Any future date |
+|                 Openpay                     | 2223000048400011 |  Any name  | Any three digits | Any future date |
+
+
+## Validate the payment
+
+After executing the payment with one of the available test cards, you need to check if the payment was successful. You can do it by going to the [Transaction](../dashboard/transactions) section and clicking on the transaction to view the response from the payment provider.
