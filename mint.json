@@ -53,6 +53,7 @@
       "pages": [
         "docs/introduction/home",
         "docs/introduction/getting-started",
+        "docs/introduction/security",
         "docs/introduction/environments"
       ]
     },
