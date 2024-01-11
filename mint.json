@@ -37,6 +37,26 @@
   ],
   "anchors": [
     {
+      "name": "Introduction",
+      "icon": "square-terminal",
+      "url": "introduction"
+    },
+    {
+      "name": "SDKs",
+      "icon": "rocket",
+      "url": "sdks"
+    },
+    {
+      "name": "Plugins",
+      "icon": "cash-register",
+      "url": "plugins"
+    },
+    {
+      "name": "Dashboard",
+      "icon": "computer",
+      "url": "dashboard"
+    },
+    {
       "name": "API Reference",
       "icon": "square-terminal",
       "url": "reference"
@@ -49,42 +69,53 @@
   ],
   "navigation": [
     {
+      "group": "Home",
+      "pages": [
+        "home"
+      ]
+    },
+    {
       "group": "Introduction",
       "pages": [
-        "docs/introduction/home",
-        "docs/introduction/getting-started",
-        "docs/introduction/security",
-        "docs/introduction/environments"
+        "introduction/getting-started",
+        "introduction/security",
+        "introduction/environments"
       ]
     },
     {
       "group": "SDKs",
       "pages": [
-        "docs/sdks/sdk-overview",
-        "docs/sdks/web-sdk",
-        "docs/sdks/inline-sdk"
+        "sdks/sdk-overview",
+        "sdks/web-sdk",
+        "sdks/inline-sdk"
       ]
     },
     {
       "group": "Plugins",
       "pages": [
-        "docs/plugins/plugins-overview",
-        "docs/plugins/woo-commerce",
-        "docs/plugins/mangento"
+        "plugins/plugins-overview",
+        "plugins/woo-commerce",
+        "plugins/magento"
       ]
     },
     {
       "group": "Dashboard",
       "pages": [
-        "docs/dashboard/dashboard-overview",
-        "docs/dashboard/dashboard-home",
-        "docs/dashboard/transactions",
-        "docs/dashboard/reconciliations",
-        "docs/dashboard/connections",
-        "docs/dashboard/routing",
-        "docs/dashboard/payment-links",
-        "docs/dashboard/developers",
-        "docs/dashboard/settings"
+        "dashboard/dashboard-overview",
+        "dashboard/dashboard-home",
+        "dashboard/transactions",
+        "dashboard/reconciliations",
+        "dashboard/connections",
+        "dashboard/routing",
+        "dashboard/payment-links",
+        "dashboard/developers",
+        "dashboard/settings"
+      ]
+    },
+    {
+      "group": "Tonder API",
+      "pages": [
+        "reference/overview"
       ]
     }
   ],
