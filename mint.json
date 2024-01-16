@@ -61,8 +61,13 @@
       "group": "SDKs",
       "pages": [
         "docs/sdks/sdk-overview",
-        "docs/sdks/web-sdk",
-        "docs/sdks/inline-sdk"
+        {
+          "group": "Tonder JS SDK",
+          "pages": [
+            "docs/sdks/inline-sdk",
+            "docs/sdks/inline-sdk-styles"
+          ]
+        }
       ]
     },
     {
