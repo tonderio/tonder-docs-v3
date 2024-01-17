@@ -86,6 +86,69 @@
         "docs/dashboard/developers",
         "docs/dashboard/settings"
       ]
+    },
+    {
+      "group": "Tonder API",
+      "pages": ["reference/overview"]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "reference/client-address",
+        "reference/activate-customer",
+        {
+          "group": "Business",
+          "pages": [
+            "reference/business/get-business-connection-router",
+            "reference/business/modify-business-connection-router",
+            "reference/business/list-business-payment",
+            "reference/business/modify-business-payment",
+            "reference/business/list-business-payment-payouts"
+          ]
+        },
+        "reference/checkout",
+        "reference/checkout-register",
+        "reference/cities",
+        "reference/client-existence",
+        "reference/client-register",
+        "reference/countries",
+        "reference/customer-register",
+        {
+          "group": "My Profile",
+          "pages": [
+            "reference/my-profile/list",
+            "reference/my-profile/update",
+            "reference/my-profile/modify"
+          ]
+        },
+        "reference/orders",
+        "reference/payments",
+        "reference/resend-otp",
+        "reference/states",
+        "reference/client-update-phone"
+      ]
+    },
+    {
+      "group": "Schemas",
+      "pages": [
+        "reference/schemas/checkout",
+        "reference/schemas/client-address-list",
+        "reference/schemas/client-address",
+        "reference/schemas/activate-customer",
+        "reference/schemas/cities",
+        "reference/schemas/checkout",
+        "reference/schemas/client-registration",
+        "reference/schemas/country",
+        "reference/schemas/customer-register",
+        "reference/schemas/profile-client",
+        "reference/schemas/client",
+        "reference/schemas/order-item",
+        "reference/schemas/order",
+        "reference/schemas/resend-code-otp",
+        "reference/schemas/states",
+        "reference/schemas/validate-otp",
+        "reference/schemas/phone-update"
+      ]
     }
   ],
   "footerSocials": {
