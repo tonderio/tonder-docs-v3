@@ -1,7 +1,99 @@
 ---
-title: "Magento"
+title: "Magento 2.0"
 ---
+
+The Tonder Plugin for Magento 2.0 allows you to link your Magento e-commerce platform to Tonder's payment orchestration platform. With Tonder, you can simplify your payment process by connecting all your payment methods and processors with just a few clicks. You won't need to use multiple plugins and customizations anymore. Tonder is the only payment plugin you'll need for your store and checkout.
 
 <Frame>
   ![](/images/magento-banner.png)
 </Frame>
+
+<Info>Tonder integrates with [Skyflow](https://www.skyflow.com/) to collect, tokenize, and reveal sensitive data in the browser securely. Giving merchants a PCI Level 2 certified card processing widget on their checkout page.</Info>
+
+## Installation
+
+To install Tonder's plugin in your Magento store, follow these steps:
+
+<Steps>
+  <Step title="Terminal Access">
+    Access the root directory where Magento is installed by opening a terminal window.
+
+    ```
+      cd /ruta/a/tu/instalacion/magento
+    ```
+  </Step>
+  <Step title="Plugin Download">
+    To install the plugin, you can use Composer. Simply run the command below to download the plugin:
+    ```
+      composer require tonder/module-payment dev-m2.4.2
+    ```
+  </Step>
+  <Step title="Enable the Plugin">
+    After the download is finished, you need to execute the following command to activate the plugin:
+    ```
+      bin/magento module:enable Tonder_Payment --clear-static-content
+    ```
+  </Step>
+  <Step title="System Update">
+    After enabling the plugin, execute the following command to perform necessary system updates:
+    ```
+      bin/magento setup:upgrade
+    ```
+  </Step>
+  <Step title="Compile the dependency injection">
+    To compile the dependency injection classes, please run the command below:
+    ```
+      bin/magento setup:di:compile
+    ```
+  </Step>
+  <Step title="Cleaning the Cache">
+    To ensure that your changes are reflected correctly, clear the cache by running the following command:
+    ```
+      php bin/magento cache:flush
+    ```
+  </Step>
+</Steps>
+
+## Configuration
+
+TO complete Tonder's plugin configuration, follow the steps below:
+
+<Steps>
+  <Step title="Administration console">
+    Access the Magento administration console to configure the plugin.
+  </Step>
+  <Step title="Tonder Payment Gateway">
+    Go to Stores -> Settings -> Sales -> Payment Methods and enable Tonder Payment Gateway, by switching **Yes**.
+
+    <Frame>
+      ![](/images/magento2.png)
+    </Frame>
+  </Step>
+  <Step title="Change the Title">
+    Modify the **Title** field from **Tonder** to **Payment by Credit/Debit Card** (or what better fits your business) for the Magento checkout.
+    <Frame>
+      ![](/images/magento3.png)
+    </Frame>
+  </Step>
+  <Step title="Choose a server">
+    Select the server of your choice.
+  </Step>
+  <Step title="Add your Credentials">
+    Enter your Merchant ID and Token.
+    <Frame>
+      ![](/images/magento6.png)
+    </Frame>
+    <Note>Your Credentials can be found in the **[Developers](https://stage.tonder.io/dashboard/developers/)** tab of Tonder's dashboard.</Note>
+  </Step>
+  <Step title="Payment Action">
+    Please select the recommended payment action, which is **Authorize and Capture**.
+    <Frame>
+      ![](/images/magento5.png)
+    </Frame>
+  </Step>
+  <Step title="Save your changes">
+    To finish processing the orders, you need to click on the **Save Config** button.
+  </Step>
+</Steps>
+
+<Tip>**Please make sure to delete the cache and conduct all necessary tests afterward.**</Tip>
