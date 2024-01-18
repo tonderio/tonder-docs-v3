@@ -48,115 +48,135 @@
                   "properties": {
                     "business": {
                       "type": "object",
+                      "description": "Contains information about the business.",
                       "properties": {
                         "pk": {
                           "type": "integer",
-                          "example": 88
+                          "example": 88,
+                          "description": "The primary key or identifier for the business."
                         },
                         "name": {
                           "type": "string",
-                          "example": "QA Test"
+                          "example": "QA Test",
+                          "description": "The name of the business."
                         },
                         "categories": {
                           "type": "array",
+                          "description": "An array of categories associated with the business.",
                           "items": {
                             "type": "object",
                             "properties": {
                               "pk": {
                                 "type": "integer",
-                                "example": 6
+                                "example": 6,
+                                "description": "The primary key or identifier for the category."
                               },
                               "name": {
                                 "type": "string",
-                                "example": "E-commerce"
+                                "example": "E-commerce",
+                                "description": "The name of the category."
                               }
-                            },
-                            "required": [
-                              "pk",
-                              "name"
-                            ]
+                            }
                           }
                         },
                         "web": {
                           "type": "string",
                           "format": "uri",
-                          "example": "http://sitioinformatico.com/tonderwp"
+                          "example": "http://sitioinformatico.com/tonderwp",
+                          "description": "The website URL for the business."
                         },
                         "logo": {
                           "type": "string",
                           "format": "uri",
-                          "example": "https://zplit-stage.s3.amazonaws.com/media/business_logos/ftrain_1.png"
+                          "example": "https://zplit-stage.s3.amazonaws.com/media/business_logos/ftrain_1.png",
+                          "description": "The URL of the business's logo."
                         },
                         "full_logo_url": {
                           "type": "string",
                           "format": "uri",
-                          "example": "https://zplit-stage.s3.amazonaws.com/media/business_logos/ftrain_1.png"
+                          "example": "https://zplit-stage.s3.amazonaws.com/media/business_logos/ftrain_1.png",
+                          "description": "The URL of the business's full logo."
                         },
                         "background_color": {
                           "type": "string",
-                          "example": "#004080"
+                          "example": "#004080",
+                          "description": "The background color associated with the business."
                         },
                         "primary_color": {
                           "type": "string",
-                          "example": "#47a76d"
+                          "example": "#47a76d",
+                          "description": "The primary color associated with the business."
                         },
                         "checkout_mode": {
                           "type": "boolean",
-                          "example": false
+                          "example": false,
+                          "description": "A boolean indicating whether the business has a checkout mode."
                         },
                         "textCheckoutColor": {
                           "type": "string",
-                          "example": "#ffffff"
+                          "example": "#ffffff",
+                          "description": "The text color for the checkout."
                         },
                         "textDetailsColor": {
                           "type": "string",
-                          "example": "#ed8201"
+                          "example": "#ed8201",
+                          "description": "The text color for details."
                         },
                         "checkout_logo": {
                           "type": "string",
                           "format": "uri",
-                          "example": null
+                          "example": null,
+                          "description": "The URL of the checkout logo."
                         }
                       }
                     },
                     "openpay_keys": {
                       "type": "object",
+                      "description": "Contains OpenPay keys for the business.",
                       "properties": {
                         "merchant_id": {
                           "type": "string",
-                          "example": "mabkc7smuyermmueyxcl"
+                          "example": "mabkc7smuyermmueyxcl",
+                          "description": "The merchant ID associated with OpenPay."
                         },
                         "public_key": {
                           "type": "string",
-                          "example": "pk_707d2ac7cc5d43ee881de43be9eea22d"
+                          "example": "pk_707d2ac7cc5d43ee881de43be9eea22d",
+                          "description": "The public key associated with OpenPay."
                         }
                       }
                     },
                     "fintoc_keys": {
                       "type": "object",
+                      "description": "Contains Fintoc keys for the business.",
                       "properties": {
                         "public_key": {
                           "type": "string",
-                          "example": ""
+                          "example": "",
+                          "description": "The public key associated with Fintoc."
                         }
                       }
                     },
                     "vault_id": {
                       "type": "string",
-                      "example": "seaf898c927c4ee1a5b2c58315b6ee0d"
+                      "example": "seaf898c927c4ee1a5b2c58315b6ee0d",
+                      "description": "The identifier for the vault."
                     },
                     "vault_url": {
                       "type": "string",
                       "format": "uri",
-                      "example": "https://a370a9658141.vault.skyflowapis-preview.com"
+                      "example": "https://a370a9658141.vault.skyflowapis-preview.com",
+                      "description": "The URL for the vault."
                     },
                     "reference": {
                       "type": "integer",
-                      "example": 520961
+                      "example": 520961,
+                      "description": "A reference number associated with the business."
                     },
                     "is_installments_available": {
                       "type": "boolean",
-                      "example": false
+                      "example": false,
+                      "description": "A boolean indicating whether installments are available."
                     }
                   }
                 }
