@@ -414,123 +414,140 @@
                   "properties": {
                     "id": {
                       "type": "integer",
-                      "example": 5910
+                      "example": 5910,
+                      "description": "An identifier associated with the order."
                     },
                     "created": {
                       "type": "string",
                       "format": "date-time",
-                      "example": "2024-01-18T10:09:36.499975-06:00"
+                      "example": "2024-01-18T10:09:36.499975-06:00",
+                      "description": "The timestamp indicating the creation date and time of the order."
                     },
                     "amount": {
                       "type": "string",
-                      "example": "1200.0000"
+                      "example": "1200.0000",
+                      "description": "The total monetary value of the order."
                     },
                     "status": {
                       "type": "string",
-                      "example": "Activa"
+                      "example": "Activa",
+                      "description": "The status of the order."
                     },
                     "payment_method": {
                       "type": "string",
-                      "example": null
+                      "example": null,
+                      "description": "The payment method used in the order."
                     },
                     "reference": {
                       "type": "string",
-                      "example": "1234556"
+                      "example": "1234556",
+                      "description": "A unique identifier or reference number associated with the order."
                     },
                     "is_oneclick": {
                       "type": "boolean",
-                      "example": true
+                      "example": true,
+                      "description": "A boolean value indicating whether the order involves a one-click purchase."
                     },
                     "items": {
                       "type": "array",
+                      "description": "An array containing details about the items included in the order.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "description": {
                             "type": "string",
-                            "example": "description test"
+                            "example": "description test",
+                            "description": "A description of the item in the order."
                           },
                           "product_reference": {
                             "type": "string",
-                            "example": "1"
+                            "example": "1",
+                            "description": "A reference number or identifier for the product in the order."
                           },
                           "quantity": {
                             "type": "string",
-                            "example": "1.0000"
+                            "example": "1.0000",
+                            "description": "The quantity of the item in the order."
                           },
                           "price_unit": {
                             "type": "string",
-                            "example": "1.0000"
+                            "example": "1.0000",
+                            "description": "The unit price of the item in the order."
                           },
                           "discount": {
                             "type": "string",
-                            "example": "0.0000"
+                            "example": "0.0000",
+                            "description": "The discount applied to the item in the order."
                           },
                           "taxes": {
                             "type": "string",
-                            "example": "0.0000"
+                            "example": "0.0000",
+                            "description": "The taxes associated with the item in the order."
                           },
                           "amount_total": {
                             "type": "string",
-                            "example": "1200.0000"
+                            "example": "1200.0000",
+                            "description": "The total monetary value of the specific item in the order."
                           }
-                        },
-                        "required": [
-                          "description",
-                          "product_reference",
-                          "quantity",
-                          "price_unit",
-                          "discount",
-                          "taxes",
-                          "amount_total"
-                        ]
+                        }
                       }
                     },
                     "billing_address": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "The billing address information in the order."
                     },
                     "shipping_address": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "The shipping address information in the order."
                     },
                     "client": {
                       "type": "object",
+                      "description": "Contains information about the client.",
                       "properties": {
                         "email": {
                           "type": "string",
                           "format": "email",
-                          "example": "pruebas@sdk.com"
+                          "example": "pruebas@sdk.com",
+                          "description": "The email address of the client."
                         },
                         "name": {
                           "type": "string",
-                          "example": ""
+                          "example": "",
+                          "description": "The full name of the client."
                         },
                         "first_name": {
                           "type": "string",
-                          "example": ""
+                          "example": "",
+                          "description": "The first name of the client."
                         },
                         "last_name": {
                           "type": "string",
-                          "example": ""
+                          "example": "",
+                          "description": "The last name of the client."
                         },
                         "client_profile": {
                           "type": "object",
                           "properties": {
                             "gender": {
                               "type": "string",
-                              "example": ""
+                              "example": "",
+                              "description": "Gender information about the client."
                             },
                             "date_birth": {
                               "type": "string",
                               "format": "date",
-                              "example": null
+                              "example": null,
+                              "description": "Date of birth of the client."
                             },
                             "terms": {
                               "type": "boolean",
-                              "example": false
+                              "example": false,
+                              "description": "A boolean indicating whether the client has agreed to terms."
                             },
                             "phone": {
                               "type": "string",
-                              "example": ""
+                              "example": "",
+                              "description": "Phone number of the client."
                             }
                           }
                         }
@@ -613,157 +630,179 @@
                   "properties": {
                     "pk": {
                       "type": "integer",
-                      "example": 5943
+                      "example": 5943,
+                      "description": "The primary key or identifier associated with the payment."
                     },
                     "order": {
                       "type": "integer",
-                      "example": null
+                      "example": null,
+                      "description": "The unique identifier number associated with the order."
                     },
                     "amount": {
                       "type": "string",
-                      "example": "1200.0000"
+                      "example": "1200.0000",
+                      "description": "The total monetary value of the order."
                     },
                     "status": {
                       "type": "string",
-                      "example": "PENDING"
+                      "example": "PENDING",
+                      "description": "The current status of the order."
                     },
                     "date": {
                       "type": "string",
                       "format": "date-time",
-                      "example": "2024-01-18T10:18:39.800536-06:00"
+                      "example": "2024-01-18T10:18:39.800536-06:00",
+                      "description": "The timestamp indicating the date and time the payment was created."
                     },
                     "paid_date": {
                       "type": "string",
                       "format": "date-time",
-                      "example": null
+                      "example": null,
+                      "description": "The timestamp indicating the date and time the order was paid, or null if not paid."
                     },
                     "shipping_address": {
                       "type": "object",
+                      "description": "Details of the shipping address in the order.",
                       "properties": {
                         "street": {
                           "type": "string",
-                          "example": "N/a"
+                          "example": "N/a",
+                          "description": "The street address in the shipping information."
                         },
                         "number": {
                           "type": "string",
-                          "example": "N/a"
+                          "example": "N/a",
+                          "description": "The house or building number in the shipping information."
                         },
                         "suburb": {
                           "type": "string",
-                          "example": "N/a"
+                          "example": "N/a",
+                          "description": "The suburb or district in the shipping information."
                         },
                         "city": {
                           "type": "object",
                           "properties": {
                             "name": {
                               "type": "string",
-                              "example": "N/a"
+                              "example": "N/a",
+                              "description": "The name of the city in the shipping information."
                             }
                           },
-                          "required": [
-                            "name"
-                          ]
+                          "required": ["name"],
+                          "description": "The city information in the shipping details."
                         },
                         "state": {
                           "type": "object",
                           "properties": {
                             "name": {
                               "type": "string",
-                              "example": "N/a"
+                              "example": "N/a",
+                              "description": "The name of the state or region in the shipping information."
                             },
                             "country": {
                               "type": "object",
                               "properties": {
                                 "name": {
                                   "type": "string",
-                                  "example": "N/a"
+                                  "example": "N/a",
+                                  "description": "The name of the country in the shipping information."
                                 }
                               },
-                              "required": [
-                                "name"
-                              ]
+                              "required": ["name"],
+                              "description": "The country information in the shipping details."
                             }
-                          }
+                          },
+                          "required": ["name", "country"],
+                          "description": "The state information in the shipping details."
                         },
                         "zip_code": {
                           "type": "string",
-                          "example": "N/a"
+                          "example": "N/a",
+                          "description": "The ZIP code or postal code in the shipping information."
                         }
                       }
                     },
                     "shipping_address_id": {
                       "type": "integer",
-                      "example": null
+                      "example": null,
+                      "description": "The identifier associated with the shipping address in the order."
                     },
                     "billing_address": {
                       "type": "object",
+                      "description": "Details of the billing address in the order.",
                       "properties": {
                         "street": {
                           "type": "string",
-                          "example": "N/a"
+                          "example": "N/a",
+                          "description": "The street address in the billing information."
                         },
                         "number": {
                           "type": "string",
-                          "example": "N/a"
+                          "example": "N/a",
+                          "description": "The house or building number in the billing information."
                         },
                         "suburb": {
                           "type": "string",
-                          "example": "N/a"
+                          "example": "N/a",
+                          "description": "The suburb or district in the billing information."
                         },
                         "city": {
                           "type": "object",
                           "properties": {
                             "name": {
                               "type": "string",
-                              "example": "N/a"
+                              "example": "N/a",
+                              "description": "The name of the city in the billing information."
                             }
                           },
-                          "required": [
-                            "name"
-                          ]
+                          "required": ["name"],
+                          "description": "The city information in the billing details."
                         },
                         "state": {
                           "type": "object",
                           "properties": {
                             "name": {
                               "type": "string",
-                              "example": "N/a"
+                              "example": "N/a",
+                              "description": "The name of the state or region in the billing information."
                             },
                             "country": {
                               "type": "object",
                               "properties": {
                                 "name": {
                                   "type": "string",
-                                  "example": "N/a"
+                                  "example": "N/a",
+                                  "description": "The name of the country in the billing information."
                                 }
                               },
-                              "required": [
-                                "name"
-                              ]
+                              "required": ["name"],
+                              "description": "The country information in the billing details."
                             }
                           },
-                          "required": [
-                            "name",
-                            "country"
-                          ]
+                          "required": ["name", "country"],
+                          "description": "The state information in the billing details."
                         },
                         "zip_code": {
                           "type": "string",
-                          "example": "N/a"
+                          "example": "N/a",
+                          "description": "The ZIP code or postal code in the billing information."
                         }
                       }
                     },
                     "billing_address_id": {
                       "type": "string",
-                      "example": null
+                      "example": null,
+                      "description": "The identifier associated with the billing address in the order."
                     },
                     "client": {
                       "type": "string",
-                      "example": null
+                      "example": null,
+                      "description": "The identifier or reference associated with the client or customer."
                     },
                     "customer_order_reference": {
                       "type": "string",
-                      "example": null
+                      "example": null,
+                      "description": "The customer's reference or identifier associated with the order."
                     }
                   }
                 }
