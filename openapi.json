@@ -14,7 +14,7 @@
   },
   "servers": [
     {
-      "url": "http://stage.tonder.io/api/v1",
+      "url": "https://stage.tonder.io/api/v1",
       "description": "Stage server"
     },
     {
@@ -30,6 +30,7 @@
         "parameters": [
           {
             "in": "path",
+            "description": "Your Tonder API Key. You can recover it on Tonder's dashboard.",
             "name": "api_key",
             "required": true,
             "schema": {
@@ -41,38 +42,123 @@
           "200": {
             "description": "Successful response",
             "content": {
-              "Ok": {
-                "example": {
-                  "business": {
-                    "pk": 88,
-                    "name": "QA Test",
-                    "categories": [
-                      {
-                        "pk": 6,
-                        "name": "E-commerce"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "business": {
+                      "type": "object",
+                      "properties": {
+                        "pk": {
+                          "type": "integer",
+                          "example": 88
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "QA Test"
+                        },
+                        "categories": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "pk": {
+                                "type": "integer",
+                                "example": 6
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "E-commerce"
+                              }
+                            },
+                            "required": [
+                              "pk",
+                              "name"
+                            ]
+                          }
+                        },
+                        "web": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "http://sitioinformatico.com/tonderwp"
+                        },
+                        "logo": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://zplit-stage.s3.amazonaws.com/media/business_logos/ftrain_1.png"
+                        },
+                        "full_logo_url": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://zplit-stage.s3.amazonaws.com/media/business_logos/ftrain_1.png"
+                        },
+                        "background_color": {
+                          "type": "string",
+                          "example": "#004080"
+                        },
+                        "primary_color": {
+                          "type": "string",
+                          "example": "#47a76d"
+                        },
+                        "checkout_mode": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "textCheckoutColor": {
+                          "type": "string",
+                          "example": "#ffffff"
+                        },
+                        "textDetailsColor": {
+                          "type": "string",
+                          "example": "#ed8201"
+                        },
+                        "checkout_logo": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": null
+                        }
                       }
-                    ],
-                    "web": "http://sitioinformatico.com/tonderwp",
-                    "logo": "https://zplit-stage.s3.amazonaws.com/media/business_logos/ftrain_1.png",
-                    "full_logo_url": "https://zplit-stage.s3.amazonaws.com/media/business_logos/ftrain_1.png",
-                    "background_color": "#004080",
-                    "primary_color": "#47a76d",
-                    "checkout_mode": false,
-                    "textCheckoutColor": "#ffffff",
-                    "textDetailsColor": "#ed8201",
-                    "checkout_logo": null
-                  },
-                  "openpay_keys": {
-                    "merchant_id": "mabkc7smuyermmueyxcl",
-                    "public_key": "pk_707d2ac7cc5d43ee881de43be9eea22d"
-                  },
-                  "fintoc_keys": {
-                    "public_key": ""
-                  },
-                  "vault_id": "seaf898c927c4ee1a5b2c58315b6ee0d",
-                  "vault_url": "https://a370a9658141.vault.skyflowapis-preview.com",
-                  "reference": 520961,
-                  "is_installments_available": false
+                    },
+                    "openpay_keys": {
+                      "type": "object",
+                      "properties": {
+                        "merchant_id": {
+                          "type": "string",
+                          "example": "mabkc7smuyermmueyxcl"
+                        },
+                        "public_key": {
+                          "type": "string",
+                          "example": "pk_707d2ac7cc5d43ee881de43be9eea22d"
+                        }
+                      }
+                    },
+                    "fintoc_keys": {
+                      "type": "object",
+                      "properties": {
+                        "public_key": {
+                          "type": "string",
+                          "example": ""
+                        }
+                      }
+                    },
+                    "vault_id": {
+                      "type": "string",
+                      "example": "seaf898c927c4ee1a5b2c58315b6ee0d"
+                    },
+                    "vault_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://a370a9658141.vault.skyflowapis-preview.com"
+                    },
+                    "reference": {
+                      "type": "integer",
+                      "example": 520961
+                    },
+                    "is_installments_available": {
+                      "type": "boolean",
+                      "example": false
+                    }
+                  }
                 }
               }
             }
@@ -102,6 +188,1275 @@
           "payments"
         ]
       }
+    },
+    "/customer/": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "The client's email address."
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/jsons": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 766,
+                      "description": "The newly created client's unique identifier."
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "jsmith@example.com",
+                      "description": "The newly created client's email address."
+                    },
+                    "auth_token": {
+                      "type": "string",
+                      "example": "86706c507e9ca032c91771a26819d69e91402fc9",
+                      "description": "The authorization token for the client."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "Bad Request": {
+                "example": {
+                  "email": [
+                    "Enter a valid email address."
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Invalid token."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/orders/": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business": {
+                    "type": "string",
+                    "default": "<YOUR_API_KEY>",
+                    "example": "<YOUR_API_KEY>",
+                    "description": "Your Tonder API Key. You can retrieve it from the dashboard."
+                  },
+                  "client": {
+                    "type": "string",
+                    "default": "<YOUR_CLIENT_AUTH_TOKEN>",
+                    "example": "<YOUR_CLIENT_AUTH_TOKEN>",
+                    "description": "The client authorization token: `auth_token`"
+                  },
+                  "billing_address_id": {
+                    "type": "string",
+                    "default": null,
+                    "example": null,
+                    "description": "The identifier for the billing address."
+                  },
+                  "shipping_address_id": {
+                    "type": "string",
+                    "default": null,
+                    "example": null,
+                    "description": "The identifier for the shipping address."
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "description": "The total monetary value of the transaction."
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "A code indicating the status of the transaction."
+                  },
+                  "reference": {
+                    "type": "string",
+                    "description": "A unique identifier or reference number associated with the transaction."
+                  },
+                  "is_oneclick": {
+                    "type": "boolean",
+                    "description": "A boolean value indicating whether the transaction involves a one-click purchase."
+                  },
+                  "items": {
+                    "type": "array",
+                    "description": "An array containing details about the items included in the transaction.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string",
+                          "description": "A description for the item."
+                        },
+                        "quantity": {
+                          "type": "integer",
+                          "description": "The quantity of the item added to the cart."
+                        },
+                        "price_unit": {
+                          "type": "integer",
+                          "description": "The unit price of the item."
+                        },
+                        "discount": {
+                          "type": "integer",
+                          "description": "The discount applied to the item."
+                        },
+                        "taxes": {
+                          "type": "integer",
+                          "description": "The taxes associated with the item."
+                        },
+                        "product_reference": {
+                          "type": "integer",
+                          "description": "A reference number or identifier for the product."
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": " The name or title of the product."
+                        },
+                        "amount_total": {
+                          "type": "integer",
+                          "description": "The total monetary value of this specific cart item."
+                        }
+                      },
+                      "required": [
+                        "description",
+                        "quantity",
+                        "price_unit",
+                        "discount",
+                        "taxes",
+                        "product_reference",
+                        "name",
+                        "amount_total"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "business",
+                  "client",
+                  "amount",
+                  "status",
+                  "reference",
+                  "is_oneclick",
+                  "items"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 5910
+                    },
+                    "created": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2024-01-18T10:09:36.499975-06:00"
+                    },
+                    "amount": {
+                      "type": "string",
+                      "example": "1200.0000"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Activa"
+                    },
+                    "payment_method": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "reference": {
+                      "type": "string",
+                      "example": "1234556"
+                    },
+                    "is_oneclick": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "description": {
+                            "type": "string",
+                            "example": "description test"
+                          },
+                          "product_reference": {
+                            "type": "string",
+                            "example": "1"
+                          },
+                          "quantity": {
+                            "type": "string",
+                            "example": "1.0000"
+                          },
+                          "price_unit": {
+                            "type": "string",
+                            "example": "1.0000"
+                          },
+                          "discount": {
+                            "type": "string",
+                            "example": "0.0000"
+                          },
+                          "taxes": {
+                            "type": "string",
+                            "example": "0.0000"
+                          },
+                          "amount_total": {
+                            "type": "string",
+                            "example": "1200.0000"
+                          }
+                        },
+                        "required": [
+                          "description",
+                          "product_reference",
+                          "quantity",
+                          "price_unit",
+                          "discount",
+                          "taxes",
+                          "amount_total"
+                        ]
+                      }
+                    },
+                    "billing_address": {
+                      "type": "string"
+                    },
+                    "shipping_address": {
+                      "type": "string"
+                    },
+                    "client": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "pruebas@sdk.com"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": ""
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "example": ""
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "example": ""
+                        },
+                        "client_profile": {
+                          "type": "object",
+                          "properties": {
+                            "gender": {
+                              "type": "string",
+                              "example": ""
+                            },
+                            "date_birth": {
+                              "type": "string",
+                              "format": "date",
+                              "example": null
+                            },
+                            "terms": {
+                              "type": "boolean",
+                              "example": false
+                            },
+                            "phone": {
+                              "type": "string",
+                              "example": ""
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Invalid token."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/business/{business}/payments/": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "business",
+            "description": "A business unique identifier.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "example": 1200.00,
+                    "description": "The total monetary value associated with the order."
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2023-12-15T22:45:06.506Z",
+                    "description": "The timestamp representing the date and time of the order."
+                  },
+                  "order": {
+                    "type": "integer",
+                    "example": 5728,
+                    "description": "The unique identifier number for the order."
+                  }
+                },
+                "required": [
+                  "amount",
+                  "date",
+                  "order"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pk": {
+                      "type": "integer",
+                      "example": 5943
+                    },
+                    "order": {
+                      "type": "integer",
+                      "example": null
+                    },
+                    "amount": {
+                      "type": "string",
+                      "example": "1200.0000"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "PENDING"
+                    },
+                    "date": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2024-01-18T10:18:39.800536-06:00"
+                    },
+                    "paid_date": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": null
+                    },
+                    "shipping_address": {
+                      "type": "object",
+                      "properties": {
+                        "street": {
+                          "type": "string",
+                          "example": "N/a"
+                        },
+                        "number": {
+                          "type": "string",
+                          "example": "N/a"
+                        },
+                        "suburb": {
+                          "type": "string",
+                          "example": "N/a"
+                        },
+                        "city": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "N/a"
+                            }
+                          },
+                          "required": [
+                            "name"
+                          ]
+                        },
+                        "state": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "N/a"
+                            },
+                            "country": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "example": "N/a"
+                                }
+                              },
+                              "required": [
+                                "name"
+                              ]
+                            }
+                          }
+                        },
+                        "zip_code": {
+                          "type": "string",
+                          "example": "N/a"
+                        }
+                      }
+                    },
+                    "shipping_address_id": {
+                      "type": "integer",
+                      "example": null
+                    },
+                    "billing_address": {
+                      "type": "object",
+                      "properties": {
+                        "street": {
+                          "type": "string",
+                          "example": "N/a"
+                        },
+                        "number": {
+                          "type": "string",
+                          "example": "N/a"
+                        },
+                        "suburb": {
+                          "type": "string",
+                          "example": "N/a"
+                        },
+                        "city": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "N/a"
+                            }
+                          },
+                          "required": [
+                            "name"
+                          ]
+                        },
+                        "state": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "N/a"
+                            },
+                            "country": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "example": "N/a"
+                                }
+                              },
+                              "required": [
+                                "name"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "country"
+                          ]
+                        },
+                        "zip_code": {
+                          "type": "string",
+                          "example": "N/a"
+                        }
+                      }
+                    },
+                    "billing_address_id": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "client": {
+                      "type": "string",
+                      "example": null
+                    },
+                    "customer_order_reference": {
+                      "type": "string",
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Invalid token."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/checkout-router/": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "card": {
+                    "type": "object",
+                    "description": "Contains information related to the payment card used in the transaction.",
+                    "properties": {
+                      "cvv": {
+                        "type": "string",
+                        "example": "69f4d206-ceb6-4be8-82d8-7a39dceb9f87",
+                        "description": "The Card Verification Value (CVV) associated with the card."
+                      },
+                      "skyflow_id": {
+                        "type": "string",
+                        "example": "702faf3c-26f9-41c1-a287-cec20aa43929",
+                        "description": "The unique identifier associated with the card in Skyflow's secure vault."
+                      },
+                      "card_number": {
+                        "type": "string",
+                        "example": "9230-0892-4469-1474",
+                        "description": "The card number."
+                      },
+                      "cardholder_name": {
+                        "type": "string",
+                        "example": "3b5d70a9-01b9-4001-8328-9b10168bac25",
+                        "description": "The name of the cardholder."
+                      },
+                      "expiration_year": {
+                        "type": "string",
+                        "example": "645a3174-340a-4849-ba5c-c4333d2967c9",
+                        "description": "The expiration year of the card."
+                      },
+                      "expiration_month": {
+                        "type": "string",
+                        "example": "5c6bef6c-9642-4403-9ce6-215b0d3f85b0",
+                        "description": "The expiration month of the card."
+                      }
+                    },
+                    "required": [
+                      "cvv",
+                      "skyflow_id",
+                      "card_number",
+                      "cardholder_name",
+                      "expiration_year",
+                      "expiration_month"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Jhon",
+                    "description": "The first name of the client."
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "example": "Doe",
+                    "description": "The last name of the client."
+                  },
+                  "email_client": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "pruebas@sdk.com",
+                    "description": "The email address of the client."
+                  },
+                  "phone_number": {
+                    "type": "string",
+                    "example": "6181234567",
+                    "description": "The phone number of the client."
+                  },
+                  "return_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "http://tonder.io",
+                    "description": "The URL to which the user will be redirected after completing the transaction."
+                  },
+                  "id_product": {
+                    "type": "string",
+                    "example": "no_id",
+                    "description": "The identifier for the product."
+                  },
+                  "quantity_product": {
+                    "type": "integer",
+                    "example": 1,
+                    "description": "The quantity of the product in the transaction."
+                  },
+                  "id_ship": {
+                    "type": "string",
+                    "example": "0",
+                    "description": "The identifier for the shipping information."
+                  },
+                  "instance_id_ship": {
+                    "type": "string",
+                    "example": "0",
+                    "description": "The instance identifier for the shipping information."
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "example": 1200,
+                    "description": "The total monetary value of the transaction."
+                  },
+                  "title_ship": {
+                    "type": "string",
+                    "example": "shipping",
+                    "description": "The title or type of shipping."
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "transaction",
+                    "description": "A description of the transaction."
+                  },
+                  "device_session_id": {
+                    "type": "string",
+                    "example": "VXJLx0H4Fxyz09Ssfbbv0QE8JXDjnKiW",
+                    "description": "The identifier for the device session."
+                  },
+                  "token_id": {
+                    "type": "string",
+                    "example": "",
+                    "description": "A token identifier associated with the transaction."
+                  },
+                  "order_id": {
+                    "type": "integer",
+                    "example": 5730,
+                    "description": "An identifier or reference number for the order."
+                  },
+                  "business_id": {
+                    "type": "integer",
+                    "example": 89,
+                    "description": "The identifier for the business."
+                  },
+                  "payment_id": {
+                    "type": "integer",
+                    "example": 5744,
+                    "description": "The identifier for the payment."
+                  },
+                  "source": {
+                    "type": "string",
+                    "example": "sdk",
+                    "description": "The source of the transaction."
+                  }
+                },
+                "required": [
+                  "card",
+                  "name",
+                  "last_name",
+                  "email_client",
+                  "phone_number",
+                  "return_url",
+                  "id_product",
+                  "quantity_product",
+                  "id_ship",
+                  "instance_id_ship",
+                  "amount",
+                  "title_ship",
+                  "description",
+                  "device_session_id",
+                  "order_id",
+                  "business_id",
+                  "payment_id",
+                  "source"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "200"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "psp_response": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "ch_3OZyPSK5zRUzLwaW0CyXUIVQ"
+                        },
+                        "object": {
+                          "type": "string",
+                          "example": "charge"
+                        },
+                        "amount": {
+                          "type": "integer",
+                          "example": 120000
+                        },
+                        "amount_captured": {
+                          "type": "integer",
+                          "example": 120000
+                        },
+                        "amount_refunded": {
+                          "type": "integer",
+                          "example": 0
+                        },
+                        "application": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "application_fee": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "application_fee_amount": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "balance_transaction": {
+                          "type": "string",
+                          "example": "txn_3OZyPSK5zRUzLwaW0iZIaxjx"
+                        },
+                        "billing_details": {
+                          "type": "object",
+                          "properties": {
+                            "address": {
+                              "type": "object",
+                              "properties": {
+                                "city": {
+                                  "type": "string",
+                                  "example": null
+                                },
+                                "country": {
+                                  "type": "string",
+                                  "example": null
+                                },
+                                "line1": {
+                                  "type": "string",
+                                  "example": null
+                                },
+                                "line2": {
+                                  "type": "string",
+                                  "example": null
+                                },
+                                "postal_code": {
+                                  "type": "string",
+                                  "example": null
+                                },
+                                "state": {
+                                  "type": "string",
+                                  "example": null
+                                }
+                              }
+                            },
+                            "email": {
+                              "type": "string",
+                              "example": null
+                            },
+                            "name": {
+                              "type": "string",
+                              "example": null
+                            },
+                            "phone": {
+                              "type": "string",
+                              "example": null
+                            }
+                          }
+                        },
+                        "calculated_statement_descriptor": {
+                          "type": "string",
+                          "example": "GOLFMANAGER.COM"
+                        },
+                        "captured": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "created": {
+                          "type": "integer",
+                          "example": 1705595142
+                        },
+                        "currency": {
+                          "type": "string",
+                          "example": "mxn"
+                        },
+                        "customer": {
+                          "type": "string",
+                          "example": "cus_PBoeaxFGw6mZFF"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "transaction"
+                        },
+                        "destination": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "dispute": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "disputed": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "failure_balance_transaction": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "failure_code": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "failure_message": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "fraud_details": {
+                          "type": "object",
+                          "example": {}
+                        },
+                        "invoice": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "livemode": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "example": {}
+                        },
+                        "on_behalf_of": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "order": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "outcome": {
+                          "type": "object",
+                          "properties": {
+                            "network_status": {
+                              "type": "string",
+                              "example": "approved_by_network"
+                            },
+                            "reason": {
+                              "type": "string",
+                              "example": null
+                            },
+                            "risk_level": {
+                              "type": "string",
+                              "example": "normal"
+                            },
+                            "risk_score": {
+                              "type": "integer",
+                              "example": 15
+                            },
+                            "seller_message": {
+                              "type": "string",
+                              "example": "Payment complete."
+                            },
+                            "type": {
+                              "type": "string",
+                              "example": "authorized"
+                            }
+                          }
+                        },
+                        "paid": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "payment_intent": {
+                          "type": "string",
+                          "example": "pi_3OZyPSK5zRUzLwaW0xfmGAjx"
+                        },
+                        "payment_method": {
+                          "type": "string",
+                          "example": "pm_1OZyPRK5zRUzLwaWC5WKIOJC"
+                        },
+                        "payment_method_details": {
+                          "type": "object",
+                          "properties": {
+                            "card": {
+                              "type": "object",
+                              "properties": {
+                                "amount_authorized": {
+                                  "type": "integer",
+                                  "example": 120000
+                                },
+                                "brand": {
+                                  "type": "string",
+                                  "example": "visa"
+                                },
+                                "checks": {
+                                  "type": "object",
+                                  "properties": {
+                                    "address_line1_check": {
+                                      "type": "string",
+                                      "example": null
+                                    },
+                                    "address_postal_code_check": {
+                                      "type": "string",
+                                      "example": null
+                                    },
+                                    "cvc_check": {
+                                      "type": "string",
+                                      "example": null
+                                    }
+                                  }
+                                },
+                                "country": {
+                                  "type": "string",
+                                  "example": "US"
+                                },
+                                "exp_month": {
+                                  "type": "integer",
+                                  "example": 11
+                                },
+                                "exp_year": {
+                                  "type": "integer",
+                                  "example": 2025
+                                },
+                                "extended_authorization": {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "example": "disabled"
+                                    }
+                                  }
+                                },
+                                "fingerprint": {
+                                  "type": "string",
+                                  "example": "g8tpcAz042MueZFZ"
+                                },
+                                "funding": {
+                                  "type": "string",
+                                  "example": "credit"
+                                },
+                                "incremental_authorization": {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "example": "unavailable"
+                                    }
+                                  }
+                                },
+                                "installments": {
+                                  "type": "string",
+                                  "example": null
+                                },
+                                "last4": {
+                                  "type": "string",
+                                  "example": "4242"
+                                },
+                                "mandate": {
+                                  "type": "string",
+                                  "example": null
+                                },
+                                "multicapture": {
+                                  "type": "object",
+                                  "properties": {
+                                    "status": {
+                                      "type": "string",
+                                      "example": "unavailable"
+                                    }
+                                  }
+                                },
+                                "network": {
+                                  "type": "string",
+                                  "example": "visa"
+                                },
+                                "network_token": {
+                                  "type": "object",
+                                  "properties": {
+                                    "used": {
+                                      "type": "boolean",
+                                      "example": false
+                                    }
+                                  }
+                                },
+                                "overcapture": {
+                                  "type": "object",
+                                  "properties": {
+                                    "maximum_amount_capturable": {
+                                      "type": "integer",
+                                      "example": 120000
+                                    },
+                                    "status": {
+                                      "type": "string",
+                                      "example": "unavailable"
+                                    }
+                                  }
+                                },
+                                "three_d_secure": {
+                                  "type": "string",
+                                  "example": null
+                                },
+                                "wallet": {
+                                  "type": "string",
+                                  "example": null
+                                }
+                              }
+                            },
+                            "type": {
+                              "type": "string",
+                              "example": "card"
+                            }
+                          }
+                        },
+                        "radar_options": {
+                          "type": "object",
+                          "example": {}
+                        },
+                        "receipt_email": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "receipt_number": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "receipt_url": {
+                          "type": "string",
+                          "example": "https://pay.stripe.com/receipts/payment/CAcaFwoVYWNjdF8xREl5WTRLNXpSVXpMd2FXKIeipa0GMgbREzVbrVQ6LBZdZFnB8ZFMPXXaJlPrlgymIpkqBm3-pd3x-lnhgqwlKAC3AWrN3kEYGDep"
+                        },
+                        "refunded": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "review": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "shipping": {
+                          "type": "object",
+                          "properties": {
+                            "street": {
+                              "type": "string",
+                              "example": "N/a"
+                            },
+                            "number": {
+                              "type": "string",
+                              "example": "N/a"
+                            },
+                            "suburb": {
+                              "type": "string",
+                              "example": "N/a"
+                            },
+                            "city": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "example": "N/a"
+                                }
+                              }
+                            },
+                            "state": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "example": "N/a"
+                                },
+                                "country": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "example": "N/a"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "zip_code": {
+                              "type": "string",
+                              "example": "N/a"
+                            }
+                          }
+                        },
+                        "source": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "source_transfer": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "statement_descriptor": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "statement_descriptor_suffix": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "succeeded"
+                        },
+                        "transfer_data": {
+                          "type": "string",
+                          "example": null
+                        },
+                        "transfer_group": {
+                          "type": "string",
+                          "example": null
+                        }
+                      }
+                    },
+                    "transaction_status": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "transaction_id": {
+                      "type": "integer",
+                      "example": 11044
+                    },
+                    "payment_id": {
+                      "type": "integer",
+                      "example": 5744
+                    },
+                    "provider": {
+                      "type": "string",
+                      "example": "stripe"
+                    },
+                    "next_action": {
+                      "type": "object",
+                      "example": {}
+                    },
+                    "actions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "example": "verify_transaction_status"
+                          },
+                          "url": {
+                            "type": "string",
+                            "example": "/api/v1/stripe/business/89/payments/5744/transactions/11044"
+                          },
+                          "method": {
+                            "type": "string",
+                            "example": "GET"
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "name": "verify_transaction_status",
+                          "url": "/api/v1/stripe/business/89/payments/5744/transactions/11044",
+                          "method": "GET"
+                        },
+                        {
+                          "name": "refund_transaction",
+                          "url": "/api/v1/stripe/business/89/payments/ch_3OZyPSK5zRUzLwaW0CyXUIVQ/refunds",
+                          "method": "POST"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "detail": "Invalid token."
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "payments"
+        ]
+      }
     }
   },
   "components": {
@@ -117,30 +1472,6 @@
             "type": "string"
           }
         }
-      },
-      "Category": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "Tag": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
       }
     },
     "parameters": {
@@ -153,25 +1484,9 @@
           "type": "integer",
           "format": "int32"
         }
-      },
-      "limitParam": {
-        "name": "limit",
-        "in": "query",
-        "description": "max records to return",
-        "required": true,
-        "schema": {
-          "type": "integer",
-          "format": "int32"
-        }
       }
     },
     "responses": {
-      "NotFound": {
-        "description": "Entity not found."
-      },
-      "IllegalInput": {
-        "description": "Illegal input for operation."
-      },
       "GeneralError": {
         "description": "General Error",
         "content": {
