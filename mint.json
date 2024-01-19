@@ -100,27 +100,6 @@
         "reference/create-payment",
         "reference/create-checkout-router"
       ]
-    },
-    {
-      "group": "Schemas",
-      "pages": [
-        "reference/schemas/checkout",
-        "reference/schemas/client-address-list",
-        "reference/schemas/client-address",
-        "reference/schemas/activate-customer",
-        "reference/schemas/cities",
-        "reference/schemas/client-registration",
-        "reference/schemas/country",
-        "reference/schemas/customer-register",
-        "reference/schemas/profile-client",
-        "reference/schemas/client",
-        "reference/schemas/order-item",
-        "reference/schemas/order",
-        "reference/schemas/resend-code-otp",
-        "reference/schemas/states",
-        "reference/schemas/validate-otp",
-        "reference/schemas/phone-update"
-      ]
     }
   ],
   "openapi": "/openapi.json",

@@ -708,11 +708,9 @@
                                   "description": "The name of the country in the shipping information."
                                 }
                               },
-                              "required": ["name"],
                               "description": "The country information in the shipping details."
                             }
                           },
-                          "required": ["name", "country"],
                           "description": "The state information in the shipping details."
                         },
                         "zip_code": {
@@ -755,7 +753,6 @@
                               "description": "The name of the city in the billing information."
                             }
                           },
-                          "required": ["name"],
                           "description": "The city information in the billing details."
                         },
                         "state": {
@@ -775,11 +772,9 @@
                                   "description": "The name of the country in the billing information."
                                 }
                               },
-                              "required": ["name"],
                               "description": "The country information in the billing details."
                             }
                           },
-                          "required": ["name", "country"],
                           "description": "The state information in the billing details."
                         },
                         "zip_code": {
@@ -1006,50 +1001,62 @@
                   "properties": {
                     "status": {
                       "type": "string",
-                      "example": "200"
+                      "example": "200",
+                      "description": "The HTTP status code indicating the success or failure of the response."
                     },
                     "message": {
                       "type": "string",
-                      "example": "Success"
+                      "example": "Success",
+                      "description": "A message providing additional information about the success or failure of the response."
                     },
                     "psp_response": {
                       "type": "object",
+                      "description": "The response from the payment service provider (PSP) containing detailed information about the payment transaction.",
                       "properties": {
                         "id": {
                           "type": "string",
-                          "example": "ch_3OZyPSK5zRUzLwaW0CyXUIVQ"
+                          "example": "ch_3OZyPSK5zRUzLwaW0CyXUIVQ",
+                          "description": "A unique identifier for the payment transaction within the payment service provider (PSP) system."
                         },
                         "object": {
                           "type": "string",
-                          "example": "charge"
+                          "example": "charge",
+                          "description": "The type of object, representing the nature of the transaction (e.g., 'charge' for a payment charge)."
                         },
                         "amount": {
                           "type": "integer",
-                          "example": 120000
+                          "example": 120000,
+                          "description": "The total amount of the transaction, expressed in the smallest currency unit (e.g., cents or pence)."
                         },
                         "amount_captured": {
                           "type": "integer",
-                          "example": 120000
+                          "example": 120000,
+                          "description": "The amount that has been captured or collected from the customer as part of the transaction."
                         },
                         "amount_refunded": {
                           "type": "integer",
-                          "example": 0
+                          "example": 0,
+                          "description": "The amount that has been refunded to the customer as part of the transaction."
                         },
                         "application": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The identifier of the application associated with the transaction, if applicable."
                         },
                         "application_fee": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The application fee, if any, applied to the transaction."
                         },
                         "application_fee_amount": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The amount of the application fee, if any, applied to the transaction."
                         },
                         "balance_transaction": {
                           "type": "string",
-                          "example": "txn_3OZyPSK5zRUzLwaW0iZIaxjx"
+                          "example": "txn_3OZyPSK5zRUzLwaW0iZIaxjx",
+                          "description": "The identifier of the balance transaction associated with the payment charge."
                         },
                         "billing_details": {
                           "type": "object",
@@ -1059,410 +1066,509 @@
                               "properties": {
                                 "city": {
                                   "type": "string",
-                                  "example": null
+                                  "example": null,
+                                  "description": "The city associated with the billing address."
                                 },
                                 "country": {
                                   "type": "string",
-                                  "example": null
+                                  "example": null,
+                                  "description": "The country associated with the billing address."
                                 },
                                 "line1": {
                                   "type": "string",
-                                  "example": null
+                                  "example": null,
+                                  "description": "The first line of the billing address."
                                 },
                                 "line2": {
                                   "type": "string",
-                                  "example": null
+                                  "example": null,
+                                  "description": "The second line of the billing address."
                                 },
                                 "postal_code": {
                                   "type": "string",
-                                  "example": null
+                                  "example": null,
+                                  "description": "The postal code associated with the billing address."
                                 },
                                 "state": {
                                   "type": "string",
-                                  "example": null
+                                  "example": null,
+                                  "description": "The state or region associated with the billing address."
                                 }
-                              }
+                              },
+                              "description": "Object containing details about the address in the billing details."
                             },
                             "email": {
                               "type": "string",
-                              "example": null
+                              "example": null,
+                              "description": "The email address associated with the billing details."
                             },
                             "name": {
                               "type": "string",
-                              "example": null
+                              "example": null,
+                              "description": "The name associated with the billing details."
                             },
                             "phone": {
                               "type": "string",
-                              "example": null
+                              "example": null,
+                              "description": "The phone number associated with the billing details."
                             }
-                          }
+                          },
+                          "description": "Object containing details about the billing information."
                         },
                         "calculated_statement_descriptor": {
                           "type": "string",
-                          "example": "GOLFMANAGER.COM"
+                          "example": "GOLFMANAGER.COM",
+                          "description": "The calculated statement descriptor associated with the transaction."
                         },
                         "captured": {
                           "type": "boolean",
-                          "example": true
+                          "example": true,
+                          "description": "Indicates whether the payment has been captured (true) or not (false)."
                         },
                         "created": {
                           "type": "integer",
-                          "example": 1705595142
+                          "example": 1705595142,
+                          "description": "The timestamp representing the creation date and time of the transaction."
                         },
                         "currency": {
                           "type": "string",
-                          "example": "mxn"
+                          "example": "mxn",
+                          "description": "The currency code associated with the transaction."
                         },
                         "customer": {
                           "type": "string",
-                          "example": "cus_PBoeaxFGw6mZFF"
+                          "example": "cus_PBoeaxFGw6mZFF",
+                          "description": "The identifier of the customer associated with the transaction."
                         },
                         "description": {
                           "type": "string",
-                          "example": "transaction"
+                          "example": "transaction",
+                          "description": "A description or additional information about the transaction."
                         },
                         "destination": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The destination of the transaction, if applicable."
                         },
                         "dispute": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The identifier of any dispute associated with the transaction, if applicable."
                         },
                         "disputed": {
                           "type": "boolean",
-                          "example": false
+                          "example": false,
+                          "description": "Indicates whether the transaction is disputed (true) or not (false)."
                         },
                         "failure_balance_transaction": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The identifier of the balance transaction in case of failure, if applicable."
                         },
                         "failure_code": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The code associated with the failure, if applicable."
                         },
                         "failure_message": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "A message providing details about the failure, if applicable."
                         },
                         "fraud_details": {
                           "type": "object",
-                          "example": {}
+                          "example": {},
+                          "description": "Details about any fraud associated with the transaction, if applicable."
                         },
                         "invoice": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The identifier of the invoice associated with the transaction, if applicable."
                         },
                         "livemode": {
                           "type": "boolean",
-                          "example": false
+                          "example": false,
+                          "description": "Indicates whether the transaction was created in live mode (true) or test mode (false)."
                         },
                         "metadata": {
                           "type": "object",
-                          "example": {}
+                          "example": {},
+                          "description": "Additional metadata associated with the transaction."
                         },
                         "on_behalf_of": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The identifier of the account on behalf of which the transaction is performed, if applicable."
                         },
                         "order": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The identifier of the order associated with the transaction, if applicable."
                         },
                         "outcome": {
                           "type": "object",
+                          "description": "Details about the outcome of the payment transaction.",
                           "properties": {
                             "network_status": {
                               "type": "string",
-                              "example": "approved_by_network"
+                              "example": "approved_by_network",
+                              "description": "The network status of the payment, indicating whether it was approved by the payment network."
                             },
                             "reason": {
                               "type": "string",
-                              "example": null
+                              "example": null,
+                              "description": "The reason for the outcome, if available. For example, it might contain details if the payment was declined."
                             },
                             "risk_level": {
                               "type": "string",
-                              "example": "normal"
+                              "example": "normal",
+                              "description": "The risk level associated with the payment, indicating the perceived risk of the transaction."
                             },
                             "risk_score": {
                               "type": "integer",
-                              "example": 15
+                              "example": 15,
+                              "description": "The numerical risk score assigned to the payment transaction, providing a quantitative measure of risk."
                             },
                             "seller_message": {
                               "type": "string",
-                              "example": "Payment complete."
+                              "example": "Payment complete.",
+                              "description": "A message for the seller providing information about the outcome of the payment, typically for display purposes."
                             },
                             "type": {
                               "type": "string",
-                              "example": "authorized"
+                              "example": "authorized",
+                              "description": "The type of outcome, indicating the result of the payment authorization process (e.g., 'authorized', 'manual_review', 'issuer_declined')."
                             }
                           }
                         },
                         "paid": {
                           "type": "boolean",
-                          "example": true
+                          "example": true,
+                          "description": "A boolean indicating whether the payment has been successfully paid."
                         },
                         "payment_intent": {
                           "type": "string",
-                          "example": "pi_3OZyPSK5zRUzLwaW0xfmGAjx"
+                          "example": "pi_3OZyPSK5zRUzLwaW0xfmGAjx",
+                          "description": "The unique identifier of the payment intent associated with this payment transaction. This is relevant for payments using payment methods that involve a two-step confirmation process."
                         },
                         "payment_method": {
                           "type": "string",
-                          "example": "pm_1OZyPRK5zRUzLwaWC5WKIOJC"
+                          "example": "pm_1OZyPRK5zRUzLwaWC5WKIOJC",
+                          "description": "The unique identifier of the payment method used for this transaction, such as a credit card or debit card."
                         },
                         "payment_method_details": {
                           "type": "object",
+                          "description": "Details about the payment method used for the transaction, including card details and type.",
                           "properties": {
                             "card": {
                               "type": "object",
                               "properties": {
                                 "amount_authorized": {
                                   "type": "integer",
-                                  "example": 120000
+                                  "example": 120000,
+                                  "description": "The amount authorized on the card, represented as an integer value."
                                 },
                                 "brand": {
                                   "type": "string",
-                                  "example": "visa"
+                                  "example": "visa",
+                                  "description": "The brand or type of the card used for the payment (e.g., Visa, MasterCard)."
                                 },
                                 "checks": {
                                   "type": "object",
                                   "properties": {
                                     "address_line1_check": {
                                       "type": "string",
-                                      "example": null
+                                      "example": null,
+                                      "description": "The result of the address line 1 check, indicating if it matches the card's billing address."
                                     },
                                     "address_postal_code_check": {
                                       "type": "string",
-                                      "example": null
+                                      "example": null,
+                                      "description": "The result of the postal code check, indicating if it matches the card's billing postal code."
                                     },
                                     "cvc_check": {
                                       "type": "string",
-                                      "example": null
+                                      "example": null,
+                                      "description": "The result of the card security code (CVC) check."
                                     }
-                                  }
+                                  },
+                                  "description": "Various checks performed on the card details for validation purposes."
                                 },
                                 "country": {
                                   "type": "string",
-                                  "example": "US"
+                                  "example": "US",
+                                  "description": "The country where the card was issued."
                                 },
                                 "exp_month": {
                                   "type": "integer",
-                                  "example": 11
+                                  "example": 11,
+                                  "description": "The expiration month of the card."
                                 },
                                 "exp_year": {
                                   "type": "integer",
-                                  "example": 2025
+                                  "example": 2025,
+                                  "description": "The expiration year of the card."
                                 },
                                 "extended_authorization": {
                                   "type": "object",
                                   "properties": {
                                     "status": {
                                       "type": "string",
-                                      "example": "disabled"
+                                      "example": "disabled",
+                                      "description": "The status of extended authorization, indicating if it is enabled or disabled."
                                     }
-                                  }
+                                  },
+                                  "description": "Information about extended authorization status."
                                 },
                                 "fingerprint": {
                                   "type": "string",
-                                  "example": "g8tpcAz042MueZFZ"
+                                  "example": "g8tpcAz042MueZFZ",
+                                  "description": "A unique identifier (fingerprint) for the card."
                                 },
                                 "funding": {
                                   "type": "string",
-                                  "example": "credit"
+                                  "example": "credit",
+                                  "description": "The funding source of the card, such as 'credit'."
                                 },
                                 "incremental_authorization": {
                                   "type": "object",
                                   "properties": {
                                     "status": {
                                       "type": "string",
-                                      "example": "unavailable"
+                                      "example": "unavailable",
+                                      "description": "The status of incremental authorization, indicating if it is available or unavailable."
                                     }
-                                  }
+                                  },
+                                  "description": "Information about incremental authorization status."
                                 },
                                 "installments": {
                                   "type": "string",
-                                  "example": null
+                                  "example": null,
+                                  "description": "The number of installments for the payment, if applicable."
                                 },
                                 "last4": {
                                   "type": "string",
-                                  "example": "4242"
+                                  "example": "4242",
+                                  "description": "The last four digits of the card number."
                                 },
                                 "mandate": {
                                   "type": "string",
-                                  "example": null
+                                  "example": null,
+                                  "description": "The mandate associated with the payment, if applicable."
                                 },
                                 "multicapture": {
                                   "type": "object",
                                   "properties": {
                                     "status": {
                                       "type": "string",
-                                      "example": "unavailable"
+                                      "example": "unavailable",
+                                      "description": "The status of multicapture, indicating if it is available or unavailable."
                                     }
-                                  }
+                                  },
+                                  "description": "Information about multicapture status."
                                 },
                                 "network": {
                                   "type": "string",
-                                  "example": "visa"
+                                  "example": "visa",
+                                  "description": "The card network, such as Visa."
                                 },
                                 "network_token": {
                                   "type": "object",
                                   "properties": {
                                     "used": {
                                       "type": "boolean",
-                                      "example": false
+                                      "example": false,
+                                      "description": "A boolean indicating whether the network token has been used."
                                     }
-                                  }
+                                  },
+                                  "description": "Information about the usage status of the network token."
                                 },
                                 "overcapture": {
                                   "type": "object",
                                   "properties": {
                                     "maximum_amount_capturable": {
                                       "type": "integer",
-                                      "example": 120000
+                                      "example": 120000,
+                                      "description": "The maximum amount that can be captured for the payment."
                                     },
                                     "status": {
                                       "type": "string",
-                                      "example": "unavailable"
+                                      "example": "unavailable",
+                                      "description": "The status of overcapture, indicating if it is available or unavailable."
                                     }
-                                  }
+                                  },
+                                  "description": "Information about overcapture status."
                                 },
                                 "three_d_secure": {
                                   "type": "string",
-                                  "example": null
+                                  "example": null,
+                                  "description": "The status of 3D Secure authentication, if applicable."
                                 },
                                 "wallet": {
                                   "type": "string",
-                                  "example": null
+                                  "example": null,
+                                  "description": "The type of wallet used for the payment, if applicable."
                                 }
-                              }
+                              },
+                              "description": "Details about the card used for the payment, including brand, checks, country, expiration, and more."
                             },
                             "type": {
                               "type": "string",
-                              "example": "card"
+                              "example": "card",
+                              "description": "The type of payment method, such as 'card'."
                             }
                           }
                         },
                         "radar_options": {
                           "type": "object",
-                          "example": {}
+                          "example": {},
+                          "description": "Options related to Stripe Radar, which provides advanced fraud protection."
                         },
                         "receipt_email": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The email address to which the receipt for the transaction was sent, or null if no receipt was sent."
                         },
                         "receipt_number": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The receipt number associated with the transaction, or null if no receipt number is available."
                         },
                         "receipt_url": {
                           "type": "string",
-                          "example": "https://pay.stripe.com/receipts/payment/CAcaFwoVYWNjdF8xREl5WTRLNXpSVXpMd2FXKIeipa0GMgbREzVbrVQ6LBZdZFnB8ZFMPXXaJlPrlgymIpkqBm3-pd3x-lnhgqwlKAC3AWrN3kEYGDep"
+                          "example": "https://pay.stripe.com/receipts/payment/CAcaFwoVYWNjdF8xREl5WTRLNXpSVXpMd2FXKIeipa0GMgbREzVbrVQ6LBZdZFnB8ZFMPXXaJlPrlgymIpkqBm3-pd3x-lnhgqwlKAC3AWrN3kEYGDep",
+                          "description": "The URL to view the receipt for the payment, or null if no receipt is available."
                         },
                         "refunded": {
                           "type": "boolean",
-                          "example": false
+                          "example": false,
+                          "description": "A boolean indicating whether the payment has been refunded."
                         },
                         "review": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The status of the payment review, or null if no review is in progress."
                         },
                         "shipping": {
                           "type": "object",
                           "properties": {
                             "street": {
                               "type": "string",
-                              "example": "N/a"
+                              "example": "N/a",
+                              "description": "The street address for shipping. If not applicable, set to 'N/a'."
                             },
                             "number": {
                               "type": "string",
-                              "example": "N/a"
+                              "example": "N/a",
+                              "description": "The street number for shipping. If not applicable, set to 'N/a'."
                             },
                             "suburb": {
                               "type": "string",
-                              "example": "N/a"
+                              "example": "N/a",
+                              "description": "The suburb or neighborhood for shipping. If not applicable, set to 'N/a'."
                             },
                             "city": {
                               "type": "object",
                               "properties": {
                                 "name": {
                                   "type": "string",
-                                  "example": "N/a"
+                                  "example": "N/a",
+                                  "description": "The name of the city for shipping. If not applicable, set to 'N/a'."
                                 }
-                              }
+                              },
+                              "description": "The city information for shipping."
                             },
                             "state": {
                               "type": "object",
                               "properties": {
                                 "name": {
                                   "type": "string",
-                                  "example": "N/a"
+                                  "example": "N/a",
+                                  "description": "The name of the state for shipping. If not applicable, set to 'N/a'."
                                 },
                                 "country": {
                                   "type": "object",
                                   "properties": {
                                     "name": {
                                       "type": "string",
-                                      "example": "N/a"
+                                      "example": "N/a",
+                                      "description": "The name of the country for shipping. If not applicable, set to 'N/a'."
                                     }
-                                  }
+                                  },
+                                  "description": "The country information for shipping."
                                 }
-                              }
+                              },
+                              "description": "The state information for shipping."
                             },
                             "zip_code": {
                               "type": "string",
-                              "example": "N/a"
+                              "example": "N/a",
+                              "description": "The ZIP code for shipping. If not applicable, set to 'N/a'."
                             }
-                          }
+                          },
+                          "description": "Information about the shipping address associated with the transaction."
                         },
                         "source": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The ID of the payment source. If not applicable or available, set to null."
                         },
                         "source_transfer": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The ID of the transfer made from the payment source. If not applicable or available, set to null."
                         },
                         "statement_descriptor": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "A custom statement descriptor for the payment. If not applicable or available, set to null."
                         },
                         "statement_descriptor_suffix": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "A custom statement descriptor suffix for the payment. If not applicable or available, set to null."
                         },
                         "status": {
                           "type": "string",
-                          "example": "succeeded"
+                          "example": "succeeded",
+                          "description": "The status of the payment transaction, e.g., 'succeeded'."
                         },
                         "transfer_data": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "Information about the transfer associated with the payment. If not applicable or available, set to null."
                         },
                         "transfer_group": {
                           "type": "string",
-                          "example": null
+                          "example": null,
+                          "description": "The ID of the transfer group. If not applicable or available, set to null."
                         }
                       }
                     },
                     "transaction_status": {
                       "type": "string",
-                      "example": "Success"
+                      "example": "Success",
+                      "description": "The status of the transaction, e.g., 'Success'."
                     },
                     "transaction_id": {
                       "type": "integer",
-                      "example": 11044
+                      "example": 11044,
+                      "description": "The unique identifier for the transaction."
                     },
                     "payment_id": {
                       "type": "integer",
-                      "example": 5744
+                      "example": 5744,
+                      "description": "The unique identifier for the payment associated with the transaction."
                     },
                     "provider": {
                       "type": "string",
-                      "example": "stripe"
+                      "example": "stripe",
+                      "description": "The payment provider used for the transaction, e.g., 'stripe'."
                     },
                     "next_action": {
                       "type": "object",
-                      "example": {}
+                      "example": {},
+                      "description": "Details about the next action required for the transaction. If not applicable, an empty object is provided."
                     },
                     "actions": {
                       "type": "array",
@@ -1471,17 +1577,21 @@
                         "properties": {
                           "name": {
                             "type": "string",
-                            "example": "verify_transaction_status"
+                            "example": "verify_transaction_status",
+                            "description": "The name of the action, e.g., 'verify_transaction_status'."
                           },
                           "url": {
                             "type": "string",
-                            "example": "/api/v1/stripe/business/89/payments/5744/transactions/11044"
+                            "example": "/api/v1/stripe/business/89/payments/5744/transactions/11044",
+                            "description": "The URL endpoint for the action."
                           },
                           "method": {
                             "type": "string",
-                            "example": "GET"
+                            "example": "GET",
+                            "description": "The HTTP method for the action, e.g., 'GET'."
                           }
-                        }
+                        },
+                        "description": "An array of actions associated with the transaction."
                       },
                       "example": [
                         {
@@ -1494,7 +1604,8 @@
                           "url": "/api/v1/stripe/business/89/payments/ch_3OZyPSK5zRUzLwaW0CyXUIVQ/refunds",
                           "method": "POST"
                         }
-                      ]
+                      ],
+                      "description": "An array of actions that can be performed for the transaction, each represented by an object with 'name', 'url', and 'method' properties."
                     }
                   }
                 }
