@@ -26,7 +26,7 @@
   "paths": {
     "/payments/business/{api_key}": {
       "get": {
-        "description": "Get business",
+        "description": "",
         "parameters": [
           {
             "in": "path",
