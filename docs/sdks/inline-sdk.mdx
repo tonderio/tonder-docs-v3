@@ -29,7 +29,7 @@ Tonder gives you two ways to install our SDK. You can install our npm package or
   </Accordion> 
 </AccordionGroup>
 
-## Configuration
+## Requirements
 
 To configure our SDK is add the following script tags to your HTML:
 
@@ -43,7 +43,7 @@ The first tag is mandatory for achieving PCI compliance, as stated at the top of
 
 <Note>You can also install each one with their respectives npm packages</Note>
 
-## Usage
+## Configuration
 
 Before initializing an instance of Tonder SDK, ensure that you have configured it properly. Follow the usage example below:
 
@@ -64,12 +64,12 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
   <Step title="Initialize Tonder's SDK Instance">
     Initialize the Tonder's SDK instance with the following parameters:
 
-    - `apiKey`
-    - `returnUrl`
-    - `successUrl`
-    - `styles`
-
-    Below, you will find examples of use for both the npm package and script tag installation options:
+| Field         | Description                                                   |
+|---------------|---------------------------------------------------------------|
+| `apiKey`      | The API key used for authentication and authorization.        |
+| `returnUrl`   | The URL to which the user is redirected after the checkout process, regardless of success or failure. |
+| `successUrl`  | The URL to which the user is redirected after a successful checkout. |
+| `styles`      | Custom styles object that allows you to customize the appearance of the inline checkout. It may include properties such as colors, fonts, and other styling options. |
 
     <CodeGroup>
 
