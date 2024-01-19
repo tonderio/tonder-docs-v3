@@ -4,7 +4,7 @@ title: "SDK Customizations"
 
 Tonder allows you to customize the checkout style to align with your brand and improve the customer experience.
 
-When [initializing the SDK instance](./inline-sdk#usage), you are required to send your styles as part of the payload. This page presents you with detailed information about each available customization.
+When [initializing the SDK instance](./inline-sdk#configuration), you are required to send your styles as part of the payload. This page presents you with detailed information about each available customization.
 
 ## Input styles
 
@@ -20,72 +20,101 @@ The first thing you can customize are the inputs that will be presented to your 
 | `invalid`       | Customizations for when an input is incorrectly filled.|
 | `global`       | Global customizations |
 
-Here is an example of the `inputStyles` customizations:
-```javascript
-  const customStyles = {
-    inputStyles: {
-      base: {
-        border: "2px solid #FFF",
-        padding: "10px 7px",
-        borderRadius: "15px",
-        color: "#1d1d1d",
-        marginTop: "2px",
-        backgroundColor: "#FFF",
-        fontFamily: '"Inter", sans-serif',
-        fontSize: '16px',
-        '&::placeholder': {
-          color: "#ccc",
+<Accordion title="Custom Styles with input styles customization">
+  ```javascript
+    const customStyles = {
+      inputStyles: {
+        base: {
+          border: "2px solid #FFF",
+          padding: "10px 7px",
+          borderRadius: "15px",
+          color: "#1d1d1d",
+          marginTop: "2px",
+          backgroundColor: "#FFF",
+          fontFamily: '"Inter", sans-serif',
+          fontSize: '16px',
+          '&::placeholder': {
+            color: "#ccc",
+          },
+          '&:hover': {
+            borderColor: 'green',
+          },
         },
-        '&:hover': {
-          borderColor: 'green',
+        cardIcon: {
+          position: 'absolute',
+          left: '6px',
+          bottom: 'calc(50% - 12px)',
         },
+        complete: {
+          color: "#4caf50",
+          border: "2px solid #4caf50",
+        },
+        empty: {},
+        focus: {},
+        invalid: {
+          color: "#4caf50",
+          border: "1px solid #f44336",
+        },
+        global: {
+          '@import': 'url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap")',
+        }
       },
-      cardIcon: {
-        position: 'absolute',
-        left: '6px',
-        bottom: 'calc(50% - 12px)',
-      },
-      complete: {
-        color: "#4caf50",
-        border: "2px solid #4caf50",
-      },
-      empty: {},
-      focus: {},
-      invalid: {
-        color: "#4caf50",
-        border: "1px solid #f44336",
-      },
-      global: {
-        '@import': 'url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap")',
-      }
-    },
-    ...
-  }
-```
+      ...
+    }
+  ```
+</Accordion>
 
 ### Placeholders
 
 To change the texts presented as placeholder for each input, you need to add the `placeholders` property to the custom styles, as presented below:
-```javascript
-  const customStyles = {
-    inputStyles: {
+
+<Accordion title="Custom Styles with placeholders customization">
+  ```javascript
+    const customStyles = {
+      inputStyles: {
+        ...
+      },
+      placeholders: {
+        cardPlaceholder: '0000 0000 0000 0000',
+        cvvPlaceholder: '123',
+        expiryMonthPlaceholder: 'MM',
+        expiryYearPlaceholder: 'AA'
+      }
       ...
-    },
-    placeholders: {
-      cardPlaceholder: '0000 0000 0000 0000',
-      cvvPlaceholder: '123',
-      expiryMonthPlaceholder: 'MM',
-      expiryYearPlaceholder: 'AA'
     }
-    ...
-  }
-```
+  ```
+</Accordion>
 
 ## Labels
 
 You can also customize the labels for the inputs by adding a `labelStyles` property to your custom styles object. This new property is an object's object with a base configuration, as exemplified below:
 
-```javascript
+<Accordion title="Custom Styles with labels styles customization">
+  ```javascript
+      const customStyles = {
+        inputStyles: {
+          ...
+        },
+        placeholders: {
+          ...
+        },
+        labelStyles: {
+          base: {
+            fontSize: '12px',
+            fontWeight: '500',
+            fontFamily: '"Inter", sans-serif'
+          },
+        },
+        ...
+      }
+  ```
+</Accordion>
+### Labels texts
+
+To change the texts presented above each input as labels, you need to add the `labels` property to the custom styles, as presented below:
+
+<Accordion title="Custom Styles with labels texts customization">
+  ```javascript
     const customStyles = {
       inputStyles: {
         ...
@@ -94,66 +123,47 @@ You can also customize the labels for the inputs by adding a `labelStyles` prope
         ...
       },
       labelStyles: {
-        base: {
-          fontSize: '12px',
-          fontWeight: '500',
-          fontFamily: '"Inter", sans-serif'
-        },
+        ...
+      },
+      labels: {
+        cardLabel: 'Card Number',
+        cvvLabel: 'Security code',
+        expiryMonthLabel: 'Expiring month',
+        expiryYearLabel: 'Expiring year'
       },
       ...
     }
-```
-
-### Labels texts
-
-To change the texts presented above each input as labels, you need to add the `labels` property to the custom styles, as presented below:
-```javascript
-  const customStyles = {
-    inputStyles: {
-      ...
-    },
-    placeholders: {
-      ...
-    },
-    labelStyles: {
-      ...
-    },
-    labels: {
-      cardLabel: 'Card Number',
-      cvvLabel: 'Security code',
-      expiryMonthLabel: 'Expiring month',
-      expiryYearLabel: 'Expiring year'
-    },
-    ...
-  }
-```
+  ```
+</Accordion>
 
 ## Error text styles
 
 To customize the text appearance when a input is incorrectly filled you need to add the `labelStyles` property to the custom styles. An example of this property inside the custom styles object is presented below:
 
-```javascript
-  const customStyles = {
-    inputStyles: {
-      ...
-    },
-    placeholders: {
-      ...
-    },
-    labelStyles: {
-      ...
-    },
-    labels: {
-      ...
-    },
-    errorTextStyles: {
-      base: {
-        fontSize: '12px',
-        fontWeight: '500',
-        color: "#f44336",
-        fontFamily: '"Inter", sans-serif'
+<Accordion title="Custom Styles with error text styles customization">
+  ```javascript
+    const customStyles = {
+      inputStyles: {
+        ...
       },
-    },
-  }
-```
+      placeholders: {
+        ...
+      },
+      labelStyles: {
+        ...
+      },
+      labels: {
+        ...
+      },
+      errorTextStyles: {
+        base: {
+          fontSize: '12px',
+          fontWeight: '500',
+          color: "#f44336",
+          fontFamily: '"Inter", sans-serif'
+        },
+      },
+    }
+  ```
+</Accordion>
 
