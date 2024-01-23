@@ -25,10 +25,14 @@ Tonder presents additional options when connecting a new provider. Depending on 
 
 ## Your Connections
 
-In the Connections section, you can find a tab named **Your Connections** that lets you see all your connected processors and set the default transaction route with Tonder. The default transaction route is the primary path that all transactions with Tonder will take. Here you can:
+In the Connections section, you can find a tab named **Your Connections** that presents all your connected processors and allows you to set the default/static transaction route with Tonder. 
+
+This Static Routing operates in a cascade or waterfall fashion by predefining fixed paths for data packets to follow. In case of a soft decline, the system will route the transaction to the next provider in the processing sequence. However, if the transaction results in a hard decline, no further routing of transactions will take place. 
+
+Tonder allows you to:
 
 - Toggle on/off any connected processor.
-- Change the order of connected processors by dragging and dropping each to your desired route.
+- Change the order of connected processors by dragging and dropping each on the needed position.
 
 <Tip>
   The first processor on the list (numbered 1) will be the primary processor to receive the transaction attempts.
