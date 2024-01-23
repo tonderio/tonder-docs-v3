@@ -87,13 +87,7 @@
         },
         "docs/dashboard/connections",
         "docs/dashboard/routing",
-        {
-          "group": "Payment Links",
-          "pages": [
-            "docs/dashboard/payment-links",
-            "docs/dashboard/payment-link-branding"
-          ]
-        },
+        "docs/dashboard/payment-links",
         "docs/dashboard/developers",
         "docs/dashboard/settings"
       ]
