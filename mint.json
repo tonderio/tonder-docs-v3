@@ -94,8 +94,7 @@
             "docs/dashboard/dev-api-keys",
             "docs/dashboard/dev-webhooks"
           ]
-        },
-        "docs/dashboard/settings"
+        }
       ]
     }
   ],
