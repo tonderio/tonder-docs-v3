@@ -2,3 +2,42 @@
 title: "Webhooks"
 ---
 
+Webhooks allow applications to send real-time information whenever an event occurs without making frequent requests. It's a passive way of receiving data between two systems through an HTTP POST request. Once you set up Tonder's webhooks, you will receive notifications for every event that occurs during the payment process.
+
+<Frame>![](/images/dashboard/developers-webhooks.png)</Frame>
+
+## Why do we recommend you use webhooks?
+
+Webhooks are the best way to ensure your system is up-to-date with payment progress and status. Since the event notifications trigger automatically, your system won't need to perform recurrent requests to Yuno. You will process the payment information on demand.
+
+## How webhooks work in Tonder
+
+Webhooks in Tonder are vital for real-time communication and event notifications. Here's how they work:
+
+<Steps>
+  <Step title="Webhook Configuration">
+    Users or administrators can configure webhooks in the platform to receive event notifications at a specified endpoint URL that is owned and managed by the user's system or application. To do this, follow the steps below:
+
+    1. Access the **Webhooks** tab in the Developers tab of the dashboard.
+    2. Click the **+ Add Webhook** button at the right side of the screen.
+    3. Enter your new **endpoint URL**.
+    4. **Confirm** it.
+
+    <Frame>![](/images/dashboard/developers-add-webhook-gif.gif)</Frame>
+
+    <br></br>
+    <Tip>When a webhook URL is added, Tonder will send a first request to confirm the connection is working properly.</Tip>
+  </Step>
+  <Step title="Event Triggering">
+    During the payment process, various events may occur, such as successful payments, failed transactions, refunds, or other significant payment-related activities.
+  </Step>
+  <Step title="Event Occurrence">
+    When an event matching the webhook configuration occurs, the platform generates an event payload with transaction details, payment status, and timestamps.
+  </Step>
+  <Step title="Endpoint Processing">
+    When a POST request is received by a webhook endpoint owned by the user's system or application, the event payload is processed and actions are performed based on the event information. These actions may include updating internal records, sending notifications to customers or administrators, or triggering other workflows.
+  </Step>
+  <Step title="Acknowledgment">
+    After receiving a webhook notification, the user's system usually sends a response (such as an HTTP status code) to acknowledge it.
+  </Step>
+</Steps>
