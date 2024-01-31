@@ -96,8 +96,23 @@
           ]
         }
       ]
+    },
+    {
+      "group": "Tonder API",
+      "pages": ["reference/overview"]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "reference/retrieve-business",
+        "reference/create-client",
+        "reference/create-order",
+        "reference/create-payment",
+        "reference/create-checkout-router"
+      ]
     }
   ],
+  "openapi": "/openapi.json",
   "footerSocials": {
     "github": "https://github.com/tonderio/",
     "website": "https://tonder.io/us"
