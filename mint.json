@@ -61,13 +61,8 @@
       "group": "SDKs",
       "pages": [
         "docs/sdks/sdk-overview",
-        {
-          "group": "Tonder JS SDK",
-          "pages": [
-            "docs/sdks/js-sdk",
-            "docs/sdks/js-sdk-styles"
-          ]
-        }
+        "docs/sdks/web-sdk",
+        "docs/sdks/inline-sdk"
       ]
     },
     {
@@ -76,6 +71,30 @@
         "docs/plugins/plugins-overview",
         "docs/plugins/woo-commerce",
         "docs/plugins/magento"
+      ]
+    },
+    {
+      "group": "Dashboard",
+      "pages": [
+        "docs/dashboard/dashboard-overview",
+        "docs/dashboard/dashboard-home",
+        {
+          "group": "Transactions",
+          "pages": [
+            "docs/dashboard/transactions",
+            "docs/dashboard/transaction-details"
+          ]
+        },
+        "docs/dashboard/connections",
+        "docs/dashboard/routing",
+        "docs/dashboard/payment-links",
+        {
+          "group": "Developers",
+          "pages": [
+            "docs/dashboard/dev-api-keys",
+            "docs/dashboard/dev-webhooks"
+          ]
+        }
       ]
     },
     {

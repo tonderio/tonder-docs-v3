@@ -2,4 +2,74 @@
 title: "Routing"
 ---
 
-- Default (sub-page)
+Routing is a useful tool that enables businesses to send payments to the correct destination in an intelligent manner. It does so by utilizing various rules and considering factors such as fees, location, transaction value, and potential risks to ensure that payments are sent to their intended processor.
+
+## Benefits
+
+Taking advantage of Tonder's routing feature gives your business many benefits, like:
+
+<CardGroup cols={1}>
+  <Card title="Diversified Providers">
+    Spreading transaction processing across multiple payment providers is a great way to reduce reliance on a single provider. This ensures that payment processing continues even in the face of network or technical issues with the primary provider. By doing so, businesses can maintain their operations and minimize potential revenue loss.
+  </Card>
+  <Card title="Fraud Mitigation and Flexibility">
+    By offering flexibility on the payment page, it helps to minimize the risk of chargeback fraud. Merchants can decide when to apply extra security measures like 3D Secure or anti-fraud mechanisms based on the level of risk associated with the transaction and the behavior of the customer. This not only enhances security but also minimizes losses related to fraud.
+  </Card>
+  <Card title="Lower Costs">
+    Helps to decrease transaction costs by determining the most efficient processing route.
+  </Card>
+  <Card title="Retry Failed Payments">
+    This can increase the chances of successful transactions and improve customer experience by retrying failed payments through an alternative provider.
+  </Card>
+  
+</CardGroup>
+
+## Dynamic routing
+
+Dynamic routing is a smart approach that efficiently routes payment transactions to the most suitable payment service provider or acquiring bank. This selection process takes into consideration various factors, including the type of card BIN, the transaction amount, currency, origin of the payment, additional fields like order ID, and more.
+
+<Frame>![](/images/dashboard/routing-routes.png)</Frame>
+
+Dynamic payment routing analyzes diverse criteria in real time, ensuring optimized transaction paths, higher success rates, lower processing costs, and a tailored payment experience for customers.
+
+To create a new dynamic route in Tonder, follow the steps below:
+
+<Steps>
+  <Step title="Dashboard">
+    Access the **[Routing](https://stage.tonder.io/dashboard/routing/)** section of Tonder's dashboard.
+  </Step>
+  <Step title="Start route creation">
+    Click the **+ Create** button to enter the route creation screen.
+  </Step>
+  <Step title="Add conditions">
+    Conditions are used to evaluate transaction attributes, which must be met for the dynamic routing system to take specific actions.
+
+    Define your condition for triggering an action. The available conditions are presented below:
+
+    <Accordion title="Available conditions" icon="check-to-slot">
+      | Condition         | Description                                                                                                      |
+      |-------------------|------------------------------------------------------------------------------------------------------------------|
+      | Card Brand        | Specify conditions based on the card brand used in the transaction.                                            |
+      | Card BIN          | Set conditions based on the Card Bank Identification Number (BIN), allowing for specific routing based on BIN ranges. |
+      | Country           | Consider the country of the customer as a condition for routing. Useful for regional preferences or compliance reasons. |
+      | Currency          | Include conditions related to the currency used in the transaction for tailored routing based on currency preferences. |
+      | Amount            | Specify conditions based on the transaction amount for dynamic routing adjustments for different transaction values. |
+    </Accordion>
+
+    <Note>Conditions are evaluated by order of priority. Drag and drop your conditions to reorder them.</Note>
+  </Step>
+  <Step title="Select your actions">
+    Actions are predefined responses that the dynamic routing system performs when certain conditions are met.
+
+    <Tip>
+      The available actions depend on your connected providers. You can add providers as actions based on the condition you define.
+    </Tip>
+  </Step>
+  <Step title="Save your changes">
+    Click the **Save and publish** button at the top-right corner to save your new route.
+  </Step>
+
+  <Step title="Done!">
+    <Frame>![](/images/dashboard/routing-add-route-gif.gif)</Frame>
+  </Step>
+</Steps>

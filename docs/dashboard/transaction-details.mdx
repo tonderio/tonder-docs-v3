@@ -1,0 +1,43 @@
+---
+title: "Transaction Details"
+---
+
+The Transaction Details page provides you with information about the payment. It presents all the relevant details related to the transaction.
+
+| Field          | Description                                               |
+|----------------|-----------------------------------------------------------|
+| Payment ID     | Unique identifier associated with the payment.      |
+| Order ID       | Unique identifier for the particular order.   |
+| Client Info    | Information related to the client associated with a transaction.|
+| Timeline       | Chronological sequence of events related to a transaction.|
+
+<Frame>![](/images/transactions2.png)</Frame>
+
+## Timeline
+
+The timeline section will present a card for each payment processing attempt. Each card will present details about each attempt, along with an option to access the payment processor's raw response. The image below exemplifies a card found in here:
+
+<Frame>![](/images/dashboard/transaction-timeline.png)</Frame>
+
+The table below presents the information found for each attempt:
+
+| Field             | Description                                                 |
+| ----------------- | ----------------------------------------------------------- |
+| Reference         | The reference ID of the attempt on the processor's system.  |
+| Creation Date     | Date when the transaction was attempted.                    |
+| Amount            | The monetary value associated with the transaction attempt. |
+| Currency          | The currency in which the amount is expressed.              |
+| Type              | The type of the transaction attempt.                        |
+| Status            | The current status of the transaction attempt.              |
+| Payment Processor | The payment processor used for the processing attempt.      |
+| Eye Icon (👁️)    | Button to open the raw response from the payment processor. |
+
+## Refund
+
+From this detailed page you can execute refunds by clicking the refund button presented at the top-right corner of the screen.
+
+<Warning>
+  It is important to note that the ability to issue partial refunds may vary depending on the policies of each payment processor.
+</Warning>
+
+<Frame>![](/images/dashboard/transaction-refund.png)</Frame>
