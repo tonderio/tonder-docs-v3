@@ -61,8 +61,7 @@
       "group": "SDKs",
       "pages": [
         "docs/sdks/sdk-overview",
-        "docs/sdks/web-sdk",
-        "docs/sdks/inline-sdk"
+        "docs/sdks/js-sdk"
       ]
     },
     {
@@ -99,7 +98,9 @@
     },
     {
       "group": "Tonder API",
-      "pages": ["reference/overview"]
+      "pages": [
+        "reference/overview"
+      ]
     },
     {
       "group": "API Reference",
