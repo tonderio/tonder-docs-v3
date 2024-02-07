@@ -1,0 +1,20 @@
+---
+title: "Environments"
+---
+
+Tonder has two modes of operation: [Sandbox](sandbox.tonder.io) and [Production](app.tonder.io). 
+
+### Sandbox Mode (sandbox.tonder.io)
+
+Tonder's Test Mode serves as a sandbox for you to test your integration with Tonder. It's a complete sandbox integration, meaning that testing a processor or payment method in Tonder's Test Mode will connect to the processor's sandbox.
+
+Features of Tonder's sandbox:
+
+- True sandbox integration: Tonder's Test Mode seamlessly integrates with the sandboxes of the configured processors.
+- Test data compatibility: You can use test cards or credentials provided by the processor; they will work in Tonder's Test Mode.
+- Credentials validation: Tonder only accepts and validates the sandbox credentials of the processor for entry in Test Mode.
+- It's advisable to finalize and thoroughly test your integration in Tonder's Test Mode before switching to Live Mode.
+
+### Production Mode (app.tonder.io)
+
+In Production Mode, Tonder connects to the live accounts of the processors you've integrated with. Once you've completed your integration using Test Mode and conducted testing, you can go live instantly when you're ready.

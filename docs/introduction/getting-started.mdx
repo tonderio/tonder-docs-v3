@@ -1,0 +1,58 @@
+---
+title: "Getting Started"
+---
+
+Tonder's payment infrastructure is designed specifically for digital commerce companies. This guide provides developers and businesses with a clear, step-by-step approach to creating their first payment and seamlessly integrating our solution into their platform.
+
+<Steps>
+  <Step title="Set up your account">
+    <Note>
+      The Tonder team will create a Sandbox account for you, where you can set up your organizational details and change your password.
+    </Note>
+  </Step>
+
+  <Step title="Connect to providers">
+    This step will walk you through the initial setup of connections.
+    To integrate Tonder with payment providers, do the following:
+
+    1. Navigate to the [Connections](../dashboard/connections) section of the dashboard.
+    2. Select the payment provider you want to connect.
+    3. Enter the respective payment provider Sandbox(test) API Keys.
+    4. Click the **Connect** button.
+
+    <Check>
+      You can check if the connection is successful by going to the [**Your Connections**](../dashboard/connections#your-connections) section.
+    </Check>
+  </Step>
+
+  <Step title="Create a payment link">
+
+    To simulate a payment, you need to create a payment link inside the dashboard. To create a payment link, perform the following steps:
+
+    1. Access the [Payment Links](../dashboard/payment-links) section of the dashboard.
+    2. Click the **+Create** button on the top-right corner.
+    3. Fill in the required fields. As this is a simulation, any data will suffice.
+    4. Click the **Create new Link** button at the top of the screen.
+
+  </Step>
+
+  <Step title="Process your first payment">    
+    
+    With the payment link in hand you need to pay it using a test card. To execute the payment, you need to:
+
+    1. Access the payment link.
+    2. Select **Pay with Credit/debit card**.
+    3. Use one of the following test cards:
+
+    |                      Provider                           |             Card Number            |          Cardholder          |                 CVC                |                Date               |
+    | :-----------------------------------------------------: | :--------------------------------: | :--------------------------: | :--------------------------------: | :-------------------------------: |
+    |    **Stripe**<br></br>**Openpay**<br></br>**Conekta**   | <br></br>4242424242424242<br></br> |  <br></br>Any name<br></br>  | <br></br>Any three digits<br></br> | <br></br>Any future date<br></br> |
+    |                  **Mercadopago**                        |         5474925432670366           |             APRO             |          Any three digits          |          Any future date          |
+    |                     **Openpay**                         |         2223000048400011           |           Any name           |          Any three digits          |          Any future date          |
+
+  </Step>
+
+  <Step title="Validate the payment">
+    After executing the payment with one of the available test cards, you need to check if the payment was successful. You can do it by going to the [Transaction](../dashboard/transactions) section and clicking on the transaction to view the response from the payment provider.
+  </Step>
+</Steps>

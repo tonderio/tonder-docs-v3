@@ -1,0 +1,54 @@
+---
+title: "Connections"
+---
+
+In the Connections section of our platform, users can take advantage of the powerful capability to seamlessly integrate and manage a diverse array of service providers. This includes payment methods such as credit cards, debit cards, and online payment systems, payment processors like PayPal and Stripe, and anti-fraud solutions to help protect against fraudulent transactions.
+
+<Frame>![](/images/dashboard/dashboard-connections.png)</Frame>
+
+## Benefits
+
+Using Tonder to manage your connections to different providers benefits you different ways, such as:
+
+<CardGroup cols={1}>
+  <Card title="Centralized Management">
+    Tonder serves as a central hub to connect and manage multiple payment providers. By consolidating all payment-related activities into a single platform, it streamlines payment operations. The dashboard allows businesses to easily integrate various payment methods and providers, offering customers more choices for making payments. This can lead to increased sales and improved customer satisfaction.
+  </Card>
+  <Card title="Efficiency and Automation">
+    Automate payment processes such as routing, reconciliation, and reporting. This reduces manual work, minimizes errors, and boosts operational efficiency.
+  </Card>
+</CardGroup>
+
+## Connecting a provider
+
+Providers require you to add specific API credentials, and the fields you need to fill for each will vary depending on the needs of each provider. At Tonder's dashboard, when you select a new provider and start the connection process, you will be shown the required fields so that you can proceed with ease.
+
+### Other funcionalities
+
+Tonder presents additional options when connecting a new provider. Depending on availability, you can toggle the following:
+
+<CardGroup cols={2}>
+  <Card title="3D Secure 2.0">
+    Integrate the advanced security features of 3D Secure 2.0 into the payment providers you have chosen.
+  </Card>
+  <Card title="Installments">
+    Add Installments (MSI) to your payments.
+  </Card>
+</CardGroup>
+
+## Your Connections
+
+In the Connections section, you can find a tab named **Your Connections** that presents all your connected processors and allows you to set the default/static transaction route with Tonder. 
+
+This Static Routing operates in a cascade or waterfall fashion by predefining fixed paths for data packets to follow. In case of a soft decline, the system will route the transaction to the next provider in the processing sequence. However, if the transaction results in a hard decline, no further routing of transactions will take place. 
+
+Tonder allows you to:
+
+- Toggle on/off any connected processor.
+- Change the order of connected processors by dragging and dropping each on the needed position.
+
+<Tip>
+  The first processor on the list (numbered 1) will be the primary processor to receive the transaction attempts.
+</Tip>
+
+<Frame>![](/images/dashboard/connections-default-route.png)</Frame>
