@@ -61,7 +61,13 @@
       "group": "SDKs",
       "pages": [
         "docs/sdks/sdk-overview",
-        "docs/sdks/js-sdk"
+        {
+          "group": "JS SDK",
+          "pages": [
+            "docs/sdks/js-sdk",
+            "docs/sdks/js-sdk-styles"
+          ]
+        }
       ]
     },
     {
