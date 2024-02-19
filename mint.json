@@ -67,6 +67,12 @@
             "docs/sdks/js-sdk",
             "docs/sdks/js-sdk-styles"
           ]
+        },
+        {
+          "group": "Ionic SDK",
+          "pages": [
+            "docs/sdks/ionic-sdk"
+          ]
         }
       ]
     },
