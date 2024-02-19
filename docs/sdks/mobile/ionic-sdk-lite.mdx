@@ -1,9 +1,10 @@
 ---
-title: "Ionic SDK"
-sidebarTitle: Configuration
+title: "Ionic SDK Lite"
 ---
 
-Tonder SDK Lite to integrate REST service
+The Tonder Ionic SDK Lite is a solution for integrating our system into your mobile application. This solution ensures PCI compliance by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
+
+This guide will walk you through all the steps, from installation and configuring our SDK to fit your appliocation.
 
 ## Installation
 
@@ -28,7 +29,7 @@ These tags are needed to integrate with OpenPay to use them as a payment process
 
 ## Configuration
 
-Before initializing an instance of Tonder's Ionic SDK, ensure that you have configured it properly. Follow the usage example below:
+To properly initialize an instance of Tonder's Ionic SDK, ensure that you have configured it properly. Follow the usage example below:
 
 <Steps>
   <Step title="Import the Lite Checkout class">
@@ -45,7 +46,7 @@ Before initializing an instance of Tonder's Ionic SDK, ensure that you have conf
 | Field         | Description                                                   |
 |---------------|---------------------------------------------------------------|
 | `signal`      | Signal from AbortController instance if it need cancel request.        |
-| `baseUrlTonder`   | Tonder's API  base URL.<br></br>Live server: http://stage.tonder.io<br></br>Mock Server: https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148    |
+| `baseUrlTonder`   | Tonder's API  base URL.<br></br>-> Live server: http://stage.tonder.io<br></br>-> Mock Server: https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148    |
 | `apiKeyTonder`  | Your Tonder API key. You can find it in your Tonder Dashboard. |
 
     ```js
@@ -113,7 +114,7 @@ After properly configuring your Lite Checkout instance, you have at your hand va
   </Accordion>
 
   <Accordion title="OpenPay">
-    Using the `getOpenpayDeviceSessionID` method, you can retrieve your OpenPay device session id. This method requires you to add the following parameters recovered with the `getBusiness`:
+    Using the `getOpenpayDeviceSessionID` method, you can retrieve your OpenPay device session id. This method requires you to add the following parameters recovered with the `getBusiness` method:
 
     - `openpay_keys.merchant_id`:  The OpenPay Merchant ID associated with your store.
     - `openpay_keys.public_key`: Your OpenPay Public Key.

@@ -62,18 +62,28 @@
       "pages": [
         "docs/sdks/sdk-overview",
         {
-          "group": "JS SDK",
+          "group": "Web SDKs",
           "pages": [
-            "docs/sdks/js-sdk",
-            "docs/sdks/js-sdk-styles"
+            {
+              "group": "JS SDK",
+              "pages": [
+                "docs/sdks/web/js-sdk",
+                "docs/sdks/web/js-sdk-styles"
+              ]
+            }
           ]
         },
         {
-          "group": "Ionic SDK",
+          "group": "Mobile SDKs",
           "pages": [
-            "docs/sdks/ionic-sdk"
+            {
+              "group": "Ionic SDKs",
+              "pages": [
+                "docs/sdks/mobile/ionic-sdk-lite"
+              ]
+            }
           ]
-        }
+        }        
       ]
     },
     {
