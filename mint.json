@@ -79,7 +79,8 @@
             {
               "group": "Ionic SDKs",
               "pages": [
-                "docs/sdks/mobile/ionic-sdk-lite"
+                "docs/sdks/mobile/ionic-sdk-lite",
+                "docs/sdks/mobile/ionic-sdk-lite-copy"
               ]
             }
           ]
