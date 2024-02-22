@@ -29,12 +29,7 @@
     "name": "Log in",
     "url": "https://app.tonder.io/accounts/login/"
   },
-  "topbarLinks": [
-    {
-      "name": "Get a demo",
-      "url": "https://tonder.io/us"
-    }
-  ],
+  "topbarLinks": [],
   "anchors": [
     {
       "name": "API Reference",
