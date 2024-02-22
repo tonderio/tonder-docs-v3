@@ -23,7 +23,7 @@ To configure our SDK you need to add the following script tags to your HTML:
   <script src=https://openpay.s3.amazonaws.com/openpay-data.v1.min.js></script>
 ```
 
-These tags are needed to integrate with OpenPay to use them as a payment processor.
+The code above is necessary to ensure a reliable connection to the payment processor.
 
 <Note>You can also install each one with their respective npm packages</Note>
 
@@ -46,7 +46,7 @@ To properly initialize an instance of Tonder's Ionic SDK, ensure that you have c
 | Field         | Description                                                   |
 |---------------|---------------------------------------------------------------|
 | `signal`      | Signal from AbortController instance if it needs cancel the request.        |
-| `baseUrlTonder`   | Tonder's API  base URL.<br></br>-> Live server: http://stage.tonder.io<br></br>-> Mock Server: https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148    |
+| `baseUrlTonder`   | Tonder's API  base URL.<br></br>-> Live server: `http://stage.tonder.io`<br></br>-> Mock Server: `https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148`    |
 | `apiKeyTonder`  | Your Tonder API key. You can find it in your Tonder Dashboard. |
 
     ```js
