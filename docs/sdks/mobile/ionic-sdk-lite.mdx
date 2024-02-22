@@ -2,9 +2,9 @@
 title: "Ionic SDK Lite"
 ---
 
-The Tonder Ionic SDK Lite is a solution for integrating our system into your mobile application. This solution ensures PCI compliance by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
+The Tonder Ionic SDK Lite is a solution for integrating our system into your mobile application. This solution ensures PCI DSS (Payment Card Industry Data Security Standard) by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
 
-This guide will walk you through all the steps, from installation and configuring our SDK to fit your appliocation.
+This guide will walk you through all the steps, from installation and configuring our SDK to fit your application.
 
 ## Installation
 
@@ -25,7 +25,7 @@ To configure our SDK you need to add the following script tags to your HTML:
 
 These tags are needed to integrate with OpenPay to use them as a payment processor.
 
-<Note>You can also install each one with their respectives npm packages</Note>
+<Note>You can also install each one with their respective npm packages</Note>
 
 ## Configuration
 
@@ -45,7 +45,7 @@ To properly initialize an instance of Tonder's Ionic SDK, ensure that you have c
 
 | Field         | Description                                                   |
 |---------------|---------------------------------------------------------------|
-| `signal`      | Signal from AbortController instance if it need cancel request.        |
+| `signal`      | Signal from AbortController instance if it needs cancel the request.        |
 | `baseUrlTonder`   | Tonder's API  base URL.<br></br>-> Live server: http://stage.tonder.io<br></br>-> Mock Server: https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148    |
 | `apiKeyTonder`  | Your Tonder API key. You can find it in your Tonder Dashboard. |
 
@@ -62,11 +62,11 @@ To properly initialize an instance of Tonder's Ionic SDK, ensure that you have c
 
 ## Class Methods
 
-After properly configuring your Lite Checkout instance, you have at your hand various methods to work with Tonder. Below you find all the available methods, with an example of the data returned by each so you can understand how they work:
+After properly configuring your Lite Checkout instance, you have at your hand various methods to work with Tonder. Below you will find all the available methods, with an example of the data returned by each so you can understand how they work:
 
 ### Get Business
 
-This method retrieves all the information about your business. Get details on branding, providers public keys, vault information and more. To call it, do the following:
+This method retrieves all the information about your business. Get details on branding, providers public keys, vault information, and more. To call it, do the following:
 
 ```js
 const merchantData = await liteCheckout.getBusiness();
@@ -118,7 +118,7 @@ Using the `getOpenpayDeviceSessionID` method, you can retrieve your OpenPay devi
 - `openpay_keys.merchant_id`:  The OpenPay Merchant ID associated with your store.
 - `openpay_keys.public_key`: Your OpenPay Public Key.
 
-<Tip>You can recover the your `openpay_keys` data from your `merchantData` returned from the Get Business method.</Tip>
+<Tip>You can recover your `openpay_keys` data from your `merchantData` returned from the Get Business method.</Tip>
 
 With the required parameters in hand, call the method as presented below:
 
@@ -173,13 +173,13 @@ With the required parameter in hand, call the method as presented below:
 ```js
   const cartItems = [
     {
-      description: Test product description,
+      description: "Test product description",
       quantity: 1,
       price_unit: 25,
       discount: 0,
       taxes: 12,
       product_reference: 65421,
-      name: Test product,
+      name: "Test product",
       amount_total: 25
     }
   ]
