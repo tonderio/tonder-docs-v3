@@ -111,12 +111,12 @@ const merchantData = await liteCheckout.getBusiness();
   ```
 </Accordion>
 
-### OpenPay
+### Device Session ID
 
-Using the `getOpenpayDeviceSessionID` method, you can retrieve your OpenPay device session id. This method requires you to add the following parameters recovered with the `getBusiness` method:
+Using the `getOpenpayDeviceSessionID` method, you can retrieve your device session id. This method requires you to add the following parameters recovered with the `getBusiness` method:
 
-- `openpay_keys.merchant_id`:  The OpenPay Merchant ID associated with your store.
-- `openpay_keys.public_key`: Your OpenPay Public Key.
+- `openpay_keys.merchant_id`:  The Merchant ID associated with your store.
+- `openpay_keys.public_key`: Your Public Key.
 
 <Tip>You can recover your `openpay_keys` data from your `merchantData` returned from the Get Business method.</Tip>
 
@@ -130,7 +130,7 @@ With the required parameters in hand, call the method as presented below:
     openpay_keys.public_key
   );
 ```
-The returned data in `deviceSessionIdTonder` will be your OpenPay device session id.
+The returned data in `deviceSessionIdTonder` will be your device session id.
 
 ### Customer
 
