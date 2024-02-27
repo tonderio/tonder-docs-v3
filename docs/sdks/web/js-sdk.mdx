@@ -3,7 +3,7 @@ title: "Tonder JS SDK"
 sidebarTitle: "Configuration"
 ---
 
-The Tonder JS SDK is a vanilla Javascript solution for integrating our system into your platform. This solution ensures PCI compliance by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
+The Tonder JS SDK is a vanilla Javascript solution for integrating our system into your platform. This solution ensures PCI DSS (Payment Card Industry Data Security Standard) by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
 
 This guide will walk you through all the steps, from installation and configuring to styling the SDK to fit your website.
 
@@ -31,7 +31,7 @@ Tonder gives you two ways to install our SDK. You can install our npm package or
 
 ## Requirements
 
-To configure our SDK is add the following script tags to your HTML:
+To configure our SDK you need to add the following script tags to your HTML:
 
 ```html
 <script src="https://js.skyflow.com/v1/index.js"></script>
@@ -39,9 +39,9 @@ To configure our SDK is add the following script tags to your HTML:
 <script src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"></script>
 ```
 
-The first tag is mandatory for achieving PCI compliance, as stated at the top of this page, by using Skyflows's integration. The other tags are needed to integrate with OpenPay to use them as a payment processor.
+The first tag is mandatory for achieving PCI DSS (Payment Card Industry Data Security Standard), as stated at the top of this page, by using Skyflows's integration. The other tags are necessary to ensure a reliable connection to the payment processor.
 
-<Note>You can also install each one with their respectives npm packages</Note>
+<Note>You can also install each one with their respective npm packages</Note>
 
 ## Configuration
 
@@ -49,7 +49,7 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
 
 <Steps>
   <Step title="Add the required ID to your HTML">
-    Tonder's SDK needs an entry point to operate. This entry point is defined by adding a `tonder-checkout` ID to an empty `div`, like the example below:
+    Tonder's JS SDK needs an entry point to operate. This entry point is defined by adding a `tonder-checkout` ID to an empty `div`, like the example below:
 
     ```html
     <div>
@@ -62,7 +62,7 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
   </Step>
 
   <Step title="Initialize Tonder's SDK Instance">
-    Initialize the Tonder's SDK instance with the following parameters:
+    Initialize Tonder's JS SDK instance with the following parameters:
 
 | Field         | Description                                                   |
 |---------------|---------------------------------------------------------------|

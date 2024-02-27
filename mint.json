@@ -29,12 +29,7 @@
     "name": "Log in",
     "url": "https://app.tonder.io/accounts/login/"
   },
-  "topbarLinks": [
-    {
-      "name": "Get a demo",
-      "url": "https://tonder.io/us"
-    }
-  ],
+  "topbarLinks": [],
   "anchors": [
     {
       "name": "API Reference",
@@ -64,10 +59,11 @@
         {
           "group": "JS SDK",
           "pages": [
-            "docs/sdks/js-sdk",
-            "docs/sdks/js-sdk-styles"
+            "docs/sdks/web/js-sdk",
+            "docs/sdks/web/js-sdk-styles"
           ]
-        }
+        },
+        "docs/sdks/mobile/ionic-sdk-lite"  
       ]
     },
     {
