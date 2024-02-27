@@ -48,8 +48,14 @@
       "pages": [
         "docs/introduction/home",
         "docs/introduction/getting-started",
-        "docs/introduction/security",
-        "docs/introduction/environments"
+        "docs/introduction/security"
+      ]
+    },
+    {
+      "group": "Tonder Core Concepts",
+      "pages": [
+        "docs/core-concepts/payment-lifecycle",
+        "docs/core-concepts/environments"
       ]
     },
     {
