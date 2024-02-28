@@ -1,0 +1,61 @@
+---
+title: "Payment Lifecycle"
+---
+
+Every transaction in Tonder begins as a payment. Any successful payment can be refunded or be part of a dispute, depending on your client's request. Each mentioned process, payment, refund, or dispute can have a different status, representing the current processing stage. This page presents an overview of these transaction types, outlining processes and possible statuses they can assume.
+
+<CardGroup cols={3}>
+
+  <Card title="Payments" icon="money-bill" href="#payments"/>
+  <Card title="Refunds" icon="hand-holding-dollar" href="#refunds"/>
+  <Card title="Disputes" icon="swords" href="#disputes"/>
+
+</CardGroup>
+
+## Payments
+
+A payment transfers funds from the payer to the payee for goods or services rendered. The lifecycle of a Payment in Tonder is presented in the workflow below. When you create a payment, it'll always have the **Pending** status.
+
+<Frame>![](/images/core-concepts/lifecycle/payments.png)</Frame>
+
+The table below presents the description for each possible status:
+
+| Status        | Description                                                                                                  |
+|---------------|--------------------------------------------------------------------------------------------------------------|
+| **Pending**   | A payment attempt is processing. Occurs mostly with asynchronous payment processors. It's the default status after the payment creation.                        |
+| **Authorized**| The payment processor has authorized the payment attempt.                                                    |
+| **Declined**  | The payment processor has declined the payment attempt.                                                      |
+| **Failed**    | The payment attempt failed. Tonder will present the details of the failed transaction in the payment details dashboard. |
+| **Success**   | The payment attempt has been captured successfully.                                                          |
+| **Cancelled** | Payment was canceled before settlement, often initiated by the customer prior to completion. |
+
+
+## Refunds
+
+A refund is a merchant-initiated process of reimbursing a customer due to reasons such as returns, cancellations, or dissatisfaction with goods or services. The merchant uses the Tonder dashboard to initiate the refund. The workflow below outlines the lifecycle of a refund within Tonder. When you create a refund, it'll always have the **Pending** status.
+
+<Frame>![](/images/core-concepts/lifecycle/refunds.png)</Frame>
+
+The table below presents the description for each possible status:
+
+| Status      | Description                                |
+|-------------|--------------------------------------------|
+| **Pending** | The refund is awaiting processing.         |
+| **Failed**  | The refund attempt was unsuccessful.          |
+| **Success** | The refund has been successfully processed.            |
+
+
+## Disputes
+
+A dispute is a formal complaint filed by a customer through our platform, contesting the validity of a transaction. The customer can initiate a dispute for various reasons, such as unauthorized charges, non-receipt of goods, dissatisfaction with the transaction outcome, or any other issues. Below, you will find a workflow presenting the lifecycle of a dispute in Tonder. When a dispute is created, it'll have the **Needs response** status.
+
+<Frame>![](/images/core-concepts/lifecycle/disputes.png)</Frame>
+
+The table below presents the description for each possible status:
+
+| Status           | Description                                                            |
+|------------------|------------------------------------------------------------------------|
+| **Needs response**   | Your client has raised a dispute with their bank, and you must respond to the dispute. |
+| **In review**        | Evidence has been submitted and is awaiting a response from the payment processor. |
+| **Lost**             | You have lost the dispute or accepted the dispute by not answering it.  |
+| **Won**              | You have won the dispute.                                              |
