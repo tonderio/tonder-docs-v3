@@ -160,12 +160,12 @@ To create a new order with the Lite SDK, use the `createOrder` method. This meth
 |---------------------|---------------------------------------|
 | `business`           | Your business's API key.             |
 | `client`              | Authentication token for the client recovered with the `customerRegister` method.  |
-| `billing_address_id`  | ID of the billing address (null if not available) |
-| `shipping_address_id` | ID of the shipping address (null if not available) |
+| `billing_address_id`  | ID of the billing address (null if not available). |
+| `shipping_address_id` | ID of the shipping address (null if not available). |
 | `amount`              | Total amount of the order.             |
-| `status`              | Status of the order                 |
+| `status`              | Status of the order.                 |
 | `reference`           | Reference information for the order. Recovered with the `getBusiness` method.   |
-| `is_oneclick`         | Boolean indicating one-click order (true/false) |
+| `is_oneclick`         | Boolean indicating one-click order (true/false). |
 | `items`               | List of items in the shopping cart.    |
 
 With the required parameter in hand, call the method as presented below:
@@ -251,8 +251,8 @@ To create a new payment with the Lite SDK, use the `createPayment` method. This 
 | Field         | Description                              |
 |---------------|------------------------------------------|
 | business_pk   | Primary key of the business for payment found in the `getBusiness` return object.   |
-| amount        | Total amount for the payment              |
-| date          | Date of the payment (formatted as a string) |
+| amount        | Total amount for the payment.              |
+| date          | Date of the payment (formatted as a string). |
 | order         | ID of the associated order in the JSON response, returned from the `createOrder` method. |
 
 With the required parameter in hand, call the method as presented below:
