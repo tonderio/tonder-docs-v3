@@ -52,7 +52,7 @@
       ]
     },
     {
-      "group": "Tonder Core Concepts",
+      "group": "Core Concepts",
       "pages": [
         "docs/core-concepts/payment-lifecycle",
         "docs/core-concepts/environments"
