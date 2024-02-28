@@ -2,7 +2,7 @@
 title: "Payment Lifecycle"
 ---
 
-Every transaction in Tonder will begin as a payment, following the first lifecycle presented in this page. A successful payment can be refunded, when a customer requires it, or the customer can fill a complaint to start a dispute of the payment.This page provides an overview of the these transaction types that occur on our platform, outlining the processes involved in them.
+Every transaction in Tonder begins as a payment. Any successful payment can be refunded or be part of a dispute, depending on your client's request. Each mentioned process, payment, refund, or dispute can have a different status, representing the current processing stage. This page presents an overview of these transaction types, outlining processes and possible statuses they can assume.
 
 <CardGroup cols={3}>
 
@@ -14,48 +14,48 @@ Every transaction in Tonder will begin as a payment, following the first lifecyc
 
 ## Payments
 
-Payment is the transfer of funds from payer to payee for goods or services rendered. The lifecycle of a Payment in Tonder is presented in the workflow below:
+A payment transfers funds from the payer to the payee for goods or services rendered. The lifecycle of a Payment in Tonder is presented in the workflow below. When you create a payment, it'll always have the **Pending** status.
 
 <Frame>![](/images/core-concepts/lifecycle/payment.png)</Frame>
 
-Each status description can be found below:
+The table below presents the description for each possible status:
 
 | Status        | Description                                                                                                  |
 |---------------|--------------------------------------------------------------------------------------------------------------|
-| **Pending**   | A payment attempt is processing. Occurs mostly with asynchronous payment processors.                        |
+| **Pending**   | A payment attempt is processing. Occurs mostly with asynchronous payment processors. It's the default status after the payment creation.                        |
 | **Authorized**| The payment processor has authorized the payment attempt.                                                    |
 | **Declined**  | The payment processor has declined the payment attempt.                                                      |
-| **Failed**    | The payment attempt failed. Tonder will present the details of the failed transaction in payment details of the platform. |
+| **Failed**    | The payment attempt failed. Tonder will present the details of the failed transaction in the payment details dashboard. |
 | **Success**   | The payment attempt has been captured successfully.                                                          |
-| **Cancelled** | The payment was canceled before being settled to your account. This could be when the customer cancelled the order prior it settled. |
+| **Cancelled** | Payment was canceled before settlement, often initiated by the customer prior to completion. |
 
 
 ## Refunds
 
-Refund is the process of refunding a customer for reasons such as returns, cancellations, or dissatisfaction with goods or services, initiated by the merchant through our platform. The workflow below presents the lifecycle of a Refund in Tonder:
+A refund is a merchant-initiated process of reimbursing a customer due to reasons such as returns, cancellations, or dissatisfaction with goods or services. The merchant uses the Tonder dashboard to initiate the refund. The workflow below outlines the lifecycle of a refund within Tonder. When you create a refund, it'll always have the **Pending** status.
 
 <Frame>![](/images/core-concepts/lifecycle/refund.png)</Frame>
 
-Each status description can be found below:
+The table below presents the description for each possible status:
 
 | Status      | Description                                |
 |-------------|--------------------------------------------|
-| **Pending** | The refund is pending of being processed.  |
-| **Failed**  | The refund has been unsuccessful.          |
-| **Success** | The refund has been successful.            |
+| **Pending** | The refund is awaiting processing.         |
+| **Failed**  | The refund attempt was unsuccessful.          |
+| **Success** | The refund has been successfully processed.            |
 
 
 ## Disputes
 
-A dispute is a formal complaint filed by a customer through our platform, contesting the validity of a transaction. This may include unauthorized charges, non-receipt of goods, dissatisfaction with the transaction outcome, or any other issues. Below you will find a workflow presenting the lifecycle of a Dispute in Tonder:
+A dispute is a formal complaint filed by a customer through our platform, contesting the validity of a transaction. The customer can initiate a dispute for various reasons, such as unauthorized charges, non-receipt of goods, dissatisfaction with the transaction outcome, or any other issues. Below, you will find a workflow presenting the lifecycle of a dispute in Tonder. When a dispute is created, it'll have the **Needs response** status.
 
 <Frame>![](/images/core-concepts/lifecycle/dispute.png)</Frame>
 
-Each status description can be found below:
+The table below presents the description for each possible status:
 
 | Status           | Description                                                            |
 |------------------|------------------------------------------------------------------------|
 | **Needs response**   | Your client has raised a dispute with their bank, and you must respond to the dispute. |
-| **In review**        | Submitted evidence has been submitted, and now you are awaiting a response from the payment processor. |
+| **In review**        | Evidence has been submitted and is awaiting a response from the payment processor. |
 | **Lost**             | You have lost the dispute or accepted the dispute by not answering it.  |
 | **Won**              | You have won the dispute.                                              |
