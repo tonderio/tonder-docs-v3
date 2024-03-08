@@ -1,0 +1,612 @@
+---
+title: "Ionic SDK Full"
+---
+
+The Tonder Ionic SDK Full is a solution for integrating our system into your mobile application. This solution ensures PCI DSS (Payment Card Industry Data Security Standard) by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
+
+This guide will walk you through all the steps, from installation and configuring our SDK to fit your application.
+
+## Installation
+
+Tonder's Ionic SDK can be installed using our npm package. To do so, use the following command:
+
+```curl
+  npm i @tonder.io/ionic-full-sdk
+```
+
+## Requirements
+
+To configure our SDK you need to add the following script tags to your HTML:
+
+```html
+  <script src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
+  <script src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"></script>
+```
+
+The code above is necessary to ensure a reliable connection to the payment processor.
+
+<Note>You can also install each one with their respective npm packages</Note>
+
+## Configuration
+
+
+<Steps>
+  <Step title="Mobile settings">
+    Follow the instructions below to configure your mobile application for Android and iOS devices.
+
+    <Tabs>
+      <Tab title="Android">
+        To deploy to Android, you need to edit your `AndroidManifest.xml` file to add the Internet permission. Add the code below to your xml:
+
+        ```html
+          <!-- Required to fetch data from the internet. -->
+          <uses-permission android:name="android.permission.INTERNET" />
+        ```
+      </Tab>
+      <Tab title="iOS">
+        To deploy to iOS, you need to edit your `macos/Runner/DebugProfile.entitlements` and `macos/Runner/Release.entitlements` files to include the network client entitlement. Add the code below to your files:
+
+        ```html
+          <!-- Required to fetch data from the internet. -->
+          <key>com.apple.security.network.client</key>
+          <true/>
+        ```
+      </Tab>
+
+    </Tabs>
+  </Step>
+  
+  <Step title="Add the required ID to your HTML">
+    Tonder's Ionic SDK Full needs an entry point to operate. This entry point is defined by adding a `tonder-checkout` ID to an empty `div`, like the example below:
+
+    ```html
+    <div>
+        <h1>Checkout</h1>
+        <!-- You have to add an entry point with the ID 'tonder-checkout' -->
+        <div id="tonder-checkout">
+        </div>
+    </div>
+    ```
+  </Step>
+
+  <Step title="Initialize Tonder's SDK Instance">
+    Initialize Tonder's JS SDK instance. the following table presents the parameters the initialization can receive, with the required ones marked:
+
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Type</th>
+      <th>Required</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`apiKey`</td>
+      <td>string</td>
+      <td>✅</td>
+      <td>The API key used for authentication and authorization.</td>
+    </tr>
+    <tr>
+      <td>`returnUrl`</td>
+      <td>string</td>
+      <td>✅</td>
+      <td>The URL to which the user is redirected after the checkout process, regardless of success or failure.</td>
+    </tr>
+    <tr>
+      <td>`successUrl`</td>
+      <td>string</td>
+      <td>❌</td>
+      <td>The URL to which the user is redirected after a successful checkout.</td>
+    </tr>
+    <tr>
+      <td>`style`</td>
+      <td>object</td>
+      <td>❌</td>
+      <td>The [custom styles object](#styles) to customize the checkout</td>
+    </tr>
+    <tr>
+      <td>`containerId`</td>
+      <td>string</td>
+      <td>❌</td>
+      <td>If a custom checkout container ID is required. Default value: `tonder-checkout`.</td>
+    </tr>
+    <tr>
+      <td>`collectorIds`</td>
+      <td>object</td>
+      <td>❌</td>
+      <td>
+        If you require custom div container IDs.<br></br>Default value:
+        
+        <code>\{<br></br>
+          cardsListContainer: "cardsListContainer",<br></br>
+          holderName: "collectCardholderName",<br></br>
+          cardNumber: "collectCardNumber",<br></br>
+          expirationMonth: "collectExpirationMonth",<br></br>
+          expirationYear: "collectExpirationYear",<br></br>
+          cvv: "collectCvv",<br></br>
+          tonderPayButton: "tonderPayButton",<br></br>
+          msgError: "msgError",<br></br>
+          msgNotification: "msgNotification"<br></br>
+        }</code>
+        
+      
+      </td>
+    </tr>
+    <tr>
+      <td>`callBack`</td>
+      <td>function</td>
+      <td>❌</td>
+      <td>Callback function to be invoked after the payment process ends successfully.</td>
+    </tr>
+    <tr>
+      <td>`isOpenpaySandbox`</td>
+      <td>boolean</td>
+      <td>❌</td>
+      <td>Defines if Openpay works on the sandbox. Default value: `true`.</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+  ```javascript
+    import { InlineCheckout } from "@tonder.io/ionic-full-sdk";
+
+    const apiKey = "You can find this in your Tonder Dashboard";
+    const returnUrl = "http://my-website:8080/checkout-success"
+    const successUrl = "http://my-website:8080/3ds-success"
+
+    const inlineCheckout = new InlineCheckout({
+      apiKey,
+      returnUrl,
+      successUrl
+    });
+  ```
+  </Step>
+</Steps>
+
+## Class Methods
+
+After properly configuring your Lite Checkout instance, you have at your hand various methods to work with Tonder. Below you will find a detailed information about the checkout data needed with an example, and all the available methods in the SDK.
+
+### Checkout data
+
+The payment function payload needs to be an object with detailed information about the customer, currency and cart. Below you find details abou each needed field:
+
+<AccordionGroup>
+
+  <Accordion title="Customer">
+    | Field      | Description                                |
+    |------------|--------------------------------------------|
+    | `firstName`  | The first name of the customer.             |
+    | `lastName`   | The last name of the customer.              |
+    | `country`    | The country of residence for the customer.  |
+    | `address`    | The street address in the specified city for the customer. |
+    | `city`       | The city of residence for the customer.     |
+    | `state`      | The state or region within the country for the customer. |
+    | `postCode`   | The postal code or ZIP code of the address for the customer. |
+    | `email`      | The email address for communication with the customer.       |
+    | `phone`      | The contact phone number for the customer.                    |
+
+  </Accordion>
+
+  <Accordion title="Currency">
+    | Field      | Description                                |
+    |------------|--------------------------------------------|
+    | `currency`   | The currency used by the customer.|
+  </Accordion>
+
+  <Accordion title="Cart">
+    | Field            | Description                                                  |
+    |------------------|--------------------------------------------------------------|
+    | `total`          | The total amount for the customer's purchase.                |
+    | `items`          | An array containing details of individual items in the purchase. |
+    | `items[n].description` | The description of the first item.  |
+    | `items[n].quantity`    | The quantity of the first item in the purchase.             |
+    | `items[n].price_unit`  | The unit price of the first item.                            |
+    | `items[n].discount`    | The discount applied to the first item.                      |
+    | `items[n].taxes`       | The taxes applied to the first item.                         |
+    | `items[n].product_reference` | The reference number of the product for the first item.   |
+    | `items[n].name`        | The name of the first item (e.g., "T-Shirt").               |
+    | `items[n].amount_total`| The total amount for the first item.                        |
+  </Accordion>
+</AccordionGroup>
+
+#### Checkout data example
+Below you find an example of a checkout data object:
+
+<Accordion title="checkoutData example">
+    ```javascript
+      const checkoutData = {
+        customer: {
+          firstName: "Juan",
+          lastName: "Hernández",
+          country: "Mexico",
+          address: "Av. Revolución 356, Col. Roma",
+          city: "Monterrey",
+          state: "Nuevo León",
+          postCode: "64700",
+          email: "juan.hernandez@mail.com",
+          phone: "8187654321",
+        },
+        currency: 'mxn',
+        cart: {
+          total: 399,
+          items: [
+            {
+              description: "Black T-Shirt",
+              quantity: 1,
+              price_unit: 1,
+              discount: 0,
+              taxes: 0,
+              product_reference: 1,
+              name: "T-Shirt",
+              amount_total: 399,
+            },
+          ]
+        }
+      };
+    ```
+  </Accordion>
+
+### Set payment data
+
+The `setPatmentData` method is used to pass the checkout data to Tonder. This method requires a `checkoutData` object, [as exemplified above](#checkout-data-example), to be set as the parameter. To call it, follow this code example:
+
+```js
+  inlineCheckout.setPaymentData(checkoutData);
+```
+
+### Set cart total
+After a payment data is set, you need to inform the cart total by calling the `setCartTotal` method. This method receives a number as the only parameter, this should be the total, as set in the [`checkoutData`](#checkout-data-example). To call it, follow this code example:
+```js
+  inlineCheckout.setCartTotal(checkoutData.cart.total);
+```
+
+### Set customer email
+
+You can use the `setCustomerEmail` method to register a email of the customer in Tonder. This method requires a string as the parameter. This can be called following the example below:
+```js
+  inlineCheckout.setCustomerEmail(checkoutData.cart.email);
+```
+
+### Inject Checkout
+
+The `injectCheckout` method is used to inject Tonder's Checkout into your application. This method will use the element with id `tonder-checkout` added in Step 1 to render the checkout elements into your page. To call this method, use the code below:
+
+```javascript
+inlineCheckout.injectCheckout();
+```
+## Styles
+
+You have two different ways to customize your checkout using Ionic SDK Full. You can either include a style parameter when creating the `InlineCheckout` instance, or using HTML and CSS. Below you find details about both options.
+
+### Include a style parameter
+
+To  include the styles of the checkout when creating the instance, you need to add the a object with all styles you want in the parameter, like presented below:
+
+```js
+  const inlineCheckout = new InlineCheckout({
+    apiKey,
+    returnUrl,
+    successUrl,
+    styles: customStyles
+  });
+```
+
+All available configurations are presented in the example below:
+
+<Accordion title="customStyles example">
+```js
+  const customStyles = {
+    inputStyles: {
+      base: {
+        border: "1px solid #e0e0e0",
+        padding: "10px 7px",
+        borderRadius: "5px",
+        color: "#1d1d1d",
+        marginTop: "2px",
+        backgroundColor: "white",
+        fontFamily: '"Inter", sans-serif',
+        fontSize: '16px',
+        '&::placeholder': {
+          color: "#ccc",
+        },
+      },
+      cardIcon: {
+        position: 'absolute',
+        left: '6px',
+        bottom: 'calc(50% - 12px)',
+      },
+      complete: {
+        color: "#4caf50",
+      },
+      empty: {},
+      focus: {},
+      invalid: {
+        border: "1px solid #f44336",
+      },
+      global: {
+        '@import': 'url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap")',
+      }
+    },
+    labelStyles: {
+      base: {
+        fontSize: '12px',
+        fontWeight: '500',
+        fontFamily: '"Inter", sans-serif'
+      },
+    },
+    errorTextStyles: {
+      base: {
+        fontSize: '12px',
+        fontWeight: '500',
+        color: "#f44336",
+        fontFamily: '"Inter", sans-serif'
+      },
+    },
+    labels: {
+      cardLabel: 'Número de Tarjeta Personalizado',
+      cvvLabel: 'Código de Seguridad',
+      expiryMonthLabel: 'Mes de Expiración',
+      expiryYearLabel: 'Año de Expiración'
+    },
+    placeholders: {
+      cardPlaceholder: '0000 0000 0000 0000',
+      cvvPlaceholder: '123',
+      expiryMonthPlaceholder: 'MM',
+      expiryYearPlaceholder: 'AA'
+    }
+  }
+```
+</Accordion>
+
+### HTML and CSS
+
+To customize your checkout using HTML and CSS, you need to use predefined classes in your HTML, and customize this ones in the CSS. 
+
+The styles param is related to the style of the inputs inside the checkout form, to customize the checkout container and the cards list you can use global styles on base to this classes:
+
+<Accordion title="CSS">
+```css
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap");
+
+  .container-tonder {
+    background-color: #F9F9F9;
+    margin: 0 auto;
+    padding: 30px 10px 30px 10px;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+    max-width: 600px;
+    border: solid 1px #e3e3e3;
+  }
+
+  .collect-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .collect-row > :first-child {
+    min-width: 120px;
+  }
+
+  .expiration-year {
+    padding-top: 25px;
+  }
+
+  .empty-div {
+    height: 80px;
+    margin-top: 2px;
+    margin-bottom: 4px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .error-container{
+    color: red;
+    background-color: #FFDBDB;
+    margin-bottom: 13px;
+    font-size: 80%;
+    padding: 8px 10px;
+    border-radius: 10px;
+    text-align: left;
+  }
+
+  .message-container{
+    color: green;
+    background-color: #90EE90;
+    margin-bottom: 13px;
+    font-size: 80%;
+    padding: 8px 10px;
+    border-radius: 10px;
+    text-align: left;
+  }
+
+  .pay-button {
+    font-size: 16px;
+    font-weight: bold;
+    min-height: 2.3rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    margin-bottom: 10px;
+    display: none;
+  }
+
+  .pay-button:disabled, pay-button[disabled] {
+    background-color: #B9B9B9;
+  }
+
+  .lds-dual-ring {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+  };
+
+  .lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+  }
+
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .payment_method_zplit {
+      font-size: 16px;
+      width: 100%;
+    }
+
+    .payment_method_zplit  label img {
+      display: none;
+    }
+  }
+
+  .cards-list-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0px 10px 0px 10px;
+    gap: 33% 20px;
+  }
+
+  .checkbox label {
+    margin-left: 10px;
+    font-size: '12px';
+    font-weight: '500';
+    color: #1D1D1D;
+    font-family: "Inter", sans-serif;
+  }
+
+  .checkbox {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: left;
+  }
+
+  .pay-new-card {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    color: #1D1D1D;
+    gap: 33% 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 90%;
+  }
+
+  .pay-new-card .card-number {
+    font-size: 16px;
+    font-family: "Inter", sans-serif;
+  }
+
+  .card-image {
+    width: 27px;
+    height: 20px;
+    text-align: left;
+  }
+
+  .card-item-label {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    color: #1D1D1D;
+    gap: 33% 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 90%;
+  }
+
+  .card_selected {
+    width: 10%;
+  }
+
+  .card-item {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 33% 20px;
+  }
+
+  .card-item .card-number {
+    font-size: 16px;
+    font-family: "Inter", sans-serif;
+  }
+
+  .card-item .card-expiration {
+    font-size: 16px;
+    font-family: "Inter", sans-serif;
+  }
+```
+</Accordion>
+
+This classes are included as example in the HTMLs presented below:
+
+<AccordionGroup>
+  <Accordion title="Form">
+  ```html
+    <div class="container-tonder">
+      <div class="cards-list-container"></div>
+      <div class="pay-new-card">
+        <input checked id="new" name="card_selected" type="radio"/>
+        <label for="new">
+          <img class="card-image"/>
+          <div class="card-number"></div>
+        </label>
+      </div>
+      <div class="container-form">
+        <div class="empty-div"></div>
+        <div class="empty-div"></div>
+        <div class="collect-row">
+          <div class="empty-div"></div>
+          <div class="expiration-year"></div>
+          <div class="empty-div"></div>
+        </div>
+        <div class="checkbox">
+          <input id="save-checkout-card" type="checkbox">
+          <label for="save-checkout-card"></label>
+        </div>
+        <div></div>
+        <div></div>
+      </div>
+      <button class="pay-button"></button>
+    </div>
+  ```
+  </Accordion>
+  <Accordion title="Cards list">
+  ```html
+    <div class="card-item">
+      <input name="card_selected" type="radio"/>
+      <label class="card-item-label">
+        <img class="card-image"/>
+        <div class="card-number"></div>
+        <div class="card-expiration"></div>
+      </label>
+    </div>
+  ```
+  </Accordion>
+</AccordionGroup>
