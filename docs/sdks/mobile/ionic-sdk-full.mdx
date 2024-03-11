@@ -36,7 +36,8 @@ The code above is necessary to ensure a reliable connection to the payment proce
 
     <Tabs>
       <Tab title="Android">
-        To deploy to Android, you need to edit your `AndroidManifest.xml` file to add the Internet permission. Add the code below to your xml:
+        To deploy your app on Android, you must add the Internet permission to your `AndroidManifest.xml` file. Add the following code to your XML:
+
 
         ```html
           <!-- Required to fetch data from the internet. -->
@@ -44,7 +45,7 @@ The code above is necessary to ensure a reliable connection to the payment proce
         ```
       </Tab>
       <Tab title="iOS">
-        To deploy to iOS, you need to edit your `macos/Runner/DebugProfile.entitlements` and `macos/Runner/Release.entitlements` files to include the network client entitlement. Add the code below to your files:
+        To enable iOS deployment, add the network client entitlement to `macos/Runner/DebugProfile.entitlements` and `macos/Runner/Release.entitlements` files by including the code below:
 
         ```html
           <!-- Required to fetch data from the internet. -->
@@ -57,7 +58,7 @@ The code above is necessary to ensure a reliable connection to the payment proce
   </Step>
   
   <Step title="Add the required ID to your HTML">
-    Tonder's Ionic SDK Full needs an entry point to operate. This entry point is defined by adding a `tonder-checkout` ID to an empty `div`, like the example below:
+    Tonder’s Ionic SDK Full requires a `tonder-checkout` ID to function, which needs to be added to an empty div as shown below:
 
     ```html
     <div>
@@ -70,7 +71,23 @@ The code above is necessary to ensure a reliable connection to the payment proce
   </Step>
 
   <Step title="Initialize Tonder's SDK Instance">
-    Initialize Tonder's JS SDK instance. the following table presents the parameters the initialization can receive, with the required ones marked:
+    Initialize Tonder's Ionic SDK Full instance:
+
+    ```javascript
+    import { InlineCheckout } from "@tonder.io/ionic-full-sdk";
+
+    const apiKey = "You can find this in your Tonder Dashboard";
+    const returnUrl = "http://my-website:8080/checkout-success"
+    const successUrl = "http://my-website:8080/3ds-success"
+
+    const inlineCheckout = new InlineCheckout({
+      apiKey,
+      returnUrl,
+      successUrl
+    });
+  ```
+
+  Below is a table of all parameters available, including the required ones for initialization:
 
 <table>
   <thead>
@@ -149,27 +166,12 @@ The code above is necessary to ensure a reliable connection to the payment proce
   </tbody>
 </table>
 
-
-
-  ```javascript
-    import { InlineCheckout } from "@tonder.io/ionic-full-sdk";
-
-    const apiKey = "You can find this in your Tonder Dashboard";
-    const returnUrl = "http://my-website:8080/checkout-success"
-    const successUrl = "http://my-website:8080/3ds-success"
-
-    const inlineCheckout = new InlineCheckout({
-      apiKey,
-      returnUrl,
-      successUrl
-    });
-  ```
   </Step>
 </Steps>
 
 ## Class Methods
 
-After properly configuring your Lite Checkout instance, you have at your hand various methods to work with Tonder. Below you will find a detailed information about the checkout data needed with an example, and all the available methods in the SDK.
+After properly configuring your Full SDK instance, you have at your hand various methods to work with Tonder. Below you will find a detailed information about the checkout data needed with an example, and all the available methods in the SDK.
 
 ### Checkout data
 
@@ -182,13 +184,13 @@ The payment function payload needs to be an object with detailed information abo
     |------------|--------------------------------------------|
     | `firstName`  | The first name of the customer.             |
     | `lastName`   | The last name of the customer.              |
-    | `country`    | The country of residence for the customer.  |
-    | `address`    | The street address in the specified city for the customer. |
-    | `city`       | The city of residence for the customer.     |
-    | `state`      | The state or region within the country for the customer. |
-    | `postCode`   | The postal code or ZIP code of the address for the customer. |
-    | `email`      | The email address for communication with the customer.       |
-    | `phone`      | The contact phone number for the customer.                    |
+    | `country`    | The customer's country of residence.  |
+    | `address`    | The customer's street address. |
+    | `city`       | The city of residence of the customer.     |
+    | `state`      | The state or region within the country. |
+    | `postCode`   | The postal code or ZIP code of the customer's address. |
+    | `email`      | The email address for communication with the customer.   |
+    | `phone`      | The contact phone number of the customer.     |
 
   </Accordion>
 
@@ -203,14 +205,14 @@ The payment function payload needs to be an object with detailed information abo
     |------------------|--------------------------------------------------------------|
     | `total`          | The total amount for the customer's purchase.                |
     | `items`          | An array containing details of individual items in the purchase. |
-    | `items[n].description` | The description of the first item.  |
-    | `items[n].quantity`    | The quantity of the first item in the purchase.             |
-    | `items[n].price_unit`  | The unit price of the first item.                            |
-    | `items[n].discount`    | The discount applied to the first item.                      |
-    | `items[n].taxes`       | The taxes applied to the first item.                         |
-    | `items[n].product_reference` | The reference number of the product for the first item.   |
-    | `items[n].name`        | The name of the first item (e.g., "T-Shirt").               |
-    | `items[n].amount_total`| The total amount for the first item.                        |
+    | `items[n].description` | The description of the item.  |
+    | `items[n].quantity`    | The quantity of the item in the purchase.             |
+    | `items[n].price_unit`  | The unit price of the item.                            |
+    | `items[n].discount`    | The discount applied to the item.                      |
+    | `items[n].taxes`       | The taxes applied to the item.                         |
+    | `items[n].product_reference` | The reference number of the product for the item.   |
+    | `items[n].name`        | The name of the item (e.g., "T-Shirt").               |
+    | `items[n].amount_total`| The total amount for the item.                        |
   </Accordion>
 </AccordionGroup>
 
@@ -253,39 +255,41 @@ Below you find an example of a checkout data object:
 
 ### Set payment data
 
-The `setPatmentData` method is used to pass the checkout data to Tonder. This method requires a `checkoutData` object, [as exemplified above](#checkout-data-example), to be set as the parameter. To call it, follow this code example:
+The `setPaymentData` method requires a checkoutData object as a parameter to pass checkout data to Tonder. Use the code example below to call it:
 
 ```js
   inlineCheckout.setPaymentData(checkoutData);
 ```
 
 ### Set cart total
-After a payment data is set, you need to inform the cart total by calling the `setCartTotal` method. This method receives a number as the only parameter, this should be the total, as set in the [`checkoutData`](#checkout-data-example). To call it, follow this code example:
+Once you have set the payment data, you will need to notify the cart of the total amount by calling the `setCartTotal` method. This method takes a single parameter, a number representing the total amount, which should match the value set in the `checkoutData`. Here is an example code to help you call it correctly:
+
 ```js
   inlineCheckout.setCartTotal(checkoutData.cart.total);
 ```
 
 ### Set customer email
 
-You can use the `setCustomerEmail` method to register a email of the customer in Tonder. This method requires a string as the parameter. This can be called following the example below:
+You can use the `setCustomerEmail` method to register a customer's email in Tonder. This method requires a string parameter and can be called using the following example:
+
 ```js
   inlineCheckout.setCustomerEmail(checkoutData.cart.email);
 ```
 
 ### Inject Checkout
 
-The `injectCheckout` method is used to inject Tonder's Checkout into your application. This method will use the element with id `tonder-checkout` added in Step 1 to render the checkout elements into your page. To call this method, use the code below:
+The `injectCheckout` method is a function that allows you to incorporate Tonder's Checkout feature into your application. This function leverages the element with the ID `tonder-checkout` that was added in Step 1 to display the checkout components on your page. To use this method, use the following code:
 
 ```javascript
 inlineCheckout.injectCheckout();
 ```
 ## Styles
 
-You have two different ways to customize your checkout using Ionic SDK Full. You can either include a style parameter when creating the `InlineCheckout` instance, or using HTML and CSS. Below you find details about both options.
+You can customize your checkout in two ways using Ionic SDK Full. You can either include a style parameter when creating the `InlineCheckout` instance or use HTML and CSS. Below you will find more details about both options.
 
 ### Include a style parameter
 
-To  include the styles of the checkout when creating the instance, you need to add the a object with all styles you want in the parameter, like presented below:
+To include the checkout styles, add an object with the desired styles to the `styles` parameter when creating the instance, like presented below:
 
 ```js
   const inlineCheckout = new InlineCheckout({
@@ -296,7 +300,7 @@ To  include the styles of the checkout when creating the instance, you need to a
   });
 ```
 
-All available configurations are presented in the example below:
+All available customizations are presented in the example below:
 
 <Accordion title="customStyles example">
 ```js
@@ -365,9 +369,9 @@ All available configurations are presented in the example below:
 
 ### HTML and CSS
 
-To customize your checkout using HTML and CSS, you need to use predefined classes in your HTML, and customize this ones in the CSS. 
+To customize your checkout using HTML and CSS, you can use predefined classes in your HTML and customize them in the CSS.
 
-The styles param is related to the style of the inputs inside the checkout form, to customize the checkout container and the cards list you can use global styles on base to this classes:
+The styles parameter is related to the style of the inputs inside the checkout form. To customize the checkout container and the cards list, you can use the global styles and classes presented below:
 
 <Accordion title="CSS">
 ```css
@@ -564,7 +568,7 @@ The styles param is related to the style of the inputs inside the checkout form,
 ```
 </Accordion>
 
-This classes are included as example in the HTMLs presented below:
+The classes presented above are included as example in the HTMLs presented below:
 
 <AccordionGroup>
   <Accordion title="Form">
