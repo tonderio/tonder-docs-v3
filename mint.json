@@ -69,7 +69,13 @@
             "docs/sdks/web/js-sdk-styles"
           ]
         },
-        "docs/sdks/mobile/ionic-sdk-lite"  
+        {
+          "group": "Mobile SDKs",
+          "pages": [
+            "docs/sdks/mobile/ionic-sdk-lite",
+            "docs/sdks/mobile/ionic-sdk-full"
+          ]
+        }
       ]
     },
     {
