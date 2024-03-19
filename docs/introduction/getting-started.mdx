@@ -16,12 +16,19 @@ To start using Tonder's solution, please follow the steps below:
 
 <Steps>
   <Step title="Set up your account">
-    <Note>
-      The Tonder team will create a Sandbox account for you, where you can set up your organizational details and change your password.
-    </Note>
+    You can start creating your Tonder account by accessing https://stage.tonder.io/users/create-user-business/, and following these steps:
+
+    1. Enter the needed information.
+    2. Verify your email address.
+    3. Add your business's information.
+
+    Below you will find the account creation process:
+
+  <Frame>![](/images/introduction/account-creation-gif.gif) </Frame>
+
   </Step>
 
-  <Step title="Connect to providers">
+  {/* <Step title="Connect to providers">
     This step will walk you through the initial setup of connections.
     To integrate Tonder with payment providers, do the following:
 
@@ -33,7 +40,7 @@ To start using Tonder's solution, please follow the steps below:
     <Check>
       You can check if the connection is successful by going to the [**Your Connections**](../dashboard/connections#your-connections) section.
     </Check>
-  </Step>
+  </Step> */}
 
   <Step title="Create a payment link">
 
@@ -54,12 +61,52 @@ To start using Tonder's solution, please follow the steps below:
     2. Select **Pay with Credit/debit card**.
     3. Use one of the following test cards:
 
-    |                      Provider                           |             Card Number            |          Cardholder          |                 CVC                |                Date               |
-    | :-----------------------------------------------------: | :--------------------------------: | :--------------------------: | :--------------------------------: | :-------------------------------: |
-    |    **Stripe**<br></br>**Openpay**<br></br>**Conekta**   | <br></br>4242424242424242<br></br> |  <br></br>Any name<br></br>  | <br></br>Any three digits<br></br> | <br></br>Any future date<br></br> |
-    |                  **Mercadopago**                        |         5474925432670366           |             APRO             |          Any three digits          |          Any future date          |
-    |                     **Openpay**                         |         2223000048400011           |           Any name           |          Any three digits          |          Any future date          |
+    <AccordionGroup>
+      <Accordion title="Visa" icon="cc-visa">
+        | CARD PAN          | 3-D SECURE RESULT                                     | TRANSACTION RESULT      |
+        |-------------------|-------------------------------------------------------|-------------------------|
+        | 4000000000000085 | 3-D secure version 2, challenge flow, full authentication | Payment has CONFIRMED status |
+        | 4580000000000059 | 3-D secure version 2, frictionless flow, attempt     | Payment has CONFIRMED status |
+        | 4000000000000093 | 3-D secure version 2, frictionless flow, success     | Payment has CONFIRMED status |
+        | 4000000000000051 | No 3-D Secure                                         | Payment has AUTHORIZED status |
+        | 4000000000000077 | No 3-D Secure                                         | Payment has CONFIRMED status |
+        | 4444444444444455 | 3-D secure version 2, challenge flow, full authentication | Payment has DECLINED status |
+        | 4444444444449777 | No 3-D Secure                                         | Payment has DECLINED status |
 
+
+      </Accordion>
+      <Accordion title="Mastercard" icon="cc-mastercard">
+        | CARD PAN          | 3-D SECURE RESULT                                     | TRANSACTION RESULT      |
+        |-------------------|-------------------------------------------------------|-------------------------|
+        | 5100000000000065 | 3-D secure version 2, challenge flow, full authentication | Payment has CONFIRMED status |
+        | 2400000000000069 | 3-D secure version 2, frictionless flow, attempt     | Payment has CONFIRMED status |
+        | 5100000000000073 | 3-D secure version 2, frictionless flow, success     | Payment has CONFIRMED status |
+        | 5100000000000651 | No 3-D Secure                                         | Payment has AUTHORIZED status |
+        | 2400000000000077 | No 3-D Secure                                         | Payment has CONFIRMED status |
+        | 5555555555559955 | 3-D secure version 2, challenge flow, full authentication | Payment has DECLINED status |
+        | 5555555555554477 | No 3-D Secure                                         | Payment has DECLINED status |
+
+      </Accordion>
+      <Accordion title="Amex" icon="cc-amex">
+        | CARD PAN          | 3-D SECURE RESULT                                     | TRANSACTION RESULT      |
+        |-------------------|-------------------------------------------------------|-------------------------|
+        | 370000000000085  | 3-D secure version 2, challenge flow, full authentication | Payment has CONFIRMED status |
+        | 340000000000033  | 3-D secure version 2, frictionless flow, success     | Payment has CONFIRMED status |
+        | 340000000000009  | 3-D secure version 2, frictionless flow, attempt     | Payment has CONFIRMED status |
+        | 370000000000051  | No 3-D Secure                                         | Payment has AUTHORIZED status |
+        | 340000000000017  | No 3-D Secure                                         | Payment has CONFIRMED status |
+        | 371111111111155  | 3-D secure version 2, challenge flow, full authentication | Payment has DECLINED status |
+        | 341111111111137  | No 3-D Secure                                         | Payment has DECLINED status |
+
+      </Accordion>
+    </AccordionGroup>
+
+    <Tip>
+      For all test cards, you can use the following:
+      - **Cardholder**: Any name.
+      - **CVC**: Any three digits.
+      - **Date**: Any future date.
+    </Tip>
   </Step>
 
   <Step title="Validate the payment">
