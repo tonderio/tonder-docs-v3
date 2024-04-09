@@ -30,6 +30,35 @@
     "url": "https://app.tonder.io/accounts/login/"
   },
   "topbarLinks": [],
+  "tabs": [
+    {
+      "name": "Getting Started",
+      "url": "getting-started"
+    },
+    {
+      "name": "Online Payments",
+      "url": "/"
+    },
+    {
+      "name": "Orchestration",
+      "url": "/"
+    },
+    {
+      "name": "Integrate Tonder",
+      "url": "integration"
+    },
+    {
+      "name": "Dashboard",
+      "url": "dashboard"
+    },
+    {
+      "name": "API Reference",
+      "url": "reference"
+    }
+  ],
+  "primaryTab": {
+    "name": "Home"
+  },
   "anchors": [
     {
       "name": "API Reference",
@@ -44,64 +73,81 @@
   ],
   "navigation": [
     {
+      "group": "Home",
+      "pages": [
+        "docs"
+      ]
+    },
+    {
       "group": "Introduction",
       "pages": [
-        "docs/introduction/home",
-        "docs/introduction/getting-started",
-        "docs/introduction/security"
+        "getting-started/introduction/home",
+        "getting-started/introduction/getting-started",
+        "getting-started/introduction/security"
       ]
     },
     {
       "group": "Core Concepts",
       "pages": [
-        "docs/core-concepts/payment-lifecycle",
-        "docs/core-concepts/environments"
+        "getting-started/core-concepts/payment-lifecycle",
+        "getting-started/core-concepts/environments"
       ]
     },
     {
       "group": "SDKs",
       "pages": [
-        "docs/sdks/sdk-overview",
+        "integration/sdks/sdk-overview",
         {
           "group": "JS SDK",
           "pages": [
-            "docs/sdks/web/js-sdk",
-            "docs/sdks/web/js-sdk-styles"
+            "integration/sdks/web/js-sdk",
+            "integration/sdks/web/js-sdk-styles"
           ]
         },
-        "docs/sdks/mobile/ionic-sdk-lite"  
+        "integration/sdks/mobile/ionic-sdk-lite"  
       ]
     },
     {
       "group": "Plugins",
       "pages": [
-        "docs/plugins/plugins-overview",
-        "docs/plugins/woo-commerce",
-        "docs/plugins/magento"
+        "integration/plugins/plugins-overview",
+        "integration/plugins/woo-commerce",
+        "integration/plugins/magento"
       ]
     },
     {
       "group": "Dashboard",
       "pages": [
-        "docs/dashboard/dashboard-overview",
-        "docs/dashboard/dashboard-home",
+        "dashboard/dashboard-overview",
+        "dashboard/dashboard-home",
         {
           "group": "Transactions",
           "pages": [
-            "docs/dashboard/transactions",
-            "docs/dashboard/transaction-details"
+            "dashboard/transactions",
+            "dashboard/transaction-details"
           ]
         },
-        "docs/dashboard/connections",
-        "docs/dashboard/routing",
-        "docs/dashboard/payment-links",
+        "dashboard/payment-links",
         {
           "group": "Developers",
           "pages": [
-            "docs/dashboard/dev-api-keys",
-            "docs/dashboard/dev-webhooks"
+            "dashboard/dev-api-keys",
+            "dashboard/dev-webhooks"
           ]
         }
+      ]
+    },
+    {
+      "group": "Orchestration",
+      "pages": [
+        "dashboard/orchestration/connections",
+        "dashboard/orchestration/routing"
+      ]
+    },
+    {
+      "group": "Processor",
+      "pages": [
+        "dashboard/processor/example"
       ]
     },
     {
