@@ -150,9 +150,15 @@
       ]
     },
     {
-      "group": "Processor",
+      "group": "Online Payments",
       "pages": [
-        "dashboard/processor/example"
+        {
+          "group": "Disputes",
+          "pages": [
+            "dashboard/online-payments/disputes",
+            "dashboard/online-payments/dispute-details"
+          ]
+        }
       ]
     },
     {
