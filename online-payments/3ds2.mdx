@@ -1,0 +1,51 @@
+---
+title: "3D Secure 2"
+---
+
+3D Secure is a security protocol that provides an additional layer of security for online credit and debit card transactions. It's a messaging protocol that allows consumers to verify their identity with their card issuer when making card-not-present (CNP) transactions. 
+
+This process helps to reduce the possibility of fraudulent card use by verifying the cardholder's identity before the purchase is authorized. 
+
+<Note>
+  3D Secure 2 (3DS2) introduces "frictionless authentication" to enhance the payment experience compared to 3DS1.
+</Note>
+
+## How 3DS2 works?
+
+When a cardholder makes an online purchase at a merchant that uses 3D Secure, a pop-up window will appear from their bank. The window will ask the cardholder to perform a authentication step. 
+
+<Info>
+  This authentication step involves either entering a password, receiving a one-time PIN on their phone, biometric verification (such as fingerprint or facial recognition), responding to security questions, inputting a unique code from a token generator app, or another form of authentication.
+</Info>
+
+This step is designed to ensure that the person making the transaction is actually the cardholder. If the authentication process is successful, the transaction will proceed. In the event of failure, the transaction will be declined.
+
+## Benefits of 3DS2
+
+As mentioned, 3DS2 was developed to enhance the user experience and adapt the 3DS protocol to the modern payment landscape. A few benefits include:
+
+<CardGroup cols={1}>
+  <Card title="Advanced Risk-Based Authentication">
+    By analyzing a wealth of transaction data in real-time, issuers can more accurately assess the risk level of each transaction. This enables them to differentiate between low-risk and high-risk transactions effectively, applying stringent authentication only when necessary.
+  </Card>
+  <Card title="Reduced Fraud Rates">
+    By making online transactions more secure, merchants and issuers can see a reduction in fraudulent activities and associated costs.
+  </Card>
+  <Card title="Alignment with Global Standards">
+    Meets the requirements of global regulatory frameworks mandating enhanced security measures for online transactions, helping merchants and issuers stay compliant.
+  </Card>
+</CardGroup>
+
+## 3DS2 in Tonder
+
+Tonder integrates advanced 3DS authentication flows to ensure that eligible transactions can navigate through frictionless or challenge flows.
+
+Tonder's payment platform offers a [frictionless flow](#frictionless-flow) for online payments, but for around 1-2% of transactions that are considered high-risk, additional authentication with a [challenge flow](#challenge-flow).
+
+### Frictionless Flow
+
+During an online purchase, Tonder performs a verification process behind the scenes. The Access Control Server (ACS) examines the data of the customer's device and the details of the items that are being purchased. This process helps to authenticate the transaction without any interruption to the customer's experience. It enables issuers to authenticate transactions without any direct input from the cardholder. This eliminates disruptive pop-ups and static passwords, thereby enhancing the success rate of transactions.
+
+### Challenge Flow
+
+Additional authentication such as two-factor (2FA) or biometric verification may be required. In such cases, customers must prove their identity using at least two out of three possible methods: something they know (e.g., a password or PIN code), something they have (e.g., a phone, wearable device, credit or debit card), or something they are (e.g., biometric authentication methods like fingerprint or facial recognition, or voice patterns). This approach strikes a balance between efficient transaction processing and strict security measures for high-risk transactions.
