@@ -87,6 +87,8 @@
       "group": "Online Payments",
       "pages": [
         "online-payments/overview",
+        "online-payments/payment-methods",
+        "online-payments/3ds2",
         "online-payments/disputes"
       ]
     },
