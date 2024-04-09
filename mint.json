@@ -33,11 +33,11 @@
   "tabs": [
     {
       "name": "Online Payments",
-      "url": "/"
+      "url": "online-payments"
     },
     {
       "name": "Orchestration",
-      "url": "/"
+      "url": "orchestration"
     },
     {
       "name": "Integrate Tonder",
@@ -81,6 +81,19 @@
       "pages": [
         "getting-started/core-concepts/payment-lifecycle",
         "getting-started/core-concepts/environments"
+      ]
+    },
+    {
+      "group": "Online Payments",
+      "pages": [
+        "online-payments/overview",
+        "online-payments/disputes"
+      ]
+    },
+    {
+      "group": "Orchestration",
+      "pages": [
+        "orchestration/overview"
       ]
     },
     {
