@@ -32,10 +32,6 @@
   "topbarLinks": [],
   "tabs": [
     {
-      "name": "Getting Started",
-      "url": "getting-started"
-    },
-    {
       "name": "Online Payments",
       "url": "/"
     },
@@ -57,7 +53,7 @@
     }
   ],
   "primaryTab": {
-    "name": "Home"
+    "name": "Getting Started"
   },
   "anchors": [
     {
@@ -72,12 +68,6 @@
     }
   ],
   "navigation": [
-    {
-      "group": "Home",
-      "pages": [
-        "docs"
-      ]
-    },
     {
       "group": "Introduction",
       "pages": [
