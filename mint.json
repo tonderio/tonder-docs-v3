@@ -33,11 +33,11 @@
   "tabs": [
     {
       "name": "Online Payments",
-      "url": "/"
+      "url": "online-payments"
     },
     {
       "name": "Orchestration",
-      "url": "/"
+      "url": "orchestration"
     },
     {
       "name": "Integrate Tonder",
@@ -81,6 +81,21 @@
       "pages": [
         "getting-started/core-concepts/payment-lifecycle",
         "getting-started/core-concepts/environments"
+      ]
+    },
+    {
+      "group": "Online Payments",
+      "pages": [
+        "online-payments/overview",
+        "online-payments/payment-methods",
+        "online-payments/3ds2",
+        "online-payments/disputes"
+      ]
+    },
+    {
+      "group": "Orchestration",
+      "pages": [
+        "orchestration/overview"
       ]
     },
     {
@@ -135,9 +150,15 @@
       ]
     },
     {
-      "group": "Processor",
+      "group": "Online Payments",
       "pages": [
-        "dashboard/processor/example"
+        {
+          "group": "Disputes",
+          "pages": [
+            "dashboard/online-payments/disputes",
+            "dashboard/online-payments/dispute-details"
+          ]
+        }
       ]
     },
     {
