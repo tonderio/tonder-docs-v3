@@ -71,16 +71,16 @@
     {
       "group": "Introduction",
       "pages": [
-        "getting-started/introduction/home",
-        "getting-started/introduction/getting-started",
-        "getting-started/introduction/security"
+        "home",
+        "introduction/getting-started",
+        "introduction/security"
       ]
     },
     {
       "group": "Core Concepts",
       "pages": [
-        "getting-started/core-concepts/payment-lifecycle",
-        "getting-started/core-concepts/environments"
+        "core-concepts/payment-lifecycle",
+        "core-concepts/environments"
       ]
     },
     {
@@ -130,7 +130,7 @@
       "group": "Dashboard",
       "pages": [
         "dashboard/dashboard-overview",
-        "dashboard/dashboard-home",
+        "dashboard/home",
         {
           "group": "Transactions",
           "pages": [
