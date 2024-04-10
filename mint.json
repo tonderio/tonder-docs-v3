@@ -99,6 +99,12 @@
       ]
     },
     {
+      "group": "Introduction",
+      "pages": [
+        "integration/intro"
+      ]
+    },
+    {
       "group": "SDKs",
       "pages": [
         "integration/sdks/sdk-overview",
