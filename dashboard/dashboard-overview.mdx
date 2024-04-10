@@ -1,5 +1,5 @@
 ---
-title: "Tonder Dashboard"
+title: "Tonder's Dashboard"
 sidebarTitle: "Overview"
 ---
 
@@ -10,27 +10,40 @@ Tonder offers a dashboard that helps you manage your business. It provides sever
 Explore details about each section of the dashboard:
 
 <CardGroup cols={2}>
-  <Card title="Home" icon="house" href="./dashboard-home">
+  <Card title="Home" iconType="solid" icon="house" href="/dashboard/home">
     Offer businesses a comprehensive and easy-to-understand breakdown of their payment operations through visualized data and insights.
   </Card>
-  <Card title="Transactions" icon="money-bill" href="./transactions">
+  <Card title="Transactions" icon="money-bill" href="/dashboard/transactions">
     Stay on top of your business by accessing comprehensive reports for every new transaction.
   </Card>
-  {/* <Card title="Reconciliations" icon="cash-register" href="./reconciliations">
-  </Card> */}
-  <Card title="Connections" icon="link" href="./connections">
-    Manage your connections to various payment providers and set a default payment route for your transactions.
-  </Card>
-  <Card title="Routing" icon="route" href="./routing">
-    Process the payment transactions by directing them to the appropriate payment processors or acquirers.
-  </Card>
-  <Card title="Payment Links" icon="credit-card" href="./payment-links">
+  <Card title="Payment Links" iconType="solid" icon="credit-card" href="/dashboard/payment-links">
     Businesses can generate customizable URLs to request payments from their customers.
   </Card>
-  <Card title="Developers" icon="code" href="./developers">
-    Access your Tonder credentials and configure your webhooks.
+  <Card title="Developers" iconType="solid" icon="code" href="/dashboard/dev-api-keys">
+    Access your Tonder credentials and configure webhooks.
   </Card>
-  <Card title="Settings" icon="gear" href="./settings">
+  {/* <Card title="Settings" icon="gear" href="./settings">
     Access and configure your company's details.
+  </Card> */}
+</CardGroup>
+
+## Orchestration
+
+Tonder's orchestration layer is a sophisticated system designed to streamline and optimize the integration and management of various payment services and processes in one single platform. This layer brings you the following features in our dashboard:
+
+<CardGroup cols={2}>
+  <Card title="Connections" iconType="solid" icon="link" href="/dashboard/orchestration/connections">
+    Manage your connections to various payment providers and set a default payment route for your transactions.
+  </Card>
+  <Card title="Routing" iconType="solid" icon="route" href="/dashboard/orchestration/routing">
+    Process the payment transactions by directing them to the appropriate payment processors or acquirers.
   </Card>
 </CardGroup>
+
+## Online Payments
+
+Tonder Online Payments offers merchants a streamlined and secure solution for conducting online transactions. Along with facilitating smooth and protected payment processing, this brings you the dispute feature in the dashboard. giving you full control over your disputed transactions directly in the dashboard.
+
+<Card title="Disputes" icon="swords" href="/dashboard/online-payments/disputes">
+  Gives you full control over your disputed transactions. Accept or submit evidence directly from Tonder's dashboard.
+</Card>
