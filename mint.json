@@ -69,7 +69,7 @@
             "docs/sdks/web/js-sdk-styles"
           ]
         },
-        "docs/sdks/mobile/ionic-sdk-lite"  
+        "docs/sdks/mobile/ionic-sdk-lite"
       ]
     },
     {
@@ -124,7 +124,7 @@
   "openapi": "/openapi.json",
   "footerSocials": {
     "github": "https://github.com/tonderio/",
-    "website": "https://tonder.io/us"
+    "website": "https://tonder.io/"
   },
   "backgroundImage": "/images/background.png",
   "modeToggle": {
