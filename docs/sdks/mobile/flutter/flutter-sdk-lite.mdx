@@ -2,3 +2,67 @@
 title: "Flutter SDK Lite"
 ---
 
+The Tonder Flutter SDK Lite is a solution for integrating our system into your mobile application. This solution ensures PCI DSS (Payment Card Industry Data Security Standard) by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
+
+This guide will walk you through all the steps, from installation and configuring our SDK to fit your application.
+
+## Installation
+
+Tonder's Flutter SDK can be installed using the following command, or by adding the dependency directly into your project:
+<Tabs>
+  <Tab title="Command line">
+    You need to start by adding the import statement for the LiteCheckout class in your file. This is how to do it:
+
+    ```dart
+    flutter pub add tonder_sdk_lite
+    ```
+  </Tab>
+  <Tab title="Add dependency">
+    ```yml
+    dependencies:
+        tonder_sdk_lite: ^0.0.1
+    ```
+  </Tab>
+</Tabs>
+
+## Requirements
+
+To deploy to **Android** or **MacOS** you need to add the following:
+
+<Tabs>
+  <Tab title="Android">
+    To deploy to Android, you need to edit your `AndroidManifest.xml` file, adding the internet permission to it:
+
+    ```xml
+    <uses-permission android:name="android.permission.INTERNET" />
+    ```
+  </Tab>
+  <Tab title="MacOS">
+    To deploy to MacOS, you need to edit your `macos/Runner/DebugProfile.entitlements` and `macos/Runner/Release.entitlements` files to include the network client entitlement to it:
+
+    ```xml
+    <key>com.apple.security.network.client</key>
+    <true/>
+    ```
+  </Tab>
+</Tabs>
+
+## Configuration
+
+To initialize an instance of Tonder's Flutter SDK, ensure that you have configured it properly. Follow the example below:
+
+<Steps>
+  <Step title="First Step">
+    
+    
+  ```dart
+  import 'package:tonder_sdk_lite/network/liteCheckout.dart';
+  ```
+  </Step>
+  <Step title="">
+    a
+  </Step>
+  <Step title="">
+    a
+  </Step>
+</Steps>
