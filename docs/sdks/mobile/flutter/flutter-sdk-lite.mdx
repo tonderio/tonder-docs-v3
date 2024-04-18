@@ -11,8 +11,6 @@ This guide will walk you through all the steps, from installation and configurin
 Tonder's Flutter SDK can be installed using the following command, or by adding the dependency directly into your project:
 <Tabs>
   <Tab title="Command line">
-    You need to start by adding the import statement for the LiteCheckout class in your file. This is how to do it:
-
     ```dart
     flutter pub add tonder_sdk_lite
     ```
@@ -53,16 +51,277 @@ To initialize an instance of Tonder's Flutter SDK, ensure that you have configur
 
 <Steps>
   <Step title="First Step">
-    
+    You need to start by adding the import statement for the `liteCheckout` class in your file. This is how to do it:
     
   ```dart
   import 'package:tonder_sdk_lite/network/liteCheckout.dart';
   ```
   </Step>
-  <Step title="">
-    a
+  <Step title="Initialize Tonder's SDK Instance">
+    Initialize the Tonder's Flutter SDK instance with the following parameters:
+
+    | Field         | Description                                                   |
+    |---------------|---------------------------------------------------------------|
+    | `baseUrlTonder`   | Tonder's API  base URL.<br></br>-> Live server: `http://stage.tonder.io`<br></br>-> Mock Server: `https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148`    |
+    | `apiKeyTonder`  | Your Tonder API key. You can find it in your Tonder Dashboard. |
+
+    ```dart
+    const String baseUrlTonder = 'https://stage.tonder.io';
+    const String apiKeyTonder = '00d17d61e9240c6e0611fbdb1558e636ed6389db';
+
+    LiteCheckout sdkTonder = LiteCheckout(baseUrlTonder, apiKeyTonder);
+    ```
+
   </Step>
-  <Step title="">
-    a
+  <Step title="Use the methods available">
+    After initializing the SDK, you have at your disposal a set of methods, allowing you full control over the checkout process. Refer to the [Class Methods](#class-methods) section to learn more about each one.
   </Step>
 </Steps>
+
+## Class Methods
+
+After properly configuring your Lite Checkout instance, you have at your hand various methods to work with Tonder. Below you will find all the available methods, with an example of the data returned by each so you can understand how they work:
+
+### Get Business
+
+This method retrieves all the information about your business. Get details on providers public keys, vault information, and more. To call it, do the following:
+
+```dart
+Future<GetBusinessResponse> getBusiness(){}
+```
+
+<Accordion
+  title="GetBusinessResponse"
+>
+  ```dart
+  class GetBusinessResponse {
+    final String? vault_id;
+    final String? vault_url;
+    final OpenpayKeys? openpay_keys;
+    final int? reference;
+    final BusinessPK? business;
+  }
+
+  class OpenpayKeys {
+    final String merchant_id;
+    final String public_key;
+    final bool? production_mode;
+  }
+  ```
+</Accordion>
+
+### Customer register
+
+The `customerRegister` allows you to retrieve a customer's authorization token by adding their email address as the only parameter to this method. To retrieve it, execute the following:
+
+```dart
+const String email = 'newuser@email.com';
+
+Future<CustomerRegisterResponse> customerRegister(String email){}
+```
+
+<Accordion
+  title="CustomerRegisterResponse"
+>
+  ```dart
+  class CustomerRegisterResponse {
+    final int? id;
+    final String? email;
+    final dynamic auth_token;
+  }
+  ```
+</Accordion>
+
+### Create order
+
+To create a new order with the Lite SDK, use the `createOrder` method. This method requires an object as parameter with the following data:
+
+| Field               | Description                           |
+|---------------------|---------------------------------------|
+| `business`           | Your business's API key.             |
+| `client`              | Authentication token for the client recovered with the `customerRegister` method.  |
+| `billing_address_id`  | ID of the billing address (null if not available). |
+| `shipping_address_id` | ID of the shipping address (null if not available). |
+| `amount`              | Total amount of the order.             |
+| `status`              | Status of the order.                 |
+| `reference`           | Reference information for the order. Recovered with the `getBusiness` method.   |
+| `is_oneclick`         | Boolean indicating one-click order (true/false). |
+| `items`               | List of items in the shopping cart.    |
+
+Where each  `item` has the following:
+
+| Field              | Description                                        |
+|--------------------|----------------------------------------------------|
+| `description`      | A textual description of the item.                 |
+| `quantity`         | The quantity of the item.                          |
+| `price_unit`       | The price per unit of the item.                    |
+| `discount`         | The discount applied to the item, if any.          |
+| `taxes`            | The taxes applicable to the item.                  |
+| `product_reference`| A numerical reference or identifier for the item.  |
+| `name`             | The name of the item.                              |
+| `amount_total`     | The total amount for the item, including taxes and discounts. |
+
+
+With the data, call the method like presented below:
+
+```dart
+CreateOrderRequest order = CreateOrderRequest(
+  business: 'Business123',
+  client: 'Client456',
+  billingAddressId: 789,
+  shippingAddressId: 1011,
+  amount: 29.40,
+  status: 'Pending',
+  reference: 'Ref001',
+  isOneclick: false,
+  items: [
+    OrderItem(
+      description: 'A premium quality widget',
+      quantity: 10,
+      priceUnit: 2.99,
+      discount: 0.5,
+      taxes: 0.6,
+      productReference: 987654,
+      name: 'Widget',
+      amountTotal: 29.40
+    )
+  ]
+);
+
+Future<CreateOrderResponse> createOrder(CreateOrderRequest order){}
+```
+
+<Accordion
+  title="CreateOrderResponse"
+>
+  ```dart
+  class CreateOrderResponse {
+    final int? id;
+    final String? created;
+    final String? amount;
+    final String? status;
+    final String? payment_method;
+    final String? reference;
+    final bool? is_oneclick;
+    final List<Items>? items;
+    final String? billing_address;
+    final String? shipping_address;
+    final Customer? client;
+  }
+
+  class Items {
+    final String? description;
+    final String? product_reference;
+    final String? quantity;
+    final String? price_unit;
+    final String? discount;
+    final String? taxes;
+    final String? amount_total;
+  }
+  ```
+</Accordion>
+
+### Create payment
+
+
+```dart
+Future<CreatePaymentResponse> createPayment(CreatePaymentRequest paymentItems){}
+```
+
+<Accordion
+  title="CreatePaymentResponse"
+>
+  ```dart
+  
+  ```
+</Accordion>
+
+### Start checkout router
+
+
+```dart
+Future<StartCheckoutResponse> startCheckoutRouter(StartCheckoutRequest routerData){}
+```
+
+<Accordion
+  title="StartCheckoutResponse"
+>
+  ```dart
+  
+  ```
+</Accordion>
+
+### getVaultToken
+
+
+```dart
+Future<GetVaultTokenResponse> getVaultToken(){}
+```
+
+<Accordion
+  title="GetVaultTokenResponse"
+>
+  ```dart
+  
+  ```
+</Accordion>
+
+### registerCustomerCard
+
+
+```dart
+Future<RegisterCustomerCardResponse> registerCustomerCard(String customerToken, RegisterCustomerCardRequest data){}
+```
+
+<Accordion
+  title="RegisterCustomerCardResponse"
+>
+  ```dart
+  
+  ```
+</Accordion>
+
+### getCustomerCards
+
+
+```dart
+Future<GetCustomerCardsResponse> getCustomerCards(String customerToken, String query){}
+```
+
+<Accordion
+  title="GetCustomerCardsResponse"
+>
+  ```dart
+  
+  ```
+</Accordion>
+
+### deleteCustomerCard
+
+
+```dart
+Future<GetCustomerCardsResponse> deleteCustomerCard({required String customerToken, String skyflowId = ''}){}
+```
+
+<Accordion
+  title="GetCustomerCardsResponse"
+>
+  ```dart
+  
+  ```
+</Accordion>
+
+### getOpenpayDeviceSessionID
+
+
+```dart
+Future<String?> getOpenpayDeviceSessionID(OpenpayKeys openpayKeys){}
+```
+
+<Accordion
+  title=""
+>
+  ```dart
+  
+  ```
+</Accordion>
