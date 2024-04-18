@@ -87,7 +87,10 @@ After properly configuring your Lite Checkout instance, you have at your hand va
 This method retrieves all the information about your business. Get details on providers public keys, vault information, and more. To call it, do the following:
 
 ```dart
-Future<GetBusinessResponse> getBusiness(){}
+Future<GetBusinessResponse> getBusiness() async {
+  GetBusinessResponse response = await sdkTonder.getBusiness();
+  print(response);
+}
 ```
 
 <Accordion
@@ -115,9 +118,12 @@ Future<GetBusinessResponse> getBusiness(){}
 The `customerRegister` allows you to retrieve a customer's authorization token by adding their email address as the only parameter to this method. To retrieve it, execute the following:
 
 ```dart
-const String email = 'newuser@email.com';
+const String email = 'user@email.com';
 
-Future<CustomerRegisterResponse> customerRegister(String email){}
+Future<CustomerRegisterResponse> customerRegister(String email) async {
+  CustomerRegisterResponse response = await sdkTonder.customerRegister(email);
+  print(response);
+}
 ```
 
 <Accordion
@@ -188,7 +194,10 @@ CreateOrderRequest order = CreateOrderRequest(
   ]
 );
 
-Future<CreateOrderResponse> createOrder(CreateOrderRequest order){}
+Future<CreateOrderResponse> createOrder(CreateOrderRequest order) async {
+  CreateOrderResponse response = await sdkTonder.createOrder(order);
+  print(response);
+}
 ```
 
 <Accordion
@@ -223,105 +232,372 @@ Future<CreateOrderResponse> createOrder(CreateOrderRequest order){}
 
 ### Create payment
 
+To create a new payment with the Lite SDK, use the `createPayment` method. This method requires the following parameters:
+
+| Field       | Description                                    |
+|-------------|------------------------------------------------|
+| `business_pk` | The primary key or identifier for the business associated with the payment. |
+| `amount`    | The total amount of the payment.               |
+| `date`      | The date when the payment is made or processed.|
+| `order`     | The identifier for the order associated with this payment. |
+
 
 ```dart
-Future<CreatePaymentResponse> createPayment(CreatePaymentRequest paymentItems){}
+CreatePaymentRequest paymentItems = CreatePaymentRequest(
+  business_pk: 'Business123',
+  amount: 789,
+  date: '2024-04-10',
+  order: 'Order456' 
+);
+
+Future<CreatePaymentResponse> createPayment(CreatePaymentRequest paymentItems) async {
+  CreatePaymentResponse response = await sdkTonder.createPayment(paymentItems);
+  print(response);
+}
 ```
 
 <Accordion
   title="CreatePaymentResponse"
 >
   ```dart
-  
+  class CreatePaymentResponse {
+    final int? pk;
+    final String? order;
+    final String? amount;
+    final String? status;
+    final String? date;
+    final String? paid_date;
+    final ShippingBillingAddress? shipping_address;
+    final String? shipping_address_id;
+    final ShippingBillingAddress? billing_address;
+    final String? billing_address_id;
+    final String? client;
+    final String? customer_order_reference;
+  }
+
+  class ShippingBillingAddress {
+    final String? street;
+    final String? number;
+    final String? suburb;
+    final City? city;
+    final CountryState? state;
+    final String? zip_code;
+  }
+
+  class CountryState {
+    final String? name;
+    final Country? country;
+  }
   ```
 </Accordion>
 
 ### Start checkout router
 
+The `startCheckoutRouter` method  initiates the checkout process for the customer. This method requires the following to be added as parameter object:
+
+| Field Name          | Description                                                                 |
+|---------------------|-----------------------------------------------------------------------------|
+| `card`              | Card details used in the transaction.                     |
+| `name`              | The first name of the client or customer.                 |
+| `last_name`         | The last name of the client or customer.                |
+| `email_client`      | The client's email address.                               |
+| `phone_number`      | The client's phone number.                                |
+| `return_url`        | URL to which users should be redirected after payment.      |
+| `id_product`        | Identifier for the product being purchased.                 |
+| `quantity_product`  | Optional numerical value indicating the quantity of the product ordered.    |
+| `id_ship`           | Identifier for the shipping information.                    |
+| `instance_id_ship`  | Identifier related to a specific instance of shipping.      |
+| `amount`            | The total amount of the transaction.                      |
+| `title_ship`        | title or name for the shipping method.                      |
+| `description`       | The transaction or product details.              |
+| `device_session_id` | Dynamic field typically used for fraud prevention, identifying the device.  |
+| `token_id`          | Token associated with the payment method.             |
+| `order_id`          | The order identifier.                                     |
+| `business_id`       | The business identifier associated with the transaction.  |
+| `payment_id`        | The payment identifier.                                   |
+| `source`            | The source or origin of the transaction.         |
+
+To call this method, use the example below:
 
 ```dart
-Future<StartCheckoutResponse> startCheckoutRouter(StartCheckoutRequest routerData){}
+StartCheckoutRequest routerData = StartCheckoutRequest(
+    card: {
+      'number': '4111111111111111',
+      'expiryMonth': '08',
+      'expiryYear': '24',
+      'cvc': '123'
+    },
+    name: "John",
+    last_name: "Doe",
+    email_client: "johndoe@example.com",
+    phone_number: "1234567890",
+    return_url: "https://example.com/checkout/complete",
+    id_product: "SKU123",
+    quantity_product: 1,
+    id_ship: "SHIP123",
+    instance_id_ship: "SHIP_INSTANCE123",
+    amount: 59.99,
+    title_ship: "Standard Shipping",
+    description: "A premium quality widget",
+    device_session_id: "device1234567890",
+    token_id: "token1234567890",
+    order_id: "order1234567890",
+    business_id: "business123",
+    payment_id: "payment123",
+    source: "web"
+  );
+
+Future<StartCheckoutResponse> startCheckoutRouter(StartCheckoutRequest routerData) async {
+  StartCheckoutResponse response = await sdkTonder.startCheckoutRouter(routerData);
+  print(response);
+}
 ```
 
 <Accordion
   title="StartCheckoutResponse"
 >
   ```dart
-  
+  class StartCheckoutResponse {
+    final String? status;
+    final String? message;
+    final PspResponse? psp_response;
+    final String? transaction_status;
+    final int? transaction_id;
+    final int? payment_id;
+    final String? provider;
+    final NextAction? next_action;
+    final List<Actions>? actions;
+  }
+
+  class PspResponse {
+    final String? id;
+    final String? authorization;
+    final String? operation_type;
+    final String? transaction_type;
+    final String? status;
+    final bool? conciliated;
+    final String? creation_date;
+    final String? operation_date;
+    final String? description;
+    final String? error_message;
+    final String? order_id;
+    final Card? card;
+    final String? customer_id;
+    final String? gateway_card_present;
+    final num? amount;
+    final Fee? fee;
+    final PaymentMethod? payment_method;
+    final String? currency;
+    final String? method;
+    final String? object;
+  }
+
+  class NextAction {
+    final RedirectToUrl? redirect_to_url;
+    final IframeResource? iframe_resources;
+  }
+
+  class RedirectToUrl {
+    final String? url;
+    final String? return_url;
+    final String? verify_transaction_status_url;
+  }
+
+  class IframeResource {
+    final String? iframe;
+  }
+
+  class Actions {
+    final String? url;
+    final String? name;
+    final String? method;
+  }
   ```
 </Accordion>
 
 ### getVaultToken
 
+Use the `getVaultToken` to retrieve the customer's vault credential that is required to [register a customer's card](#register-customer-card). Use the following example to call this method:
+
 
 ```dart
-Future<GetVaultTokenResponse> getVaultToken(){}
+Future<GetVaultTokenResponse> getVaultToken() async {
+  GetVaultTokenResponse response = await sdkTonder.getVaultToken();
+  print(response);
+}
 ```
 
 <Accordion
   title="GetVaultTokenResponse"
 >
   ```dart
-  
+  class GetVaultTokenResponse {
+    final String? token;
+  }
   ```
 </Accordion>
 
-### registerCustomerCard
+### Register customer card
+
+Using the customer's token and your skyflow id, you can register the customer's card in the vault. The table below presents the required data, followed by an example call to the `registerCustomerCard` method:
+
+
+| Field Name     | Description                                         |
+|----------------|-----------------------------------------------------|
+| `customerToken`| A token that uniquely identifies the customer. Used for authentication and access control. |
+| `data.skyflow_id`   | An identifier generated by Skyflow used to track or reference a customer in a secure and compliant way. |
 
 
 ```dart
-Future<RegisterCustomerCardResponse> registerCustomerCard(String customerToken, RegisterCustomerCardRequest data){}
+String customerToken = 'abc123XYZ789Token';
+
+RegisterCustomerCardRequest data = RegisterCustomerCardRequest(
+  skyflow_id: '01FGP5H38VZ4B9QPT4T9KJ8J22'
+);
+
+Future<RegisterCustomerCardResponse> registerCustomerCard(String customerToken, RegisterCustomerCardRequest data) async {
+  RegisterCustomerCardResponse response = await sdkTonder.registerCustomerCard(customerToken, data);
+  print(response);
+}
 ```
 
 <Accordion
   title="RegisterCustomerCardResponse"
 >
   ```dart
-  
+  class RegisterCustomerCardResponse {
+    final String? skyflow_id;
+    final num? user_id;
+  }
   ```
 </Accordion>
 
-### getCustomerCards
+### Get customer cards
+
+Use the `getCustomerCards` to retrieve all registered cards for the customer, allowing them to use a saved card to perform transactions. Below are the parameters to execute this call, followed by an example call to it:
+
+| Field          | Description                                                                               |
+|----------------|-------------------------------------------------------------------------------------------|
+| `customerToken`| A token that uniquely identifies and authenticates the customer making the request.       |
+| `query`        | A query string used to specify and filter the details required, such as card type or status. |
 
 
 ```dart
-Future<GetCustomerCardsResponse> getCustomerCards(String customerToken, String query){}
+String customerToken = 'abc123XYZ789Token';
+String query = 'status=active';
+
+Future<GetCustomerCardsResponse> getCustomerCards(String customerToken, String query) async {
+  GetCustomerCardsResponse response = await sdkTonder.getCustomerCards(customerToken, query);
+  print(response);
+}
 ```
 
 <Accordion
   title="GetCustomerCardsResponse"
 >
   ```dart
-  
+  class GetCustomerCardsResponse {
+    final num? user_id;
+    final Cards? cards;
+  }
+
+  class Cards {
+    final List<Records>? records;
+  }
+
+  class Records {
+    final CardFields? fields;
+  }
+
+  class CardFields {
+    final String? card_number;
+    final String? cardholder_name;
+    final String? cvv;
+    final String? expiration_month;
+    final String? expiration_year;
+    final String? skyflow_id;
+  }
   ```
 </Accordion>
 
-### deleteCustomerCard
+### Delete customer card
+
+Use the `deleteCustomerCard` to delete any registered card for the customer, allowing them to removed a saved card from the system. Below are the parameters to execute this call, followed by an example call to it:
+
+| Field           | Description                                                                               |
+|-----------------|-------------------------------------------------------------------------------------------|
+| `customerToken` | A token that uniquely identifies and authenticates the customer making the request.       |
+| `skyflowId`     | An optional identifier generated by Skyflow, used to specify which card should be deleted. If not provided, it defaults to an empty string. |
 
 
 ```dart
-Future<GetCustomerCardsResponse> deleteCustomerCard({required String customerToken, String skyflowId = ''}){}
+String customerToken = 'abc123XYZ789Token';
+String skyflowId = '01FGP5H38VZ4B9QPT4T9KJ8J22';
+
+Future<GetCustomerCardsResponse> deleteCustomerCard({required String customerToken, String skyflowId = ''}) async {
+  GetCustomerCardsResponse response = await sdkTonder.deleteCustomerCard(customerToken, skyflowId);
+  print(response);
+}
 ```
 
 <Accordion
   title="GetCustomerCardsResponse"
 >
   ```dart
-  
+  class GetCustomerCardsResponse {
+    final num? user_id;
+    final Cards? cards;
+  }
+
+  class Cards {
+    final List<Records>? records;
+  }
+
+  class Records {
+    final CardFields? fields;
+  }
+
+  class CardFields {
+    final String? card_number;
+    final String? cardholder_name;
+    final String? cvv;
+    final String? expiration_month;
+    final String? expiration_year;
+    final String? skyflow_id;
+  }
   ```
 </Accordion>
 
-### getOpenpayDeviceSessionID
+### Get device session ID
+
+Using the `getOpenpayDeviceSessionID` method, you can retrieve your device session id. This method requires you to add the following data to the parameter of the call:
+
+| Field Name       | Description                                                       |
+|------------------|-------------------------------------------------------------------|
+| `merchant_id`    | The unique identifier for the merchant in the system.             |
+| `public_key`     | The public key associated with the merchant for transaction security. |
+| `production_mode`| Optional boolean indicating whether the system is in production mode or not. Defaults to `null` which might imply a test mode unless specified. |
 
 
 ```dart
-Future<String?> getOpenpayDeviceSessionID(OpenpayKeys openpayKeys){}
+OpenpayKeys openpayKeys = OpenpayKeys(
+  merchant_id: '1234567890abcdef',
+  public_key: '9f24dk7a8s9d8f76b1a2c3d4e5f6g7h8as2',
+  production_mode: true
+)
+
+Future<String?> getOpenpayDeviceSessionID(OpenpayKeys openpayKeys) async {
+  String response = await sdkTonder.getOpenpayDeviceSessionID(openpayKeys);
+  print(response);
+}
 ```
 
-<Accordion
+The returned data will be your device's session id.
+
+{/* <Accordion
   title=""
 >
   ```dart
   
   ```
-</Accordion>
+</Accordion> */}
