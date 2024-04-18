@@ -59,10 +59,10 @@ To properly initialize an instance of Tonder's Ionic SDK, ensure that you have c
   </Step>
 
   <Step title="Start Checkout Router Full method">
-    Once you have initialized your `liteCheckout` instance correctly, you just need to call the `startCheckoutRouterFull` method and provide all the necessary data as an object. This method handles the entire checkout process, including executing the transaction and returning the payment response. Start by calling the method, like exemplified below:
+    Once you have initialized your `liteCheckout` instance correctly, you need to call the `startCheckoutRouterFull` method and provide all the necessary data as an object. This method handles the entire checkout process, executing the transaction and returning the payment response. Start by calling the method, like exemplified below:
 
     ```js
-      liteCheckout.startCheckoutRouterFull({ 
+      const checkoutResponse = liteCheckout.startCheckoutRouterFull({ 
         order, 
         total, 
         customer, 
