@@ -4,14 +4,16 @@ title: "Flutter SDK Lite"
 
 The Tonder Flutter SDK Lite is a solution for integrating our system into your mobile application. This solution ensures PCI DSS (Payment Card Industry Data Security Standard) by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
 
+With the Lite SDK, you can create personalized designs and workflows to register your customers' cards in the vault. This gives you with the flexibility to customize the registration process according to your business needs and preferences.
+
 This guide will walk you through all the steps, from installation and configuring our SDK to fit your application.
 
 ## Installation
 
-Tonder's Flutter SDK can be installed using the following command, or by adding the dependency directly into your project:
+Tonder's Flutter SDK Lite can be installed using the following command, or by adding the dependency directly into your project:
 <Tabs>
   <Tab title="Command line">
-    ```dart
+    ```sh
     flutter pub add tonder_sdk_lite
     ```
   </Tab>
@@ -47,15 +49,15 @@ To deploy to **Android** or **MacOS** you need to add the following:
 
 ## Configuration
 
-To initialize an instance of Tonder's Flutter SDK, ensure that you have configured it properly. Follow the example below:
+With Tonder's SDK installed, and requirements met, you are ready to configure and use our SDK. The following step-by-step process takes you through everything, from starting a new instance, to using the available methods:
 
 <Steps>
-  <Step title="First Step">
+  <Step title="Import the SDK into your file">
     You need to start by adding the import statement for the `liteCheckout` class in your file. This is how to do it:
     
-  ```dart
-  import 'package:tonder_sdk_lite/network/liteCheckout.dart';
-  ```
+    ```dart
+    import 'package:tonder_sdk_lite/network/liteCheckout.dart';
+    ```
   </Step>
   <Step title="Initialize Tonder's SDK Instance">
     Initialize the Tonder's Flutter SDK instance with the following parameters:
@@ -81,6 +83,16 @@ To initialize an instance of Tonder's Flutter SDK, ensure that you have configur
 ## Class Methods
 
 After properly configuring your Lite Checkout instance, you have at your hand various methods to work with Tonder. Below you will find all the available methods, with an example of the data returned by each so you can understand how they work:
+
+- [getBusiness](#get-business): Retrieves all the information about your business.
+- [customerRegister](#customer-register): Retrieve a customer's authorization token.
+- [createOrder](#create-order): Creates a new order in the system.
+- [startCheckoutRouter](#create-payment): Initiates the checkout process for the customer.
+- [getVaultToken](#get-vault-token): Retrieves the vault credential that is required to register a customer's card. 
+- [registerCustomerCard](#register-customer-card): Registers the customer's card in the vault.
+- [getCustomerCards](#get-customer-cards): Retrieves all registered cards for the customer.
+- [deleteCustomerCard](#delete-customer-card): Deletes any registered card from the vault.
+- [getOpenpayDeviceSessionID](#get-device-session-id): Retrieves your device session id.
 
 ### Get Business
 
@@ -415,9 +427,9 @@ Future<StartCheckoutResponse> startCheckoutRouter(StartCheckoutRequest routerDat
   ```
 </Accordion>
 
-### getVaultToken
+### Get vault token
 
-Use the `getVaultToken` to retrieve the customer's vault credential that is required to [register a customer's card](#register-customer-card). Use the following example to call this method:
+Use the `getVaultToken` to retrieve the vault credential that is required to [register a customer's card](#register-customer-card). Use the following example to call this method:
 
 
 ```dart
@@ -439,7 +451,7 @@ Future<GetVaultTokenResponse> getVaultToken() async {
 
 ### Register customer card
 
-Using the customer's token and your skyflow id, you can register the customer's card in the vault. The table below presents the required data, followed by an example call to the `registerCustomerCard` method:
+Using the customer's token and the skyflow id, you can register the customer's card in the vault. The table below presents the required data, followed by an example call to the `registerCustomerCard` method:
 
 
 | Field Name     | Description                                         |
