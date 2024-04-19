@@ -1,3 +1,162 @@
 ---
 title: "Flutter SDK Full"
 ---
+
+The Tonder Flutter SDK Full is a solution for integrating our system into your mobile application. This solution ensures PCI DSS (Payment Card Industry Data Security Standard) by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
+
+Integrating Tonder is made effortless with our Full SDK. Our SDK offers complete checkout and enrollment flows, making integration, maintenance, and operational efforts minimal.
+
+This guide will walk you through all the steps, from installation and configuring our SDK to fit your application.
+
+## Installation
+
+Tonder's Flutter SDK Full can be installed using the following command:
+
+```sh
+flutter pub get full_sdk
+```
+
+## Requirements
+
+You need to add the following code blocks to `android.build.gradle` and `android.gradle.properties` to be able to use the SDK:
+
+- Add to `android.build.gradle`:
+```gradle
+maven {
+    url 'https://maven.pkg.github.com/skyflowapi/skyflow-android-sdk'
+    credentials {
+        username = 'username'
+        password = 'password'
+    }
+}
+```
+
+- Add to `android.gradle.properties`:
+```gradle
+android.useAndroidX=true
+```
+
+## Configuration
+
+With Tonder's SDK installed, and requirements met, you are ready to configure and use our SDK. The following step-by-step process takes you through everything, from starting a new instance, to using the available methods:
+
+<Steps>
+  {/* <Step title="Add the required ID to your HTML">
+    Tonder's Flutter SDK Full needs an entry point to operate. This entry point is defined by adding a `tonder-checkout` ID to an empty `div`, like the example below:
+
+    ```html
+    <div>
+        <h1>Checkout</h1>
+        <!-- You have to add an entry point with the ID 'tonder-checkout' -->
+        <div id="tonder-checkout">
+        </div>
+    </div>
+    ```
+  </Step> */}
+  <Step title="Initialize Tonder's SDK Instance">
+    First, remove any existing checkout instances to avoid duplicates:
+
+    ```dart
+    if (_fullPlugin != null) _fullPlugin!.removeCheckout();
+    ```
+
+    Now, initialize Tonder's Flutter SDK Full instance with the following parameters:
+
+    | Field Name             | Description                                                                          |
+    |------------------------|--------------------------------------------------------------------------------------|
+    | `platforms`            | A list or null that specifies which platforms the checkout is available on. If null, it implies universal compatibility. |
+    | `apiKeyTonder`         | Your Tonder API key. You can find it in your Tonder dashboard.             |
+    | `returnUrl`            | The URL to which the user will be redirected after the transaction is completed.     |
+    | `successUrl`           | The URL to which the user will be redirected specifically after a successful transaction. |
+    | `renderPaymentButton`  | A boolean that specifies whether a payment button should be rendered by the checkout plugin. Setting this to `false` implies that the button rendering is handled elsewhere or not needed. |
+
+    ```dart
+    const apiKey = "00d17d61e9240c6e0611fbdb1558e636ed6389db";
+    const returnUrl = "http://localhost:8100/tabs/tab2";
+
+    _fullPlugin = InlineCheckout(
+      platforms: null, // Specify platforms if needed
+      apiKeyTonder: apiKey,
+      returnUrl: returnUrl,
+      successUrl: returnUrl,
+      renderPaymentButton: false, // Set to true if a payment button should be rendered
+    );
+    ```
+
+    <Warning>
+      Ensure all **API keys** and sensitive data are secured and not hardcoded in production applications. Use environment variables or a secure way to load such configurations.
+    </Warning>
+  </Step>
+  <Step title="Set Payment Data">
+    Set the payment data on the checkout instance using the customer and cart data you collected from the customer:
+  
+    ```dart
+    _fullPlugin!.setPaymentData(customerData);
+    _fullPlugin!.setCartTotal(250); // Reset or update the cart total if necessary
+    _fullPlugin!.setCustomerEmail("mail@gmail.com");
+    ```
+
+    Below you find an example of the data needed in the `customerData` parameter:
+    
+    <Accordion
+      title="customerData"
+    >
+      ```dart
+      Map<String, dynamic> customerData = {
+        "customer": {
+          "firstName": "Pedro",
+          "lastName": "Perez",
+          "country": "Finlandia",
+          "street": "The street",
+          "city": "The city",
+          "state": "The state",
+          "postCode": "22222",
+          "email": "mail@gmail.com",
+          "phone": "53453453453"
+        },
+        "cart": {
+          "total": 250,
+          "items": [
+            {
+              "description": "Test product description",
+              "quantity": 1,
+              "price_unit": 250,
+              "discount": 25,
+              "taxes": 12,
+              "product_reference": 12,
+              "name": "Test product",
+              "amount_total": 250
+            }
+          ]
+        }
+      };
+      ```
+    </Accordion>
+  
+  </Step>
+  <Step title="Launch the Checkout Interface">
+    Use the `injectCheckout` to inject Tonder's checkout into the current widget tree:
+
+    ```dart
+    await _fullPlugin!.injectCheckout();
+    ```
+
+    Update the state to reflect the changes:
+
+    ```dart
+    setState(() {});
+    ```
+  </Step>
+  <Step title="Display the Checkout UI">
+    Use a `Scaffold` widget to contain and display the checkout interface:
+
+    ```dart
+    Scaffold(
+        body: SizedBox(
+          height: 1200,
+          child: _fullPlugin?.cardTemplate ?? Text("Loading card template"),
+        ),
+    );
+    ```
+  </Step>
+</Steps>
