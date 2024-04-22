@@ -29,11 +29,11 @@ The code above is necessary to ensure a reliable connection to the payment proce
 
 ## Configuration
 
-To initialize an instance of Tonder's Ionic SDK, ensure that you have configured it properly. Follow the usage example below:
+To initialize an instance of Tonder's Ionic SDK, ensure you have met the [installation](#installation) and [requirements](#requirements) steps. Follow the usage example below:
 
 <Steps>
   <Step title="Import the Lite Checkout class">
-    Start by adding the import statement for the `LiteCheckout` class in your file. This is how to do it:
+    Start by adding the import statement for the `LiteCheckout` class in your file. Following you find an example of how to import the `LiteCheckout`:
 
     ```js
       import { LiteCheckout } from "@tonder/ionic-lite-sdk"
@@ -47,7 +47,7 @@ To initialize an instance of Tonder's Ionic SDK, ensure that you have configured
 |---------------|---------------------------------------------------------------|
 | `signal`      | Signal from AbortController instance if it needs cancel the request.        |
 | `baseUrlTonder`   | Tonder's API  base URL.<br></br>-> Live server: `http://stage.tonder.io`<br></br>-> Mock Server: `https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148`    |
-| `apiKeyTonder`  | Your Tonder API key. You can find it in your Tonder Dashboard. |
+| `apiKeyTonder`  | Your Tonder API key. You can find it in your [Tonder dashboard](https://stage.tonder.io/dashboard/developers/). |
 
     ```js
       const liteCheckout = new LiteCheckout({ 
@@ -59,7 +59,18 @@ To initialize an instance of Tonder's Ionic SDK, ensure that you have configured
   </Step>
 
   <Step title="Start Checkout Router Full method">
-    Once you have initialized your `liteCheckout` instance correctly, you need to call the `startCheckoutRouterFull` method and provide all the necessary data as an object. This method handles the entire checkout process, executing the transaction and returning the payment response. Start by calling the method, like exemplified below:
+    Once you have initialized your `liteCheckout` instance, you need to call the `startCheckoutRouterFull` method and provide all the necessary data as an object. This method handles the entire checkout process, executing the transaction and returning the payment response. To start, call the `startCheckoutRouterFullmethod` providing the necessary information found below:
+
+    | Parameter     | Type          | Description                                                   |
+    |---------------|---------------|---------------------------------------------------------------|
+    | `order`       | `object`        | Represents the details of each item in the order.             |
+    | `total`       | `number`        | The total amount for the order. This should match the sum of the costs of items in the order. |
+    | `customer`    | `object`        | Information about the customer.                               |
+    | `skyflowTokens` | `object`       | The details of the card to be used on the transaction.        |
+    | `return_url`  | `string`        | URL to which the customer will be redirected after the checkout process is completed. |
+    | `isSandbox`   | `boolean`       | A boolean indicating if the transaction is being processed in a sandbox environment for testing purposes. |
+    | `metadata`    | `object`        | Optional additional data about the order that might be used for processing or tracking. |
+    | `currency`    | `string`        | The currency in which the transaction is conducted (USD or MXN).           |
 
     ```js
       const checkoutResponse = liteCheckout.startCheckoutRouterFull({ 
@@ -74,20 +85,7 @@ To initialize an instance of Tonder's Ionic SDK, ensure that you have configured
       });
     ```
 
-    Where:
-
-    | Parameter     | Type          | Description                                                   |
-    |---------------|---------------|---------------------------------------------------------------|
-    | `order`       | `object`        | Represents the details of each item in the order.             |
-    | `total`       | `number`        | The total amount for the order. This should match the sum of the costs of items in the order. |
-    | `customer`    | `object`        | Information about the customer.                               |
-    | `skyflowTokens` | `string`       | The details of the card to be used on the transaction.        |
-    | `return_url`  | `string`        | URL to which the customer will be redirected after the checkout process is completed. |
-    | `isSandbox`   | `boolean`       | A boolean indicating if the transaction is being processed in a sandbox environment for testing purposes. |
-    | `metadata`    | `object`        | Optional additional data about the order that might be used for processing or tracking. |
-    | `currency`    | `string`        | The currency in which the transaction is conducted.           |
-
-    Below you find also types and an example code for the `startCheckoutRouterFull` parameter:
+    Below you find the types for each `startCheckoutRouterFull` parameter, followed by an example code:
 
     ```ts
       type StartCheckoutFullRequest = {
@@ -190,14 +188,14 @@ To initialize an instance of Tonder's Ionic SDK, ensure that you have configured
     | `transaction_status` | `string`                   | Status of the transaction as reported by the system.               |
     | `transaction_id`     | `number`                   | A unique identifier for the transaction.                           |
     | `payment_id`         | `number`                   | A unique identifier for the payment linked to the transaction.     |
-    | `provider`           | `string`                   | The name of the payment service provider handling the transaction. |
+    | `provider`           | `string`                   | The payment service provider(PSP) that is handling the transaction. |
     | `next_action`        | `object`                   | URLs to redirect the user for each possible situation.            |
     | `actions`            | `Array<object>` | A list of possible actions related to the transaction.            |
 
-    Below you find the type of the response:
+    Below you find the types of all parameters in the response:
 
     ```ts
-    export type StartCheckoutResponse = {
+    type StartCheckoutResponse = {
         status: number;
         message: string;
         psp_response: {
