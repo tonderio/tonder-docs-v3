@@ -53,7 +53,7 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
 
 <Steps>
   <Step title="Import the SDK into your file">
-    You need to start by adding the import statement for the `liteCheckout` class in your file. This is how to do it:
+    You need to start by adding the import statement for the `liteCheckout` class in your file. Following you find an example of how to import the `liteCheckout`:
     
     ```dart
     import 'package:tonder_sdk_lite/network/liteCheckout.dart';
@@ -65,7 +65,7 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
     | Field         | Description                                                   |
     |---------------|---------------------------------------------------------------|
     | `baseUrlTonder`   | Tonder's API  base URL.<br></br>-> Live server: `http://stage.tonder.io`<br></br>-> Mock Server: `https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148`    |
-    | `apiKeyTonder`  | Your Tonder API key. You can find it in your Tonder Dashboard. |
+    | `apiKeyTonder`  | Your Tonder API key. You can find it in your [Tonder dashboard](https://stage.tonder.io/dashboard/developers/). |
 
     ```dart
     const String baseUrlTonder = 'https://stage.tonder.io';
@@ -73,6 +73,10 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
 
     LiteCheckout sdkTonder = LiteCheckout(baseUrlTonder, apiKeyTonder);
     ```
+
+    <Warning>
+      Ensure all **API keys** and sensitive data are secured and not hardcoded in production applications. Use environment variables or a secure way to load such configurations.
+    </Warning>
 
   </Step>
   <Step title="Use the methods available">
@@ -82,7 +86,7 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
 
 ## Class Methods
 
-After properly configuring your Lite Checkout instance, you have at your hand various methods to work with Tonder. Below you will find all the available methods, with an example of the data returned by each so you can understand how they work:
+After configuring your Lite Checkout instance, you have at your hand various methods to work with Tonder. Below you will find all the available methods, with an example of the data returned by each so you can understand how they work:
 
 - [getBusiness](#get-business): Retrieves all the information about your business.
 - [customerRegister](#customer-register): Retrieve a customer's authorization token.
