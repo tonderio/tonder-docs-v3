@@ -86,7 +86,7 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
     | `return_url`  | `string`        | URL to which the customer will be redirected after the checkout process is completed. |
     | `isSandbox`   | `boolean`       | A boolean indicating if the transaction is being processed in a sandbox environment for testing purposes. |
     | `metadata`    | `object`        | Optional additional data about the order that might be used for processing or tracking. |
-    | `currency`    | `string`        | The currency in which the transaction is conducted (USD or MXN).           |
+    | `currency`    | `string`        | The currency in which the transaction is conducted. Refer to the [Currencies Reference](/reference/currencies) page for details.           |
 
     ```js
       const checkoutResponse = liteCheckout.startCheckoutRouterFull({ 

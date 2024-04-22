@@ -107,7 +107,8 @@
     {
       "group": "Tonder API",
       "pages": [
-        "reference/overview"
+        "reference/overview",
+        "reference/currencies"
       ]
     },
     {
