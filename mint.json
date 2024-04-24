@@ -73,7 +73,9 @@
           "group": "Mobile SDKs",
           "pages": [
             "docs/sdks/mobile/ionic-sdk-lite",
-            "docs/sdks/mobile/ionic-sdk-full"
+            "docs/sdks/mobile/ionic-sdk-full",
+            "docs/sdks/mobile/flutter/flutter-sdk-lite",
+            "docs/sdks/mobile/flutter/flutter-sdk-full"
           ]
         }
       ]
@@ -113,7 +115,8 @@
     {
       "group": "Tonder API",
       "pages": [
-        "reference/overview"
+        "reference/overview",
+        "reference/currencies"
       ]
     },
     {
@@ -130,7 +133,7 @@
   "openapi": "/openapi.json",
   "footerSocials": {
     "github": "https://github.com/tonderio/",
-    "website": "https://tonder.io/us"
+    "website": "https://tonder.io/"
   },
   "backgroundImage": "/images/background.png",
   "modeToggle": {
