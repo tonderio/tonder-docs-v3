@@ -72,8 +72,8 @@
         {
           "group": "Mobile SDKs",
           "pages": [
-            "docs/sdks/mobile/ionic-sdk-lite",
-            "docs/sdks/mobile/ionic-sdk-full",
+            "docs/sdks/mobile/ionic/ionic-sdk-lite",
+            "docs/sdks/mobile/ionic/ionic-sdk-full",
             "docs/sdks/mobile/flutter/flutter-sdk-lite",
             "docs/sdks/mobile/flutter/flutter-sdk-full"
           ]
