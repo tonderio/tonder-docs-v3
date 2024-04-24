@@ -29,6 +29,7 @@ The code above is necessary to ensure a reliable connection to the payment proce
 
 ## Configuration
 
+With Tonder's SDK installed, and requirements met, you are ready to configure and use the SDK. The following step-by-step process takes you through everything, from starting a new instance, to performing a new transaction using the needed methods:
 
 <Steps>
   <Step title="Mobile settings">
@@ -38,8 +39,7 @@ The code above is necessary to ensure a reliable connection to the payment proce
       <Tab title="Android">
         To deploy your app on Android, you must add the Internet permission to your `AndroidManifest.xml` file. Add the following code to your XML:
 
-
-        ```html
+        ```xml
           <!-- Required to fetch data from the internet. -->
           <uses-permission android:name="android.permission.INTERNET" />
         ```
@@ -47,7 +47,7 @@ The code above is necessary to ensure a reliable connection to the payment proce
       <Tab title="iOS">
         To enable iOS deployment, add the network client entitlement to `macos/Runner/DebugProfile.entitlements` and `macos/Runner/Release.entitlements` files by including the code below:
 
-        ```html
+        ```xml
           <!-- Required to fetch data from the internet. -->
           <key>com.apple.security.network.client</key>
           <true/>
@@ -58,7 +58,7 @@ The code above is necessary to ensure a reliable connection to the payment proce
   </Step>
   
   <Step title="Add the required ID to your HTML">
-    Tonder’s Ionic SDK Full requires a `tonder-checkout` ID to function, which needs to be added to an empty div as shown below:
+    Tonder's Ionic SDK Full requires a `tonder-checkout` ID to function, which needs to be added to an empty div as shown below:
 
     ```html
     <div>
