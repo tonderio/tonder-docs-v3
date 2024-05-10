@@ -48,6 +48,15 @@
       "pages": [
         "docs/introduction/home",
         "docs/introduction/getting-started",
+        {
+          "group": "Coverage",
+          "pages": [
+            "docs/introduction/coverage/coverage",
+            "docs/introduction/coverage/brazil",
+            "docs/introduction/coverage/colombia",
+            "docs/introduction/coverage/mexico"
+          ]
+        },
         "docs/introduction/security"
       ]
     },
