@@ -89,6 +89,7 @@
         "online-payments/overview",
         "online-payments/payment-methods",
         "online-payments/3ds2",
+        "online-payments/finances",
         "online-payments/disputes"
       ]
     },
@@ -163,6 +164,13 @@
           "pages": [
             "dashboard/online-payments/disputes",
             "dashboard/online-payments/dispute-details"
+          ]
+        },
+        {
+          "group": "Finances",
+          "pages": [
+            "dashboard/online-payments/finances",
+            "dashboard/online-payments/settlement-details"
           ]
         }
       ]
