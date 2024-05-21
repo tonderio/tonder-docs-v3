@@ -29,7 +29,12 @@
     "name": "Log in",
     "url": "https://app.tonder.io/accounts/login/"
   },
-  "topbarLinks": [],
+  "topbarLinks": [
+    {
+      "name": "System Status",
+      "url": "https://tonderio.statuspage.io/"
+    }
+  ],
   "anchors": [
     {
       "name": "API Reference",
