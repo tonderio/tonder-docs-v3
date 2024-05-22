@@ -42,6 +42,11 @@
       "url": "reference"
     },
     {
+      "name": "Support",
+      "icon": "headset",
+      "url": "https://intercom.help/tonder-io/es/"
+    },
+    {
       "name": "Contact Us",
       "icon": "envelope",
       "url": "mailto:hello@tonder.io"
