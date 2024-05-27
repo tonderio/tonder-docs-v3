@@ -64,7 +64,12 @@
             "docs/introduction/coverage/coverage",
             "docs/introduction/coverage/brazil",
             "docs/introduction/coverage/colombia",
-            "docs/introduction/coverage/mexico"
+            "docs/introduction/coverage/costa-rica",
+            "docs/introduction/coverage/ecuador",
+            "docs/introduction/coverage/guatemala",
+            "docs/introduction/coverage/mexico",
+            "docs/introduction/coverage/panama",
+            "docs/introduction/coverage/peru"
           ]
         },
         "docs/introduction/security"
