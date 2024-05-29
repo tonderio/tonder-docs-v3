@@ -98,6 +98,20 @@
       "pages": [
         "online-payments/overview",
         "online-payments/payment-methods",
+        {
+          "group": "Coverage",
+          "pages": [
+            "online-payments/coverage/coverage",
+            "online-payments/coverage/brazil",
+            "online-payments/coverage/colombia",
+            "online-payments/coverage/costa-rica",
+            "online-payments/coverage/ecuador",
+            "online-payments/coverage/guatemala",
+            "online-payments/coverage/mexico",
+            "online-payments/coverage/panama",
+            "online-payments/coverage/peru"
+          ]
+        },
         "online-payments/3ds2",
         "online-payments/finances",
         "online-payments/disputes"
