@@ -29,7 +29,6 @@
     "name": "Log in",
     "url": "https://app.tonder.io/accounts/login/"
   },
-  "topbarLinks": [],
   "tabs": [
     {
       "name": "Online Payments",
@@ -55,11 +54,22 @@
   "primaryTab": {
     "name": "Getting Started"
   },
+  "topbarLinks": [
+    {
+      "name": "System Status",
+      "url": "https://tonderio.statuspage.io/"
+    }
+  ],
   "anchors": [
     {
       "name": "API Reference",
       "icon": "square-terminal",
       "url": "reference"
+    },
+    {
+      "name": "Support",
+      "icon": "headset",
+      "url": "https://intercom.help/tonder-io/es/"
     },
     {
       "name": "Contact Us",
@@ -116,7 +126,15 @@
             "integration/sdks/web/js-sdk-styles"
           ]
         },
-        "integration/sdks/mobile/ionic-sdk-lite"
+        {
+          "group": "Mobile SDKs",
+          "pages": [
+            "integration/sdks/mobile/ionic/ionic-sdk-lite",
+            "integration/sdks/mobile/ionic/ionic-sdk-full",
+            "integration/sdks/mobile/flutter/flutter-sdk-lite",
+            "integration/sdks/mobile/flutter/flutter-sdk-full"
+          ]
+        }
       ]
     },
     {
@@ -178,7 +196,8 @@
     {
       "group": "Tonder API",
       "pages": [
-        "reference/overview"
+        "reference/overview",
+        "reference/currencies"
       ]
     },
     {

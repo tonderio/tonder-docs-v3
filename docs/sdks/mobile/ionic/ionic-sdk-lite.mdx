@@ -1,0 +1,283 @@
+---
+title: "Ionic SDK Lite"
+---
+
+The Tonder Ionic SDK Lite is a solution for integrating our system into your mobile application. This solution ensures PCI DSS (Payment Card Industry Data Security Standard) by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
+
+This guide will walk you through all the steps, from installation and configuring our SDK to fit your application.
+
+## Installation
+
+Tonder's Ionic SDK can be installed using our [npm package](https://www.npmjs.com/package/@tonder.io/ionic-lite-sdk). Use the following command to install it:
+
+<Tabs>
+  <Tab title="npm">
+    ```bash
+    npm i @tonder/ionic-lite-sdk
+    ```
+  </Tab>
+  <Tab title="yarn">
+    ```bash
+    yarn add @tonder/ionic-lite-sdk
+    ```
+  </Tab>
+  <Tab title="pnpm">
+    ```bash
+    pnpm add @tonder/ionic-lite-sdk
+    ```
+  </Tab>
+</Tabs>
+
+
+
+## Requirements
+
+To configure our SDK you need to add the following script tags to your HTML:
+
+```html
+  <script src=https://openpay.s3.amazonaws.com/openpay.v1.min.js></script>
+  <script src=https://openpay.s3.amazonaws.com/openpay-data.v1.min.js></script>
+```
+
+The code above is necessary to ensure a reliable connection to the payment processor.
+
+<Note>You can also install each one with their respective [npm packages](https://www.npmjs.com/package/openpay-js).</Note>
+
+## Configuration
+
+With Tonder's SDK installed, and requirements met, you are ready to configure and use the SDK. The following step-by-step process takes you through everything, from starting a new instance, to performing a new transaction using the needed methods:
+
+<Steps>
+  <Step title="Import the Lite Checkout class">
+    Start by adding the import statement for the `LiteCheckout` class in your file. Following you find an example of how to import the `LiteCheckout`:
+
+    ```js
+      import { LiteCheckout } from "@tonder/ionic-lite-sdk"
+    ```
+  </Step>
+
+  <Step title="Initialize Tonder's SDK Instance">
+    Initialize Tonder's Ionic SDK instance adding the following parameters:
+
+| Field         | Description                                                   |
+|---------------|---------------------------------------------------------------|
+| `signal`      | Signal from AbortController instance if it needs cancel the request.        |
+| `baseUrlTonder`   | Tonder's API  base URL.<br></br>-> Live server: `http://stage.tonder.io`<br></br>-> Mock Server: `https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148`    |
+| `apiKeyTonder`  | Your Tonder API key. You can find it in your [Tonder dashboard](https://stage.tonder.io/dashboard/developers/). |
+
+    ```js
+      const liteCheckout = new LiteCheckout({ 
+        signal, 
+        baseUrlTonder, 
+        apiKeyTonder 
+      });
+    ```
+  </Step>
+
+  <Step title="Start Checkout Router Full method">
+    Once you have initialized your `liteCheckout` instance, you need to call the `startCheckoutRouterFull` method and provide all the necessary data as an object. This method handles the entire checkout process, executing the transaction and returning the payment response. To start, call the `startCheckoutRouterFullmethod` providing the necessary information found below:
+
+    | Parameter     | Type          | Description                                                   |
+    |---------------|---------------|---------------------------------------------------------------|
+    | `order`       | `object`        | Represents the details of each item in the order.             |
+    | `total`       | `number`        | The total amount for the order. This should match the sum of the costs of items in the order. |
+    | `customer`    | `object`        | Information about the customer.                               |
+    | `skyflowTokens` | `object`       | The details of the card to be used on the transaction.        |
+    | `return_url`  | `string`        | URL to which the customer will be redirected after the checkout process is completed. |
+    | `isSandbox`   | `boolean`       | A boolean indicating if the transaction is being processed in a sandbox environment for testing purposes. |
+    | `metadata`    | `object`        | Optional additional data about the order that might be used for processing or tracking. |
+    | `currency`    | `string`        | The currency in which the transaction is conducted. Refer to the [Currencies Reference](/reference/currencies) page for details.           |
+
+    ```js
+      const checkoutResponse = liteCheckout.startCheckoutRouterFull({ 
+        order, 
+        total, 
+        customer, 
+        skyflowTokens, 
+        return_url, 
+        isSandbox, 
+        metadata, 
+        currency
+      });
+    ```
+
+    Below you find the types for each `startCheckoutRouterFull` parameter, followed by an example code:
+
+    ```ts
+      type StartCheckoutFullRequest = {
+          order: {
+              items: Array<{
+                  description: string;
+                  quantity: number;
+                  price_unit: number;
+                  discount: number;
+                  taxes: number;
+                  product_reference: number;
+                  name: string;
+                  amount_total: number;
+              }>;
+          };
+          total: number;
+          customer: {
+              name: string;
+              lastname: string;
+              email: string;
+              phone: string;
+          };
+          skyflowTokens: {
+              cardholder_name: string;
+              card_number: string;
+              cvv: string;
+              expiration_year: string;
+              expiration_month: string;
+              skyflow_id: string;
+          };
+          return_url: string;
+          isSandbox: boolean;
+          metadata: any;
+          currency: string;
+      };
+    ```
+
+    <Accordion title="Example">
+    ```ts
+    const checkoutRequest: StartCheckoutFullRequest = {
+        order: {
+            items: [
+                {
+                    description: "High-quality wireless headphones",
+                    quantity: 2,
+                    price_unit: 199.99,
+                    discount: 20.00,
+                    taxes: 15.99,
+                    product_reference: 101234,
+                    name: "Wireless Headphones",
+                    amount_total: 395.96
+                },
+                {
+                    description: "Ergonomic wireless mouse",
+                    quantity: 1,
+                    price_unit: 50.00,
+                    discount: 5.00,
+                    taxes: 3.75,
+                    product_reference: 105678,
+                    name: "Wireless Mouse",
+                    amount_total: 48.75
+                }
+            ]
+        },
+        total: 444.71,
+        customer: {
+            name: "John",
+            lastname: "Doe",
+            email: "johndoe@example.com",
+            phone: "+11234567890"
+        },
+        skyflowTokens: {
+            cardholder_name: "John Doe",
+            card_number: "4111111111111111",
+            cvv: "123",
+            expiration_year: "2024",
+            expiration_month: "12",
+            skyflow_id: "abcd-1234-xyz"
+        },
+        return_url: "https://example.com/checkout/complete",
+        isSandbox: true,
+        metadata: {
+            campaign_id: "BF2024",
+            notes: "Customer opted for gift wrapping."
+        },
+        currency: "USD"
+    };
+    ```
+  </Accordion>
+  </Step>
+
+  <Step title="Checkout Router Full response">
+    As the `startCheckoutRouterFull` takes care of the full transaction process, it will return with the status of the transaction, along with all information regarding the process. The main information returned are as follows:
+
+    | Field                | Type                       | Description                                                        |
+    |----------------------|----------------------------|--------------------------------------------------------------------|
+    | `status`             | `number`                   | The HTTP status code reflecting the outcome of the checkout process.|
+    | `message`            | `string`                   | A message providing additional information about the response.     |
+    | `psp_response`       | `object`                   | An object containing detailed information from the payment service provider. |
+    | `transaction_status` | `string`                   | Status of the transaction as reported by the system.               |
+    | `transaction_id`     | `number`                   | A unique identifier for the transaction.                           |
+    | `payment_id`         | `number`                   | A unique identifier for the payment linked to the transaction.     |
+    | `provider`           | `string`                   | The payment service provider(PSP) that is handling the transaction. |
+    | `next_action`        | `object`                   | URLs to redirect the user for each possible situation.            |
+    | `actions`            | `Array<object>` | A list of possible actions related to the transaction.            |
+
+    Below you find the types of all parameters in the response:
+
+    ```ts
+    type StartCheckoutResponse = {
+        status: number;
+        message: string;
+        psp_response: {
+            id: string;
+            authorization: number;
+            operation_type: string;
+            transaction_type: string;
+            status: string;
+            conciliated: boolean;
+            creation_date: string;
+            operation_date: string;
+            description: string;
+            error_message?: string;
+            order_id?: string;
+            card: {
+                type: string;
+                brand: string;
+                address?: string;
+                card_number: string;
+                holder_name: string;
+                expiration_year: string;
+                expiration_month: string;
+                allows_charges: boolean;
+                allows_payouts: boolean;
+                bank_name: string;
+                points_type: string;
+                points_card: boolean;
+                bank_code: number;
+            };
+            customer_id: string;
+            gateway_card_present: string;
+            amount: number;
+            fee: {
+                amount: number;
+                tax: number;
+                currency: string;
+            };
+            payment_method: {
+                type: string;
+                url: string;
+            };
+            currency: string;
+            method: string;
+            object: string;
+        };
+        transaction_status: string;
+        transaction_id: number;
+        payment_id: number;
+        provider: string;
+        next_action: {
+            redirect_to_url: {
+                url: string;
+                return_url: string;
+                verify_transaction_status_url: string;
+            };
+            iframe_resources?: {
+                iframe: string;
+            };
+        };
+        actions: Array<{
+            name: string;
+            url: string;
+            method: string;
+        }>;
+    };
+    ```
+  </Step>
+</Steps>
+
