@@ -29,6 +29,31 @@
     "name": "Log in",
     "url": "https://app.tonder.io/accounts/login/"
   },
+  "tabs": [
+    {
+      "name": "Online Payments",
+      "url": "online-payments"
+    },
+    {
+      "name": "Revenue Optimization",
+      "url": "revenue-optimization"
+    },
+    {
+      "name": "Integrate Tonder",
+      "url": "integration"
+    },
+    {
+      "name": "Dashboard",
+      "url": "dashboard"
+    },
+    {
+      "name": "API Reference",
+      "url": "reference"
+    }
+  ],
+  "primaryTab": {
+    "name": "Getting Started"
+  },
   "topbarLinks": [
     {
       "name": "System Status",
@@ -56,50 +81,72 @@
     {
       "group": "Introduction",
       "pages": [
-        "docs/introduction/home",
-        "docs/introduction/getting-started",
-        {
-          "group": "Coverage",
-          "pages": [
-            "docs/introduction/coverage/coverage",
-            "docs/introduction/coverage/brazil",
-            "docs/introduction/coverage/colombia",
-            "docs/introduction/coverage/costa-rica",
-            "docs/introduction/coverage/ecuador",
-            "docs/introduction/coverage/guatemala",
-            "docs/introduction/coverage/mexico",
-            "docs/introduction/coverage/panama",
-            "docs/introduction/coverage/peru"
-          ]
-        },
-        "docs/introduction/security"
+        "home",
+        "introduction/getting-started",
+        "introduction/security"
       ]
     },
     {
       "group": "Core Concepts",
       "pages": [
-        "docs/core-concepts/payment-lifecycle",
-        "docs/core-concepts/environments"
+        "core-concepts/payment-lifecycle",
+        "core-concepts/environments"
+      ]
+    },
+    {
+      "group": "Online Payments",
+      "pages": [
+        "online-payments/overview",
+        "online-payments/payment-methods",
+        {
+          "group": "Coverage",
+          "pages": [
+            "online-payments/coverage/coverage",
+            "online-payments/coverage/brazil",
+            "online-payments/coverage/colombia",
+            "online-payments/coverage/costa-rica",
+            "online-payments/coverage/ecuador",
+            "online-payments/coverage/guatemala",
+            "online-payments/coverage/mexico",
+            "online-payments/coverage/panama",
+            "online-payments/coverage/peru"
+          ]
+        },
+        "online-payments/3ds2",
+        "online-payments/finances",
+        "online-payments/disputes"
+      ]
+    },
+    {
+      "group": "Revenue Optimization",
+      "pages": [
+        "revenue-optimization/overview"
+      ]
+    },
+    {
+      "group": "Integrations",
+      "pages": [
+        "integration/intro"
       ]
     },
     {
       "group": "SDKs",
       "pages": [
-        "docs/sdks/sdk-overview",
+        "integration/sdks/sdk-overview",
         {
           "group": "JS SDK",
           "pages": [
-            "docs/sdks/web/js-sdk",
-            "docs/sdks/web/js-sdk-styles"
+            "integration/sdks/web/js-sdk",
+            "integration/sdks/web/js-sdk-styles"
           ]
         },
         {
           "group": "Mobile SDKs",
           "pages": [
-            "docs/sdks/mobile/ionic/ionic-sdk-lite",
-            "docs/sdks/mobile/ionic/ionic-sdk-full",
-            "docs/sdks/mobile/flutter/flutter-sdk-lite",
-            "docs/sdks/mobile/flutter/flutter-sdk-full"
+            "integration/sdks/mobile/ionic/ionic-sdk-lite",
+            "integration/sdks/mobile/ionic/ionic-sdk-full",
+            "integration/sdks/mobile/flutter/flutter-sdk-lite",
+            "integration/sdks/mobile/flutter/flutter-sdk-full"
           ]
         }
       ]
@@ -107,31 +154,55 @@
     {
       "group": "Plugins",
       "pages": [
-        "docs/plugins/plugins-overview",
-        "docs/plugins/woo-commerce",
-        "docs/plugins/magento"
+        "integration/plugins/plugins-overview",
+        "integration/plugins/woo-commerce",
+        "integration/plugins/magento"
       ]
     },
     {
       "group": "Dashboard",
       "pages": [
-        "docs/dashboard/dashboard-overview",
-        "docs/dashboard/dashboard-home",
+        "dashboard/dashboard-overview",
+        "dashboard/home",
         {
           "group": "Transactions",
           "pages": [
-            "docs/dashboard/transactions",
-            "docs/dashboard/transaction-details"
+            "dashboard/transactions",
+            "dashboard/transaction-details"
           ]
         },
-        "docs/dashboard/connections",
-        "docs/dashboard/routing",
-        "docs/dashboard/payment-links",
+        "dashboard/payment-links",
         {
           "group": "Developers",
           "pages": [
-            "docs/dashboard/dev-api-keys",
-            "docs/dashboard/dev-webhooks"
+            "dashboard/dev-api-keys",
+            "dashboard/dev-webhooks"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Revenue Optimization",
+      "pages": [
+        "dashboard/revenue-optimization/connections",
+        "dashboard/revenue-optimization/routing"
+      ]
+    },
+    {
+      "group": "Online Payments",
+      "pages": [
+        {
+          "group": "Disputes",
+          "pages": [
+            "dashboard/online-payments/disputes",
+            "dashboard/online-payments/dispute-details"
+          ]
+        },
+        {
+          "group": "Finances",
+          "pages": [
+            "dashboard/online-payments/finances",
+            "dashboard/online-payments/settlement-details"
           ]
         }
       ]

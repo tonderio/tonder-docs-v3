@@ -1,0 +1,120 @@
+---
+title: "Disputes"
+---
+
+A dispute occurs when a customer raises a concern with their card issuer regarding a payment made through a particular platform. 
+
+Using Tonder's payment processing capabilities, you can securely handle disputes directly from the Tonder Dashboard. This page aims to guide you through handling your disputes in Tonder.
+
+## How disputes work
+
+If a customer raises concerns or questions regarding a payment made through Tonder with their card issuer, it leads to a dispute. This, in turn, triggers a formal process on the card network, resulting in the immediate reversal of the payment. As a result, the payment amount and any associated dispute fees are first deducted from Tonder and then from your account balance. Below is an overview of the steps involved in a dispute process:
+
+<Frame>![](/images/online-payments/disputes/disputes-flow.png) </Frame>
+
+## Managing disputes
+
+To effectively navigate through disputes, Tonder offers a comprehensive step-by-step guide accessible within the  [Disputes](/dashboard/online-payments/disputes) page of the Dashboard section. This guide helps users compile and submit compelling evidence to support their case.
+
+For each dispute, you can either:
+
+- **Accept**: Accepting a dispute involves acknowledging the cardholder's claim as valid and agreeing to the chargeback without contesting it further.
+
+- **Dispute**: Disputing a transaction refers to providing evidence to the card issuer to challenge and overturn a cardholder's claim against a payment.
+
+<Note>
+  The evidence submission process in the dispute module is exclusively tailored for Tonder's processing capabilities with the Tonder **Online Payments** product.
+</Note>
+
+The video below exemplifies disputing a transaction in Tonder's Dashboard.
+
+<Frame>
+  <video controls>
+    <source src="/videos/1350x800/dispute-send-evidence.mp4" type="video/mp4"/>
+    Your browser does not support video tags.
+  </video>
+</Frame>
+
+<Info>
+  Tonder's dispute module is primarily an informational tool for all other Payment Service Providers (PSPs). Manage dispute operations directly through the respective admin panel for other payment processors.
+</Info>
+
+### Disputes fees
+
+The fees that apply to disputes for your business will be defined in the contract with the Tonder commercial team. Whenever a cardholder initiates a dispute, these fees are deducted from your reserves. It is crucial to be aware of these charges and factor them into your financial planning.
+
+## Navigating timing constraints
+
+Cardholders can initiate disputes up to 120 days from the original transaction date. However, certain circumstances might warrant an extension of this timeframe as per specific regulations.
+
+To handle an issue, it is advisable to analyze it immediately and submit a dispute request within 10 calendar days of receiving it. When challenging disputes, make sure to attach relevant documentation. Once evidence is provided in response to a dispute, the issuing bank has a specific period, usually between 60 to 75 days, based on the card network, to assess the evidence and decide on the resolution.
+
+<Note>
+  The entire dispute process typically takes 2-3 months from initiation to resolution. Unfortunately, there are no ways businesses can accelerate the process.
+</Note>
+
+## Dispute Reason Codes
+
+When a dispute arises, payment networks like Visa and Mastercard assign specific codes. Examples of these codes for each network are listed below:
+
+<Tabs>
+  <Tab title="Visa">
+    <AccordionGroup>
+      <Accordion icon="cc-visa" title="10.4 Fraudulent Transaction — Card-Absent Environment">
+        This chargeback occurs when a customer does not recognize the transaction and states they did not authorize the charge to their credit card. This chargeback may be reversed if the Merchant is 3D secure or if you are delivering goods to the Cardholder and you have a signature that he has received them.
+      </Accordion>
+
+      <Accordion icon="cc-visa" title="12.6 Duplicate Processing">
+        This chargeback occurs when a customer claims they have been charged multiple times by an establishment when there is only one valid transaction. This chargeback may be reversed if you can supply a signed and imprinted/swiped sales draft for each transaction processed, along with an explanation and description for items purchased during each transaction or evidence credit was issued.
+      </Accordion>
+
+      <Accordion icon="cc-visa" title="13.1 Services Not Provided or Merchandise/Services Not Received">
+        This chargeback occurs when a Merchant was either unwilling or unable to provide services or shipped merchandise was not received. This chargeback may be reversed if you can provide proof that the services were rendered to the cardholder, proof of delivery for the merchandise purchased, or evidence the credit was issued. This chargeback can be avoided by waiting to charge the customer until after the service has been provided or the merchandise has been shipped.
+      </Accordion>
+
+      <Accordion icon="cc-visa" title="13.2 Credit Not Processed">
+        This chargeback occurs when:
+        - A customer withdraws permission to charge the account or cancels subscription payment.
+        - The cardholder or issuing bank cancels the account.
+        - The merchant neglects to cancel a recurring transaction.
+        - The merchant processes a transaction after being notified the cardholder's account was closed.
+      </Accordion>
+
+      <Accordion icon="cc-visa" title="13.3 Not as Described or Defective Merchandise/Services">
+        This chargeback occurs when:
+        - A customer claims The merchandise was damaged in transit.
+        - The merchandise does not match the merchant's description
+        - The cardholder disputes the quality of the product. 
+        - The cardholder fraudulently claims the merchandise is damaged.
+      </Accordion>
+
+      <Accordion icon="cc-visa" title="13.7 Cancelled Merchandise/Services">
+        This chargeback occurs when a customer claims they are due a credit from your establishment that has not been processed. This chargeback may be reversed if you can supply proof that a credit has been issued to the cardholder, or supply any documentation related to this transaction along with an explanation as to why the credit was not issued. 
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+
+  <Tab title="Mastercard">
+    <AccordionGroup>
+      <Accordion icon="cc-mastercard" title="4837 No Cardholder Authorization">
+        This chargeback occurs when a customer does not recognize the transaction and states that they did not authorize the charge to their credit card. This chargeback may be reversed if the Merchant is 3D secure or if you are delivering goods to a Cardholder and you have a signature that he has received them.
+      </Accordion>
+
+      <Accordion icon="cc-mastercard" title="4841 Cancelled Recurring or Digital Goods Transaction">
+        This chargeback occurs when a customer states they have canceled the recurring services and, therefore, should not have been charged for this transaction. This chargeback may be reversed by supplying evidence of credit issued, or evidence containing the cardholder signature with the correct cancellation date. This chargeback can be avoided by promptly removing the billing cycles from customers who cancel your services.
+      </Accordion>
+
+      <Accordion icon="cc-mastercard" title="4853 Cardholder Dispute — Defective/Not as Described">
+        This chargeback occurs when a customer claims the service or merchandise they received does not conform to the description they were given. This chargeback may be reversed by supplying proof that the cardholder received the goods or services that fit the description at the time of the purchase, proof that the deficiency that led to this dispute has been corrected, a statement that the cardholder neither returned nor attempted to return merchandise or evidence that a credit was issued. This chargeback can be avoided by ensuring the customer clearly understands what they are purchasing and is aware of any applicable return or refund policies.
+      </Accordion>
+
+      <Accordion icon="cc-mastercard" title="4855 Goods or Services Not Provided">
+        This chargeback occurs when a customer claims they have paid for items that were to be delivered from your establishment but have not yet been received. This chargeback may be reversed by supplying proof that the customer has received the expected merchandise or evidence that a credit was issued. This chargeback can be avoided by waiting to process the charge to the customer's credit card until the merchandise has been shipped.
+      </Accordion>
+      
+      <Accordion icon="cc-mastercard" title="4863 Cardholder Does Not Recognize Transaction — Potential Fraud">
+        This chargeback occurs when the Cardholder does not recognize the Transaction. This chargeback may be reversed if you can supply information or documentation to assist the cardholder in recognizing the transaction or evidence that a credit was issued.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+</Tabs>

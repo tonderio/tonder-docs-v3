@@ -1,0 +1,77 @@
+---
+title: "Dispute Details"
+---
+
+The Dispute Details page provides you with information about the dispute. It presents all the relevant details related to it.
+
+| Field          | Description                                               |
+|----------------|-----------------------------------------------------------|
+| Network reason code | The code indicating the reason of the dispute. See more details [here](/online-payments/disputes#dispute-reason-codes).   |
+| Dispute ID     | Unique identifier associated with the dispute.      |
+| Client Info    | Information related to the client associated with a dispute.|
+| Timeline       | Chronological sequence of events related to a dispute.|
+
+<Frame>![](/images/1350x800/dashboard/transactions/disputes/dispute-details.png)</Frame>
+
+## Timeline
+
+The timeline section will present a card for each step the transaction may take. Each card will present details about each attempt, along with an option to access the payment processor's raw response. The image below exemplifies a card found in here:
+
+<Frame>![](/images/1350x800/dashboard/transactions/disputes/dispute-timeline.png)</Frame>
+
+The table below presents the information found for each:
+
+| Field             | Description                                                 |
+| ----------------- | ----------------------------------------------------------- |
+| Reference         | The reference ID of the attempt on the processor's system.  |
+| Creation Date     | Date when the transaction was attempted.                    |
+| Amount            | The monetary value associated with the transaction attempt. |
+| Currency          | The currency in which the amount is expressed.              |
+| Type              | The type of the transaction (payment, dispute).             |
+| Status            | The current status of the transaction attempt.              |
+| Payment Processor | The payment processor used for the processing attempt.      |
+| Eye Icon (👁️)    | Button to open the raw response from the payment processor. |
+
+## Managing disputes
+
+For every transaction executed using Tonder as payment processor, you will be able to manage disputes through the dispute details page in the dashboard. In the top-right corner of the page there will be two buttons:
+
+<Frame>![](/images/1350x800/dashboard/transactions/disputes/dispute-manage.png)</Frame>
+
+### Accept
+
+Accepting a dispute involves acknowledging the cardholder's claim as valid and agreeing to the chargeback without contesting it further. To accept a dispute, do the following:
+
+1. Navigate to the **Transactions > Disputes** in the dashboard.
+2. Select the dispute you need to accept, and click on the respective's row to access the dispute details page.
+3. On the top-right corner of the screen, select the **Accept** option.
+4. Click **Yes, accept** on the Accept dispute pop-up.
+
+Below is an example of this process:
+
+<Frame>
+  <video controls>
+    <source src="/videos/1350x800/dispute-accept.mp4" type="video/mp4"/>
+    Your browser does not support the video tag.
+  </video>
+</Frame>
+
+### Dispute
+
+Disputing a transaction refers to the process of providing evidence to the card issuer to challenge and overturn a cardholder's claim against a payment. To start providing evidence to a dispute, do the following:
+
+1. Navigate to the **Transactions > Disputes** in the dashboard.
+2. Select the dispute you need to accept, and click on the respective's row to access the dispute details page.
+3. On the top-right corner of the screen, select the **Dispute** option.
+4. Add the necessary details of the product.
+5. Provide evidence by uploading files to challenge the claim.
+6. Check the needed checkboxes and click on **Submit evidence**.
+
+Below is an example of this process:
+
+<Frame>
+  <video controls>
+    <source src="/videos/1350x800/dispute-send-evidence.mp4" type="video/mp4"/>
+    Your browser does not support the video tag.
+  </video>
+</Frame>

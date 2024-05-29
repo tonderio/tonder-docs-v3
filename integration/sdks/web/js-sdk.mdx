@@ -1,0 +1,205 @@
+---
+title: "Tonder JS SDK"
+sidebarTitle: "Configuration"
+---
+
+The Tonder JS SDK is a vanilla Javascript solution for integrating our system into your platform. This solution ensures PCI DSS (Payment Card Industry Data Security Standard) by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
+
+This guide will walk you through all the steps, from installation and configuring to styling the SDK to fit your website.
+
+## Installation
+
+Tonder gives you two ways to install our SDK. You can install our npm package or use script tags directly in your HTML.
+
+<AccordionGroup>
+  <Accordion title="NPM Package">
+    To install [Tonder's SDK with npm](https://www.npmjs.com/package/tonder-sdk-test?activeTab=readme), use the following command:
+
+    ```curl
+    npm i tonder-sdk-test
+    ```
+  </Accordion>
+
+  <Accordion title="Script tag">
+    To use Tonder's SDK through script tag, add the following to your HTML:
+
+    ```html
+    <script src="https://zplit-prod.s3.amazonaws.com/v1/bundle.min.js"></script>
+    ```
+  </Accordion> 
+</AccordionGroup>
+
+## Requirements
+
+To configure our SDK you need to add the following script tags to your HTML:
+
+```html
+<script src="https://js.skyflow.com/v1/index.js"></script>
+<script src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
+<script src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"></script>
+```
+
+The first tag is mandatory for achieving PCI DSS (Payment Card Industry Data Security Standard), as stated at the top of this page, by using Skyflows's integration. The other tags are necessary to ensure a reliable connection to the payment processor.
+
+<Note>You can also install each one with their respective npm packages</Note>
+
+## Configuration
+
+Before initializing an instance of Tonder SDK, ensure that you have configured it properly. Follow the usage example below:
+
+<Steps>
+  <Step title="Add the required ID to your HTML">
+    Tonder's JS SDK needs an entry point to operate. This entry point is defined by adding a `tonder-checkout` ID to an empty `div`, like the example below:
+
+    ```html
+    <div>
+        <h1>Checkout</h1>
+        <!-- You have to add an entry point with the ID 'tonder-checkout' -->
+        <div id="tonder-checkout">
+        </div>
+    </div>
+    ```
+  </Step>
+
+  <Step title="Initialize Tonder's SDK Instance">
+    Initialize Tonder's JS SDK instance with the following parameters:
+
+| Field         | Description                                                   |
+|---------------|---------------------------------------------------------------|
+| `apiKey`      | The API key used for authentication and authorization.        |
+| `returnUrl`   | The URL to which the user is redirected after the checkout process, regardless of success or failure. |
+| `successUrl`  | The URL to which the user is redirected after a successful checkout. |
+| `styles`      | Custom styles object that allows you to customize the appearance of the inline checkout. It may include properties such as colors, fonts, and other styling options. |
+
+    <CodeGroup>
+
+    ```javascript npm package option
+    import { InlineCheckout } from "tonder-sdk-test";
+
+    const inlineCheckout = new InlineCheckout({
+      apiKey,
+      returnUrl,
+      successUrl,
+      styles: customStyles
+    });
+    ```
+    ```javascript Script tag option
+    const inlineCheckout = new TonderSdk.InlineCheckout({
+      apiKey,
+      returnUrl,
+      successUrl,
+      styles: customStyles
+    });
+    ```
+
+    </CodeGroup>
+  </Step>
+
+  <Step title="Inject checkout method">
+    Call the `injectCheckout` method with your inlineCheckout instance, with the code below:
+
+    ```javascript
+    inlineCheckout.injectCheckout();
+    ```
+
+    This method will use the element with id `tonder-checkout` added in Step 1 to render the checkout elements, as exemplified by the image below:
+
+    <Frame>![](/images/SDKs/checkout-gif.gif)</Frame>
+
+    With this, you can render the checkout to your customers.
+  </Step>
+
+  <Step title="Add a pay button">
+    Lastly, you need to create a button to submit the form. This button needs to have an event listener that calls the `payment` method from the `inlineCheckout` instance, sending the checkout data as payload, like presented below:
+
+    ```javascript
+    document.getElementById('your_pay_button').addEventListener('click', async () => {
+      response = await inlineCheckout.payment(checkoutData);
+    });
+    ```
+
+    #### Checkout data
+
+    The payment function payload needs to be an object with detailed information about the customer, currency and cart. Below you find details abou each needed field:
+
+    <AccordionGroup>
+
+      <Accordion title="Customer">
+        | Field      | Description                                |
+        |------------|--------------------------------------------|
+        | `firstName`  | The first name of the customer.             |
+        | `lastName`   | The last name of the customer.              |
+        | `country`    | The country of residence for the customer.  |
+        | `address`    | The street address in the specified city for the customer. |
+        | `city`       | The city of residence for the customer.     |
+        | `state`      | The state or region within the country for the customer. |
+        | `postCode`   | The postal code or ZIP code of the address for the customer. |
+        | `email`      | The email address for communication with the customer.       |
+        | `phone`      | The contact phone number for the customer.                    |
+
+      </Accordion>
+
+      <Accordion title="Currency">
+        | Field      | Description                                |
+        |------------|--------------------------------------------|
+        | `currency`   | The currency used by the customer in [ISO 4217 format](https://en.wikipedia.org/wiki/ISO_4217).|
+      </Accordion>
+
+      <Accordion title="Cart">
+        | Field            | Description                                                  |
+        |------------------|--------------------------------------------------------------|
+        | `total`          | The total amount for the customer's purchase.                |
+        | `items`          | An array containing details of individual items in the purchase. |
+        | `items[n].description` | The description of the first item.  |
+        | `items[n].quantity`    | The quantity of the first item in the purchase.             |
+        | `items[n].price_unit`  | The unit price of the first item.                            |
+        | `items[n].discount`    | The discount applied to the first item.                      |
+        | `items[n].taxes`       | The taxes applied to the first item.                         |
+        | `items[n].product_reference` | The reference number of the product for the first item.   |
+        | `items[n].name`        | The name of the first item (e.g., "T-Shirt").               |
+        | `items[n].amount_total`| The total amount for the first item.                        |
+      </Accordion>
+    </AccordionGroup>
+
+    #### Checkout data example
+    Below you find an example of a checkout data object:
+
+    <Accordion title="checkoutData example">
+        ```javascript
+          const checkoutData = {
+            customer: {
+              firstName: "Juan",
+              lastName: "Hernández",
+              country: "Mexico",
+              address: "Av. Revolución 356, Col. Roma",
+              city: "Monterrey",
+              state: "Nuevo León",
+              postCode: "64700",
+              email: "juan.hernandez@mail.com",
+              phone: "8187654321",
+            },
+            currency: 'mxn',
+            cart: {
+              total: 399,
+              items: [
+                {
+                  description: "Black T-Shirt",
+                  quantity: 1,
+                  price_unit: 1,
+                  discount: 0,
+                  taxes: 0,
+                  product_reference: 1,
+                  name: "T-Shirt",
+                  amount_total: 399,
+                },
+              ]
+            }
+          };
+        ```
+      </Accordion>
+  </Step>
+</Steps>
+
+## Styling
+
+To learn how you can add your own styles to the checkout elements, refer to the [SDK Styles page](./js-sdk-styles).
