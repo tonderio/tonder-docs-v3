@@ -281,3 +281,463 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
   </Step>
 </Steps>
 
+## Class Methods
+
+After properly configuring your Lite Checkout instance, you have at your hand various methods to work with Tonder. Below you will find all the available methods, with an example of the data returned by each so you can understand how they work:
+
+### Get Business
+
+This method retrieves all the information about your business. Get details on branding, providers public keys, vault information, and more. To call it, do the following:
+
+```js
+const merchantData = await liteCheckout.getBusiness();
+```
+
+<Accordion title="Get Business response">
+  The response to this method will be the following:
+
+  ```ts
+    {
+      business: {
+          pk: number,
+          name: string,
+          categories: [
+            {
+              pk: number,
+              name: string
+            }
+          ],
+          web: string,
+          logo: string,
+          full_logo_url: string,
+          background_color: string,
+          primary_color: string,
+          checkout_mode: boolean,
+          textCheckoutColor: string,
+          textDetailsColor: string,
+          checkout_logo: string
+      },
+      openpay_keys: {
+          merchant_id: string,
+          public_key: string
+      },
+      fintoc_keys: {
+          public_key: string
+      },
+      vault_id: string,
+      vault_url: string,
+      reference: number,
+      is_installments_available: boolean
+  }
+  ```
+</Accordion>
+
+### Device Session ID
+
+Using the `getOpenpayDeviceSessionID` method, you can retrieve your device session id. This method requires you to add the following parameters recovered with the `getBusiness` method:
+
+- `openpay_keys.merchant_id`:  The Merchant ID associated with your store.
+- `openpay_keys.public_key`: Your Public Key.
+
+<Tip>You can recover your `openpay_keys` data from your `merchantData` returned from the Get Business method.</Tip>
+
+With the required parameters in hand, call the method as presented below:
+
+```js
+  const { openpay_keys } = merchantData;
+
+  const deviceSessionIdTonder = await liteCheckout.getOpenpayDeviceSessionID(
+    openpay_keys.merchant_id,
+    openpay_keys.public_key
+  );
+```
+The returned data in `deviceSessionIdTonder` will be your device session id.
+
+### Customer
+
+The `customerRegister` allows you to retrieve a customer's authorization token by adding their email address as the only parameter to this method. To retrieve it, execute the following:
+
+```js
+  const customerEmail = "john.c.calhoun@examplepetstore.com";
+
+  const customerData = await liteCheckout.customerRegister(customerEmail);
+```
+<Accordion title="Customer Register response">
+  The response to this method will be the following:
+  ```ts
+    {
+      id: number,
+      email: string,
+      auth_token: string
+    }
+  ```
+</Accordion>
+
+### Order
+
+To create a new order with the Lite SDK, use the `createOrder` method. This method requires an object as parameter with the following data:
+
+| Field               | Description                           |
+|---------------------|---------------------------------------|
+| `business`           | Your business's API key.             |
+| `client`              | Authentication token for the client recovered with the `customerRegister` method.  |
+| `billing_address_id`  | ID of the billing address (null if not available). |
+| `shipping_address_id` | ID of the shipping address (null if not available). |
+| `amount`              | Total amount of the order.             |
+| `status`              | Status of the order.                 |
+| `reference`           | Reference information for the order. Recovered with the `getBusiness` method.   |
+| `is_oneclick`         | Boolean indicating one-click order (true/false). |
+| `items`               | List of items in the shopping cart.    |
+
+With the required parameter in hand, call the method as presented below:
+
+```js
+  const cartItems = [
+    {
+      description: "Test product description",
+      quantity: 1,
+      price_unit: 25,
+      discount: 0,
+      taxes: 12,
+      product_reference: 65421,
+      name: "Test product",
+      amount_total: 25
+    }
+  ]
+
+  const { reference } = merchantData;
+
+  const orderData = {
+    business: apiKeyTonder,
+    client: customerData.auth_token,
+    billing_address_id: null,
+    shipping_address_id: null,
+    amount: total,
+    status: A,
+    reference: reference,
+    is_oneclick: true,
+    items: cartItems,
+  };
+
+  const jsonResponseOrder = await liteCheckout.createOrder(
+    orderData
+  );
+```
+
+<Accordion title="Create Order response">
+  The response to this method will be the following:
+
+  ```ts
+    {
+      id: number,
+      created: string,
+      amount: string,
+      status: string,
+      payment_method?: string,
+      reference?: string,
+      is_oneclick: boolean,
+      items: [
+        {
+          description: string,
+          product_reference: string,
+          quantity: string,
+          price_unit: string,
+          discount: string,
+          taxes: string,
+          amount_total: string
+        }
+      ],
+      billing_address?: string,
+      shipping_address?: string,
+      client: {
+        email: string,
+        name: string,
+        first_name: string,
+        last_name: string,
+        client_profile: {
+          gender: string,
+          date_birth?: string,
+          terms: boolean,
+          phone: string
+        }
+      }
+    }
+  ```
+</Accordion>
+
+### Payment
+
+To create a new payment with the Lite SDK, use the `createPayment` method. This method requires an object as parameter with the following data:
+
+| Field         | Description                              |
+|---------------|------------------------------------------|
+| business_pk   | Primary key of the business for payment found in the `getBusiness` return object.   |
+| amount        | Total amount for the payment.              |
+| date          | Date of the payment (formatted as a string). |
+| order         | ID of the associated order in the JSON response, returned from the `createOrder` method. |
+
+With the required parameter in hand, call the method as presented below:
+
+```js
+  const now = new Date();
+  const dateString = now.toISOString();
+
+  const paymentData = {
+    business_pk: business.pk,
+    amount: total,
+    date: dateString,
+    order: jsonResponseOrder.id,
+  };
+
+  const jsonResponsePayment = await liteCheckout.createPayment(
+    paymentData
+  );
+```
+
+<Accordion title="Create Payment response">
+  The response to this method will be the following:
+
+  ```ts
+    {
+      pk: number,
+      order?: string,
+      amount: string,
+      status: string,
+      date: string,
+      paid_date?: string,
+      shipping_address: {
+        street: string,
+        number: string,
+        suburb: string,
+        city: {
+          name: string
+        },
+        state: {
+          name: string,
+          country: {
+              name: string
+          }
+        },
+        zip_code: string
+      },
+      shipping_address_id?: string,
+      billing_address: {
+        street: string,
+        number: string,
+        suburb: string,
+        city: {
+          name: string
+        },
+        state: {
+          name: string,
+          country: {
+            name: string
+          }
+        },
+        zip_code: string
+      },
+      billing_address_id?: string,
+      client?: string,
+      customer_order_reference?: string
+    }
+  ```
+</Accordion>
+
+### Skyflow Tokens
+
+To retrieve skyflow's payment form tokenized values you need to call the `getSkyflowTokens` method. 
+    
+This method requires an object as parameter with `vault_id` and `vault_url` recovered with the `getBusiness` method, and a `data` object with the following information:
+
+| Field              | Description                              |
+|--------------------|------------------------------------------|
+| card_number        | Card number entered in the payment form.   |
+| cvv                | CVV (Card Verification Value) from the payment form. |
+| expiration_month   | Expiration month of the card from the payment form. |
+| expiration_year    | Expiration year of the card from the payment form. |
+| cardholder_name    | Cardholder's name from the payment form.   |
+
+<Tip>These values above come from your html form.</Tip>
+
+With the required parameter in hand, call the method as presented below:
+
+```js
+  const skyflowFields = {
+    card_number: this.paymentForm.value.cardNumber,
+    cvv: this.paymentForm.value.cvv,
+    expiration_month: this.paymentForm.value.month,
+    expiration_year: this.paymentForm.value.expirationYear,
+    cardholder_name: this.paymentForm.value.name
+  }
+
+  const { vault_id, vault_url } = merchantData;
+
+
+  const skyflowTokens = await liteCheckout.getSkyflowTokens({
+    vault_id: vault_id,
+    vault_url: vault_url,
+    data: skyflowFields
+  })
+```
+
+<Accordion title="Get Skyflow tokens response">
+  The response to this method will be the following:
+
+  ```ts
+    {
+      vaultID: string,
+      responses: [
+        {
+          records: [
+              {
+                  skyflow_id: string
+              }
+          ]
+        },
+        {
+            fields: {
+                card_number: string,
+                cardholder_name: string,
+                cvv: string,
+                expiration_month: string,
+                expiration_year: string,
+                skyflow_id: string
+            }
+        }
+      ]
+    }
+  ```
+</Accordion>
+
+### Checkout Router
+
+To retrieve the checkout router data you need to call the `startCheckoutRouter` method with an object as the only parameter. This object requires the following data:
+
+| Field               | Description                                          |
+|---------------------|------------------------------------------------------|
+| card                | Skyflow tokens representing the card information.    |
+| name                | Cardholder's name from Skyflow tokens.               |
+| last_name           | Customer' last name.                                 |
+| email_client        | Customer's email address.                            |
+| phone_number        | Customer's phone number.                             |
+| return_url          | URL to return after the transaction is completed.    |
+| id_product          | ID of the product.                                   |
+| quantity_product    | Quantity of the product.                             |
+| id_ship             | ID of the shipping.                                  |
+| instance_id_ship    | Instance ID of the shipping.                         |
+| amount              | Total amount for the transaction.                    |
+| title_ship          | Title of the shipping.                               |
+| description         | Description of the transaction.                      |
+| device_session_id   | Device session ID for tracking.                      |
+| token_id            | Token ID.                                            |
+| order_id            | ID of the associated order from JSON response.       |
+| business_id         | ID of the business for the transaction.              |
+| payment_id          | ID of the payment from JSON response.                |
+| source              | Source identifier.                                   |
+
+With the required parameter in hand, call the method as presented below:
+
+```js
+  const customerPhone = "+11111111";
+  const returnUrl = "http://localhost:8100/payment/success";
+
+  const routerData = {
+    card: skyflowTokens,
+    name: skyflowTokens.cardholder_name,
+    last_name: "",
+    email_client: customerEmail,
+    phone_number: customerPhone,
+    return_url: returnUrl,
+    id_product: "no_id",
+    quantity_product: 1,
+    id_ship: "0",
+    instance_id_ship: "0",
+    amount: total,
+    title_ship: "shipping",
+    description: "Transaction from the lite SDK",
+    device_session_id: deviceSessionIdTonder,
+    token_id: "",
+    order_id: jsonResponseOrder.id,
+    business_id: merchantData.business.pk,
+    payment_id: jsonResponsePayment.pk,
+    source: 'ionic-lite-sdk',
+  };
+
+  const jsonResponseRouter = await liteCheckout.startCheckoutRouter(
+    routerData
+  );
+```
+
+<Note>You need to take actions based on the checkout router response.</Note>
+
+<Accordion title="Checkout Router response">
+  The response to this method will be the following:
+
+  ```ts
+    {
+      status: 200,
+      message: Success,
+      psp_response: {
+        id: string,
+        authorization: number,
+        operation_type: string,
+        transaction_type: string,
+        status: string,
+        conciliated: boolean,
+        creation_date: string,
+        operation_date: string,
+        description: string,
+        error_message?: string,
+        order_id?: string,
+        card: {
+          type: string,
+          brand: string,
+          address?: string,
+          card_number: string,
+          holder_name: string,
+          expiration_year: string,
+          expiration_month: string,
+          allows_charges: boolean,
+          allows_payouts: boolean,
+          bank_name: string,
+          points_type: string,
+          points_card: boolean,
+          bank_code: number
+        },
+        customer_id: string,
+        gateway_card_present: string,
+        amount: number,
+        fee: {
+          amount: number,
+          tax: number,
+          currency: string
+        },
+        payment_method: {
+          type: string,
+          url: string
+        },
+        currency: string,
+        method: string,
+        object: string
+      },
+      transaction_status: string,
+      transaction_id: number,
+      payment_id: number,
+      provider: string,
+      next_action: {
+        redirect_to_url: {
+          url: string,
+          return_url: string,
+          verify_transaction_status_url: string
+        }
+      },
+      actions: [
+        {
+          name: string,
+          url: string,
+          method: string
+        }
+      ]
+    }
+  ```
+</Accordion>
