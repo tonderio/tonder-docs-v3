@@ -543,9 +543,9 @@ With the required parameter in hand, call the method as presented below:
   ```
 </Accordion>
 
-### Skyflow Tokens
+### Tokenization
 
-To retrieve skyflow's payment form tokenized values you need to call the `getSkyflowTokens` method. 
+To retrieve the tokenized values you need to call the `getSkyflowTokens` method. 
     
 This method requires an object as parameter with `vault_id` and `vault_url` recovered with the `getBusiness` method, and a `data` object with the following information:
 
@@ -580,7 +580,7 @@ With the required parameter in hand, call the method as presented below:
   })
 ```
 
-<Accordion title="Get Skyflow tokens response">
+<Accordion title="Get tokenization response">
   The response to this method will be the following:
 
   ```ts
@@ -616,7 +616,7 @@ To retrieve the checkout router data you need to call the `startCheckoutRouter` 
 | Field               | Description                                          |
 |---------------------|------------------------------------------------------|
 | card                | Skyflow tokens representing the card information.    |
-| name                | Cardholder's name from Skyflow tokens.               |
+| name                | Cardholder's name from tokens.               |
 | last_name           | Customer' last name.                                 |
 | email_client        | Customer's email address.                            |
 | phone_number        | Customer's phone number.                             |
