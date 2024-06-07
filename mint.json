@@ -114,7 +114,8 @@
         },
         "online-payments/3ds2",
         "online-payments/finances",
-        "online-payments/disputes"
+        "online-payments/disputes",
+        "online-payments/test-cards"
       ]
     },
     {
