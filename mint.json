@@ -6,7 +6,7 @@
   },
   "api": {
     "baseUrl": [
-      "http://stage.tonder.io/api/v1",
+      "https://stage.tonder.io/api/v1",
       "https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148"
     ],
     "auth": {
