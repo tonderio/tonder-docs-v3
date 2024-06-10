@@ -15,6 +15,9 @@
       "inputPrefix": "Token "
     }
   },
+  "search": {
+    "prompt": "Find or ask Tonder GPT"
+  },
   "favicon": "/favicon.png",
   "colors": {
     "primary": "#4698FF",
