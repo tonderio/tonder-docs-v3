@@ -55,6 +55,10 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
     ```js
       import { LiteCheckout } from "@tonder/ionic-lite-sdk"
     ```
+
+    <Tip>
+      The `LiteCheckout` object provides all the necessary methods to perform transactions. Essentially, LiteCheckout handles calls to Tonder services, allowing transactions to be performed without the need to integrate additional visual components.
+    </Tip>
   </Step>
 
   <Step title="Initialize Tonder's SDK Instance">
@@ -63,10 +67,13 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
 | Field         | Description                                                   |
 |---------------|---------------------------------------------------------------|
 | `signal`      | Signal from AbortController instance if it needs cancel the request.        |
-| `baseUrlTonder`   | Tonder's API  base URL.<br></br>-> Live server: `http://stage.tonder.io`<br></br>-> Mock Server: `https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148`    |
+| `baseUrlTonder`   | Tonder's API  base URL.<br></br>-> Live server: `https://stage.tonder.io`<br></br>-> Mock Server: `https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148`    |
 | `apiKeyTonder`  | Your Tonder API key. You can find it in your [Tonder dashboard](https://stage.tonder.io/dashboard/developers/). |
 
     ```js
+      const baseUrlTonder = 'https://stage.tonder.io';
+      const apiKeyTonder = '00d17d61e9240c6e0611fbdb1558e636ed6389db';
+
       const liteCheckout = new LiteCheckout({ 
         signal, 
         baseUrlTonder, 
