@@ -130,7 +130,8 @@
     {
       "group": "Integrations",
       "pages": [
-        "integration/intro"
+        "integration/intro",
+        "integration/choose-integration"
       ]
     },
     {
@@ -159,8 +160,8 @@
       "group": "Plugins",
       "pages": [
         "integration/plugins/plugins-overview",
-        "integration/plugins/woo-commerce",
-        "integration/plugins/magento"
+        "integration/plugins/magento",
+        "integration/plugins/woo-commerce"
       ]
     },
     {
