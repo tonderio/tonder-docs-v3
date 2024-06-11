@@ -1,0 +1,53 @@
+
+## Tonder Integration Options
+
+The following table summarizes the characteristics of the available integration options provided by Tonder.
+
+| Feature | Lite SDK | Full SDK |
+|----------|---------|----------|
+| Customization| Extensive customization options| Limited customization|
+| Target audience| Developers needing custom implementations| Projects needing quick implementation|
+| Flexibility| High flexibility in design and functionality | Pre-built, less flexible|
+| Ease of use| Requires more development effort| Simplifies development with pre-built elements |
+| User interface| Customizable| Ready-to-use UI|
+| Saved cards | Not included| Included|
+| PCI compliance| Included| Included|
+
+
+### Lite SDK
+
+**Customization**: The Lite SDK offers extensive customization options for components, allowing developers to tailor the user experience to specific needs.
+
+**Target Audience**: Ideal for developers who require specific, custom implementations and have the resources to design and integrate custom UI components.
+
+**Flexibility**: This SDK is highly flexible in terms of design and functionality, providing developers with the tools to create a unique and tailored experience.
+
+**PCI Compliance**: The Lite SDK includes PCI capabilities, ensuring secure transactions and compliance with payment security standards.
+
+### Full SDK
+
+**User Interface**: The Full SDK comes with a straightforward, ready-to-use UI, enabling developers to deploy payment solutions more quickly.
+
+**Ease of Use**: It simplifies the development process with pre-built elements and standard configurations, reducing the need for extensive coding and design.
+
+**Saved Cards Feature**: This SDK includes functionality to handle saved cards, which enhances user convenience and encourages user retention.
+
+**Target Audience**: Best suited for projects that need quick implementation with less emphasis on customization. It's ideal for developers looking to integrate a payment solution rapidly.
+
+**PCI Compliance**: Similar to the Lite SDK, the Full SDK also includes PCI capabilities, ensuring secure transactions.
+
+### Common Features
+
+**PCI Capabilities**: Both the Lite and Full SDKs are equipped with PCI capabilities through Tonder, ensuring secure payment processing across both SDKs.
+
+
+## Making the Decision
+
+When deciding between the Lite and Full SDKs, consider the following questions:
+
+- **How much customization do you need?** If your project requires a highly tailored user experience, the Lite SDK is the better choice. For faster, standardized implementations, the Full SDK is more suitable.
+- **What is your timeline?** If you need to deploy quickly, the Full SDK offers a faster path to implementation.
+- **What resources are available?** If you have the resources for custom development and integration, the Lite SDK provides the flexibility you need. For teams with limited resources, the Full SDK simplifies the process.
+- **Do you need saved card functionality?** If handling saved cards is a priority for your users, the Full SDK's built-in feature will be beneficial.
+
+By carefully evaluating these factors, you can choose the Tonder SDK that best meets your project's requirements, ensuring a successful integration and a positive user experience.
