@@ -1,0 +1,37 @@
+---
+title: "3DS Payment Lifecycle"
+---
+
+The 3DS payment flow ensures an additional layer of security for online transactions. This page provides an overview of the 3DS payment flow in Tonder, detailing each step in the process to help users understand how transactions are securely processed within the Tonder payment system.
+
+## The 3DS Payment Flow
+
+The steps below breakdown the 3DS flow to better demonstrate how it works.
+
+<Steps>
+  <Step title="Initialization and Configuration">
+    The process starts setting up the environment. Initialize Tonder's SDK, adding the necessary data:
+    - `returnUrl`: The URL to which the user is redirected after the checkout process, regardless of success or failure.
+    - `apiKey`: The API key used for authentication and authorization.
+  </Step>
+  <Step title="Display the Checkout">
+    Display the payment form to the user. Here the user will add their payment details and start the payment process.
+  </Step>
+  <Step title="Processing the Payment">
+    When the user clicks the payment button, the payment process will return a status defining the next step:
+
+    - **Pending**: The user is automatically redirected to the 3DS authentication page.
+    - **Success**: The payment is successfully processed, and the user is notified.
+    - **Failed/Declined**: The payment process is halted, and the user is informed of the failure or decline.
+  </Step>
+  <Step title="Verifying 3DS Transaction">
+    The status of the 3DS transaction after the user has been redirected back to the return URL is validated.    Depending on the response status, appropriate actions are taken:
+    
+    - **Success**: The transaction proceeds normally.
+    - **Failed**: The user is notified, and necessary steps are taken to handle the failed transaction.
+  </Step>
+</Steps>
+
+The worflow below illustrate this step-by-step process:
+
+<Frame>![](/images/core-concepts/3ds-workflow.png)</Frame>
