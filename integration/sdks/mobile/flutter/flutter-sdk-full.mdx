@@ -142,6 +142,29 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
     await _fullPlugin!.injectCheckout();
     ```
   </Step>
+
+  <Step title="Add 3DS verification">
+    Use Tonder's SDK `verify3dsTransaction()` method to validate if the 3DS challenge was successful or not. Use the example below to call the method and handle the response as needed:
+
+    ```dart
+    void verify3dsTransaction() async {
+      try {
+        final response = await inlineCheckout.verify3dsTransaction();
+        print('Verify 3ds response: $response');
+
+        if (response.status == 'Success') {
+          print('3DS Transaction verified.');
+          // Proceed with normal payment flow
+        } else if (response.status == 'Failed') {
+          print('3DS Transaction Failed');
+        }
+      } catch (error) {
+        print('Error verifying 3DS transaction: $error');
+      }
+    }
+    ```
+  </Step>
+
   <Step title="Display the Checkout UI">
     Use a `Scaffold` widget to contain and display the checkout interface:
 
