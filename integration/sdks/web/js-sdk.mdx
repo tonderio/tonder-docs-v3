@@ -110,12 +110,41 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
     With this, you can render the checkout to your customers.
   </Step>
 
+  <Step title="Add 3DS verification">
+    Use Tonder's SDK `verify3dsTransaction()` method to validate if the 3DS challenge was successful or not. Use the example below to call the method and handle the response as needed:
+
+    ```js
+    inlineCheckout.verify3dsTransaction().then(response => {
+      console.log('Verify 3ds response', response);
+      
+      if (response.status === 'Success') {
+        alert('3DS Transaction verified.');
+        // Proceed with normal payment flow
+      } else if (response.status === 'Failed') {
+        alert('3DS Transaction Failed');
+      }
+    });
+    ```
+  </Step>
+
   <Step title="Add a pay button">
     Lastly, you need to create a button to submit the form. This button needs to have an event listener that calls the `payment` method from the `inlineCheckout` instance, sending the checkout data as payload, like presented below:
 
     ```javascript
-    document.getElementById('your_pay_button').addEventListener('click', async () => {
-      response = await inlineCheckout.payment(checkoutData);
+    document.getElementById('your-pay-button').addEventListener('click', async () => {
+      try {
+        response = await inlineCheckout.payment(checkoutData);
+        if (response.status === 'Success') {
+          alert('Payment successful.');
+        } else if (response.status === 'Pending') {
+          alert('Payment pending. Redirecting to 3DS...');
+          // La redirección a 3DS ocurre automáticamente
+        } else {
+          alert('Payment declined.');
+        }
+      } catch (error) {
+        alert('Error with payment.');
+      }
     });
     ```
 
