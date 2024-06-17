@@ -93,6 +93,7 @@
       "group": "Core Concepts",
       "pages": [
         "core-concepts/payment-lifecycle",
+        "core-concepts/3ds-lifecycle",
         "core-concepts/environments"
       ]
     },
