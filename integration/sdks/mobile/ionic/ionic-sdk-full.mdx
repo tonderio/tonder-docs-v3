@@ -174,7 +174,23 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
 
 After properly configuring your Full SDK instance, you have at your hand various methods to work with Tonder. Below you will find a detailed information about the checkout data needed with an example, and all the available methods in the SDK.
 
-### Checkout Data
+<CardGroup cols={3}>
+  <Card title="Set Payment Data" href="#set-payment-data"/>
+  <Card title="Set Cart Total" href="#set-cart-total"/>
+  <Card title="Set Customer Email" href="#set-customer-email"/>
+  <Card title="Inject Checkout" href="#inject-checkout"/>
+  <Card title="3ds Verification" href="#3ds-verification"/>
+</CardGroup>
+
+### Set Payment Data
+
+The `setPaymentData` method requires a checkoutData object as a parameter to pass checkout data to Tonder. Use the code example below to call it:
+
+```js
+  inlineCheckout.setPaymentData(checkoutData);
+```
+
+#### Checkout Data
 
 The payment function payload needs to be an object with detailed information about the customer, currency and cart. Below you find details abou each needed field:
 
@@ -253,14 +269,6 @@ Below you find an example of a checkout data object:
       };
     ```
   </Accordion>
-
-### Set Payment Data
-
-The `setPaymentData` method requires a checkoutData object as a parameter to pass checkout data to Tonder. Use the code example below to call it:
-
-```js
-  inlineCheckout.setPaymentData(checkoutData);
-```
 
 ### Set Cart total
 
