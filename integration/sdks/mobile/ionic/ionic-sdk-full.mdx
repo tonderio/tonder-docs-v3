@@ -88,6 +88,10 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
     });
   ```
 
+  <Tip>
+    The `InlineCheckout` object includes all the functionalities of LiteCheckout and adds the capability to handle the rendering of the card payment form. InlineCheckout not only manages transactions but also facilitates the visual integration of the payment form in your application, providing a complete payment experience.
+  </Tip>
+
   Below is a table of all parameters available, including the required ones for initialization:
 
 <table>
@@ -103,39 +107,39 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
     <tr>
       <td>`apiKey`</td>
       <td>string</td>
-      <td>✅</td>
+      <td>✔️</td>
       <td>The API key used for authentication and authorization.</td>
     </tr>
     <tr>
       <td>`returnUrl`</td>
       <td>string</td>
-      <td>✅</td>
+      <td>✔️</td>
       <td>The URL to which the user is redirected after the checkout process, regardless of success or failure.</td>
     </tr>
     <tr>
       <td>`successUrl`</td>
       <td>string</td>
-      <td>❌</td>
+      <td>➖</td>
       <td>The URL to which the user is redirected after a successful checkout.</td>
     </tr>
     <tr>
       <td>`style`</td>
       <td>object</td>
-      <td>❌</td>
+      <td>➖</td>
       <td>The [custom styles object](#styles) to customize the checkout</td>
     </tr>
     <tr>
       <td>`containerId`</td>
       <td>string</td>
-      <td>❌</td>
+      <td>➖</td>
       <td>If a custom checkout container ID is required. Default value: `tonder-checkout`.</td>
     </tr>
     <tr>
       <td>`collectorIds`</td>
       <td>object</td>
-      <td>❌</td>
+      <td>➖</td>
       <td>
-        If you require custom div container IDs.<br></br>Default value:
+        If you require custom `div` container IDs.<br></br>Default value:
         
         <code>\{<br></br>
           cardsListContainer: "cardsListContainer",<br></br>
@@ -155,13 +159,13 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
     <tr>
       <td>`callBack`</td>
       <td>function</td>
-      <td>❌</td>
+      <td>➖</td>
       <td>Callback function to be invoked after the payment process ends successfully.</td>
     </tr>
     <tr>
       <td>`isOpenpaySandbox`</td>
       <td>boolean</td>
-      <td>❌</td>
+      <td>➖</td>
       <td>Defines if Openpay works on the sandbox. Default value: `true`.</td>
     </tr>
   </tbody>
