@@ -178,7 +178,23 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
 
 After properly configuring your Full SDK instance, you have at your hand various methods to work with Tonder. Below you will find a detailed information about the checkout data needed with an example, and all the available methods in the SDK.
 
-### Checkout data
+<CardGroup cols={3}>
+  <Card title="Set Payment Data" href="#set-payment-data"/>
+  <Card title="Set Cart Total" href="#set-cart-total"/>
+  <Card title="Set Customer Email" href="#set-customer-email"/>
+  <Card title="Inject Checkout" href="#inject-checkout"/>
+  <Card title="3DS Verification" href="#3ds-verification"/>
+</CardGroup>
+
+### Set Payment Data
+
+The `setPaymentData` method requires a checkoutData object as a parameter to pass checkout data to Tonder. Use the code example below to call it:
+
+```js
+  inlineCheckout.setPaymentData(checkoutData);
+```
+
+#### Checkout Data
 
 The payment function payload needs to be an object with detailed information about the customer, currency and cart. Below you find details abou each needed field:
 
@@ -221,7 +237,7 @@ The payment function payload needs to be an object with detailed information abo
   </Accordion>
 </AccordionGroup>
 
-#### Checkout data example
+#### Checkout Data Example
 Below you find an example of a checkout data object:
 
 <Accordion title="checkoutData example">
@@ -258,22 +274,15 @@ Below you find an example of a checkout data object:
     ```
   </Accordion>
 
-### Set payment data
+### Set Cart total
 
-The `setPaymentData` method requires a checkoutData object as a parameter to pass checkout data to Tonder. Use the code example below to call it:
-
-```js
-  inlineCheckout.setPaymentData(checkoutData);
-```
-
-### Set cart total
 Once you have set the payment data, you will need to notify the cart of the total amount by calling the `setCartTotal` method. This method takes a single parameter, a number representing the total amount, which should match the value set in the `checkoutData`. Here is an example code to help you call it correctly:
 
 ```js
   inlineCheckout.setCartTotal(checkoutData.cart.total);
 ```
 
-### Set customer email
+### Set Customer Email
 
 You can use the `setCustomerEmail` method to register a customer's email in Tonder. This method requires a string parameter and can be called using the following example:
 
@@ -288,6 +297,24 @@ The `injectCheckout` method is a function that allows you to incorporate Tonder'
 ```javascript
 inlineCheckout.injectCheckout();
 ```
+
+### 3DS Verification
+
+You can use the `verify3dsTransaction()` method to validate if a 3DS challenge was successful or not. Use the example below to call the method and handle the response as needed:
+
+```js
+  inlineCheckout.verify3dsTransaction().then(response => {
+    console.log('Verify 3ds response', response);
+    
+    if (response.status === 'Success') {
+      alert('3DS Transaction verified.');
+      // Proceed with normal payment flow
+    } else if (response.status === 'Failed') {
+      alert('3DS Transaction Failed');
+    }
+  });
+```
+
 ## Styles
 
 You can customize your checkout in two ways using Ionic SDK Full. You can either include a style parameter when creating the `InlineCheckout` instance or use HTML and CSS. 
@@ -296,7 +323,7 @@ You can customize your checkout in two ways using Ionic SDK Full. You can either
 
 Below you will find more details about both options:
 
-### Include a style parameter
+### Include a Style Parameter
 
 To include the checkout styles, add an object with the desired styles to the `styles` parameter when creating the instance, like presented below:
 

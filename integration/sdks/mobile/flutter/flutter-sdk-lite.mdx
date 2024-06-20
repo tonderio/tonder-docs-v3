@@ -89,15 +89,18 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
 
 After configuring your Lite Checkout instance, you have at your hand various methods to work with Tonder. Below you will find all the available methods, with an example of the data returned by each so you can understand how they work:
 
-- [getBusiness](#get-business): Retrieves all the information about your business.
-- [customerRegister](#customer-register): Retrieve a customer's authorization token.
-- [createOrder](#create-order): Creates a new order in the system.
-- [startCheckoutRouter](#create-payment): Initiates the checkout process for the customer.
-- [getVaultToken](#get-vault-token): Retrieves the vault credential that is required to register a customer's card. 
-- [registerCustomerCard](#register-customer-card): Registers the customer's card in the vault.
-- [getCustomerCards](#get-customer-cards): Retrieves all registered cards for the customer.
-- [deleteCustomerCard](#delete-customer-card): Deletes any registered card from the vault.
-- [getOpenpayDeviceSessionID](#get-device-session-id): Retrieves your device session id.
+<CardGroup cols={4}>
+  <Card title="Get Business" href="#get-business"/>
+  <Card title="Customer Register" href="#customer-register"/>
+  <Card title="Create Order" href="#create-order"/>
+  <Card title="Start Checkout Router" href="#create-payment"/>
+  <Card title="Get Vault Token" href="#get-vault-token"/>
+  <Card title="Register Customer Card" href="#register-customer-card"/>
+  <Card title="Get Customer Cards" href="#get-customer-cards"/>
+  <Card title="Delete Customer Card" href="#delete-customer-card"/>
+  <Card title="Get Device Session ID" href="#get-device-session-id"/>
+  <Card title="3DS Verification" href="#3ds-verification"/>
+</CardGroup>
 
 ### Get Business
 
@@ -611,10 +614,25 @@ Future<String?> getOpenpayDeviceSessionID(OpenpayKeys openpayKeys) async {
 
 The returned data will be your device's session id.
 
-{/* <Accordion
-  title=""
->
-  ```dart
-  
-  ```
-</Accordion> */}
+### 3DS Verification
+
+You can use the `verify3dsTransaction()` method to validate if a 3DS challenge was successful or not. Use the example below to call the method and handle the response as needed:
+
+```dart
+void verify3dsTransaction() async {
+  try {
+    final response = await inlineCheckout.verify3dsTransaction();
+    print('Verify 3ds response: $response');
+
+    if (response.status == 'Success') {
+      _showAlert('3DS Transaction verified.');
+      // Proceed with normal payment flow
+    } else if (response.status == 'Failed') {
+      _showAlert('3DS Transaction Failed');
+    }
+  } catch (error) {
+    print('Error verifying 3DS transaction: $error');
+    _showAlert('Error verifying 3DS transaction.');
+  }
+}
+```
