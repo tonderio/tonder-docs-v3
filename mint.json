@@ -34,8 +34,8 @@
   },
   "tabs": [
     {
-      "name": "Online Payments",
-      "url": "online-payments"
+      "name": "Payins",
+      "url": "payins"
     },
     {
       "name": "Revenue Optimization",
@@ -98,33 +98,33 @@
       ]
     },
     {
-      "group": "Online Payments",
+      "group": "Payins",
       "pages": [
-        "online-payments/overview",
-        "online-payments/3ds2",
-        "online-payments/finances",
-        "online-payments/disputes"
+        "payins/overview",
+        "payins/3ds2",
+        "payins/finances",
+        "payins/disputes"
       ]
     },
     {
       "group": "Reference",
       "pages": [
-        "online-payments/payment-methods",
+        "payins/payment-methods",
         {
           "group": "Coverage",
           "pages": [
-            "online-payments/coverage/coverage",
-            "online-payments/coverage/brazil",
-            "online-payments/coverage/colombia",
-            "online-payments/coverage/costa-rica",
-            "online-payments/coverage/ecuador",
-            "online-payments/coverage/guatemala",
-            "online-payments/coverage/mexico",
-            "online-payments/coverage/panama",
-            "online-payments/coverage/peru"
+            "payins/coverage/coverage",
+            "payins/coverage/brazil",
+            "payins/coverage/colombia",
+            "payins/coverage/costa-rica",
+            "payins/coverage/ecuador",
+            "payins/coverage/guatemala",
+            "payins/coverage/mexico",
+            "payins/coverage/panama",
+            "payins/coverage/peru"
           ]
         },
-        "online-payments/test-cards"
+        "payins/test-cards"
       ]
     },
     {
@@ -200,20 +200,20 @@
       ]
     },
     {
-      "group": "Online Payments",
+      "group": "Payins",
       "pages": [
         {
           "group": "Disputes",
           "pages": [
-            "dashboard/online-payments/disputes",
-            "dashboard/online-payments/dispute-details"
+            "dashboard/payins/disputes",
+            "dashboard/payins/dispute-details"
           ]
         },
         {
           "group": "Finances",
           "pages": [
-            "dashboard/online-payments/finances",
-            "dashboard/online-payments/settlement-details"
+            "dashboard/payins/finances",
+            "dashboard/payins/settlement-details"
           ]
         }
       ]
