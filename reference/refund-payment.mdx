@@ -1,0 +1,12 @@
+---
+title: Refund a Payment
+openapi: POST /business/{business}/payments/{transaction_reference}/refunds
+---
+
+<Warning>
+  The Authorization needs to be in the following format:
+
+  `Authorization: Token <YOUR_API_KEY>`
+</Warning>
+
+Use this endpoint to refund a payment, either partially or in full.

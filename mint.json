@@ -227,7 +227,8 @@
         "reference/create-client",
         "reference/create-order",
         "reference/create-payment",
-        "reference/create-checkout-router"
+        "reference/create-checkout-router",
+        "reference/refund-payment"
       ]
     }
   ],
