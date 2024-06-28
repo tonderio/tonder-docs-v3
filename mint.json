@@ -237,7 +237,7 @@
       ]
     }
   ],
-  "openapi": "/openapi.json",
+  "openapi": "/openapi.yml",
   "footerSocials": {
     "github": "https://github.com/tonderio/",
     "website": "https://tonder.io/"
