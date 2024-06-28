@@ -101,6 +101,14 @@
       "group": "Online Payments",
       "pages": [
         "online-payments/overview",
+        "online-payments/3ds2",
+        "online-payments/finances",
+        "online-payments/disputes"
+      ]
+    },
+    {
+      "group": "Reference",
+      "pages": [
         "online-payments/payment-methods",
         {
           "group": "Coverage",
@@ -116,9 +124,6 @@
             "online-payments/coverage/peru"
           ]
         },
-        "online-payments/3ds2",
-        "online-payments/finances",
-        "online-payments/disputes",
         "online-payments/test-cards"
       ]
     },
@@ -227,7 +232,8 @@
         "reference/create-client",
         "reference/create-order",
         "reference/create-payment",
-        "reference/create-checkout-router"
+        "reference/create-checkout-router",
+        "reference/refund-payment"
       ]
     }
   ],
