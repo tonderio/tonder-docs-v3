@@ -69,7 +69,6 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
 |---------------|---------------------------------------------------------------|
 | `apiKey`      | The API key used for authentication and authorization.        |
 | `returnUrl`   | The URL to which the user is redirected after the checkout process, regardless of success or failure. |
-| `successUrl`  | The URL to which the user is redirected after a successful checkout. |
 | `styles`      | Custom styles object that allows you to customize the appearance of the inline checkout. It may include properties such as colors, fonts, and other styling options. |
 
     <CodeGroup>
@@ -80,7 +79,6 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
     const inlineCheckout = new InlineCheckout({
       apiKey,
       returnUrl,
-      successUrl,
       styles: customStyles
     });
     ```
@@ -88,7 +86,6 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
     const inlineCheckout = new TonderSdk.InlineCheckout({
       apiKey,
       returnUrl,
-      successUrl,
       styles: customStyles
     });
     ```
