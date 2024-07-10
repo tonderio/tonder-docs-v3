@@ -68,7 +68,6 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
     | `platforms`            | A list or null that specifies which platforms the checkout is available on. If null, it implies universal compatibility. |
     | `apiKeyTonder`         | Your Tonder API key. You can find it in your [Tonder dashboard](https://stage.tonder.io/dashboard/developers/).             |
     | `returnUrl`            | The URL to which the user will be redirected after the transaction is completed.     |
-    | `successUrl`           | The URL to which the user will be redirected specifically after a successful transaction. |
     | `renderPaymentButton`  | A boolean that specifies whether a payment button should be rendered by the checkout plugin. Setting this to `false` implies that the button rendering is handled elsewhere or not needed. |
 
     ```dart
@@ -79,7 +78,6 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
       platforms: null, // Specify platforms if needed
       apiKeyTonder: apiKey,
       returnUrl: returnUrl,
-      successUrl: returnUrl,
       renderPaymentButton: false, // Set to true if a payment button should be rendered
     );
     ```
