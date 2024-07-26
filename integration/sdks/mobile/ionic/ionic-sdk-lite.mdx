@@ -769,10 +769,10 @@ You can use the `verify3dsTransaction()` method to validate if a 3DS challenge w
   inlineCheckout.verify3dsTransaction().then(response => {
     console.log('Verify 3ds response', response);
     
-    if (response.status === 'Success') {
+    if (response.transaction_status === 'Success') {
       alert('3DS Transaction verified.');
       // Proceed with normal payment flow
-    } else if (response.status === 'Failed') {
+    } else if (response.transaction_status === 'Failed') {
       alert('3DS Transaction Failed');
     }
   });

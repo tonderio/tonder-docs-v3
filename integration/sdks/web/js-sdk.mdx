@@ -114,10 +114,10 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
     inlineCheckout.verify3dsTransaction().then(response => {
       console.log('Verify 3ds response', response);
       
-      if (response.status === 'Success') {
+      if (response.transaction_status === 'Success') {
         alert('3DS Transaction verified.');
         // Proceed with normal payment flow
-      } else if (response.status === 'Failed') {
+      } else if (response.transaction_status === 'Failed') {
         alert('3DS Transaction Failed');
       }
     });
@@ -131,11 +131,11 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
     document.getElementById('your-pay-button').addEventListener('click', async () => {
       try {
         response = await inlineCheckout.payment(checkoutData);
-        if (response.status === 'Success') {
+        if (response.transaction_status === 'Success') {
           alert('Payment successful.');
-        } else if (response.status === 'Pending') {
+        } else if (response.transaction_status === 'Pending') {
           alert('Payment pending. Redirecting to 3DS...');
-          // La redirección a 3DS ocurre automáticamente
+          // The redirection to 3DS occurs automatically
         } else {
           alert('Payment declined.');
         }

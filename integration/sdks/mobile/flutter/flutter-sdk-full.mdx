@@ -150,10 +150,10 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
         final response = await inlineCheckout.verify3dsTransaction();
         print('Verify 3ds response: $response');
 
-        if (response.status == 'Success') {
+        if (response.transaction_status == 'Success') {
           print('3DS Transaction verified.');
           // Proceed with normal payment flow
-        } else if (response.status == 'Failed') {
+        } else if (response.transaction_status == 'Failed') {
           print('3DS Transaction Failed');
         }
       } catch (error) {
