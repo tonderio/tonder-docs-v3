@@ -65,11 +65,12 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
   <Step title="Initialize Tonder's SDK Instance">
     Initialize Tonder's JS SDK instance with the following parameters:
 
-| Field         | Description                                                   |
-|---------------|---------------------------------------------------------------|
-| `apiKey`      | The API key used for authentication and authorization.        |
-| `returnUrl`   | The URL to which the user is redirected after the checkout process, regardless of success or failure. |
-| `styles`      | Custom styles object that allows you to customize the appearance of the inline checkout. It may include properties such as colors, fonts, and other styling options. |
+| Field            | Description                                                   |
+|------------------|---------------------------------------------------------------|
+| `apiKey`         | The API key used for authentication and authorization.        |
+| `returnUrl`      | The URL to which the user is redirected after the checkout process, regardless of success or failure. |
+| `customization`  | This object is designed to customize the behavior of the checkout. It is used to adjust both the interface options and operational parameters. Refer to the [Customizations](#customizations) section for more details. |
+| `styles`         | Custom styles object that allows you to customize the appearance of the inline checkout. It may include properties such as colors, fonts, and other styling options. Refer to the [Styling](#styling) section for more details. |
 
     <CodeGroup>
 
@@ -79,14 +80,16 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
     const inlineCheckout = new InlineCheckout({
       apiKey,
       returnUrl,
-      styles: customStyles
+      styles: customStyles,
+      customization
     });
     ```
     ```javascript Script tag option
     const inlineCheckout = new TonderSdk.InlineCheckout({
       apiKey,
       returnUrl,
-      styles: customStyles
+      styles: customStyles,
+      customization
     });
     ```
 
@@ -226,6 +229,17 @@ Before initializing an instance of Tonder SDK, ensure that you have configured i
       </Accordion>
   </Step>
 </Steps>
+
+## Customizations
+
+Tonder's SDK customization object allows you to personalize the checkout behavior. You can change the following properties:
+
+
+<CardGroup cols={2}>
+  <Card title="Secure Card Saving" iconType="solid" icon="credit-card" href="/integration/sdks/web/secure-token">
+    Learn how to securely allow your customers to save their card information.
+  </Card>
+</CardGroup>
 
 ## Styling
 

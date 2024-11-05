@@ -148,7 +148,8 @@
           "group": "JS SDK",
           "pages": [
             "integration/sdks/web/js-sdk",
-            "integration/sdks/web/js-sdk-styles"
+            "integration/sdks/web/js-sdk-styles",
+            "integration/sdks/web/secure-token"
           ]
         },
         {
@@ -233,6 +234,7 @@
         "reference/create-order",
         "reference/create-payment",
         "reference/create-checkout-router",
+        "reference/create-secure-token",
         "reference/refund-payment"
       ]
     }
