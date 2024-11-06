@@ -148,8 +148,7 @@
           "group": "JS SDK",
           "pages": [
             "integration/sdks/web/js-sdk",
-            "integration/sdks/web/js-sdk-styles",
-            "integration/sdks/web/secure-token"
+            "integration/sdks/web/js-sdk-styles"
           ]
         },
         {
@@ -160,7 +159,8 @@
             "integration/sdks/mobile/flutter/flutter-sdk-lite",
             "integration/sdks/mobile/flutter/flutter-sdk-full"
           ]
-        }
+        },
+        "integration/sdks/secure-token"
       ]
     },
     {
