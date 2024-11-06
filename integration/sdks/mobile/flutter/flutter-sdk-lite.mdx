@@ -95,7 +95,7 @@ After configuring your Lite Checkout instance, you have at your hand various met
   <Card title="Create Order" href="#create-order"/>
   <Card title="Start Checkout Router" href="#create-payment"/>
   <Card title="Get Vault Token" href="#get-vault-token"/>
-  <Card title="Register Customer Card" href="#register-customer-card"/>
+  <Card title="Save Customer Card" href="#save-customer-card"/>
   <Card title="Get Customer Cards" href="#get-customer-cards"/>
   <Card title="Delete Customer Card" href="#delete-customer-card"/>
   <Card title="Get Device Session ID" href="#get-device-session-id"/>
@@ -457,9 +457,9 @@ Future<GetVaultTokenResponse> getVaultToken() async {
   ```
 </Accordion>
 
-### Register customer card
+### Save customer card
 
-Using the customer's token and the skyflow id, you can register the customer's card in the vault. The table below presents the required data, followed by an example call to the `registerCustomerCard` method:
+Using the customer's token and the skyflow id, you can register the customer's card in the vault. The table below presents the required data, followed by an example call to the `saveCustomerCard` method:
 
 
 | Field Name     | Description                                         |
@@ -471,21 +471,21 @@ Using the customer's token and the skyflow id, you can register the customer's c
 ```dart
 String customerToken = 'abc123XYZ789Token';
 
-RegisterCustomerCardRequest data = RegisterCustomerCardRequest(
+saveCustomerCardRequest data = saveCustomerCardRequest(
   skyflow_id: '01FGP5H38VZ4B9QPT4T9KJ8J22'
 );
 
-Future<RegisterCustomerCardResponse> registerCustomerCard(String customerToken, RegisterCustomerCardRequest data) async {
-  RegisterCustomerCardResponse response = await sdkTonder.registerCustomerCard(customerToken, data);
+Future<saveCustomerCardResponse> saveCustomerCard(String customerToken, saveCustomerCardRequest data) async {
+  saveCustomerCardResponse response = await sdkTonder.saveCustomerCard(customerToken, data);
   print(response);
 }
 ```
 
 <Accordion
-  title="RegisterCustomerCardResponse"
+  title="saveCustomerCardResponse"
 >
   ```dart
-  class RegisterCustomerCardResponse {
+  class saveCustomerCardResponse {
     final String? skyflow_id;
     final num? user_id;
   }
