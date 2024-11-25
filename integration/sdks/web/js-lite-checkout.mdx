@@ -1,0 +1,368 @@
+---
+title: "JS Lite Checkout"
+sidebarTitle: "JS Lite Checkout"
+'og:description': "Integrate Tonder into your platform with the Tonder JS SDK. Securely collect and tokenize sensitive data with our vanilla Javascript solution, ensuring PCI DSS compliance."
+---
+
+Tonder's JS SDK Lite Checkout gives you freedom to build your own checkout interface while taking advantage of our core functionalities. This guide will take you step-by-step into integrating it.
+
+<Info>
+  If you haven't installed and pre-configured Tonder's JS SDK, refer to the [Installation guide here](/integration/sdks/web/js-sdk).
+</Info>
+
+## Configuration
+
+Before initializing an instance of Tonder SDK, ensure that you have configured it properly. Follow the usage example below:
+
+<Steps>
+  <Step title="Add the required ID to your HTML">
+    Tonder's JS SDK needs an entry point to operate. This entry point is defined by adding a `tonder-checkout` ID to an empty `div`, like the example below:
+
+    ```html
+    <div>
+        <h1>Checkout</h1>
+        <!-- You have to add an entry point with the ID 'tonder-checkout' -->
+        <div id="tonder-checkout">
+        </div>
+    </div>
+    ```
+  </Step>
+  <Step title="Initialize Tonder's SDK Instance">
+    Initialize Tonder's JS SDK instance with the following parameters:
+
+| Field            | Description                                                   |
+|------------------|---------------------------------------------------------------|
+| `mode`           | Environment mode. Options: `stage`, `production`, `sandbox`. Default: `stage` |
+| `apiKey`         | The API key used for authentication and authorization.        |
+| `returnUrl`      | The URL to which the user is redirected after the checkout process, regardless of success or failure. |
+| `customization`  | This object is designed to customize the behavior of the checkout. It is used to adjust both the interface options and operational parameters. Refer to the [Customizations](#customizations) section for more details. |
+| `styles`         | Custom styles object that allows you to customize the appearance of the inline checkout. It may include properties such as colors, fonts, and other styling options. Refer to the [Styling](#styling) section for more details. |
+
+    <CodeGroup>
+
+    ```javascript npm package option
+    import { LiteCheckout } from "tonder-web-sdk";
+
+    const liteCheckout = new LiteCheckout({
+      apiKey,
+      returnUrl,
+      styles: customStyles,
+      customization
+    });
+    ```
+    ```javascript Script tag option
+    const liteCheckout = new TonderSdk.LiteCheckout({
+      apiKey,
+      returnUrl,
+      styles: customStyles,
+      customization
+    });
+    ```
+
+    </CodeGroup>
+  </Step>
+  <Step title="Configure checkout method (Optional)">
+    You can use the `configureCheckout` method to set initial customer information, such as their email address, allowing to retrieve the respectives user's saved cards. 
+
+    ```javascript
+    liteCheckout.configureCheckout({ customer: { email: "example@email.com" } });
+    ```
+  </Step>
+  <Step title="Inject checkout method">
+    Call the `injectCheckout` method with your inlineCheckout instance, with the code below:
+
+    ```javascript
+    liteCheckout.injectCheckout();
+    ```
+
+    <Frame>![](/images/SDKs/checkout-gif.gif)</Frame>
+
+    With this, you can render the checkout to your customers.
+  </Step>
+  <Step title="Add a pay button">
+    Lastly, you need to create a button to submit the form. This button needs to have an event listener that calls the `payment` method from the `liteCheckout` instance, sending the checkout data as payload, like presented below:
+
+    ```javascript
+    document.getElementById('your-pay-button').addEventListener('click', async () => {
+      try {
+        response = await liteCheckout.payment(checkoutData);
+        if (response.transaction_status === 'Success') {
+          alert('Payment successful.');
+        } else if (response.transaction_status === 'Pending') {
+          alert('Payment pending. Redirecting to 3DS...');
+          // The redirection to 3DS occurs automatically
+        } else {
+          alert('Payment declined.');
+        }
+      } catch (error) {
+        alert('Error with payment.');
+      }
+    });
+    ```
+  </Step>
+</Steps>
+
+After Completing these steps, you can use the [Lite Checkout available methods](#class-methods) to manage your user's experience.
+
+## Class Methods
+
+With your Lite Checkout instance configured, you'll have at your disposal the following methods:
+
+<CardGroup cols={2}>
+  <Card title="Cards" href="#cards" />
+  <Card title="Get Customer Payment Methods" href="#get-customer-payment-methods" />
+  <Card title="Payment" href="href" />
+  <Card title="3DS Verification" href="#3ds-verification" />
+</CardGroup>
+
+### Cards
+
+Tonder’s SDK offers the following methods to manage customer cards:
+
+- `getCustomerCards`
+- `saveCustomerCard`
+- `removeCustomerCard`
+
+<Warning>You need to use the `secureToken` to be able to manage cards with Tonder's SDK. Refer to the [How to Use secureToken for Secure Card Saving](/integration/sdks/secure-token) to learn how to do this.</Warning>
+
+#### Get Customer Cards
+
+Use the `getCustomerCards` method to retrieve previously saved customer cards:
+
+```js
+const cards = await liteCheckout.getCustomerCards();
+```
+
+#### Save Customer Card
+
+Use the `saveCustomerCard` method to save a new card into the system. This method requires an object as parameter to define the card's properties:
+
+Sure! Here's a markdown table with the keys and their descriptions:
+
+| Key               | Description                                       |
+|-------------------|---------------------------------------------------|
+| `card_number`   | The credit card number without spaces or dashes.  |
+| `cvv`           | The card verification value, a 3 or 4-digit code. |
+| `expiration_month` | The month when the card expires.               |
+| `expiration_year`  | The year when the card expires.                |
+| `cardholder_name`  | The full name of the cardholder as on the card.|
+
+```js
+const cards = await liteCheckout.saveCustomerCard({
+    card_number: "4111111111111111",
+    cvv: "123",
+    expiration_month: "12",
+    expiration_year: "25",
+    cardholder_name: "John Doe",
+  });
+```
+
+#### Remove Customer Card
+
+Use the `removeCustomerCards` method to delete a previously saved customer card by passing the card ID as parameter:
+
+```js
+const cards = await liteCheckout.removeCustomerCards(cardId);
+```
+
+### Get Customer Payment Methods
+
+```javascript
+const paymentMethods = await liteCheckout.getCustomerPaymentMethods();
+```
+
+### Payment
+
+To create a new payment with the Lite SDK, use the `payment` method. This method requires an object as parameter with the following data:
+
+| Key              | Description                                         |
+|------------------|-----------------------------------------------------|
+| **customer**     | An object containing customer information           |
+| **cart**         | An object containing cart and item details          |
+| **currency**     | The currency code for the transaction (e.g., "MXN") |
+| **metadata**     | An object for additional metadata (e.g., order ID)  |
+| **card**         | An object containing card details for a new card    |
+| **payment_method** | The selected payment method (optional)            |
+
+<AccordionGroup>
+  <Accordion
+    title="customer"
+  >
+    | Key           | Description                      |
+    |---------------|----------------------------------|
+    | **firstName** | Customer's first name            |
+    | **lastName**  | Customer's last name             |
+    | **country**   | Customer's country               |
+    | **address**   | Customer's street address        |
+    | **city**      | Customer's city                  |
+    | **state**     | Customer's state or region       |
+    | **postCode**  | Customer's postal code           |
+    | **email**     | Customer's email address         |
+    | **phone**     | Customer's phone number          |
+  </Accordion>
+
+  <Accordion
+    title="cart"
+  >
+    | Key     | Description                         |
+    |---------|-------------------------------------|
+    | **total** | Total amount for the cart         |
+    | **items** | An array of item objects          |
+
+    **Item Object Structure**:
+
+    | Key                  | Description                            |
+    |----------------------|----------------------------------------|
+    | **description**      | Description of the product             |
+    | **quantity**         | Quantity of the product                |
+    | **price_unit**       | Unit price of the product              |
+    | **discount**         | Discount applied to the product        |
+    | **taxes**            | Taxes applied to the product           |
+    | **product_reference**| Reference code for the product         |
+    | **name**             | Name of the product                    |
+    | **amount_total**     | Total amount for this product (after discount and taxes) |
+  </Accordion>
+
+  <Accordion
+    title="card"
+  >
+    | Key                 | Description                                      |
+    |---------------------|--------------------------------------------------|
+    | **card_number**     | The credit card number without spaces or dashes  |
+    | **cvv**             | Card Verification Value (3 or 4-digit code)      |
+    | **expiration_month**| Card's expiration month (e.g., "12")             |
+    | **expiration_year** | Card's expiration year (e.g., "25")              |
+    | **cardholder_name** | Name on the credit card                          |
+
+    *Alternatively, if using a saved card, replace the `card` object with the saved card's identifier:*
+
+    ```javascript
+    card: "skyflow_id" // for a selected saved card.
+    ```
+  </Accordion>
+
+  <Accordion
+    title="payment_method"
+  >
+    Specify this key if using a different payment method instead of a card.
+
+    | Key               | Description                                   |
+    |-------------------|-----------------------------------------------|
+    | **payment_method**| The selected payment method (e.g., "Spei")    |
+  </Accordion>
+
+  <Accordion
+    title="metadata"
+  >
+    | Key          | Description                          |
+    |--------------|--------------------------------------|
+    | **order_id** | Unique identifier for the order      |
+  </Accordion>
+</AccordionGroup>
+
+```js
+  const paymentData = {
+    customer: {
+      firstName: "John",
+      lastName: "Doe",
+      country: "USA",
+      address: "123 Main St",
+      city: "Anytown",
+      state: "CA",
+      postCode: "12345",
+      email: "john.doe@example.com",
+      phone: "1234567890",
+    },
+    cart: {
+      total: "100.00",
+      items: [
+        {
+          description: "Product description",
+          quantity: 1,
+          price_unit: "100.00",
+          discount: "0.00",
+          taxes: "0.00",
+          product_reference: "PROD123",
+          name: "Product Name",
+          amount_total: "100.00",
+        },
+      ],
+    },
+    currency: "MXN",
+    metadata: {
+      order_id: "ORDER123",
+    },
+    // For a new card:
+    card: {
+      card_number: "4111111111111111",
+      cvv: "123",
+      expiration_month: "12",
+      expiration_year: "25",
+      cardholder_name: "John Doe",
+    },
+    // card: "skyflow_id" // for a selected saved card.
+    // payment_method: "Spei", // For the selected payment method.
+  };
+
+  const responsePayment = await liteCheckout.payment(paymentData);
+```
+
+### 3DS Verification
+
+You can use the `verify3dsTransaction()` method to validate if a 3DS challenge was successful or not. Use the example below to call the method and handle the response as needed:
+
+```javascript
+const verificationResult = await liteCheckout.verify3dsTransaction().then(response => {
+    console.log('Verify 3ds response', response);
+    
+    if (response.transaction_status === 'Success') {
+      alert('3DS Transaction verified.');
+      // Proceed with normal payment flow
+    } else if (response.transaction_status === 'Failed') {
+      alert('3DS Transaction Failed');
+    }
+  });
+```
+
+## Field Validation
+
+Tonder's SDK provides validation functions to ensure the integrity of card data before submitting them:
+
+| Function                                   | Description                                           |
+|--------------------------------------------|-------------------------------------------------------|
+| `validateCardNumber(cardNumber)`           | Validates the card number using the Luhn algorithm.   |
+| `validateCardholderName(name)`             | Checks if the cardholder name is valid.               |
+| `validateCVV(cvv)`                         | Ensures the CVV is in the correct format.             |
+| `validateExpirationDate(expirationDate)`   | Validates the expiration date in MM/YY format.        |
+| `validateExpirationMonth(month)`           | Checks if the expiration month is valid.              |
+| `validateExpirationYear(year)`             | Validates the expiration year.                        |
+
+```js Example
+import {
+  validateCardNumber,
+  validateCardholderName,
+  validateCVV,
+  validateExpirationDate,
+} from "tonder-web-sdk";
+
+const cardNumber = "4111111111111111";
+const cardholderName = "John Doe";
+const cvv = "123";
+const expirationDate = "12/25";
+
+if (
+  validateCardNumber(cardNumber) &&
+  validateCardholderName(cardholderName) &&
+  validateCVV(cvv) &&
+  validateExpirationDate(expirationDate)
+) {
+  // Proceed with payment
+} else {
+  // Show error message
+}
+```
+
+
+## Full Integration Example
+
+For full integration example codes, refer to the [Code Examples](/integration/sdks/web/code-examples) page.

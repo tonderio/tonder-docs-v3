@@ -148,7 +148,15 @@
           "group": "JS SDK",
           "pages": [
             "integration/sdks/web/js-sdk",
-            "integration/sdks/web/js-sdk-styles"
+            {
+              "group": "JS Inline Checkout",
+              "pages": [
+                "integration/sdks/web/js-inline-checkout",
+                "integration/sdks/web/js-sdk-styles"
+              ]
+            },
+            "integration/sdks/web/js-lite-checkout",
+            "integration/sdks/web/code-examples"
           ]
         },
         {

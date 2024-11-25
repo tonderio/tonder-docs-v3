@@ -1,0 +1,407 @@
+---
+title: "SDK Integration Examples"
+sidebarTitle: "Code Examples"
+'og:description': "Integrate Tonder into your platform with the Tonder JS SDK. Securely collect and tokenize sensitive data with our vanilla Javascript solution, ensuring PCI DSS compliance."
+---
+
+This page shows full code examples that integrate Tonder's JS SDK in Vanilla JS, React, Next.js and Angular.
+
+<AccordionGroup>
+  <Accordion title="Inline Checkout">
+    #### HTML Setup
+    ```html
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tonder Checkout Example</title>
+        <script src="https://js.skyflow.com/v1/index.js"></script>
+        <script src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
+        <script src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"></script>
+        <!-- Only if not use npm package   -->
+        <script src="https://zplit-prod.s3.amazonaws.com/v1/bundle.min.js"></script>
+      </head>
+      <body>
+        <div id="tonder-checkout"></div>
+        <button id="pay-button">Pay Now</button>
+
+        <script src="your-script.js"></script>
+      </body>
+    </html>
+    ```
+    #### JS Code
+    ```js
+    import { InlineCheckout } from "tonder-web-sdk";
+
+    const apiKey = "your-api-key";
+    const returnUrl = "http://your-website.com/checkout";
+
+    const inlineCheckout = new InlineCheckout({
+      mode: "development",
+      apiKey,
+      returnUrl,
+      styles: customStyles, // Define your custom styles here
+    });
+
+    inlineCheckout.configureCheckout({ customer: { email: "example@email.com" } });
+    inlineCheckout.injectCheckout();
+
+    inlineCheckout.verify3dsTransaction().then((response) => {
+      console.log("Verify 3ds response", response);
+    });
+
+    document
+      .getElementById("pay-button")
+      .addEventListener("click", async function () {
+        try {
+          const response = await inlineCheckout.payment(checkoutData);
+          console.log("Payment response:", response);
+          alert("Payment successful");
+        } catch (error) {
+          console.error("Payment error:", error.details);
+          alert("Payment failed");
+        }
+      });
+    ```
+  </Accordion>
+  <Accordion title="Lite Checkout">
+    #### HTML Setup
+    ```html
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tonder Checkout Example</title>
+        <script src="https://js.skyflow.com/v1/index.js"></script>
+        <script src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
+        <script src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"></script>
+        <!-- Only if not use npm package   -->
+        <script src="https://zplit-prod.s3.amazonaws.com/v1/bundle.min.js"></script>
+      </head>
+      <body>
+        <div id="tonder-checkout"></div>
+        <button id="pay-button">Pay Now</button>
+
+        <script src="your-script.js"></script>
+      </body>
+    </html>
+    ```
+    #### JS Code
+    ```js
+    import { LiteInlineCheckout } from "tonder-web-sdk";
+
+    const apiKey = "your-api-key";
+    const returnUrl = "http://your-website.com/checkout";
+
+    const liteCheckout = new LiteInlineCheckout({
+      mode: "development",
+      apiKey,
+      returnUrl,
+    });
+
+    liteCheckout.configureCheckout({ customer: { email: "example@email.com" } });
+    liteCheckout.injectCheckout();
+
+    liteCheckout.verify3dsTransaction().then((response) => {
+      console.log("Verify 3ds response", response);
+    });
+
+    document
+      .getElementById("lite-payment-form")
+      .addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const cardData = {
+          card_number: document.getElementById("card-number").value,
+          cardholder_name: document.getElementById("card-name").value,
+          expiration_month: document.getElementById("month").value,
+          expiration_year: document.getElementById("year").value,
+          cvv: document.getElementById("cvv").value,
+        };
+
+        try {
+          const paymentData = { ...checkoutData, card: cardData };
+          const response = await liteCheckout.payment(paymentData);
+          console.log("Payment response:", response);
+          alert("Payment successful");
+        } catch (error) {
+          console.error("Payment error:", error);
+          alert("Payment failed");
+        }
+      });
+    ```
+  </Accordion>
+
+  <Accordion title="React or Nextjs">
+  For React or Nextjs applications, we recommend using a context provider to manage the Tonder instance across your application.
+
+  <Steps>
+    <Step title="Create a Tonder Provider">
+      ```jsx
+      // TonderProvider.jsx
+      "use client"; // only for Nextjs
+      import React, { createContext, useContext, useState, useEffect } from "react";
+      import { InlineCheckout } from "tonder-web-sdk";
+
+      const TonderContext = createContext();
+
+      export const useTonder = () => useContext(TonderContext);
+
+      export const TonderProvider = ({ children }) => {
+        const [tonderInstance, setTonderInstance] = useState(null);
+
+        useEffect(() => {
+          const init = async () => {
+            try {
+              const inlineCheckout = new InlineCheckout({
+                mode: "development",
+                apiKey: "your-api-key",
+                returnUrl: "http://your-website.com/checkout",
+              });
+              setTonderInstance(inlineCheckout);
+            } catch (error) {
+              console.error("Error initializing Tonder:", error);
+            }
+          };
+
+          init();
+        }, []);
+
+        return (
+          <TonderContext.Provider value={tonderInstance}>
+            {children}
+          </TonderContext.Provider>
+        );
+      };
+      ```
+    </Step>
+    <Step title="Create the TonderCheckout Component">
+      ```jsx
+      // TonderCheckout.jsx
+      "use client"; // only for Nextjs
+      import React, { useEffect, useState } from "react";
+      import { useTonder } from "./TonderProvider";
+
+      const TonderCheckout = () => {
+        const tonder = useTonder();
+        const [loading, setLoading] = useState(false);
+
+        useEffect(() => {
+          if (!tonder) return;
+
+          tonder.configureCheckout({ customer: { email: "example@email.com" } });
+          tonder.injectCheckout();
+
+          tonder.verify3dsTransaction().then((response) => {
+            console.log("Verify 3ds response", response);
+          });
+
+          return () => {
+            if (tonder.removeCheckout) {
+              tonder.removeCheckout();
+            }
+          };
+        }, [tonder]);
+
+        const handlePayment = async () => {
+          if (!tonder) return;
+          setLoading(true);
+          try {
+            const response = await tonder.payment(paymentData);
+            console.log("Payment successful:", response);
+            alert("Payment successful");
+          } catch (error) {
+            console.error("Payment failed:", error);
+            alert("Payment failed");
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        return (
+          <div>
+            <div id="tonder-checkout"></div>
+            <button onClick={handlePayment} disabled={loading}>
+              {loading ? "Processing..." : "Pay Now"}
+            </button>
+          </div>
+        );
+      };
+
+      export default TonderCheckout;
+      ```
+    </Step>
+    <Step title="Use the TonderCheckout">
+      ```jsx
+      "use client"; // only for Nextjs
+      import { useEffect, useState } from "react";
+      import { useTonder, TonderProvider } from "./TonderProvider";
+      import Script from "next/script";
+
+      export default function TonderCheckout() {
+        return (
+          <div id="checkout">
+            {/*Provider*/}
+            <TonderProvider>
+              <CheckoutContent />
+            </TonderProvider>
+          </div>
+        );
+      }
+
+      function CheckoutContent() {
+        const tonder = useTonder();
+        const [loading, setLoading] = useState(false);
+
+        useEffect(() => {
+          if (!tonder) return;
+          tonder.configureCheckout({ customer: { email: "example@email.com" } });
+          tonder.injectCheckout();
+          tonder.verify3dsTransaction().then((response) => {
+            console.log("Verify 3ds response", response);
+          });
+          return () => {
+            if (tonder.removeCheckout) {
+              tonder.removeCheckout();
+            }
+          };
+        }, [tonder]);
+
+        const handlePayment = async () => {
+          if (!tonder) return;
+          setLoading(true);
+          try {
+            const response = await tonder.payment(paymentData);
+            console.log(response);
+            alert("Payment successful");
+          } catch (error) {
+            console.error(error);
+            alert("Payment failed");
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        return (
+          <div>
+            <div id="tonder-checkout"></div>
+            <button onClick={handlePayment} disabled={loading}>
+              {loading ? "Processing..." : "Pay"}
+            </button>
+          </div>
+        );
+      }
+      ```
+    </Step>
+  </Steps>
+  </Accordion>
+
+  <Accordion title="Angular">
+    For Angular, we recommend using a service to manage the Tonder instance:
+
+    ```js
+    // tonder.service.ts
+    import { Injectable } from "@angular/core";
+    import { InlineCheckout } from "tonder-web-sdk";
+
+    @Injectable({
+      providedIn: "root",
+    })
+    export class TonderService {
+      private inlineCheckout: InlineCheckout;
+
+      constructor(private sdkParameters: IInlineCheckoutOptions) {
+        this.initializeInlineCheckout();
+      }
+
+      private initializeInlineCheckout(): void {
+        this.inlineCheckout = new InlineCheckout({ ...this.sdkParameters });
+      }
+
+      configureCheckout(customerData: IConfigureCheckout): void {
+        this.inlineCheckout.configureCheckout({ ...customerData });
+      }
+
+      async injectCheckout(): Promise<void> {
+        await this.inlineCheckout.injectCheckout();
+      }
+
+      verify3dsTransaction(): Promise<ITransaction | void> {
+        return this.inlineCheckout.verify3dsTransaction();
+      }
+
+      // Add more functions, for example for lite sdk: get payment methods
+
+      // getCustomerPaymentMethods(): Promise<IPaymentMethod[]> {
+      //     return this.liteCheckout.getCustomerPaymentMethods();
+      // }
+    }
+
+    // checkout.component.ts
+    import { Component, OnInit, OnDestroy } from "@angular/core";
+    import { TonderService } from "./tonder.service";
+
+    @Component({
+      selector: "app-tonder-checkout",
+      template: `
+        <div id="tonder-checkout"></div>
+        <button (click)="pay()" [disabled]="loading">
+          {{ loading ? "Processing..." : "Pay" }}
+        </button>
+      `,
+      providers: [
+        {
+          provide: TonderInlineService,
+          // Inicialización del SDK de Tonder Inline
+          // Nota: Reemplace estas credenciales con las suyas propias en desarrollo/producción
+          useFactory: () =>
+            new TonderInlineService({
+              apiKey: "11e3d3c3e95e0eaabbcae61ebad34ee5f93c3d27",
+              returnUrl: "http://localhost:4200/checkout/payment?tabPayment=0",
+              mode: "development",
+            }),
+        },
+      ],
+    })
+    export class TonderCheckoutComponent implements OnInit, OnDestroy {
+      loading = false;
+
+      constructor(private tonderService: TonderService) {}
+
+      ngOnInit() {
+        this.initCheckout();
+      }
+
+      ngOnDestroy() {
+        // Limpieza del checkout al destruir el componente
+        this.tonderService.removeCheckout();
+      }
+
+      async initCheckout() {
+        this.tonderService.configureCheckout({
+          customer: { email: "example@email.com" },
+        });
+        await this.tonderService.injectCheckout();
+        this.tonderService.verify3dsTransaction().then((response) => {
+          console.log("Verify 3ds response", response);
+        });
+      }
+
+      async pay() {
+        this.loading = true;
+        try {
+          const response = await this.tonderService.payment(paymentData);
+          console.log("Payment successful:", response);
+          alert("Payment successful");
+        } catch (error) {
+          console.error("Payment failed:", error);
+          alert("Payment failed");
+        } finally {
+          this.loading = false;
+        }
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
