@@ -488,7 +488,7 @@ With the required parameter in hand, call the method as presented below:
 You can use the `verify3dsTransaction()` method to validate if a 3DS challenge was successful or not. Use the example below to call the method and handle the response as needed:
 
 ```js
-  inlineCheckout.verify3dsTransaction().then(response => {
+  liteCheckout.verify3dsTransaction().then(response => {
     console.log('Verify 3ds response', response);
     
     if (response.transaction_status === 'Success') {
