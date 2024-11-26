@@ -68,6 +68,7 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
     | `platforms`            | A list or null that specifies which platforms the checkout is available on. If null, it implies universal compatibility. |
     | `apiKeyTonder`         | Your Tonder API key. You can find it in your [Tonder dashboard](https://stage.tonder.io/dashboard/developers/).             |
     | `returnUrl`            | The URL to which the user will be redirected after the transaction is completed.     |
+    | `successUrl`            | The URL to which the user will be redirected after a successful transaction.        |
     | `renderPaymentButton`  | A boolean that specifies whether a payment button should be rendered by the checkout plugin. Setting this to `false` implies that the button rendering is handled elsewhere or not needed. |
 
     ```dart
@@ -78,6 +79,7 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
       platforms: null, // Specify platforms if needed
       apiKeyTonder: apiKey,
       returnUrl: returnUrl,
+      successUrl: returnUrl,
       renderPaymentButton: false, // Set to true if a payment button should be rendered
     );
     ```
@@ -145,20 +147,14 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
     Use Tonder's SDK `verify3dsTransaction()` method to validate if the 3DS challenge was successful or not. Use the example below to call the method and handle the response as needed:
 
     ```dart
-    void verify3dsTransaction() async {
-      try {
-        final response = await inlineCheckout.verify3dsTransaction();
-        print('Verify 3ds response: $response');
+    Map<String, dynamic>? response = await _fullPlugin!.verify3dsTransaction();
 
-        if (response.transaction_status == 'Success') {
-          print('3DS Transaction verified.');
-          // Proceed with normal payment flow
-        } else if (response.transaction_status == 'Failed') {
-          print('3DS Transaction Failed');
-        }
-      } catch (error) {
-        print('Error verifying 3DS transaction: $error');
-      }
+    if (response != null) {
+      if (response["status"] == "Success") {
+        ...
+      } else if (response["status"] == "Failed") {
+        ...
+      } 
     }
     ```
   </Step>
