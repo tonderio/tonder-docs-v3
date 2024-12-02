@@ -133,7 +133,7 @@ Future<GetBusinessResponse> getBusiness() async {
   ```
 </Accordion>
 
-### Customer register
+### Customer Register
 
 The `customerRegister` allows you to retrieve a customer's authorization token by adding their email address as the only parameter to this method. To retrieve it, execute the following:
 
@@ -158,7 +158,7 @@ Future<CustomerRegisterResponse> customerRegister(String email) async {
   ```
 </Accordion>
 
-### Create order
+### Create Order
 
 To create a new order with the Lite SDK, use the `createOrder` method. This method requires an object as parameter with the following data:
 
@@ -250,7 +250,7 @@ Future<CreateOrderResponse> createOrder(CreateOrderRequest order) async {
   ```
 </Accordion>
 
-### Create payment
+### Create Payment
 
 To create a new payment with the Lite SDK, use the `createPayment` method. This method requires the following parameters:
 
@@ -311,7 +311,7 @@ Future<CreatePaymentResponse> createPayment(CreatePaymentRequest paymentItems) a
   ```
 </Accordion>
 
-### Start checkout router
+### Start Checkout Router
 
 The `startCheckoutRouter` method  initiates the checkout process for the customer. This method requires the following to be added as parameter object:
 
@@ -435,7 +435,7 @@ Future<StartCheckoutResponse> startCheckoutRouter(StartCheckoutRequest routerDat
   ```
 </Accordion>
 
-### Get vault token
+### Get Vault Token
 
 Use the `getVaultToken` to retrieve the vault credential that is required to [register a customer's card](#register-customer-card). Use the following example to call this method:
 
@@ -457,7 +457,7 @@ Future<GetVaultTokenResponse> getVaultToken() async {
   ```
 </Accordion>
 
-### Register customer card
+### Register Customer Card
 
 Using the customer's token and the skyflow id, you can register the customer's card in the vault. The table below presents the required data, followed by an example call to the `registerCustomerCard` method:
 
@@ -471,28 +471,28 @@ Using the customer's token and the skyflow id, you can register the customer's c
 ```dart
 String customerToken = 'abc123XYZ789Token';
 
-RegisterCustomerCardRequest data = RegisterCustomerCardRequest(
+registerCustomerCardRequest data = registerCustomerCardRequest(
   skyflow_id: '01FGP5H38VZ4B9QPT4T9KJ8J22'
 );
 
-Future<RegisterCustomerCardResponse> registerCustomerCard(String customerToken, RegisterCustomerCardRequest data) async {
-  RegisterCustomerCardResponse response = await sdkTonder.registerCustomerCard(customerToken, data);
+Future<registerCustomerCardResponse> registerCustomerCard(String customerToken, registerCustomerCardRequest data) async {
+  registerCustomerCardResponse response = await sdkTonder.registerCustomerCard(customerToken, data);
   print(response);
 }
 ```
 
 <Accordion
-  title="RegisterCustomerCardResponse"
+  title="registerCustomerCardResponse"
 >
   ```dart
-  class RegisterCustomerCardResponse {
+  class registerCustomerCardResponse {
     final String? skyflow_id;
     final num? user_id;
   }
   ```
 </Accordion>
 
-### Get customer cards
+### Get Customer Cards
 
 Use the `getCustomerCards` to retrieve all registered cards for the customer, allowing them to use a saved card to perform transactions. Below are the parameters to execute this call, followed by an example call to it:
 
@@ -540,7 +540,7 @@ Future<GetCustomerCardsResponse> getCustomerCards(String customerToken, String q
   ```
 </Accordion>
 
-### Delete customer card
+### Delete Customer Card
 
 Use the `deleteCustomerCard` to delete any registered card for the customer, allowing them to removed a saved card from the system. Below are the parameters to execute this call, followed by an example call to it:
 
@@ -588,7 +588,7 @@ Future<GetCustomerCardsResponse> deleteCustomerCard({required String customerTok
   ```
 </Accordion>
 
-### Get device session ID
+### Get Device Session ID
 
 Using the `getOpenpayDeviceSessionID` method, you can retrieve your device session id. This method requires you to add the following data to the parameter of the call:
 
@@ -619,20 +619,13 @@ The returned data will be your device's session id.
 You can use the `verify3dsTransaction()` method to validate if a 3DS challenge was successful or not. Use the example below to call the method and handle the response as needed:
 
 ```dart
-void verify3dsTransaction() async {
-  try {
-    final response = await inlineCheckout.verify3dsTransaction();
-    print('Verify 3ds response: $response');
+Map<String, dynamic>? response = await sdkTonder.verify3dsTransaction();
 
-    if (response.transaction_status == 'Success') {
-      _showAlert('3DS Transaction verified.');
-      // Proceed with normal payment flow
-    } else if (response.transaction_status == 'Failed') {
-      _showAlert('3DS Transaction Failed');
-    }
-  } catch (error) {
-    print('Error verifying 3DS transaction: $error');
-    _showAlert('Error verifying 3DS transaction.');
-  }
+if (response != null) {
+  if (response["status"] == "Success") {
+    ...
+  } else if (response["status"] == "Failed") {
+    ...
+  } 
 }
 ```

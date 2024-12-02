@@ -1861,6 +1861,25 @@ paths:
                       nullable: true
                       description: The issuing country of the payment method.
                       example: null
+  "/secure-token":
+    post:
+      summary: Generate Secure Token
+      description: Generates a secure token (`secureToken`) for authenticating secure card-saving transactions.
+      operationId: generateSecureToken
+      tags:
+        - Token
+      responses:
+        '200':
+          description: Secure token generated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access:
+                    type: string
+                    description: The generated secure token.
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI3NzI3MTM3LCJpYXQiOjE3Mjc3MjM1MzcsImp0aSI6IjFjZTBkZmExODgwNzQzNGI4MDk2MzdlNTliNmM1NWMzIiwidXNlcl9pZCI6NDYxfQ.DFGNJr7JT6z3cp976PDBT57uX7LaYJLYBsdK8kaSAOI
 components:
   schemas:
     GeneralError:

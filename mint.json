@@ -148,7 +148,15 @@
           "group": "JS SDK",
           "pages": [
             "integration/sdks/web/js-sdk",
-            "integration/sdks/web/js-sdk-styles"
+            {
+              "group": "JS Inline Checkout",
+              "pages": [
+                "integration/sdks/web/js-inline-checkout",
+                "integration/sdks/web/js-sdk-styles"
+              ]
+            },
+            "integration/sdks/web/js-lite-checkout",
+            "integration/sdks/web/code-examples"
           ]
         },
         {
@@ -159,7 +167,8 @@
             "integration/sdks/mobile/flutter/flutter-sdk-lite",
             "integration/sdks/mobile/flutter/flutter-sdk-full"
           ]
-        }
+        },
+        "integration/sdks/secure-token"
       ]
     },
     {
@@ -233,6 +242,7 @@
         "reference/create-order",
         "reference/create-payment",
         "reference/create-checkout-router",
+        "reference/create-secure-token",
         "reference/refund-payment"
       ]
     }

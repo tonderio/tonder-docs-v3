@@ -57,64 +57,55 @@ When a customer fills the checkout and tries to pay the transaction, you will re
 <Accordion title="Webhook payload example" icon="webhook">
   ```json
     {
-      "transaction_reference": "tr0sqijfnqp3df6rrpbp",
-      "status": "Pending",
-      "amount": 19.99,
+      "transaction_reference": "17672577",
+      "status": "Success",
+      "transaction_status": "Success",
+      "amount": 500,
       "currency": "MXN",
-      "payment_method": "Credit Card",
-      "card_brand": "visa",
+      "payment_method": null,
+      "card_brand": null,
       "number_of_installments": 1,
-      "operation_date": "2024-01-26 09:12:00",
+      "operation_date": "2024-11-29 19:33:21",
       "reason": null,
       "transaction_type": "PAYMENT",
-      "provider": "openpay",
+      "provider": "tonder",
       "country": "N/A",
       "response": {
-        "id": "tr0sqijfnqp3df6rrpbp",
-        "authorization": "801585",
-        "operation_type": "in",
-        "transaction_type": "charge",
-        "status": "charge_pending",
-        "conciliated": false,
-        "creation_date": "2024-01-26T09:11:54-06:00",
-        "operation_date": "2024-01-26T09:11:55-06:00",
-        "description": "transaction",
-        "error_message": null,
-        "order_id": null,
-        "card": {
-          "type": "credit",
-          "brand": "visa",
-          "address": null,
-          "card_number": "424242XXXXXX4242",
-          "holder_name": "Adrian Martinez",
-          "expiration_year": "25",
-          "expiration_month": "05",
-          "allows_charges": true,
-          "allows_payouts": false,
-          "bank_name": "BANCOMER",
-          "points_type": "bancomer",
-          "points_card": true,
-          "bank_code": "012"
+        "customer": {
+          "email": "test@example.com",
+          "locale": "en",
+          "phone": "8115315741",
+          "ip": "190.29.241.167"
         },
-        "customer_id": "a2tjffpul3df452lsl2v",
-        "gateway_card_present": "BANCOMER",
-        "amount": 19.99,
-        "currency": "MXN",
-        "payment_method": {
-          "type": "redirect",
-          "url": "https://sandbox-api.openpay.mx/v1/charges/tr0sqijfnqp3df6rrpbp/frictionless/authorize"
+        "payment_method": "BANKCARD",
+        "merchant_order": {
+          "description": "transaction",
+          "id": "TNDR-aa56f8fb-ba8b-4c66-9f02-1ff2a43e0389"
         },
-        "fee": {
-          "amount": 3.07971,
-          "tax": 0.4928,
-          "currency": "MXN"
+        "payment_data": {
+          "amount": 500,
+          "auth_code": "hHB6d9",
+          "created": "2024-11-29T19:33:21Z",
+          "currency": "MXN",
+          "id": "17672577",
+          "is_3d": true,
+          "status": "COMPLETED",
+          "type": "PAYMENT"
         },
-        "method": "card",
-        "object": "charge"
+        "card_account": {
+          "expiration": "11/2025",
+          "holder": "pedro perez",
+          "issuing_country_code": "US",
+          "masked_pan": "400000...0085",
+          "token": "03c48f9b-1d59-8c4f-5297-7f0cfb63cb29"
+        }
       },
       "related_transaction_reference": null,
       "number_of_payment_attempts": 1,
-      "metadata": null
+      "metadata": {
+        "test_id": "Text example",
+        "order_id": 9879798789
+      }
     }
   ```
 </Accordion>

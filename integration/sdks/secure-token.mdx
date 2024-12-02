@@ -1,0 +1,144 @@
+---
+title: "How to Use secureToken for Secure Card Saving"
+sidebarTitle: "Secure Card Saving"
+'og:description': "Learn how to securely save customer cards."
+---
+
+
+This guide explains how to securely save customer card details using Tonder’s `secureToken`. To obtain the token, you need to call the `/api/secure-token/` endpoint from your the backend, ensuring secure and authenticated token generation. Once the token is retrieved, it can be implemented in your project from either the frontend or backend, depending on your setup and requirements.
+
+<Tip>
+  You can generate the secureToken in either Stage and Production environments.
+  <Tabs>
+    <Tab title="Stage environment URL">
+        ```
+        https://stage.tonder.io/api/secure-token/
+        ```
+    </Tab>
+    <Tab title="Production environment URL">
+      ```
+      https://app.tonder.io/api/secure-token/
+      ```
+    </Tab>
+  </Tabs>
+</Tip>
+
+<Steps>
+  <Step title="Initialize Tonder's SDK with Save Cards Customization">
+    To allow your customers to save cards, you can customize card-saving options within the `customization` object. Control whether customers can save cards, auto-save options, and the visibility of saved cards when starting the SDK.
+
+    - **`showSaveCardOption`**: Allows users to choose to save their card.
+    - **`autoSave`**: Enables automatic card saving without user confirmation.
+    - **`showSaved`**: Displays previously saved cards to the customer.
+
+    <Note>
+      The Save Card functionality is specific to each business and should be configured accordingly.
+    </Note>
+
+    <CodeGroup>
+
+      ```javascript npm package option
+      import { InlineCheckout } from "tonder-sdk";
+
+      const inlineCheckout = new InlineCheckout({
+        apiKey,
+        returnUrl,
+        styles: customStyles,
+        customization: {
+          showSaveCardOption: true,
+          autoSave: false,
+          showSaved: true,
+        }
+      });
+      ```
+      ```javascript Script tag option
+      const inlineCheckout = new TonderSdk.InlineCheckout({
+        apiKey,
+        returnUrl,
+        styles: customStyles,
+        customization: {
+          showSaveCardOption: true,
+          autoSave: false,
+          showSaved: true,
+        }
+      });
+      ```
+    </CodeGroup>
+  
+  </Step>
+  <Step title="Retrieve your Secret API Key">
+  You'll need your API Key to generate a `secureToken`. You can find your Secret API key by accessing the [**Developers**](/dashboard/dev-api-keys) section in your Tonder Dashboard.
+  
+  <Frame>![](/images/SDKs/secret-key.png)</Frame>
+  </Step>
+  <Step title="Generate a secureToken">
+    With your API Key in hand, you need to make a POST request to the [Create a Secure Token](/reference/create-secure-token) endpoint:
+
+    <CodeGroup>
+
+    ```javascript Stage
+    fetch("https://stage.tonder.io/api/secure-token/", {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token YOUR_SECRET_KEY`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(result => {
+      const secureToken = result.access;
+      // Use secureToken in the frontend for secure card-saving
+    });
+    ```
+
+    ```javascript Production
+    fetch("https://app.tonder.io/api/secure-token/", {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token YOUR_SECRET_KEY`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(result => {
+      const secureToken = result.access;
+      // Use secureToken in the frontend for secure card-saving
+    });
+    ```
+    </CodeGroup>
+
+    Within the JSON response, you can find an `access` property. This is the generated `secureToken` you need for the next steps. Below is an example format of the response:
+
+    ```json
+    {
+      "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI3NzI3MTM3LCJpYXQiOjE3Mjc3MjM1MzcsImp0aSI6IjFjZTBkZmExODgwNzQzNGI4MDk2MzdlNTliNmM1NWMzIiwidXNlcl9pZCI6NDYxfQ.DFGNJr7JT6z3cp976PDBT57uX7LaYJLYBsdK8kaSAOI"
+    }
+    ```
+
+    <Warning>
+      The generated `secureToken` is valid for **1 hour**. Ensure that it is used within this time frame to avoid authentication errors.
+    </Warning>
+
+  </Step>
+  <Step title="Configure the Checkout with your secureToken">
+  After obtaining the `secureToken`, configure the Tonder SDK checkout on the frontend to authenticate and secure transactions. Use the `configureCheckout` method, which accepts the `secureToken` along with customer data:
+
+  ```javascript
+  // Token provided by the backend
+  const secureToken = "YOUR_SECURE_TOKEN";
+
+  // Configure checkout with secureToken
+  inlineCheckout.configureCheckout({
+      customer: checkoutData.customer,
+      secureToken: secureToken // Secure token for authenticated card-saving
+  });
+  ```
+  Where: 
+  - **`checkoutData.customer`**: Contains customer information.
+  - **`secureToken`**: The token generated by the backend.
+  </Step>
+</Steps>
+
+After completing these steps, your SDK implementation should look like the following example:
+
+<Frame>![](/images/SDKs/sdk-example.png)</Frame>
