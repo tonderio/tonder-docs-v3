@@ -1,0 +1,106 @@
+---
+title: "Enrollment SDK Type"
+'og:description': "Integrate Tonder into your platform with the Tonder React Native SDK. Securely collect and tokenize sensitive data with our vanilla Javascript solution, ensuring PCI DSS compliance."
+---
+
+The Enrollment SDK integration brings you all cards saving functionalities from Tonder. With this, you can:
+
+- Tokenize cards
+- Validate cards
+- Use Tonder's secure storage
+
+## Integration Steps
+
+The following steps show you how to integrate the Enrollment type into your app:
+
+<Steps>
+  <Step title="Setup Tonder Provider">
+    You need to start by setting up Tonder's Provider into your application. The following code integrates our provider into the App component:
+
+    <Info>
+      Remember to add the correct SDK type in the provider configuration.
+    </Info>
+
+    ```jsx
+    import { TonderProvider, SDKType } from '@tonder.io/rn-sdk';
+
+    function App() {
+      return (
+        <TonderProvider
+          config={{
+            type: SDKType.ENROLLMENT,
+            mode: 'development', // or production
+            apiKey: 'your-api-key',
+          }}
+        >
+          <YourApp />
+        </TonderProvider>
+      );
+    }
+    ```
+  </Step>
+  {/* <Step title="">
+    
+  </Step> */}
+</Steps>
+
+## Enrollment Methods
+
+The Enrollment integration provides methods for handling full enrollment with built-in UI components.
+
+- `saveCustomerCard`: Tokenizes and saves the current card information.
+
+<Note>
+  The `saveCustomerCard` is only necessary when you want to control the enrollment button on your own.
+</Note>
+
+The example below shows how to create a card enrollment with a custom button.
+
+```ts
+export default function EnrollmentButtonScreen() {
+  const { create, saveCustomerCard } = useTonder<SDKType.ENROLLMENT>();
+
+  useEffect(() => {
+    createSDK()
+  }, [])
+
+  const createSDK = async (token) => {
+    const { error } = await create({
+      secureToken: token,
+      customer: { ...customerData },
+      customization: {
+        saveButton: {
+          show: false, // hidde default button
+        },
+      },
+    });
+
+    if (error) {
+      // Manage error
+      console.error('Error creating SDK', error);
+    }
+  };
+
+  const handleSaveCard = async () => {
+    const { response, error } = await saveCustomerCard();
+    if (error) {
+      //Manage error
+      console.error('Error save: ', error);
+      return;
+    }
+    console.log('Response save: ', response);
+  };
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+        <TonderEnrollment />
+        {/*Custom button*/}
+        <TouchableOpacity
+          onPress={handleSaveCard}
+        >
+          <Text>Guardar</Text>
+        </TouchableOpacity>
+    </SafeAreaView>
+  );
+}
+```
