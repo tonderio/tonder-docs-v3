@@ -1,0 +1,250 @@
+---
+title: "Inline SDK Type"
+'og:description': "Integrate Tonder into your platform with the Tonder React Native SDK. Securely collect and tokenize sensitive data with our vanilla Javascript solution, ensuring PCI DSS compliance."
+---
+
+The Inline SDK integration offers a full payment UI with built-in components with the following features:
+
+- Pre-built UI components
+- Saved cards management
+- Multiple payment methods support
+- Built-in error handling and validation
+- Customizable styling and layout
+
+## Integration Steps
+
+The following steps show you how to integrate the Inline type into your app:
+
+<Steps>
+  <Step title="Setup Tonder Provider">
+    You need to start by setting up Tonder's Provider into your application. Below are the available base configurations for the Provider:
+
+    | Property    | Type                                  | Required | Description                                                                                  |
+    |-------------|---------------------------------------|----------|----------------------------------------------------------------------------------------------|
+    | `mode`      | `'development'` \| `'production'` \| `'sandbox'` | Yes      | Specifies the environment mode for the SDK. Use `development` for testing, `production` for live operations, or `sandbox` for isolated testing. |
+    | `apiKey`    | `string`                              | Yes      | Your unique Tonder Public API key used to authenticate SDK requests.                         |
+    | `type`      | `SDKType`                             | Yes      | Indicates the integration type. Options: `INLINE` for inline integration, `LITE` for lightweight use, or `ENROLLMENT` for enrollment workflows. |
+    | `returnURL` | `string`                              | No       | The URL to redirect users to after completing the 3DS authentication process.                |
+
+    The following code integrates our provider into the App component:
+
+    <Info>
+      Remember to add the correct SDK type in the provider configuration.
+    </Info>
+
+    ```jsx
+    import { TonderProvider, SDKType } from '@tonder.io/rn-sdk';
+
+    function App() {
+      return (
+        <TonderProvider
+          config={{
+            type: SDKType.INLINE,
+            mode: 'development', // or production
+            apiKey: 'your-api-key',
+          }}
+        >
+          <YourApp />
+        </TonderProvider>
+      );
+    }
+    ```
+  </Step>
+  
+  <Step title="Obtain a Secure Token">
+    Before create the mobile SDK, your checkout page should obtain the security token for card functionalities (save, delete, list). This should be obtained through your backend for security.
+
+    <Note>
+      For detailed implementation instructions and best practices, please refer to the [How to use SecureToken for secure card saving](/integration/sdks/secure-token) guide.
+    </Note>
+
+    ```js
+    const getSecureToken = async (apiSecretKey: string) => {
+      const response = await fetch(
+        `${TONDER_ENVIRONMENT_URL}/api/secure-token/`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${'YOUR-SECRET-API-KEY'}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const data = await response.json();
+      return data.access;
+    };
+    ```
+  </Step>
+  
+  <Step title="Gather Payment and Customer Data">
+    Before creating the mobile SDK, your checkout page should already:
+    - Show the products being purchased and the total amount.
+    - Collect any required customer information.
+
+    ```js
+    import { IBaseProcessPaymentRequest } from '@tonder.io/rn-sdk';
+
+    const paymentData: IBaseProcessPaymentRequest = {
+      customer: {
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+      },
+      cart: {
+        total: 399,
+        items: [{
+          name: 'Product',
+          amount_total: 399,
+          description: 'Description',
+          price_unit: 399,
+          quantity: 1,
+        }]
+      }
+    };
+    ```
+  </Step>
+
+  <Step title="Create the Full Payment Screen">
+    The Full Payment integration provides a complete pre-built UI for payment processing. With a secure token, and the necessary data at hand, you can now create the payment screen.
+
+    ```jsx
+    import {
+      TonderPayment,
+      useTonder,
+      SDKType,
+      IBaseProcessPaymentRequest
+    } from '@tonder.io/rn-sdk';
+
+    export default function FullPaymentScreen() {
+      const { create, reset } = useTonder<SDKType.INLINE>();
+
+      const paymentData: IBaseProcessPaymentRequest = {
+        customer: {
+          email: 'test@example.com',
+          firstName: 'John',
+          lastName: 'Doe',
+        },
+        cart: {
+          total: 399,
+          items: [{
+            name: 'Product',
+            amount_total: 399,
+            description: 'Description',
+            price_unit: 399,
+            quantity: 1,
+          }]
+        }
+      };
+
+      useEffect(() => {
+        initializePayment();
+      }, []);
+
+      const initializePayment = async () => {
+        const { error } = await create({
+          secureToken: 'your-secure-token',
+          paymentData,
+          callbacks: {
+            onFinishPayment: handlePaymentFinish
+          }
+        });
+
+        if (error) {
+          console.error('SDK initialization error:', error);
+        }
+      };
+
+      const callbackFinish = async (response) => {
+        console.log('FINISH PAYMENT ===== ', response);
+
+        // Reset the state and regenerate the SDK to use it again.
+        reset();
+        await initializePayment();
+      };
+
+      return (
+        <SafeAreaView>
+          <TonderPayment />
+        </SafeAreaView>
+      );
+    }
+    ```
+
+  </Step>
+
+  {/* <Step title="">
+  </Step>
+
+  <Step title="">
+  </Step> */}
+</Steps>
+
+After these steps, you have completed the integration. The following image exemplifies how the SDK will look in your app:
+
+<Frame>
+  <img src="/images/SDKs/react-native/inline/full-payment-screen.png" />
+</Frame>
+
+## Inline Methods
+
+The Inline integration provides methods for handling full payment processing with built-in UI components.
+
+- `create`: Initializes the SDK with configuration.
+- `reset`: Resets the SDK state to its initial values and cleans up resources.
+- `payment`: Processes a payment using the configured payment data. 
+
+<Note>
+  The payment function It is only used when you want to control the payment button on your own. Additionally, if there are any changes to the payment or customer data, you can pass the updated data again when calling the function.
+</Note>
+
+The example code below uses the payment function along with the create:
+
+```tsx
+export default function FullPaymentButtonScreen() {
+  const { create, payment } = useTonder<SDKType.INLINE>();
+
+  useEffect(() => {
+    createSDK()
+  }, [])
+
+  const createSDK = async () => {
+    const { error } = await create({
+      secureToken: 'your-secure-token',
+      paymentData: { ...paymentData },
+      customization: {
+        paymentButton: {
+          show: false, // hide default button
+        },
+      },
+    });
+
+    if (error) {
+      // Manage error
+      console.error('Error creating SDK', error);
+    }
+  };
+
+  const handlePayment = async () => {
+    const { response, error } = await payment();
+
+    if (error) {
+      console.error('Error payment: ', error);
+      return;
+    }
+    console.log('Response payment: ', response);
+  };
+
+  return (
+    <SafeAreaView>
+      <ScrollView>
+        <TonderPayment />
+        {/*Custom button*/}
+        <TouchableOpacity onPress={handlePayment}>
+          <Text>Pagar</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+```
