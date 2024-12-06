@@ -1,0 +1,971 @@
+---
+title: "Reference"
+'og:description': "This page presents reference tables and interfaces for SDK methods"
+---
+
+Find below reference tables and interfaces for the methods and features found at the React Native guides.
+
+## Base configuration
+
+| Property    | Type                                  | Required | Description                                                                                  |
+|-------------|---------------------------------------|----------|----------------------------------------------------------------------------------------------|
+| `mode`      | `'development'` \| `'production'` \| `'sandbox'` | Yes      | Specifies the environment mode for the SDK. Use `development` for testing, `production` for live operations, or `sandbox` for isolated testing. |
+| `apiKey`    | `string`                              | Yes      | Your unique Tonder Public API key used to authenticate SDK requests.                         |
+| `type`      | `SDKType`                             | Yes      | Indicates the integration type. Options: `INLINE` for inline integration, `LITE` for lightweight use, or `ENROLLMENT` for enrollment workflows. |
+| `returnURL` | `string`                              | No       | The URL to redirect users to after completing the 3DS authentication process.                |
+
+```ts
+interface ISDKBaseConfig {
+  mode: 'development' | 'production' | 'sandbox';
+  apiKey: string;
+  type: SDKType;
+  returnURL?: string;
+}
+```
+
+## Inline
+
+<AccordionGroup>
+  <Accordion
+    title="IInlineCheckoutOptions"
+  >
+    | Option          | Type                                   | Required | Description                                                                                     |
+    |------------------|----------------------------------------|----------|-------------------------------------------------------------------------------------------------|
+    | `paymentData`    | `IBaseProcessPaymentRequest`          | Yes      | Contains the payment information, including customer and cart data necessary for the transaction. |
+    | `customization`  | `IInlineCustomizationOptions`         | No       | Options for customizing the user interface of the payment process.                              |
+    | `callbacks`      | `IInlineCallbacks`                   | No       | Functions to handle callback events during the payment process, such as success or failure.     |
+    | `returnURL`      | `string`                              | No       | The URL to redirect users to after completing the 3D Secure (3DS) authentication process.       |
+
+    ```ts
+    interface IInlineCheckoutOptions extends IBaseCreateOptions {
+      paymentData: IBaseProcessPaymentRequest;
+      customization?: IInlineCustomizationOptions;
+      callbacks?: IInlineCallbacks;
+      returnURL?: string;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Callbacks Structure"
+  >
+    | Callback              | Parameters                           | Description                                                                                          | Return  |
+    |-----------------------|---------------------------------------|------------------------------------------------------------------------------------------------------|---------|
+    | `beforePayment`       | `none`                               | Invoked before the payment process begins. Use this to display a loading state, validate data, or perform pre-payment tasks. | `Promise` |
+    | `onFinishPayment`     | `response: IBaseResponse<ITransaction>` | Triggered when the payment process is completed (either success or error). Provides transaction results or error details. | `Promise` |
+    | `beforeDeleteCard`    | `none`                               | Invoked before the delete card process starts. Use this to display a loading state, validate data, or perform pre-deletion tasks. | `Promise` |
+    | `onFinishDeleteCard`  | `response: IBaseResponse<string>`    | Triggered when the card deletion process is completed (either success or error). | `Promise` |
+
+    ```ts
+    export interface IInlineCallbacks {
+      beforePayment?: () => Promise<void>;
+      onFinishPayment?: (response: IBaseResponse<ITransaction>) => Promise<void>;
+      beforeDeleteCard?: () => Promise<void>;
+      onFinishDeleteCard?: (response: IBaseResponse<string>) => Promise<void>;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Payment Data"
+  >
+    ### Customer information
+
+    | Field      | Type     | Required | Description                                      |
+    |------------|----------|----------|--------------------------------------------------|
+    | `email`    | `string` | Yes      | Customer's email address.                        |
+    | `firstName`| `string` | Yes      | Customer's first name.                           |
+    | `lastName` | `string` | Yes      | Customer's last name.                            |
+    | `phone`    | `string` | No       | Customer's contact phone number.                 |
+    | `address`  | `string` | No       | Customer's street address.                       |
+    | `city`     | `string` | No       | Customer's city.                                 |
+    | `state`    | `string` | No       | Customer's state or province.                    |
+    | `country`  | `string` | No       | Customer's country.                              |
+    | `postCode` | `string` | No       | Customer's postal or ZIP code.                   |
+
+    ### Cart Information
+    | Field       | Type                   | Required | Description                                              |
+    |-------------|------------------------|----------|----------------------------------------------------------|
+    | `total`     | `number`               | Yes      | Total amount of the transaction.                         |
+    | `items`     | `Array<IItem>`         | Yes      | Array containing details of items in the cart.           |
+    | `metadata`  | `Record<string, any>`  | No       | Additional custom data for the transaction.              |
+    | `currency`  | `string`               | No       | Currency code for the transaction (default: `MXN`).      |
+
+    ### Cart Item Structure
+    | Field               | Type      | Required | Description                                                 |
+    |---------------------|-----------|----------|-------------------------------------------------------------|
+    | `name`              | `string`  | Yes      | Name of the product.                                        |
+    | `amount_total`      | `number`  | Yes      | Total amount for the item (calculated as `quantity × price`).|
+    | `description`       | `string`  | Yes      | Brief description of the product.                          |
+    | `price_unit`        | `number`  | Yes      | Unit price of the product.                                  |
+    | `product_reference` | `string`  | Yes      | Unique identifier for the product.                         |
+    | `quantity`          | `number`  | Yes      | Quantity of the product being purchased.                   |
+    | `discount`          | `number`  | No       | Discount amount applied to this item.                      |
+    | `taxes`             | `number`  | No       | Tax amount applied to this item.                           |
+
+    ```ts
+    interface IBaseProcessPaymentRequest {
+      customer: {
+        email: string;
+        firstName: string;
+        lastName: string;
+        phone?: string;
+        address?: string;
+        city?: string;
+        state?: string;
+        country?: string;
+        postCode?: string;
+      };
+      cart: {
+        total: number;
+        items: Array<{
+          name: string;
+          amount_total: number;
+          description: string;
+          price_unit: number;
+          product_reference: string;
+          quantity: number;
+          discount?: number;
+          taxes?: number;
+        }>;
+      };
+      metadata?: Record<string, any>;
+      currency?: string;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Customization Options"
+  >
+    ### Save Cards Options
+    | Option                        | Type      | Default | Description                                                                 |
+    |-------------------------------|-----------|---------|-----------------------------------------------------------------------------|
+    | `saveCards.showSaveCardOption`| `boolean` | `true`  | Displays a checkbox allowing users to choose whether to save their card for future purchases. |
+    | `saveCards.showSaved`         | `boolean` | `true`  | Shows a list of previously saved cards for the customer.                    |
+    | `saveCards.autoSave`          | `boolean` | `false` | Automatically saves the card without requiring the user to select the save option. |
+    | `saveCards.showDeleteOption`  | `boolean` | `true`  | Displays a delete button for each saved card in the list.                   |
+
+    ### Payment Button Options
+    | Option                      | Type      | Default   | Description                                                                 |
+    |-----------------------------|-----------|-----------|-----------------------------------------------------------------------------|
+    | `paymentButton.show`        | `boolean` | `true`    | Controls the visibility of the payment button.                             |
+    | `paymentButton.text`        | `string`  | `'Pagar'` | Custom text displayed on the payment button.                               |
+    | `paymentButton.showAmount`  | `boolean` | `true`    | Displays the payment amount on the button (e.g., "Pay $100").              |
+
+    ### Payment Methods Options
+    | Option                     | Type      | Default | Description                                                                 |
+    |----------------------------|-----------|---------|-----------------------------------------------------------------------------|
+    | `paymentMethods.show`      | `boolean` | `true`  | Controls the visibility of the alternative payment methods section.         |
+
+    ### Card Form Options
+    | Option                  | Type      | Default | Description                                                                 |
+    |-------------------------|-----------|---------|-----------------------------------------------------------------------------|
+    | `cardForm.show`         | `boolean` | `true`  | Controls the visibility of the card input form.                             |
+
+    ### General Options
+    | Option          | Type      | Default | Description                                                                 |
+    |------------------|-----------|---------|-----------------------------------------------------------------------------|
+    | `showMessages`   | `boolean` | `true`  | Controls the visibility of error and success messages.                      |
+    | `labels`         | `object`  | `-`     | Custom labels for form fields (see Form Labels section).                    |
+    | `placeholders`   | `object`  | `-`     | Custom placeholder text for form inputs (see Form Placeholders section).    |
+    | `styles`         | `object`  | `-`     | Custom styles for UI components (see Styling section).                      |
+    ```ts
+    interface IInlineCustomizationOptions {
+      saveCards?: {
+        showSaveCardOption?: boolean;
+        showSaved?: boolean;
+        autoSave?: boolean;
+        showDeleteOption?: boolean;
+      };
+      paymentButton?: {
+        show?: boolean;
+        text?: string;
+        showAmount?: boolean;
+      };
+      paymentMethods?: {
+        show?: boolean;
+      };
+      cardForm?: {
+        show?: boolean;
+      };
+      showMessages?: boolean;
+      labels?: IFormLabels;
+      placeholders?: IFormPlaceholder;
+      styles?: IStyles;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Form Labels & Placeholders"
+  >
+    ###  Form Labels
+    | Property      | Type     | Default                  | Description                                       |
+    |---------------|----------|--------------------------|---------------------------------------------------|
+    | `name`        | `string` | "Titular de la tarjeta"  | Label for the cardholder's name field.           |
+    | `cardNumber`  | `string` | "Número de tarjeta"      | Label for the card number field.                 |
+    | `cvv`         | `string` | "CVV"                   | Label for the security code field.               |
+    | `expiryDate`  | `string` | "Fecha de expiración"    | Label for the expiration date fields.            |
+
+    ```ts
+    interface IFormLabels {
+      name?: string;
+      cardNumber?: string;
+      cvv?: string;
+      expiryDate?: string;
+    }
+    ```
+
+    ### Placeholders
+    | Property      | Type     | Default                          | Description                                           |
+    |---------------|----------|----------------------------------|-------------------------------------------------------|
+    | `name`        | `string` | "Nombre como aparece en la tarjeta" | Placeholder for the cardholder's name field.        |
+    | `cardNumber`  | `string` | "1234 1234 1234 1234"           | Placeholder for the card number field.               |
+    | `cvv`         | `string` | "3-4 dígitos"                   | Placeholder for the security code field.             |
+    | `expiryMonth` | `string` | "MM"                            | Placeholder for the expiration month field.          |
+    | `expiryYear`  | `string` | "AA"                            | Placeholder for the expiration year field.           |
+
+    ```ts
+    interface IFormPlaceholder {
+      name?: string;
+      cardNumber?: string;
+      cvv?: string;
+      expiryMonth?: string;
+      expiryYear?: string;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Styling"
+  >
+    The style customization for Full integrations (Inline and Enrollment) is done through a styles object in the SDK configuration.
+
+    ### Main Container
+    | Component     | Description                | Properties                     |
+    |---------------|----------------------------|---------------------------------|
+    | `sdkCard`     | Main container of the SDK. | `base: StylesBaseVariant`      |
+
+    ### Card Form
+    | Component  | Description         | Properties                          |
+    |------------|---------------------|--------------------------------------|
+    | `cardForm` | Card form section.  | `base: StylesBaseVariant`           |
+    |            |                     | `inputStyles: CollectInputStylesVariant` |
+    |            |                     | `labelStyles: CollectInputStylesVariant` |
+    |            |                     | `errorStyles: StylesBaseVariant`    |
+
+    ### Saved Cards
+    | Component    | Description                | Properties                          |
+    |--------------|----------------------------|--------------------------------------|
+    | `savedCards` | Saved cards list section.  | `base: StylesBaseVariant`           |
+    |              |                            | `radioBase: ViewStyle`              |
+    |              |                            | `radioInner: ViewStyle`             |
+    |              |                            | `radioSelected: ViewStyle`          |
+    |              |                            | `cardIcon: ViewStyle`               |
+    |              |                            | `deleteButton: ViewStyle`           |
+    |              |                            | `deleteIcon: ViewStyle`             |
+
+    ### Payment Methods
+    | Component         | Description                | Properties                          |
+    |-------------------|----------------------------|--------------------------------------|
+    | `paymentMethods`  | Payment methods section.   | `base: StylesBaseVariant`           |
+    |                   |                            | `radioBase: ViewStyle`              |
+    |                   |                            | `radioInner: ViewStyle`             |
+    |                   |                            | `radioSelected: ViewStyle`          |
+
+    ### Payment Radio
+    | Component     | Description                     | Properties                          |
+    |---------------|---------------------------------|--------------------------------------|
+    | `paymentRadio`| Payment method selector.        | `base: StylesBaseVariant`           |
+    |               |                                 | `radioBase: ViewStyle`              |
+    |               |                                 | `radioInner: ViewStyle`             |
+    |               |                                 | `radioSelected: ViewStyle`          |
+
+    ### Payment Button
+    | Component        | Description          | Properties       |
+    |------------------|----------------------|-------------------|
+    | `paymentButton`  | Payment button.      | `base: ViewStyle` |
+
+    ### Error Message
+    | Component       | Description                | Properties       |
+    |-----------------|----------------------------|-------------------|
+    | `errorMessage`  | Error message display.     | `base: TextStyle` |
+
+    ### Success Message
+    | Component         | Description                 | Properties       |
+    |-------------------|-----------------------------|-------------------|
+    | `successMessage`  | Success message display.    | `base: TextStyle` |
+  </Accordion>
+
+  <Accordion
+    title="Full customization example"
+  >
+    ```ts
+    const styles = {
+      sdkCard: {
+        base: {
+          backgroundColor: '#f9f9f9',
+          borderRadius: 10,
+          padding: 16,
+          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+        },
+      },
+      cardForm: {
+        base: {
+          backgroundColor: '#ffffff',
+          borderRadius: 10,
+          padding: 16,
+          borderWidth: 1,
+          borderColor: '#e3e3e3',
+          marginVertical: 8,
+        },
+        inputStyles: {
+          base: {
+            borderWidth: 1,
+            borderColor: '#cccccc',
+            borderRadius: 6,
+            padding: 12,
+            fontSize: 16,
+            marginBottom: 10,
+            color: '#333',
+          },
+        },
+        labelStyles: {
+          base: {
+            fontSize: 14,
+            color: '#666',
+            marginBottom: 6,
+          },
+        },
+      },
+      savedCards: {
+        base: {
+          backgroundColor: '#f9f9f9',
+          borderRadius: 8,
+          padding: 10,
+          marginVertical: 6,
+          borderWidth: 1,
+          borderColor: '#e3e3e3',
+        },
+      },
+      paymentRadio: {
+        base: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: 10,
+          backgroundColor: '#f9f9f9',
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: '#e3e3e3',
+        },
+      },
+      paymentButton: {
+        base: {
+          backgroundColor: '#007AFF',
+          paddingVertical: 15,
+          paddingHorizontal: 20,
+          borderRadius: 8,
+          alignItems: 'center',
+          fontSize: 18,
+          color: '#fff',
+          fontWeight: '600',
+        },
+      },
+      paymentMethods: {
+        base: {
+          paddingVertical: 10,
+          backgroundColor: '#f9f9f9',
+        },
+        radioBase: {
+          width: 20,
+          height: 20,
+          borderRadius: 10,
+          borderWidth: 2,
+          borderColor: '#007AFF',
+          marginHorizontal: 10,
+        },
+      },
+      successMessage: {
+        base: {
+          color: '#28a745',
+          fontWeight: '600',
+          fontSize: 16,
+          textAlign: 'center',
+          marginTop: 20,
+        },
+      },
+      errorMessage: {
+        base: {
+          color: '#dc3545',
+          fontSize: 14,
+          marginTop: 4,
+        },
+      },
+    };
+
+    const { create } = useTonder<SDKType.INLINE>();
+
+    const { error } = await create({
+      secureToken: 'your-secure-token',
+      paymentData: { ...paymentData },
+      customization: {
+        saveCards: {
+          showSaveCardOption: true,
+          showSaved: true,
+        },
+        paymentButton: {
+          show: true,
+          showAmount: false,
+        },
+        labels: {
+          name: 'Cardholder Name',
+          cvv: 'CVV',
+          cardNumber: 'Card Number',
+          expiryDate: 'Expiration Date',
+        },
+        placeholders: {
+          cvv: '123',
+          name: 'John Doe',
+          cardNumber: '4242 4242 4242 4242',
+          expiryMonth: 'MM',
+          expiryYear: 'YY',
+        },
+        styles: styles,
+      },
+      callbacks: {
+        onFinishPayment: callbackFinish,
+      },
+    });
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Lite
+
+<AccordionGroup>
+  <Accordion
+    title="ILiteCheckoutOptions"
+  >
+    | Option          | Type                                   | Required | Description                                                                                     |
+    |------------------|----------------------------------------|----------|-------------------------------------------------------------------------------------------------|
+    | `paymentData`    | `IBaseProcessPaymentRequest`          | Yes      | Contains the payment information, including customer and cart data necessary for the transaction. |
+    | `customization`  | `IInlineCustomizationOptions`         | No       | Options for customizing the user interface of the payment process.                              |
+    | `callbacks`      | `IInlineCallbacks`                   | No       | Functions to handle callback events during the payment process, such as success or failure.     |
+    | `returnURL`      | `string`                              | No       | The URL to redirect users to after completing the 3D Secure (3DS) authentication process.       |
+
+    ```ts
+    interface ILiteCheckoutOptions extends IBaseCreateOptions {
+      paymentData: IProcessPaymentRequest;
+      customization?: ILiteCustomizationOptions;
+      callbacks?: ILiteCallbacks;
+      returnURL?: string;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Callbacks Structure"
+  >
+    | Callback         | Parameters                          | Description                                                                                         | Return    |
+    |------------------|-------------------------------------|-----------------------------------------------------------------------------------------------------|-----------|
+    | `beforePayment`  | `none`                              | Triggered before the payment process begins. Use this to display a loading state, validate data, or perform pre-payment tasks. | `Promise` |
+    | `onFinishPayment`| `response: IBaseResponse<ITransaction>` | Called when the payment process finishes (success or error). Provides the result of the transaction or error details. | `Promise` |
+
+    ```ts
+    export interface ILiteCallbacks {
+      beforePayment?: () => Promise<void>;
+      onFinishPayment?: (response: IBaseResponse<ITransaction>) => Promise<void>;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Payment Data"
+  >
+    ### Customer information
+
+    | Field      | Type     | Required | Description                                      |
+    |------------|----------|----------|--------------------------------------------------|
+    | `email`    | `string` | Yes      | Customer's email address.                        |
+    | `firstName`| `string` | Yes      | Customer's first name.                           |
+    | `lastName` | `string` | Yes      | Customer's last name.                            |
+    | `phone`    | `string` | No       | Customer's contact phone number.                 |
+    | `address`  | `string` | No       | Customer's street address.                       |
+    | `city`     | `string` | No       | Customer's city.                                 |
+    | `state`    | `string` | No       | Customer's state or province.                    |
+    | `country`  | `string` | No       | Customer's country.                              |
+    | `postCode` | `string` | No       | Customer's postal or ZIP code.                   |
+
+    ### Cart Information
+    | Field       | Type                   | Required | Description                                              |
+    |-------------|------------------------|----------|----------------------------------------------------------|
+    | `total`     | `number`               | Yes      | Total amount of the transaction.                         |
+    | `items`     | `Array<IItem>`         | Yes      | Array containing details of items in the cart.           |
+    | `metadata`  | `Record<string, any>`  | No       | Additional custom data for the transaction.              |
+    | `currency`  | `string`               | No       | Currency code for the transaction (default: `MXN`).      |
+
+    ### Cart Item Structure
+    | Field               | Type      | Required | Description                                                 |
+    |---------------------|-----------|----------|-------------------------------------------------------------|
+    | `name`              | `string`  | Yes      | Name of the product.                                        |
+    | `amount_total`      | `number`  | Yes      | Total amount for the item (calculated as `quantity × price`).|
+    | `description`       | `string`  | Yes      | Brief description of the product.                          |
+    | `price_unit`        | `number`  | Yes      | Unit price of the product.                                  |
+    | `product_reference` | `string`  | Yes      | Unique identifier for the product.                         |
+    | `quantity`          | `number`  | Yes      | Quantity of the product being purchased.                   |
+    | `discount`          | `number`  | No       | Discount amount applied to this item.                      |
+    | `taxes`             | `number`  | No       | Tax amount applied to this item.                           |
+
+    ### Additional fields for LITE Version
+    | Field            | Type     | Required | Description                                             |
+    |-------------------|----------|----------|---------------------------------------------------------|
+    | `card`           | `string` | No       | The ID of the card selected by the user.               |
+    | `payment_method` | `string` | No       | The payment method chosen by the user.                 |
+
+
+    ```ts
+    interface IProcessPaymentRequest {
+      customer: {
+        email: string;
+        firstName: string;
+        lastName: string;
+        phone?: string;
+        address?: string;
+        city?: string;
+        state?: string;
+        country?: string;
+        postCode?: string;
+      };
+      cart: {
+        total: number;
+        items: Array<{
+          name: string;
+          amount_total: number;
+          description: string;
+          price_unit: number;
+          product_reference: string;
+          quantity: number;
+          discount?: number;
+          taxes?: number;
+        }>;
+      };
+      metadata?: Record<string, any>;
+      currency?: string;
+      card?: string;
+      payment_method?: string;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Customization Options"
+  >
+    ### Save Card Options
+    | Option              | Type      | Default | Description                                                                       |
+    |---------------------|-----------|---------|-----------------------------------------------------------------------------------|
+    | `saveCards.autoSave`| `boolean` | `false` | Automatically saves the card without displaying the save option to the user.      |
+
+    ```ts
+    interface ILiteCustomizationOptions {
+      saveCards?: {
+        autoSave?: boolean;
+      };
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Form Labels & Placeholders"
+  >
+    <Note>
+      For the Lite version, you can pass the respective values directly when using Tonder's inputs.
+    </Note>
+
+    ###  Form Labels
+    | Property      | Type     | Default                  | Description                                       |
+    |---------------|----------|--------------------------|---------------------------------------------------|
+    | `name`        | `string` | "Titular de la tarjeta"  | Label for the cardholder's name field.           |
+    | `cardNumber`  | `string` | "Número de tarjeta"      | Label for the card number field.                 |
+    | `cvv`         | `string` | "CVV"                   | Label for the security code field.               |
+    | `expiryDate`  | `string` | "Fecha de expiración"    | Label for the expiration date fields.            |
+
+    ```ts
+    interface IFormLabels {
+      name?: string;
+      cardNumber?: string;
+      cvv?: string;
+      expiryDate?: string;
+    }
+    ```
+
+    ### Placeholders
+    | Property      | Type     | Default                          | Description                                           |
+    |---------------|----------|----------------------------------|-------------------------------------------------------|
+    | `name`        | `string` | "Nombre como aparece en la tarjeta" | Placeholder for the cardholder's name field.        |
+    | `cardNumber`  | `string` | "1234 1234 1234 1234"           | Placeholder for the card number field.               |
+    | `cvv`         | `string` | "3-4 dígitos"                   | Placeholder for the security code field.             |
+    | `expiryMonth` | `string` | "MM"                            | Placeholder for the expiration month field.          |
+    | `expiryYear`  | `string` | "AA"                            | Placeholder for the expiration year field.           |
+
+    ```ts
+    interface IFormPlaceholder {
+      name?: string;
+      cardNumber?: string;
+      cvv?: string;
+      expiryMonth?: string;
+      expiryYear?: string;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Styling"
+  >
+    The individual components of the Lite integration accept custom styles through the style prop. Each component can be styled independently
+
+    ### Interface
+    ```ts
+    export interface InputProps {
+      label?: string;
+      placeholder?: string;
+      style?: IElementStyle;
+    }
+    interface IElementStyle {
+      inputStyles: {
+        base?: ViewStyle & TextStyle;
+        focus?: Record<string, any>;
+        complete?: Record<string, any>;
+        invalid?: Record<string, any>;
+        empty?: Record<string, any>;
+        container?: Record<string, any>;
+      };
+      labelStyles: {
+        base?: TextStyle;
+        requiredAsterisk?: Record<string, any>;
+        focus?: Record<string, any>;
+      };
+      errorStyles?: {
+        base: TextStyle;
+      };
+    }
+    ```
+
+    ### Example
+    ```tsx
+    <CardNumberInput
+      placeholder="1234 5678 9012 3456"
+      style={{
+        inputStyles,
+        labelStyles,
+        errorStyles
+      }}
+    />
+
+  const inputStyles = {
+    base: {
+      backgroundColor: 'transparent',
+      borderBottomColor: '#cbd5e1',
+      borderBottomWidth: 1,
+      paddingVertical: 8,
+      fontSize: 16,
+      color: '#111827',
+      marginBottom: 15,
+    },
+    focus: {
+      borderBottomColor: '#0ea5e9',
+      boxShadow: '0 0 0 4px rgba(14, 165, 233, 0.2)',
+    },
+  };
+
+  const labelStyles = {
+    base: {
+      fontSize: 14,
+      color: '#6b7280',
+      marginBottom: 5,
+    },
+  };
+
+  const errorStyles = {
+    base: {
+      color: '#ef4444',
+      fontSize: 12,
+      marginTop: 4,
+    },
+  };
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Enrollment
+
+<AccordionGroup>
+  <Accordion
+    title="IEnrollmentOptions"
+  >
+    | Option         | Type                            | Required | Description                                                              |
+    |----------------|---------------------------------|----------|--------------------------------------------------------------------------|
+    | `customer`     | `ICustomer`                    | Yes      | Customer information required for the enrollment process.               |
+    | `customization`| `IEnrollmentCustomizationOptions` | No       | Options to customize the user interface during the enrollment process.   |
+    | `callbacks`    | `IEnrollmentCallbacks`         | No       | Functions to handle callback events during the enrollment process.       |
+
+    ```ts
+    export interface IEnrollmentOptions extends IBaseCreateOptions {
+      customer?: ICustomer;
+      customization?: IEnrollmentCustomizationOptions;
+      callbacks?: IEnrollmentCallbacks;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Callbacks Structure"
+  >
+    | Callback       | Parameters                             | Description                                                                                          | Return    |
+    |----------------|----------------------------------------|------------------------------------------------------------------------------------------------------|-----------|
+    | `beforeSave`   | `none`                                 | Triggered before the save card process begins. Use this to display a loading state, validate data, or perform pre-save-card tasks. | `Promise` |
+    | `onFinishSave` | `response: IBaseResponse<ISaveCardResponse>` | Called when the save card process is completed (success or error). Provides the result of the transaction or error details. | `Promise` |
+
+    ```ts
+    export interface IEnrollmentCallbacks {
+      beforeSave?: () => Promise<void>;
+      onFinishSave?: (response: IBaseResponse<ISaveCardResponse>) => Promise<void>;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Customization Options"
+  >
+    ### Save Button Options
+    | Option            | Type      | Default    | Description                                     |
+    |-------------------|-----------|------------|-------------------------------------------------|
+    | `saveButton.show` | `boolean` | `true`     | Controls the visibility of the save button.     |
+    | `saveButton.text` | `string`  | `'Guardar'`| Custom text displayed on the save button.       |
+
+    ### General Options
+    | Option          | Type      | Default | Description                                                                  |
+    |------------------|-----------|---------|------------------------------------------------------------------------------|
+    | `showMessages`   | `boolean` | `true`  | Controls the visibility of error and success messages.                       |
+    | `labels`         | `object`  | `-`     | Custom labels for form fields (see Form Labels section).                     |
+    | `placeholders`   | `object`  | `-`     | Custom placeholder text for form inputs (see Form Placeholders section).     |
+    | `styles`         | `object`  | `-`     | Custom styles for UI components (see Styling section).                       |
+
+    ```ts
+    interface IEnrollmentCustomizationOptions {
+      paymentButton?: {
+        show?: boolean;
+        text?: string;
+      };
+      showMessages?: boolean;
+      labels?: IFormLabels;
+      placeholders?: IFormPlaceholder;
+      styles?: IStyles;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Styling"
+  >
+    The style customization for Full integrations (Inline and Enrollment) is done through a styles object in the SDK configuration.
+
+    ### Main Container
+    | Component     | Description                | Properties                     |
+    |---------------|----------------------------|---------------------------------|
+    | `sdkCard`     | Main container of the SDK. | `base: StylesBaseVariant`      |
+
+    ### Card Form
+    | Component  | Description         | Properties                          |
+    |------------|---------------------|--------------------------------------|
+    | `cardForm` | Card form section.  | `base: StylesBaseVariant`           |
+    |            |                     | `inputStyles: CollectInputStylesVariant` |
+    |            |                     | `labelStyles: CollectInputStylesVariant` |
+    |            |                     | `errorStyles: StylesBaseVariant`    |
+
+    ### Saved Cards
+    | Component    | Description                | Properties                          |
+    |--------------|----------------------------|--------------------------------------|
+    | `savedCards` | Saved cards list section.  | `base: StylesBaseVariant`           |
+    |              |                            | `radioBase: ViewStyle`              |
+    |              |                            | `radioInner: ViewStyle`             |
+    |              |                            | `radioSelected: ViewStyle`          |
+    |              |                            | `cardIcon: ViewStyle`               |
+    |              |                            | `deleteButton: ViewStyle`           |
+    |              |                            | `deleteIcon: ViewStyle`             |
+
+    ### Payment Methods
+    | Component         | Description                | Properties                          |
+    |-------------------|----------------------------|--------------------------------------|
+    | `paymentMethods`  | Payment methods section.   | `base: StylesBaseVariant`           |
+    |                   |                            | `radioBase: ViewStyle`              |
+    |                   |                            | `radioInner: ViewStyle`             |
+    |                   |                            | `radioSelected: ViewStyle`          |
+
+    ### Payment Radio
+    | Component     | Description                     | Properties                          |
+    |---------------|---------------------------------|--------------------------------------|
+    | `paymentRadio`| Payment method selector.        | `base: StylesBaseVariant`           |
+    |               |                                 | `radioBase: ViewStyle`              |
+    |               |                                 | `radioInner: ViewStyle`             |
+    |               |                                 | `radioSelected: ViewStyle`          |
+
+    ### Payment Button
+    | Component        | Description          | Properties       |
+    |------------------|----------------------|-------------------|
+    | `paymentButton`  | Payment button.      | `base: ViewStyle` |
+
+    ### Error Message
+    | Component       | Description                | Properties       |
+    |-----------------|----------------------------|-------------------|
+    | `errorMessage`  | Error message display.     | `base: TextStyle` |
+
+    ### Success Message
+    | Component         | Description                 | Properties       |
+    |-------------------|-----------------------------|-------------------|
+    | `successMessage`  | Success message display.    | `base: TextStyle` |
+  </Accordion>
+
+  <Accordion
+    title="Full customization example"
+  >
+    ```ts
+    const styles = {
+      sdkCard: {
+        base: {
+          backgroundColor: '#f9f9f9',
+          borderRadius: 10,
+          padding: 16,
+          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+        },
+      },
+      cardForm: {
+        base: {
+          backgroundColor: '#ffffff',
+          borderRadius: 10,
+          padding: 16,
+          borderWidth: 1,
+          borderColor: '#e3e3e3',
+          marginVertical: 8,
+        },
+        inputStyles: {
+          base: {
+            borderWidth: 1,
+            borderColor: '#cccccc',
+            borderRadius: 6,
+            padding: 12,
+            fontSize: 16,
+            marginBottom: 10,
+            color: '#333',
+          },
+        },
+        labelStyles: {
+          base: {
+            fontSize: 14,
+            color: '#666',
+            marginBottom: 6,
+          },
+        },
+      },
+      savedCards: {
+        base: {
+          backgroundColor: '#f9f9f9',
+          borderRadius: 8,
+          padding: 10,
+          marginVertical: 6,
+          borderWidth: 1,
+          borderColor: '#e3e3e3',
+        },
+      },
+      paymentRadio: {
+        base: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: 10,
+          backgroundColor: '#f9f9f9',
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: '#e3e3e3',
+        },
+      },
+      paymentButton: {
+        base: {
+          backgroundColor: '#007AFF',
+          paddingVertical: 15,
+          paddingHorizontal: 20,
+          borderRadius: 8,
+          alignItems: 'center',
+          fontSize: 18,
+          color: '#fff',
+          fontWeight: '600',
+        },
+      },
+      paymentMethods: {
+        base: {
+          paddingVertical: 10,
+          backgroundColor: '#f9f9f9',
+        },
+        radioBase: {
+          width: 20,
+          height: 20,
+          borderRadius: 10,
+          borderWidth: 2,
+          borderColor: '#007AFF',
+          marginHorizontal: 10,
+        },
+      },
+      successMessage: {
+        base: {
+          color: '#28a745',
+          fontWeight: '600',
+          fontSize: 16,
+          textAlign: 'center',
+          marginTop: 20,
+        },
+      },
+      errorMessage: {
+        base: {
+          color: '#dc3545',
+          fontSize: 14,
+          marginTop: 4,
+        },
+      },
+    };
+
+    const { create } = useTonder<SDKType.INLINE>();
+
+    const { error } = await create({
+      secureToken: 'your-secure-token',
+      paymentData: { ...paymentData },
+      customization: {
+        saveCards: {
+          showSaveCardOption: true,
+          showSaved: true,
+        },
+        paymentButton: {
+          show: true,
+          showAmount: false,
+        },
+        labels: {
+          name: 'Cardholder Name',
+          cvv: 'CVV',
+          cardNumber: 'Card Number',
+          expiryDate: 'Expiration Date',
+        },
+        placeholders: {
+          cvv: '123',
+          name: 'John Doe',
+          cardNumber: '4242 4242 4242 4242',
+          expiryMonth: 'MM',
+          expiryYear: 'YY',
+        },
+        styles: styles,
+      },
+      callbacks: {
+        onFinishPayment: callbackFinish,
+      },
+    });
+    ```
+  </Accordion>
+
+</AccordionGroup>
