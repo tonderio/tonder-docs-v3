@@ -1,0 +1,232 @@
+---
+title: "Lite SDK Type"
+'og:description': "Integrate Tonder into your platform with the Tonder React Native SDK. Securely collect and tokenize sensitive data with our vanilla Javascript solution, ensuring PCI DSS compliance."
+---
+
+The Lite SDK integration brings you individual components for custom UI implementations. This comes with the following benefits:
+
+- Secure input components for custom payment forms
+- Card enrollment and management
+- Payment method handling
+- Card tokenization and storage
+- Card deletion capabilities
+- Manual payment flow control
+- Flexible UI customization
+- Direct access to all SDK features:
+    - Payment processing
+    - Card saving
+    - Card listing
+    - Card deletion
+    - Payment methods retrieval
+
+## Integration Steps
+
+The following steps show you how to integrate the Lite type into your app:
+
+<Steps>
+  <Step title="Setup Tonder Provider">
+    You need to start by setting up Tonder's Provider into your application. Below are the available base configurations for the Provider:
+
+    | Property    | Type                                  | Required | Description                                                                                  |
+    |-------------|---------------------------------------|----------|----------------------------------------------------------------------------------------------|
+    | `mode`      | `'development'` \| `'production'` \| `'sandbox'` | Yes      | Specifies the environment mode for the SDK. Use `development` for testing, `production` for live operations, or `sandbox` for isolated testing. |
+    | `apiKey`    | `string`                              | Yes      | Your unique Tonder Public API key used to authenticate SDK requests.                         |
+    | `type`      | `SDKType`                             | Yes      | Indicates the integration type. Options: `INLINE` for inline integration, `LITE` for lightweight use, or `ENROLLMENT` for enrollment workflows. |
+    | `returnURL` | `string`                              | No       | The URL to redirect users to after completing the 3DS authentication process.                |
+
+    The following code integrates our provider into the App component:
+
+    <Info>
+      Remember to add the correct SDK type in the provider configuration.
+    </Info>
+
+    ```jsx
+    import { TonderProvider, SDKType } from '@tonder.io/rn-sdk';
+
+    function App() {
+      return (
+        <TonderProvider
+          config={{
+            type: SDKType.LITE,
+            mode: 'development', // or production
+            apiKey: 'your-api-key',
+          }}
+        >
+          <YourApp />
+        </TonderProvider>
+      );
+    }
+    ```
+  </Step>
+  
+  <Step title="Obtain a Secure Token">
+    Before create the mobile SDK, your checkout page should obtain the security token for card functionalities (save, delete, list). This should be obtained through your backend for security.
+
+    <Note>
+      For detailed implementation instructions and best practices, please refer to the [How to use SecureToken for secure card saving](/integration/sdks/secure-token) guide.
+    </Note>
+
+    ```js
+    const getSecureToken = async (apiSecretKey: string) => {
+      const response = await fetch(
+        `${TONDER_ENVIRONMENT_URL}/api/secure-token/`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${'YOUR-SECRET-API-KEY'}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const data = await response.json();
+      return data.access;
+    };
+    ```
+  </Step>
+  
+  <Step title="Gather Payment and Customer Data">
+    Before creating the mobile SDK, your checkout page should already:
+    - Show the products being purchased and the total amount.
+    - Collect any required customer information.
+
+    ```js
+    import { IBaseProcessPaymentRequest } from '@tonder.io/rn-sdk';
+
+    const paymentData: IBaseProcessPaymentRequest = {
+      customer: {
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+      },
+      cart: {
+        total: 399,
+        items: [{
+          name: 'Product',
+          amount_total: 399,
+          description: 'Description',
+          price_unit: 399,
+          quantity: 1,
+        }]
+      }
+    };
+    ```
+  </Step>
+
+  <Step title="Create the Full Payment Screen">
+    The Lite Payment integration provides individual components for a custom payment UI. With a secure token, and the necessary data at hand, you can now create the payment screen.
+
+    ```jsx
+    import {
+      CardHolderInput,
+      CardNumberInput,
+      CardExpirationMonthInput,
+      CardExpirationYearInput,
+      CardCVVInput,
+      useTonder,
+      SDKType
+    } from '@tonder.io/rn-sdk';
+
+    export default function LitePaymentScreen() {
+      const { create, payment } = useTonder<SDKType.LITE>();
+
+      const paymentData = {
+        customer: {
+          email: 'test@example.com',
+          firstName: 'John',
+          lastName: 'Doe',
+        },
+        cart: {
+          total: 399,
+          items: [{
+            name: 'Product',
+            amount_total: 399,
+            description: 'Description',
+            price_unit: 399,
+            quantity: 1,
+          }]
+        }
+      };
+
+      useEffect(() => {
+        initializePayment();
+      }, []);
+
+      const initializePayment = async () => {
+        const { error } = await create({
+          secureToken: 'your-secure-token',
+          paymentData,
+          customization: {
+            saveCards: {
+              autoSave: false,
+            },
+          },
+        });
+
+        if (error) {
+          console.error('SDK initialization error:', error);
+        }
+      };
+
+      const handlePayment = async () => {
+        const { response, error } = await payment();
+        if (error) {
+          console.error('Payment error:', error);
+          return;
+        }
+        console.log('Payment success:', response);
+      };
+
+      return (
+        <SafeAreaView>
+          <CardHolderInput />
+          <CardNumberInput />
+          <CardExpirationMonthInput />
+          <CardExpirationYearInput />
+          <CardCVVInput />
+          <TouchableOpacity onPress={handlePayment}>
+            <Text>Pay</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
+      );
+    }
+    ```
+
+  </Step>
+
+  {/* <Step title="">
+    
+  </Step> */}
+</Steps>
+
+After these steps, you have completed the integration. The following image exemplifies how the SDK will look in your app:
+
+<Frame>
+  <img src="/images/SDKs/react-native/lite/lite-payment-screen.png" />
+</Frame>
+
+## Lite Methods
+
+The Lite integration provides full control over the payment flow with individual components and direct access to all SDK functionalities.
+
+- `payment`: Processes a payment using the configured payment data.
+- `saveCustomerCard`: Tokenizes and saves the current card information.
+- `getCustomerCards`: Retrieves the list of saved cards for the customer.
+- `getPaymentMethods`: Retrieves available payment methods.
+- `removeCustomerCard`: Deletes a saved card.
+
+<Note>
+  If there are any changes to the payment or customer data, you can pass the updated data again when calling the payment function.
+</Note>
+
+```ts
+const { 
+  create,
+  payment,
+  saveCustomerCard,
+  getCustomerCards,
+  removeCustomerCard,
+  getPaymentMethods,
+  reset
+} = useTonder<SDKType.LITE>();
+```
