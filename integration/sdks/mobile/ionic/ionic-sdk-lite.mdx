@@ -84,19 +84,19 @@ With Tonder's SDK installed, and requirements met, you are ready to configure an
 
 | Field         | Description                                                   |
 |---------------|---------------------------------------------------------------|
-| `signal`      | Signal from AbortController instance if it needs cancel the request.        |
-| `baseUrlTonder`   | Tonder's API  base URL.<br></br>-> Live server: `https://stage.tonder.io`<br></br>-> Mock Server: `https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148`    |
-| `apiKeyTonder`  | Your Tonder API key. You can find it in your [Tonder dashboard](https://stage.tonder.io/dashboard/developers/). |
+| `mode`        | Environment mode. Options: `stage`, `production`, `sandbox`, `development`. Default: `stage`    |
+| `apiKey`      | Your Tonder API key. You can find it in your [Tonder dashboard](https://stage.tonder.io/dashboard/developers/). |
+| `returnrl`    | URL where the checkout form is mounted (used for 3DS)    |
+| `callBack`    | Callback function to be invoked after the payment process ends successfully.    |
 
     ```js
-      const baseUrlTonder = 'https://stage.tonder.io';
-      const apiKeyTonder = '00d17d61e9240c6e0611fbdb1558e636ed6389db';
+    const mode = 'stage';
+    const apiKey = '00d17d61e9240c6e0611fbdb1558e636ed6389db';
 
-      const liteCheckout = new LiteCheckout({ 
-        signal, 
-        baseUrlTonder, 
-        apiKeyTonder 
-      });
+    const liteCheckout = new LiteCheckout({ 
+      mode, 
+      apiKey, 
+    });
     ```
   </Step>
 
