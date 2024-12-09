@@ -162,10 +162,29 @@
         {
           "group": "Mobile SDKs",
           "pages": [
-            "integration/sdks/mobile/ionic/ionic-sdk-lite",
-            "integration/sdks/mobile/ionic/ionic-sdk-full",
-            "integration/sdks/mobile/flutter/flutter-sdk-lite",
-            "integration/sdks/mobile/flutter/flutter-sdk-full"
+            {
+              "group": "Ionic",
+              "pages": [
+                "integration/sdks/mobile/ionic/ionic-sdk-lite",
+                "integration/sdks/mobile/ionic/ionic-sdk-full"
+              ]
+            },
+            {
+              "group": "Flutter",
+              "pages": [
+                "integration/sdks/mobile/flutter/flutter-sdk-lite",
+                "integration/sdks/mobile/flutter/flutter-sdk-full"
+              ]
+            },
+            {
+              "group": "React Native",
+              "pages": [
+                "integration/sdks/mobile/react-native/rn-sdk",
+                "integration/sdks/mobile/react-native/inline",
+                "integration/sdks/mobile/react-native/lite",
+                "integration/sdks/mobile/react-native/enrollment"
+              ]
+            }
           ]
         },
         "integration/sdks/secure-token"
