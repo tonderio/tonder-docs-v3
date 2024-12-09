@@ -182,8 +182,7 @@
                 "integration/sdks/mobile/react-native/rn-sdk",
                 "integration/sdks/mobile/react-native/inline",
                 "integration/sdks/mobile/react-native/lite",
-                "integration/sdks/mobile/react-native/enrollment",
-                "integration/sdks/mobile/react-native/reference"
+                "integration/sdks/mobile/react-native/enrollment"
               ]
             }
           ]
