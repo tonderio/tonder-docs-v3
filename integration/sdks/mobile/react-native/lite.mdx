@@ -1,0 +1,658 @@
+---
+title: "Lite SDK Type"
+'og:description': "Integrate Tonder into your platform with the Tonder React Native SDK. Securely collect and tokenize sensitive data with our vanilla Javascript solution, ensuring PCI DSS compliance."
+---
+
+The **Lite SDK** presents developers with modular components to create custom UI implementations for seamless payment experiences. This integration offers a suite of benefits designed to enhance your payment workflows.
+
+## Features and Benefits
+
+The Lite SDK grants direct access to a variety of essential features and benefits:
+
+- **Payment Processing**: Handle payments with ease and security.
+- **Card Management**: Enroll, save, list, and delete cards.
+- **Payment Handling**: Manage payment methods and tokenized storage.
+- **Manual Payment Flow Control**: Gain full control over how payments are processed in your application.
+- **Flexible UI Customization**: Tailor the UI to match your brand's design and user experience.
+
+## Integration Steps
+
+With the Lite integration you can create a payment screen, as well as enroll and manage cards. Below are two step guides, one to create a payment screen, and the second to create a card enrollment one.
+
+<AccordionGroup>
+  <Accordion
+    title="Payment Screen"
+  >
+    The Lite integration allows you take full advantage of individual components for a custom payment UI. You'll create the payment screen following the steps below:
+
+    <Info>
+      The first and second steps are identical to the enrollment screen steps.
+    </Info>
+    <Steps>
+      <Step title="Setup Tonder Provider">
+        You need to start by setting up Tonder's Provider into your application. Below are the available base configurations for the Provider:
+
+        | Property    | Type                                  | Required | Description                                                                                  |
+        |-------------|---------------------------------------|----------|----------------------------------------------------------------------------------------------|
+        | `mode`      | `'development'` \| `'production'` \| `'sandbox'` | Yes      | Specifies the environment mode for the SDK. Use `development` for testing, `production` for live operations, or `sandbox` for isolated testing. |
+        | `apiKey`    | `string`                              | Yes      | Your unique Tonder Public API key used to authenticate SDK requests.                         |
+        | `type`      | `SDKType`                             | Yes      | Indicates the integration type. Options: `INLINE` for inline integration, `LITE` for lightweight use, or `ENROLLMENT` for enrollment workflows. |
+        | `returnURL` | `string`                              | No       | The URL to redirect users to after completing the 3DS authentication process.                |
+
+        The following code integrates our provider into the App component:
+
+        <Info>
+          Remember to add the correct SDK type in the provider configuration.
+        </Info>
+
+        ```jsx
+        import { TonderProvider, SDKType } from '@tonder.io/rn-sdk';
+
+        function App() {
+          return (
+            <TonderProvider
+              config={{
+                type: SDKType.LITE,
+                mode: 'development',
+                apiKey: 'your-api-key',
+              }}
+            >
+              <YourApp />
+            </TonderProvider>
+          );
+        }
+        ```
+      </Step>
+      
+      <Step title="Obtain a Secure Token">
+        Before initialzing the mobile SDK, your checkout page should obtain the security token for card functionalities (save, delete, list). This should be obtained through your backend for security.
+
+        <Note>
+          For detailed implementation instructions and best practices, please refer to the [How to use SecureToken for secure card saving](/integration/sdks/secure-token) guide.
+        </Note>
+
+        ```js
+        const getSecureToken = async (apiSecretKey: string) => {
+          const response = await fetch(
+            `${TONDER_ENVIRONMENT_URL}/api/secure-token/`,
+            {
+              method: 'POST',
+              headers: {
+                'Authorization': `Token ${'YOUR-SECRET-API-KEY'}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          const data = await response.json();
+          return data.access;
+        };
+        ```
+      </Step>
+      
+      <Step title="Gather Payment and Customer Data">
+        Before creating the mobile SDK, your checkout page should already:
+        - Show the products being purchased and the total amount.
+        - Collect any required customer information.
+
+        ```js
+        import { IBaseProcessPaymentRequest } from '@tonder.io/rn-sdk';
+
+        const paymentData: IBaseProcessPaymentRequest = {
+          customer: {
+            email: 'test@example.com',
+            firstName: 'John',
+            lastName: 'Doe',
+          },
+          cart: {
+            total: 399,
+            items: [{
+              name: 'Product',
+              amount_total: 399,
+              description: 'Description',
+              price_unit: 399,
+              quantity: 1,
+            }]
+          }
+        };
+        ```
+      </Step>
+
+      <Step title="Create the Full Payment Screen">
+        The Lite Payment integration provides individual components for a custom payment UI. With a secure token, and the necessary data at hand, you can now create the payment screen.
+
+        ```jsx
+        import {
+          CardHolderInput,
+          CardNumberInput,
+          CardExpirationMonthInput,
+          CardExpirationYearInput,
+          CardCVVInput,
+          useTonder,
+          SDKType
+        } from '@tonder.io/rn-sdk';
+
+        export default function LitePaymentScreen() {
+          const { create, payment } = useTonder<SDKType.LITE>();
+
+          const paymentData = {
+            customer: {
+              email: 'test@example.com',
+              firstName: 'John',
+              lastName: 'Doe',
+            },
+            cart: {
+              total: 399,
+              items: [{
+                name: 'Product',
+                amount_total: 399,
+                description: 'Description',
+                price_unit: 399,
+                quantity: 1,
+              }]
+            }
+          };
+
+          useEffect(() => {
+            initializePayment();
+          }, []);
+
+          const initializePayment = async () => {
+            const { error } = await create({
+              secureToken: 'your-secure-token',
+              paymentData,
+              customization: {
+                saveCards: {
+                  autoSave: false,
+                },
+              },
+            });
+
+            if (error) {
+              console.error('SDK initialization error:', error);
+            }
+          };
+
+          const handlePayment = async () => {
+            const { response, error } = await payment();
+            if (error) {
+              console.error('Payment error:', error);
+              return;
+            }
+            console.log('Payment success:', response);
+          };
+
+          return (
+            <SafeAreaView>
+              <CardHolderInput />
+              <CardNumberInput />
+              <CardExpirationMonthInput />
+              <CardExpirationYearInput />
+              <CardCVVInput />
+              <TouchableOpacity onPress={handlePayment}>
+                <Text>Pay</Text>
+              </TouchableOpacity>
+            </SafeAreaView>
+          );
+        }
+        ```
+      </Step>
+
+      {/* <Step title="">
+        
+      </Step> */}
+    </Steps>
+
+    After these steps, you have completed the integration. The following image exemplifies how the SDK will look in your app:
+
+    <Frame>
+      <img src="/images/SDKs/react-native/lite/lite-payment-screen.png" />
+    </Frame>
+  </Accordion>
+
+  <Accordion
+    title="Enrollment Screen"
+  >
+    The Lite integration allows you to enroll cards, while taking advantage of individual components for a custom payment UI. You'll create the enrollment screen following the steps below:
+
+    <Info>
+      The first and second steps are identical to the payment screen steps.
+    </Info>
+    <Steps>
+      <Step title="Setup Tonder Provider">
+        You need to start by setting up Tonder's Provider into your application. Below are the available base configurations for the Provider:
+
+        | Property    | Type                                  | Required | Description                                                                                  |
+        |-------------|---------------------------------------|----------|----------------------------------------------------------------------------------------------|
+        | `mode`      | `'development'` \| `'production'` \| `'sandbox'` | Yes      | Specifies the environment mode for the SDK. Use `development` for testing, `production` for live operations, or `sandbox` for isolated testing. |
+        | `apiKey`    | `string`                              | Yes      | Your unique Tonder Public API key used to authenticate SDK requests.                         |
+        | `type`      | `SDKType`                             | Yes      | Indicates the integration type. Options: `INLINE` for inline integration, `LITE` for lightweight use, or `ENROLLMENT` for enrollment workflows. |
+        | `returnURL` | `string`                              | No       | The URL to redirect users to after completing the 3DS authentication process.                |
+
+        The following code integrates our provider into the App component:
+
+        <Info>
+          Remember to add the correct SDK type in the provider configuration.
+        </Info>
+
+        ```jsx
+        import { TonderProvider, SDKType } from '@tonder.io/rn-sdk';
+
+        function App() {
+          return (
+            <TonderProvider
+              config={{
+                type: SDKType.LITE,
+                mode: 'development',
+                apiKey: 'your-api-key',
+              }}
+            >
+              <YourApp />
+            </TonderProvider>
+          );
+        }
+        ```
+      </Step>
+      
+      <Step title="Obtain a Secure Token">
+        Before initialzing the mobile SDK, your checkout page should obtain the security token for card functionalities (save, delete, list). This should be obtained through your backend for security.
+
+        <Note>
+          For detailed implementation instructions and best practices, please refer to the [How to use SecureToken for secure card saving](/integration/sdks/secure-token) guide.
+        </Note>
+
+        ```js
+        const getSecureToken = async (apiSecretKey: string) => {
+          const response = await fetch(
+            `${TONDER_ENVIRONMENT_URL}/api/secure-token/`,
+            {
+              method: 'POST',
+              headers: {
+                'Authorization': `Token ${'YOUR-SECRET-API-KEY'}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          const data = await response.json();
+          return data.access;
+        };
+        ```
+      </Step>
+      
+      <Step title="Gather Customer Data">
+        Before creating the mobile SDK, your checkout page should already have collected any required customer information.
+
+        ```js
+        import { ICustomer } from '@tonder.io/rn-sdk';
+
+        const customerData: ICustomer = {
+          email: 'test@example.com',
+          firstName: 'John',
+          lastName: 'Doe'
+        };
+        ```
+      </Step>
+
+      <Step title="Create the Enrollment Screen">
+        The Lite integration provides individual components for a custom payment UI. With a secure token, and the necessary data at hand, you can now generate the enrollment screen.
+
+        ```jsx
+          import {
+            CardHolderInput,
+            CardNumberInput,
+            CardExpirationMonthInput,
+            CardExpirationYearInput,
+            CardCVVInput,
+            useTonder,
+            SDKType,
+            ICustomer
+          } from '@tonder.io/rn-sdk';
+
+          export default function EnrollmentLiteScreen() {
+            const { create, saveCustomerCard, reset } = useTonder<SDKType.ENROLLMENT>();
+
+            const customerData: ICustomer = {
+              email: 'test@example.com',
+              firstName: 'John',
+              lastName: 'Doe'
+            };
+
+            useEffect(() => {
+              initializeEnrollment();
+            }, []);
+
+            const initializeEnrollment = async () => {
+              const { error } = await create({
+                secureToken: 'your-secure-token',
+                customer: customerData,
+              });
+
+              if (error) {
+                console.error('Enrollment initialization error:', error);
+              }
+            };
+
+            const handleSaveCard = async () => {
+              try {
+                const { response, error } = await saveCustomerCard();
+                if (error) {
+                  console.error('Error saving card:', error);
+                  return;
+                }
+                console.log('Card saved successfully:', response);
+
+                // Reset and reinitialize for next use
+                reset();
+                await initializeEnrollment();
+              } catch (e) {
+                console.error('Unexpected error:', e);
+              }
+            };
+
+            return (
+              <SafeAreaView>
+                    <CardHolderInput />
+                    <CardNumberInput />
+                    <CardExpirationMonthInput />
+                    <CardExpirationYearInput />
+                    <CardCVVInput />
+                    <TouchableOpacity
+                      onPress={handleSaveCard}
+                    >
+                        <Text>Save Card</Text>
+                    </TouchableOpacity>
+              </SafeAreaView>
+            );
+          }
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+</AccordionGroup>
+
+
+
+## Lite Methods
+
+The Lite integration provides full control over the payment flow with individual components and direct access to all SDK functionalities.
+
+- `payment`: Processes a payment using the configured payment data.
+- `saveCustomerCard`: Tokenizes and saves the current card information.
+- `getCustomerCards`: Retrieves the list of saved cards for the customer.
+- `getPaymentMethods`: Retrieves available payment methods.
+- `removeCustomerCard`: Deletes a saved card.
+
+<Note>
+  If there are any changes to the payment or customer data, you can pass the updated data again when calling the payment function.
+</Note>
+
+```ts
+const { 
+  create,
+  payment,
+  saveCustomerCard,
+  getCustomerCards,
+  removeCustomerCard,
+  getPaymentMethods,
+  reset
+} = useTonder<SDKType.LITE>();
+```
+
+## Reference
+
+Find below reference tables and interfaces for the methods and features found at the React Native guides.
+
+<AccordionGroup>
+  <Accordion
+    title="ILiteCheckoutOptions"
+  >
+    | Option          | Type                                   | Required | Description                                                                                     |
+    |------------------|----------------------------------------|----------|-------------------------------------------------------------------------------------------------|
+    | `paymentData`    | `IBaseProcessPaymentRequest`          | Yes      | Contains the payment information, including customer and cart data necessary for the transaction. |
+    | `customization`  | `IInlineCustomizationOptions`         | No       | Options for customizing the user interface of the payment process.                              |
+    | `callbacks`      | `IInlineCallbacks`                   | No       | Functions to handle callback events during the payment process, such as success or failure.     |
+    | `returnURL`      | `string`                              | No       | The URL to redirect users to after completing the 3D Secure (3DS) authentication process.       |
+
+    ```ts
+    interface ILiteCheckoutOptions extends IBaseCreateOptions {
+      paymentData: IProcessPaymentRequest;
+      customization?: ILiteCustomizationOptions;
+      callbacks?: ILiteCallbacks;
+      returnURL?: string;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Callbacks Structure"
+  >
+    | Callback         | Parameters                          | Description                                                                                         | Return    |
+    |------------------|-------------------------------------|-----------------------------------------------------------------------------------------------------|-----------|
+    | `beforePayment`  | `none`                              | Triggered before the payment process begins. Use this to display a loading state, validate data, or perform pre-payment tasks. | `Promise` |
+    | `onFinishPayment`| `response: IBaseResponse<ITransaction>` | Called when the payment process finishes (success or error). Provides the result of the transaction or error details. | `Promise` |
+
+    ```ts
+    export interface ILiteCallbacks {
+      beforePayment?: () => Promise<void>;
+      onFinishPayment?: (response: IBaseResponse<ITransaction>) => Promise<void>;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Payment Data"
+  >
+    ### Customer information
+
+    | Field      | Type     | Required | Description                                      |
+    |------------|----------|----------|--------------------------------------------------|
+    | `email`    | `string` | Yes      | Customer's email address.                        |
+    | `firstName`| `string` | Yes      | Customer's first name.                           |
+    | `lastName` | `string` | Yes      | Customer's last name.                            |
+    | `phone`    | `string` | No       | Customer's contact phone number.                 |
+    | `address`  | `string` | No       | Customer's street address.                       |
+    | `city`     | `string` | No       | Customer's city.                                 |
+    | `state`    | `string` | No       | Customer's state or province.                    |
+    | `country`  | `string` | No       | Customer's country.                              |
+    | `postCode` | `string` | No       | Customer's postal or ZIP code.                   |
+
+    ### Cart Information
+    | Field       | Type                   | Required | Description                                              |
+    |-------------|------------------------|----------|----------------------------------------------------------|
+    | `total`     | `number`               | Yes      | Total amount of the transaction.                         |
+    | `items`     | `Array<IItem>`         | Yes      | Array containing details of items in the cart.           |
+    | `metadata`  | `Record<string, any>`  | No       | Additional custom data for the transaction.              |
+    | `currency`  | `string`               | No       | Currency code for the transaction (default: `MXN`).      |
+
+    ### Cart Item Structure
+    | Field               | Type      | Required | Description                                                 |
+    |---------------------|-----------|----------|-------------------------------------------------------------|
+    | `name`              | `string`  | Yes      | Name of the product.                                        |
+    | `amount_total`      | `number`  | Yes      | Total amount for the item (calculated as `quantity × price`).|
+    | `description`       | `string`  | Yes      | Brief description of the product.                          |
+    | `price_unit`        | `number`  | Yes      | Unit price of the product.                                  |
+    | `product_reference` | `string`  | Yes      | Unique identifier for the product.                         |
+    | `quantity`          | `number`  | Yes      | Quantity of the product being purchased.                   |
+    | `discount`          | `number`  | No       | Discount amount applied to this item.                      |
+    | `taxes`             | `number`  | No       | Tax amount applied to this item.                           |
+
+    ### Additional fields for LITE Version
+    | Field            | Type     | Required | Description                                             |
+    |-------------------|----------|----------|---------------------------------------------------------|
+    | `card`           | `string` | No       | The ID of the card selected by the user.               |
+    | `payment_method` | `string` | No       | The payment method chosen by the user.                 |
+
+
+    ```ts
+    interface IProcessPaymentRequest {
+      customer: {
+        email: string;
+        firstName: string;
+        lastName: string;
+        phone?: string;
+        address?: string;
+        city?: string;
+        state?: string;
+        country?: string;
+        postCode?: string;
+      };
+      cart: {
+        total: number;
+        items: Array<{
+          name: string;
+          amount_total: number;
+          description: string;
+          price_unit: number;
+          product_reference: string;
+          quantity: number;
+          discount?: number;
+          taxes?: number;
+        }>;
+      };
+      metadata?: Record<string, any>;
+      currency?: string;
+      card?: string;
+      payment_method?: string;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Customization Options"
+  >
+    ### Save Card Options
+    | Option              | Type      | Default | Description                                                                       |
+    |---------------------|-----------|---------|-----------------------------------------------------------------------------------|
+    | `saveCards.autoSave`| `boolean` | `false` | Automatically saves the card without displaying the save option to the user.      |
+
+    ```ts
+    interface ILiteCustomizationOptions {
+      saveCards?: {
+        autoSave?: boolean;
+      };
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Form Labels & Placeholders"
+  >
+    <Note>
+      For the Lite version, you can pass the respective values directly when using Tonder's inputs.
+    </Note>
+
+    ###  Form Labels
+    | Property      | Type     | Default                  | Description                                       |
+    |---------------|----------|--------------------------|---------------------------------------------------|
+    | `name`        | `string` | "Titular de la tarjeta"  | Label for the cardholder's name field.           |
+    | `cardNumber`  | `string` | "Número de tarjeta"      | Label for the card number field.                 |
+    | `cvv`         | `string` | "CVV"                   | Label for the security code field.               |
+    | `expiryDate`  | `string` | "Fecha de expiración"    | Label for the expiration date fields.            |
+
+    ```ts
+    interface IFormLabels {
+      name?: string;
+      cardNumber?: string;
+      cvv?: string;
+      expiryDate?: string;
+    }
+    ```
+
+    ### Placeholders
+    | Property      | Type     | Default                          | Description                                           |
+    |---------------|----------|----------------------------------|-------------------------------------------------------|
+    | `name`        | `string` | "Nombre como aparece en la tarjeta" | Placeholder for the cardholder's name field.        |
+    | `cardNumber`  | `string` | "1234 1234 1234 1234"           | Placeholder for the card number field.               |
+    | `cvv`         | `string` | "3-4 dígitos"                   | Placeholder for the security code field.             |
+    | `expiryMonth` | `string` | "MM"                            | Placeholder for the expiration month field.          |
+    | `expiryYear`  | `string` | "AA"                            | Placeholder for the expiration year field.           |
+
+    ```ts
+    interface IFormPlaceholder {
+      name?: string;
+      cardNumber?: string;
+      cvv?: string;
+      expiryMonth?: string;
+      expiryYear?: string;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Styling"
+  >
+    The individual components of the Lite integration accept custom styles through the style prop. Each component can be styled independently
+
+    ### Interface
+    ```ts
+    export interface InputProps {
+      label?: string;
+      placeholder?: string;
+      style?: IElementStyle;
+    }
+    interface IElementStyle {
+      inputStyles: {
+        base?: ViewStyle & TextStyle;
+        focus?: Record<string, any>;
+        complete?: Record<string, any>;
+        invalid?: Record<string, any>;
+        empty?: Record<string, any>;
+        container?: Record<string, any>;
+      };
+      labelStyles: {
+        base?: TextStyle;
+        requiredAsterisk?: Record<string, any>;
+        focus?: Record<string, any>;
+      };
+      errorStyles?: {
+        base: TextStyle;
+      };
+    }
+    ```
+
+    ### Example
+    ```tsx
+    <CardNumberInput
+      placeholder="1234 5678 9012 3456"
+      style={{
+        inputStyles,
+        labelStyles,
+        errorStyles
+      }}
+    />
+
+  const inputStyles = {
+    base: {
+      backgroundColor: 'transparent',
+      borderBottomColor: '#cbd5e1',
+      borderBottomWidth: 1,
+      paddingVertical: 8,
+      fontSize: 16,
+      color: '#111827',
+      marginBottom: 15,
+    },
+    focus: {
+      borderBottomColor: '#0ea5e9',
+      boxShadow: '0 0 0 4px rgba(14, 165, 233, 0.2)',
+    },
+  };
+
+  const labelStyles = {
+    base: {
+      fontSize: 14,
+      color: '#6b7280',
+      marginBottom: 5,
+    },
+  };
+
+  const errorStyles = {
+    base: {
+      color: '#ef4444',
+      fontSize: 12,
+      marginTop: 4,
+    },
+  };
+    ```
+  </Accordion>
+</AccordionGroup>

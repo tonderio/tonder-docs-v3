@@ -1,0 +1,496 @@
+---
+title: "Enrollment SDK Type"
+'og:description': "Integrate Tonder into your platform with the Tonder React Native SDK. Securely collect and tokenize sensitive data with our vanilla Javascript solution, ensuring PCI DSS compliance."
+---
+
+The **Enrollment SDK** gives you tools for managing card-saving functionalities, with secure card enrollment and storage with Tonder. This integration is designed to enhance user trust and simplify card management.
+
+## Features and Benefits
+
+The Enrollment SDK provides features that support secure and efficient card handling:
+
+- **Card Tokenization**: Convert card details into secure tokens for future transactions.
+- **Card Validation**: Ensure the accuracy and validity of card information during the enrollment process.
+- **Secure Storage**: Store card data securely and comply with industry standards.
+
+## Integration Steps
+
+The following steps show you how to integrate the Enrollment type into your app:
+
+<Steps>
+  <Step title="Setup Tonder Provider">
+    You need to start by setting up Tonder's Provider into your application. Below are the available base configurations for the Provider:
+
+    | Property    | Type                                  | Required | Description                                                                                  |
+    |-------------|---------------------------------------|----------|----------------------------------------------------------------------------------------------|
+    | `mode`      | `'development'` \| `'production'` \| `'sandbox'` | Yes      | Specifies the environment mode for the SDK. Use `development` for testing, `production` for live operations, or `sandbox` for isolated testing. |
+    | `apiKey`    | `string`                              | Yes      | Your unique Tonder Public API key used to authenticate SDK requests.                         |
+    | `type`      | `SDKType`                             | Yes      | Indicates the integration type. Options: `INLINE` for inline integration, `LITE` for lightweight use, or `ENROLLMENT` for enrollment workflows. |
+    | `returnURL` | `string`                              | No       | The URL to redirect users to after completing the 3DS authentication process.                |
+
+    The following code integrates our provider into the App component:
+
+    <Info>
+      Remember to add the correct SDK type in the provider configuration.
+    </Info>
+
+    ```jsx
+    import { TonderProvider, SDKType } from '@tonder.io/rn-sdk';
+
+    function App() {
+      return (
+        <TonderProvider
+          config={{
+            type: SDKType.ENROLLMENT,
+            mode: 'development',
+            apiKey: 'your-api-key',
+          }}
+        >
+          <YourApp />
+        </TonderProvider>
+      );
+    }
+    ```
+  </Step>
+  <Step title="Obtain a Secure Token">
+    Before initialzing the mobile SDK, your checkout page should obtain the security token for card functionalities (save, delete, list). This should be obtained through your backend for security.
+
+    <Note>
+      For detailed implementation instructions and best practices, please refer to the [How to use SecureToken for secure card saving](/integration/sdks/secure-token) guide.
+    </Note>
+
+    ```js
+    const getSecureToken = async (apiSecretKey: string) => {
+      const response = await fetch(
+        `${TONDER_ENVIRONMENT_URL}/api/secure-token/`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${'YOUR-SECRET-API-KEY'}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const data = await response.json();
+      return data.access;
+    };
+    ```
+  </Step>
+  
+  <Step title="Gather Customer Data">
+    Before creating the mobile SDK, your checkout page should already have collected any required customer information.
+
+    ```js
+    import { ICustomer } from '@tonder.io/rn-sdk';
+
+    const customerData: ICustomer = {
+      email: 'test@example.com',
+      firstName: 'John',
+      lastName: 'Doe'
+    };
+    ```
+  </Step>
+
+  <Step title="Create the Enrollment Screen">
+    Use the following code to save cards without processing payments. With a secure token, and the necessary data at hand, you can now create the enroll card screen.
+
+    ```jsx
+    import {
+      TonderEnrollment,
+      useTonder,
+      SDKType,
+      ICustomer
+    } from '@tonder.io/rn-sdk';
+
+    export default function EnrollmentScreen() {
+      const { create, reset } = useTonder<SDKType.ENROLLMENT>();
+
+      const customerData: ICustomer = {
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe'
+      };
+
+      useEffect(() => {
+        initializeEnrollment();
+      }, []);
+
+      const initializeEnrollment = async () => {
+        const { error } = await create({
+          secureToken: 'your-secure-token',
+          customer: customerData,
+          callbacks: {
+            onFinishSave: handleSaveFinish
+          }
+        });
+
+        if (error) {
+          console.error('Enrollment initialization error:', error);
+        }
+      };
+
+      const handleSaveFinish = async (response) => {
+        console.log('Card saved successfully:', response);
+        // Reset the state and regenerate the SDK to use it again
+        reset();
+        await initializeEnrollment();
+      };
+
+      return (
+        <SafeAreaView>
+          <TonderEnrollment />
+        </SafeAreaView>
+      );
+    }
+    ```
+
+  </Step>
+
+
+  {/* <Step title="">
+    
+  </Step> */}
+</Steps>
+
+After these steps, you have completed the integration. The following image exemplifies how the SDK will look in your app:
+
+<Frame>
+  <img src="/images/SDKs/react-native/enrollment/enrollment-screen.png" />
+</Frame>
+
+## Enrollment Methods
+
+The Enrollment integration provides methods for handling full enrollment with built-in UI components.
+
+- `saveCustomerCard`: Tokenizes and saves the current card information.
+
+<Note>
+  The `saveCustomerCard` is only necessary when you want to control the enrollment button on your own.
+</Note>
+
+The example below shows how to create a card enrollment with a custom button.
+
+```ts
+export default function EnrollmentButtonScreen() {
+  const { create, saveCustomerCard } = useTonder<SDKType.ENROLLMENT>();
+
+  useEffect(() => {
+    createSDK()
+  }, [])
+
+  const createSDK = async (token) => {
+    const { error } = await create({
+      secureToken: token,
+      customer: { ...customerData },
+      customization: {
+        saveButton: {
+          show: false, // hidde default button
+        },
+      },
+    });
+
+    if (error) {
+      // Manage error
+      console.error('Error creating SDK', error);
+    }
+  };
+
+  const handleSaveCard = async () => {
+    const { response, error } = await saveCustomerCard();
+    if (error) {
+      //Manage error
+      console.error('Error save: ', error);
+      return;
+    }
+    console.log('Response save: ', response);
+  };
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+        <TonderEnrollment />
+        {/*Custom button*/}
+        <TouchableOpacity
+          onPress={handleSaveCard}
+        >
+          <Text>Guardar</Text>
+        </TouchableOpacity>
+    </SafeAreaView>
+  );
+}
+```
+
+## Reference
+
+Find below reference tables and interfaces for the methods and features found at the React Native guides.
+
+<AccordionGroup>
+  <Accordion
+    title="IEnrollmentOptions"
+  >
+    | Option         | Type                            | Required | Description                                                              |
+    |----------------|---------------------------------|----------|--------------------------------------------------------------------------|
+    | `customer`     | `ICustomer`                    | Yes      | Customer information required for the enrollment process.               |
+    | `customization`| `IEnrollmentCustomizationOptions` | No       | Options to customize the user interface during the enrollment process.   |
+    | `callbacks`    | `IEnrollmentCallbacks`         | No       | Functions to handle callback events during the enrollment process.       |
+
+    ```ts
+    export interface IEnrollmentOptions extends IBaseCreateOptions {
+      customer?: ICustomer;
+      customization?: IEnrollmentCustomizationOptions;
+      callbacks?: IEnrollmentCallbacks;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Callbacks Structure"
+  >
+    | Callback       | Parameters                             | Description                                                                                          | Return    |
+    |----------------|----------------------------------------|------------------------------------------------------------------------------------------------------|-----------|
+    | `beforeSave`   | `none`                                 | Triggered before the save card process begins. Use this to display a loading state, validate data, or perform pre-save-card tasks. | `Promise` |
+    | `onFinishSave` | `response: IBaseResponse<ISaveCardResponse>` | Called when the save card process is completed (success or error). Provides the result of the transaction or error details. | `Promise` |
+
+    ```ts
+    export interface IEnrollmentCallbacks {
+      beforeSave?: () => Promise<void>;
+      onFinishSave?: (response: IBaseResponse<ISaveCardResponse>) => Promise<void>;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Customization Options"
+  >
+    ### Save Button Options
+    | Option            | Type      | Default    | Description                                     |
+    |-------------------|-----------|------------|-------------------------------------------------|
+    | `saveButton.show` | `boolean` | `true`     | Controls the visibility of the save button.     |
+    | `saveButton.text` | `string`  | `'Guardar'`| Custom text displayed on the save button.       |
+
+    ### General Options
+    | Option          | Type      | Default | Description                                                                  |
+    |------------------|-----------|---------|------------------------------------------------------------------------------|
+    | `showMessages`   | `boolean` | `true`  | Controls the visibility of error and success messages.                       |
+    | `labels`         | `object`  | `-`     | Custom labels for form fields (see Form Labels section).                     |
+    | `placeholders`   | `object`  | `-`     | Custom placeholder text for form inputs (see Form Placeholders section).     |
+    | `styles`         | `object`  | `-`     | Custom styles for UI components (see Styling section).                       |
+
+    ```ts
+    interface IEnrollmentCustomizationOptions {
+      paymentButton?: {
+        show?: boolean;
+        text?: string;
+      };
+      showMessages?: boolean;
+      labels?: IFormLabels;
+      placeholders?: IFormPlaceholder;
+      styles?: IStyles;
+    }
+    ```
+  </Accordion>
+
+  <Accordion
+    title="Styling"
+  >
+    The style customization for Full integrations (Inline and Enrollment) is done through a styles object in the SDK configuration.
+
+    ### Main Container
+    | Component     | Description                | Properties                     |
+    |---------------|----------------------------|---------------------------------|
+    | `sdkCard`     | Main container of the SDK. | `base: StylesBaseVariant`      |
+
+    ### Card Form
+    | Component  | Description         | Properties                          |
+    |------------|---------------------|--------------------------------------|
+    | `cardForm` | Card form section.  | `base: StylesBaseVariant`           |
+    |            |                     | `inputStyles: CollectInputStylesVariant` |
+    |            |                     | `labelStyles: CollectInputStylesVariant` |
+    |            |                     | `errorStyles: StylesBaseVariant`    |
+
+    ### Saved Cards
+    | Component    | Description                | Properties                          |
+    |--------------|----------------------------|--------------------------------------|
+    | `savedCards` | Saved cards list section.  | `base: StylesBaseVariant`           |
+    |              |                            | `radioBase: ViewStyle`              |
+    |              |                            | `radioInner: ViewStyle`             |
+    |              |                            | `radioSelected: ViewStyle`          |
+    |              |                            | `cardIcon: ViewStyle`               |
+    |              |                            | `deleteButton: ViewStyle`           |
+    |              |                            | `deleteIcon: ViewStyle`             |
+
+    ### Payment Methods
+    | Component         | Description                | Properties                          |
+    |-------------------|----------------------------|--------------------------------------|
+    | `paymentMethods`  | Payment methods section.   | `base: StylesBaseVariant`           |
+    |                   |                            | `radioBase: ViewStyle`              |
+    |                   |                            | `radioInner: ViewStyle`             |
+    |                   |                            | `radioSelected: ViewStyle`          |
+
+    ### Payment Radio
+    | Component     | Description                     | Properties                          |
+    |---------------|---------------------------------|--------------------------------------|
+    | `paymentRadio`| Payment method selector.        | `base: StylesBaseVariant`           |
+    |               |                                 | `radioBase: ViewStyle`              |
+    |               |                                 | `radioInner: ViewStyle`             |
+    |               |                                 | `radioSelected: ViewStyle`          |
+
+    ### Payment Button
+    | Component        | Description          | Properties       |
+    |------------------|----------------------|-------------------|
+    | `paymentButton`  | Payment button.      | `base: ViewStyle` |
+
+    ### Error Message
+    | Component       | Description                | Properties       |
+    |-----------------|----------------------------|-------------------|
+    | `errorMessage`  | Error message display.     | `base: TextStyle` |
+
+    ### Success Message
+    | Component         | Description                 | Properties       |
+    |-------------------|-----------------------------|-------------------|
+    | `successMessage`  | Success message display.    | `base: TextStyle` |
+  </Accordion>
+
+  <Accordion
+    title="Full customization example"
+  >
+    ```ts
+    const styles = {
+      sdkCard: {
+        base: {
+          backgroundColor: '#f9f9f9',
+          borderRadius: 10,
+          padding: 16,
+          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+        },
+      },
+      cardForm: {
+        base: {
+          backgroundColor: '#ffffff',
+          borderRadius: 10,
+          padding: 16,
+          borderWidth: 1,
+          borderColor: '#e3e3e3',
+          marginVertical: 8,
+        },
+        inputStyles: {
+          base: {
+            borderWidth: 1,
+            borderColor: '#cccccc',
+            borderRadius: 6,
+            padding: 12,
+            fontSize: 16,
+            marginBottom: 10,
+            color: '#333',
+          },
+        },
+        labelStyles: {
+          base: {
+            fontSize: 14,
+            color: '#666',
+            marginBottom: 6,
+          },
+        },
+      },
+      savedCards: {
+        base: {
+          backgroundColor: '#f9f9f9',
+          borderRadius: 8,
+          padding: 10,
+          marginVertical: 6,
+          borderWidth: 1,
+          borderColor: '#e3e3e3',
+        },
+      },
+      paymentRadio: {
+        base: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: 10,
+          backgroundColor: '#f9f9f9',
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: '#e3e3e3',
+        },
+      },
+      paymentButton: {
+        base: {
+          backgroundColor: '#007AFF',
+          paddingVertical: 15,
+          paddingHorizontal: 20,
+          borderRadius: 8,
+          alignItems: 'center',
+          fontSize: 18,
+          color: '#fff',
+          fontWeight: '600',
+        },
+      },
+      paymentMethods: {
+        base: {
+          paddingVertical: 10,
+          backgroundColor: '#f9f9f9',
+        },
+        radioBase: {
+          width: 20,
+          height: 20,
+          borderRadius: 10,
+          borderWidth: 2,
+          borderColor: '#007AFF',
+          marginHorizontal: 10,
+        },
+      },
+      successMessage: {
+        base: {
+          color: '#28a745',
+          fontWeight: '600',
+          fontSize: 16,
+          textAlign: 'center',
+          marginTop: 20,
+        },
+      },
+      errorMessage: {
+        base: {
+          color: '#dc3545',
+          fontSize: 14,
+          marginTop: 4,
+        },
+      },
+    };
+
+    const { create } = useTonder<SDKType.INLINE>();
+
+    const { error } = await create({
+      secureToken: 'your-secure-token',
+      paymentData: { ...paymentData },
+      customization: {
+        saveCards: {
+          showSaveCardOption: true,
+          showSaved: true,
+        },
+        paymentButton: {
+          show: true,
+          showAmount: false,
+        },
+        labels: {
+          name: 'Cardholder Name',
+          cvv: 'CVV',
+          cardNumber: 'Card Number',
+          expiryDate: 'Expiration Date',
+        },
+        placeholders: {
+          cvv: '123',
+          name: 'John Doe',
+          cardNumber: '4242 4242 4242 4242',
+          expiryMonth: 'MM',
+          expiryYear: 'YY',
+        },
+        styles: styles,
+      },
+      callbacks: {
+        onFinishPayment: callbackFinish,
+      },
+    });
+    ```
+  </Accordion>
+
+</AccordionGroup>

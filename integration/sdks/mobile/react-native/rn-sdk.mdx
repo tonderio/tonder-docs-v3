@@ -1,0 +1,87 @@
+---
+title: "React Native SDK"
+sidebarTitle: "Installation"
+'og:description': "Integrate Tonder into your platform with the Tonder React Native SDK. Securely collect and tokenize sensitive data with our vanilla Javascript solution, ensuring PCI DSS compliance."
+---
+
+{/* https://github.com/tonderio/rn-sdk */}
+
+The Tonder React Native SDK is a solution for integrating our system into your mobile application. This solution ensures PCI DSS (Payment Card Industry Data Security Standard) by securely collecting and tokenizing sensitive data in the browser, without exposing your front-end infrastructure to any sensitive data.
+
+This guide will walk you through all the steps, from installation and configuring our SDK to fit your application.
+
+## Installation
+
+Tonder’s React Native SDK can be installed using our npm package. Use the following command to install it:
+
+```bash
+npm install @tonder.io/rn-sdk
+```
+
+## Requirements
+
+Our SDK requires the following package versions to work properly:
+
+- `react-native >= 0.70`
+- `react >= 16.8`
+- `react-native-svg >= 15.0.0`
+- `react-native-webview >= 13.6.0`
+
+<Warning>
+  With older versions, Tonder's SDK won't work.
+</Warning>
+
+## Features
+
+Tonder's React Native SDK offers you three integrations types with their own benefits, and each type can be specified when initializing the SDK through the `TonderProvider`, as exemplified below:
+
+```jsx
+// Full Payment UI
+<TonderProvider
+  config={{
+    type: SDKType.INLINE,
+    mode: 'development',
+    apiKey: 'your-api-key',
+  }}
+>
+  <YourApp />
+</TonderProvider>
+
+// Custom UI with Individual Components
+<TonderProvider
+  config={{
+    type: SDKType.LITE,
+    mode: 'development',
+    apiKey: 'your-api-key',
+  }}
+>
+  <YourApp />
+</TonderProvider>
+
+// Card Enrollment
+<TonderProvider
+  config={{
+    type: SDKType.ENROLLMENT,
+    mode: 'development',
+    apiKey: 'your-api-key',
+  }}
+>
+  <YourApp />
+</TonderProvider>
+```
+
+Refer to each type's page to learn about their features, and how to integrate each:
+
+<CardGroup cols={3}>
+  <Card title="Inline" icon="line-columns" href="/integration/sdks/mobile/react-native/inline">
+    A full payment UI with built-in components and features.
+  </Card>
+
+  <Card title="Lite" icon="lightbulb" href="/integration/sdks/mobile/react-native/lite">
+    Lite offers individual components for custom UI implementations.
+  </Card>
+
+  <Card title="Enrollment" icon="credit-card" href="/integration/sdks/mobile/react-native/enrollment">
+    Brings you full card saving functionalities.
+  </Card>
+</CardGroup>
