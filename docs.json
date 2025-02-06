@@ -1,0 +1,296 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Tonder",
+  "colors": {
+    "primary": "#4698FF",
+    "light": "#92C2FF",
+    "dark": "#1258B0"
+  },
+  "favicon": "/favicon.png",
+  "navigation": {
+    "anchors": [
+      {
+        "anchor": "Documentation",
+        "icon": "book-open",
+        "tabs": [
+          {
+            "tab": "Getting Started",
+            "groups": [
+              {
+                "group": "Introduction",
+                "pages": [
+                  "home",
+                  "introduction/getting-started",
+                  "introduction/security"
+                ]
+              },
+              {
+                "group": "Core Concepts",
+                "pages": [
+                  "core-concepts/payment-lifecycle",
+                  "core-concepts/3ds-lifecycle",
+                  "core-concepts/environments"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Online Payments",
+            "groups": [
+              {
+                "group": "Online Payments",
+                "pages": [
+                  "online-payments/overview",
+                  "online-payments/3ds2",
+                  "online-payments/finances",
+                  "online-payments/disputes"
+                ]
+              },
+              {
+                "group": "Reference",
+                "pages": [
+                  "online-payments/payment-methods",
+                  {
+                    "group": "Coverage",
+                    "pages": [
+                      "online-payments/coverage/coverage",
+                      "online-payments/coverage/brazil",
+                      "online-payments/coverage/colombia",
+                      "online-payments/coverage/costa-rica",
+                      "online-payments/coverage/ecuador",
+                      "online-payments/coverage/guatemala",
+                      "online-payments/coverage/mexico",
+                      "online-payments/coverage/panama",
+                      "online-payments/coverage/peru"
+                    ]
+                  },
+                  "online-payments/test-cards"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Revenue Optimization",
+            "groups": [
+              {
+                "group": "Revenue Optimization",
+                "pages": [
+                  "revenue-optimization/overview"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Integrate Tonder",
+            "groups": [
+              {
+                "group": "Integrations",
+                "pages": [
+                  "integration/intro",
+                  "integration/choose-integration"
+                ]
+              },
+              {
+                "group": "SDKs",
+                "pages": [
+                  "integration/sdks/sdk-overview",
+                  {
+                    "group": "JS SDK",
+                    "pages": [
+                      "integration/sdks/web/js-sdk",
+                      {
+                        "group": "JS Inline Checkout",
+                        "pages": [
+                          "integration/sdks/web/js-inline-checkout",
+                          "integration/sdks/web/js-sdk-styles"
+                        ]
+                      },
+                      "integration/sdks/web/js-lite-checkout",
+                      "integration/sdks/web/code-examples"
+                    ]
+                  },
+                  {
+                    "group": "Mobile SDKs",
+                    "pages": [
+                      {
+                        "group": "Ionic",
+                        "pages": [
+                          "integration/sdks/mobile/ionic/ionic-sdk-lite",
+                          "integration/sdks/mobile/ionic/ionic-sdk-full"
+                        ]
+                      },
+                      {
+                        "group": "Flutter",
+                        "pages": [
+                          "integration/sdks/mobile/flutter/flutter-sdk-lite",
+                          "integration/sdks/mobile/flutter/flutter-sdk-full"
+                        ]
+                      },
+                      {
+                        "group": "React Native",
+                        "pages": [
+                          "integration/sdks/mobile/react-native/rn-sdk",
+                          "integration/sdks/mobile/react-native/inline",
+                          "integration/sdks/mobile/react-native/lite",
+                          "integration/sdks/mobile/react-native/enrollment"
+                        ]
+                      }
+                    ]
+                  },
+                  "integration/sdks/secure-token"
+                ]
+              },
+              {
+                "group": "Plugins",
+                "pages": [
+                  "integration/plugins/plugins-overview",
+                  "integration/plugins/magento",
+                  "integration/plugins/woo-commerce"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Dashboard",
+            "groups": [
+              {
+                "group": "Dashboard",
+                "pages": [
+                  "dashboard/dashboard-overview",
+                  "dashboard/home",
+                  {
+                    "group": "Transactions",
+                    "pages": [
+                      "dashboard/transactions",
+                      "dashboard/transaction-details"
+                    ]
+                  },
+                  "dashboard/payment-links",
+                  {
+                    "group": "Developers",
+                    "pages": [
+                      "dashboard/dev-api-keys",
+                      "dashboard/dev-webhooks"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Revenue Optimization",
+                "pages": [
+                  "dashboard/revenue-optimization/connections",
+                  "dashboard/revenue-optimization/routing"
+                ]
+              },
+              {
+                "group": "Online Payments",
+                "pages": [
+                  {
+                    "group": "Disputes",
+                    "pages": [
+                      "dashboard/online-payments/disputes",
+                      "dashboard/online-payments/dispute-details"
+                    ]
+                  },
+                  {
+                    "group": "Finances",
+                    "pages": [
+                      "dashboard/online-payments/finances",
+                      "dashboard/online-payments/settlement-details"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "API Reference",
+        "icon": "square-terminal",
+        "tabs": [
+          {
+            "tab": "API Reference",
+            "groups": [
+              {
+                "group": "Tonder API",
+                "pages": [
+                  "reference/overview",
+                  "reference/currencies"
+                ]
+              },
+              {
+                "group": "API Reference",
+                "pages": [
+                  "reference/retrieve-business",
+                  "reference/create-client",
+                  "reference/create-order",
+                  "reference/create-payment",
+                  "reference/create-checkout-router",
+                  "reference/create-secure-token",
+                  "reference/refund-payment"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "Support",
+        "href": "https://intercom.help/tonder-io/es/",
+        "icon": "headset"
+      },
+      {
+        "anchor": "Contact Us",
+        "href": "mailto:hello@tonder.io",
+        "icon": "envelope"
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
+  },
+  "api": {
+    "openapi": "openapi.yml",
+    "mdx": {
+      "server": [
+        "https://stage.tonder.io/api/v1",
+        "https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148"
+      ],
+      "auth": {
+        "method": "key",
+        "name": "Authorization"
+      }
+    }
+  },
+  "appearance": {
+    "default": "dark"
+  },
+  "background": {
+    "image": "/images/background.png"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "System Status",
+        "href": "https://tonderio.statuspage.io/"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Log in",
+      "href": "https://app.tonder.io/accounts/login/"
+    }
+  },
+  "search": {
+    "prompt": "Find or ask Tonder GPT"
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/tonderio/",
+      "website": "https://tonder.io/"
+    }
+  }
+}
