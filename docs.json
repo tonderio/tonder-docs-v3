@@ -71,17 +71,6 @@
             ]
           },
           {
-            "tab": "Revenue Optimization",
-            "groups": [
-              {
-                "group": "Revenue Optimization",
-                "pages": [
-                  "revenue-optimization/overview"
-                ]
-              }
-            ]
-          },
-          {
             "tab": "Integrate Tonder",
             "groups": [
               {
@@ -174,13 +163,6 @@
                       "dashboard/dev-webhooks"
                     ]
                   }
-                ]
-              },
-              {
-                "group": "Revenue Optimization",
-                "pages": [
-                  "dashboard/revenue-optimization/connections",
-                  "dashboard/revenue-optimization/routing"
                 ]
               },
               {
