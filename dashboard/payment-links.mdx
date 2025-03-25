@@ -80,6 +80,20 @@ The image below exemplifies the details page of the link [created earlier in thi
 
 <Frame>![](/images/1350x800/dashboard/payment-link/payment-link-details.png)</Frame>
 
+## Payment link lifecycle
+
+A payment link lifecycle in Tonder will go through the workflow presented below. At creation a payment link will always have a **Active** status. Changing to either **Paid**, or **Expired**, depending on the actions taken by the customer or the expiration settings configured during creation.
+
+<Frame>![](/images/core-concepts/lifecycle/payment-link.png)</Frame>
+
+The table below presents the description for each possible status:
+
+| Status      | Description                                                                 |
+|-------------|-----------------------------------------------------------------------------|
+| **Active**  | The payment link is available and can be used by the customer to make a payment. |
+| **Paid**    | The payment has been successfully completed using the link. The link can no longer be used. |
+| **Expired** | The payment link is no longer valid due to reaching the expiration time set during creation. |
+
 ## Branding
 
 Tonder allows you to customize the checkout experience for your customers by adding your logo and brand colors to match your branding when they use one of your payment links.
