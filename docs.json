@@ -141,6 +141,28 @@
             ]
           },
           {
+            "tab": "Direct Integration",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "direct-integration/overview",
+                  "direct-integration/quick-start"
+                ]
+              },
+              {
+                "group": "API Reference",
+                "pages": [
+                  "direct-integration/api-reference/card-tokenization",
+                  "direct-integration/api-reference/core-endpoints",
+                  "direct-integration/api-reference/request-structure",
+                  "direct-integration/api-reference/response-format",
+                  "direct-integration/api-reference/transation-status-check"
+                ]
+              }
+            ]
+          },
+          {
             "tab": "Dashboard",
             "groups": [
               {

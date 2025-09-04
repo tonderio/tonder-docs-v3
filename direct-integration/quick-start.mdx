@@ -1,0 +1,354 @@
+---
+title: "Quick Start Guide"
+sidebarTitle: "Quick Start"
+'og:description': ""
+---
+
+## Your First Transaction
+
+This guide will walk you through making your first payment using Tonder's Direct API in the sandbox (also referred as **stage**) environment.
+
+## Prerequisites
+
+1. Tonder account credentials to sign in at [app.tonder.io](https://app.tonder.io)
+2. API key and secret from your developer dashboard
+3. Basic understanding of REST APIs and HTTP requests
+
+## Step 1: Set Up Your Environment
+
+### Sandbox Environment
+
+Use the sandbox environment for testing all features without processing real transactions.
+
+**Base URL:** `https://stage.tonder.io/api/v1/`
+
+### Required Headers
+
+```http
+Authorization: Token your_sandbox_api_key
+X-Signature-Transaction: calculated_hmac_signature
+Content-Type: application/json
+```
+
+## Step 2: Implement HMAC Signature
+
+For secure API access, implement HMAC signature generation:
+
+### Python Implementation
+
+```python
+import json
+import hmac
+import hashlib
+import base64
+
+def create_signature(secret_key, filtered_data):
+    """Create HMAC signature for API request using filtered data"""
+    # Serialize filtered data to JSON with sorted keys and no whitespace
+    json_payload = json.dumps(filtered_data, separators=(',', ':'), sort_keys=True)
+    
+    # Calculate HMAC-SHA256
+    signature_bytes = hmac.new(
+        secret_key.encode('utf-8'),
+        json_payload.encode('utf-8'),
+        hashlib.sha256
+    ).digest()
+    
+    # Convert to Base64 string (not hexadecimal)
+    return base64.b64encode(signature_bytes).decode('utf-8')
+
+def build_filtered_data(request_data, field_mappings):
+    """Build structured data based on business configuration"""
+    structured_data = {
+        "customer": {
+            "firstName": request_data.get("name", ""),
+            "lastName": request_data.get("last_name", ""),
+            "email": request_data.get("email", ""),
+            "phone": request_data.get("phone", ""),
+        },
+        "currency": request_data.get("currency", "mxn"),
+        "metadata": request_data.get("metadata", None),
+        "amount": request_data.get("amount", 0),
+        "client_reference": request_data.get("client_reference", "")
+    }
+    
+    # Filter data based on field mappings configuration
+    return filter_by_mappings(structured_data, field_mappings)
+
+# Example signature creation
+request_data = {
+    "amount": 1000, 
+    "currency": "MXN",
+    "customer": {
+        "name": "John Doe",
+        "email": "john@example.com"
+    }
+}
+
+field_mappings = ["customer.email", "currency", "amount"]
+filtered_data = build_filtered_data(request_data, field_mappings)
+signature = create_signature("your_secret_key", filtered_data)
+
+headers = {
+    'Content-Type': 'application/json',
+    'X-Signature-Transaction': signature
+}
+```
+
+## Step 3: Make Your First Payment
+
+### Basic Card Payment Request
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 100.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Test Customer",
+    "email": "test@example.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+  },,
+  "client_reference": "test-payment-001"
+}
+```
+
+### Expected Response
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "authorized",
+  "amount": 100.00,
+  "currency": "MXN",
+  "merchant_reference": "test-payment-001",
+  "payment_id": 12345,
+  "transaction_id": "txn_abc123",
+  "provider": "stripe",
+  "created_at": "2024-07-26T10:30:00Z",
+  "status_code": 201
+}
+```
+
+## Step 4: Test Different Payment Methods
+
+### SPEI Bank Transfer
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 500.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Carlos Eduardo López",
+    "email": "carlos.lopez@empresa.mx"
+  },
+  "payment_method": {
+    "type": "SPEI"
+  },
+  "client_reference": "spei-test-001"
+}
+```
+
+### OXXO Cash Payment
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 250.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "María Isabel Fernández",
+    "email": "maria.fernandez@email.com"
+  },
+  "payment_method": {
+    "type": "oxxopay"
+  },
+  "client_reference": "oxxo-test-001"
+}
+```
+
+## Step 5: Test Cards for Different Scenarios
+
+| Card Number      | Scenario           | Expected Result         |
+| ---------------- | ------------------ | ----------------------- |
+| 4242424242424242 | Successful payment | `authorized` status     |
+| 4000000000000002 | Card declined      | `declined` status       |
+| 4000000000009995 | Insufficient funds | `declined` status       |
+| 4000000000000119 | 3D Secure required | `pending` with redirect |
+| 4000000000000341 | Processing error   | `failed` status         |
+
+## Step 6: Test Bank Accounts
+
+| CLABE              | Scenario            | Expected Result               |
+| ------------------ | ------------------- | ----------------------------- |
+| 646180157000000004 | Successful transfer | `processing` status           |
+| 012345678901234567 | Invalid checksum    | Validation error              |
+| 999999999999999999 | Non-existent bank   | `institution_not_found` error |
+
+## Step 7: Check Transaction Status
+
+### Status Check Request
+
+```http
+GET /transactions/{transaction_id}/
+```
+
+### Sample Status Response
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "success",
+  "amount": 150.00,
+  "currency": "MXN",
+  "merchant_reference": "test-payment-001",
+  "created_at": "2024-07-26T10:30:00Z",
+  "updated_at": "2024-07-26T10:32:15Z",
+  "completion_details": {
+    "completed_at": "2024-07-26T10:32:15Z",
+    "authorization_code": "AUTH123456"
+  }
+}
+```
+
+## Complete Test Flow Example
+
+### Python Implementation
+
+```python
+import requests
+import json
+
+# Sandbox configuration
+SANDBOX_URL = "https://stage.tonder.io/api/v1/"
+API_KEY = "your_sandbox_api_key"
+
+def test_successful_payment():
+    """Test a successful card payment"""
+    
+    # Payment request
+    payment_data = {
+        "operation_type": "payment",
+        "amount": 100.00,
+        "currency": "MXN",
+        "customer": {
+            "name": "Test Customer",
+            "email": "test@example.com"
+        },
+        "payment_method": {
+            "type": "CARD",
+            "card_number": "9230-0892-4469-1474",
+            "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+            "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+            "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+            "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+        },
+        "client_reference": "test-payment-001"
+    }
+    
+    headers = {
+        'Authorization': f'Token {API_KEY}',
+        'Content-Type': 'application/json'
+    }
+    
+    # Make payment request
+    response = requests.post(
+        f"{SANDBOX_URL}process/",
+        headers=headers,
+        json=payment_data
+    )
+    
+    if response.status_code == 201:
+        result = response.json()
+        print(f"Payment successful! Transaction ID: {result['id']}")
+        return result['id']
+    else:
+        print(f"Payment failed: {response.status_code}")
+        return None
+
+def check_transaction_status(transaction_id):
+    """Check the status of a transaction"""
+    
+    headers = {
+        'Authorization': f'Token {API_KEY}',
+        'Content-Type': 'application/json'
+    }
+    
+    response = requests.get(
+        f"{SANDBOX_URL}transactions/{transaction_id}/",
+        headers=headers
+    )
+    
+    if response.status_code == 200:
+        result = response.json()
+        print(f"Transaction status: {result['status']}")
+        return result
+    else:
+        print(f"Status check failed: {response.status_code}")
+        return None
+
+# Run the test
+if __name__ == "__main__":
+    # Test payment
+    transaction_id = test_successful_payment()
+    
+    if transaction_id:
+        # Check status
+        check_transaction_status(transaction_id)
+```
+
+## Common Testing Scenarios
+
+### 1. Successful Payment Flow
+
+* Use test card `4242424242424242`
+* Expect `authorized` or `success` status
+* Verify transaction ID is returned
+
+### 2. Declined Payment
+
+* Use test card `4000000000000002`
+* Expect `declined` status
+* Check error message in response
+
+### 3. 3D Secure Challenge
+
+* Use test card `4000000000000119`
+* Expect `pending` status with `next_action.redirect_to_url`
+* Handle redirect flow for authentication
+
+### 4. OXXO Payment Instructions
+
+* Use OXXO payment method
+* Expect `pending` status with `payment_instructions`
+* Verify barcode and reference code are provided
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue                    | Solution                                         |
+| ------------------------ | ------------------------------------------------ |
+| 401 Authentication Error | Verify API key is correct and properly formatted |
+| 422 Validation Error     | Check required fields and data formats           |
+| 500 Server Error         | Retry request or contact support                 |
+| Rate limit exceeded      | Implement retry with backoff                     |
+
+## Next Steps
+
+Once you've successfully tested payments in sandbox:
+
+1. **Review Payment Methods** - Learn about all supported payment options
+2. **Set up Webhooks** - Receive real-time transaction updates
+3. **Implement Error Handling** - Handle failures gracefully
+4. **Move to Production** - Follow the Production Readiness checklist

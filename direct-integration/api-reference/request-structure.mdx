@@ -1,0 +1,341 @@
+---
+title: "Request Structure"
+sidebarTitle: "Request Structure"
+'og:description': ""
+---
+
+## Overview
+
+All transactions use the same base request format with operation-specific fields. This unified structure simplifies integration by providing a consistent API interface for both payments and withdrawals.
+
+## Common Fields
+
+All requests to the `/process/` endpoint must include these base fields:
+
+| Field              | Type    | Required | Description                              |
+| ------------------ | ------- | -------- | ---------------------------------------- |
+| `operation_type`   | string  | Yes      | `"payment"` or `"withdrawal"`            |
+| `amount`           | decimal | Yes      | Transaction amount                       |
+| `currency`         | string  | No       | Currency code (default: `"MXN"`)         |
+| `customer`         | object  | Yes      | Customer information                     |
+| `customer.name`    | string  | Yes      | Customer full name                       |
+| `customer.email`   | string  | Yes      | Customer email address                   |
+| `client_reference` | string  | No       | Your reference identifier                |
+| `metadata`         | object  | No       | Additional data for your records         |
+| `return_url`       | string  | No       | URL for redirection after 3DS processing |
+
+## Basic Request Structure
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 1000.50,
+  "currency": "MXN",
+  "customer": {
+    "name": "John Doe",
+    "email": "john.doe@email.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+  },
+  "client_reference": "order-12345",
+  "metadata": {
+    "customer_id": "cust_123",
+    "order_id": "ord_456"
+  },
+  "return_url": "https://yoursite.com/payment/return"
+}
+```
+
+## Payment Request Fields
+
+When `operation_type` is `"payment"`, include these additional fields:
+
+| Field                            | Type   | Required | Description                                    |
+| -------------------------------- | ------ | -------- | ---------------------------------------------- |
+| `payment_method`                 | object | Yes      | Payment method details                         |
+| `payment_method.type`            | string | Yes      | Payment method type (`"CARD"`, `"SPEI"`, etc.) |
+| `payment_method.token`           | string | \*       | Tokenized card ID (for card payments)          |
+| `payment_method.card_number`     | string | \*       | Card number (if not using token)               |
+| `payment_method.cvv`             | string | \*       | Security code (for raw card data)              |
+| `payment_method.expiry_month`    | string | \*       | Expiration month (for raw card data)           |
+| `payment_method.expiry_year`     | string | \*       | Expiration year (for raw card data)            |
+| `payment_method.cardholder_name` | string | \*       | Cardholder name (for raw card data)            |
+
+\*For card payments, either `token` or complete card details are required.
+
+### Card Payment Examples
+
+#### Using Tokenized Card (Recommended)
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 150.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Ana María Rodríguez",
+    "email": "ana.rodriguez@email.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+  },
+  "client_reference": "order-789",
+  "return_url": "https://mystore.com/payment/return"
+}
+```
+
+#### SPEI Bank Transfer
+
+For SPEI transfers (`payment_method.type: "SPEI"`), only customer information is required:
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 500.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Carlos Eduardo López",
+    "email": "carlos.lopez@empresa.mx"
+  },
+  "payment_method": {
+    "type": "SPEI"
+  },
+  "client_reference": "invoice-456"
+}
+```
+
+#### OXXO Cash Payment
+
+For OXXO payments (`payment_method.type: "oxxopay"`):
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 250.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "María Isabel Fernández",
+    "email": "maria.fernandez@email.com"
+  },
+  "payment_method": {
+    "type": "oxxopay"
+  },
+  "client_reference": "cash-payment-789"
+}
+```
+
+## Withdrawal Request Fields
+
+When `operation_type` is `"withdrawal"`, include these additional fields:
+
+| Field             | Type   | Required | Description                                  |
+| ----------------- | ------ | -------- | -------------------------------------------- |
+| `transfer_method` | string | Yes      | Transfer method (`"SPEI"` or `"DEBIT_CARD"`) |
+| `beneficiary`     | object | Yes      | Beneficiary information                      |
+| `reference`       | string | No       | Your withdrawal reference                    |
+| `description`     | string | No       | Withdrawal description                       |
+
+### Beneficiary Information
+
+| Field                     | Type   | Required | Description             |
+| ------------------------- | ------ | -------- | ----------------------- |
+| `beneficiary.account`     | string | Yes      | Account number or CLABE |
+| `beneficiary.name`        | string | Yes      | Beneficiary full name   |
+| `beneficiary.rfc`         | string | Yes      | Mexican tax ID (RFC)    |
+| `beneficiary.institution` | string | Yes      | Bank institution code   |
+| `beneficiary.email`       | string | Yes      | Beneficiary email       |
+
+### SPEI Withdrawal Example
+
+```json
+{
+  "operation_type": "withdrawal",
+  "amount": 750.00,
+  "currency": "MXN",
+  "reference": "payout-001",
+  "transfer_method": "SPEI",
+  "description": "Commission payment",
+  "beneficiary": {
+    "account": "012345678901234567",
+    "name": "Roberto Martínez García",
+    "rfc": "MAGR850920XY1",
+    "institution": "40012",
+    "email": "roberto.martinez@email.com"
+  }
+}
+```
+
+## Supported Payment Methods
+
+| Method           | Type Value    | Description                  | Processing Time |
+| ---------------- | ------------- | ---------------------------- | --------------- |
+| **Cards**        | `CARD`        | Credit and debit cards       | Instant         |
+| **SPEI**         | `SPEI`        | Mexican bank transfers       | Real-time       |
+| **OXXO**         | `OXXO`        | Cash payments at OXXO stores | 24-48 hours     |
+| **Mercado Pago** | `MERCADOPAGO` | Digital wallet               | Instant         |
+| **SafetyPay**    | `SAFETYPAY`   | Alternative cash payment     | 24-48 hours     |
+
+## Supported Transfer Methods
+
+| Method         | ID           | Description            | Processing Time |
+| -------------- | ------------ | ---------------------- | --------------- |
+| **SPEI**       | `SPEI`       | Bank account transfers | Same day        |
+| **Debit Card** | `DEBIT_CARD` | Direct card deposits   | Instant         |
+
+## Field Validation Rules
+
+### Amount Validation
+
+* **Minimum**: 0.01 (any currency)
+* **Maximum**: 15,000,000 (any currency)
+* **Format**: Decimal with up to 2 decimal places
+* **Example**: `1000.50`, `25.99`, `100.00`
+
+### Currency Validation
+
+* **Supported**: `MXN`, `USD`
+* **Default**: `MXN` (if not specified)
+* **Format**: 3-letter ISO currency code
+* **Case**: Uppercase
+
+### Email Validation
+
+* **Format**: Valid email address format
+* **Required**: For all customer and beneficiary objects
+* **Example**: `user@domain.com`
+
+### RFC Validation (Mexico)
+
+* **Format**: 12-13 alphanumeric characters
+* **Pattern**: `^[A-Z&Ñ]{3,4}\\d{6}[A-Z\\d]{3}$`
+* **Example**: `XAXX010101000`, `MAGR850920XY1`
+
+### CLABE Validation (Mexico)
+
+* **Format**: Exactly 18 digits
+* **Structure**: Bank code (3) + Branch (3) + Account (11) + Check digit (1)
+* **Example**: `012345678901234567`
+
+## Request Headers
+
+All requests must include these headers:
+
+```http
+Authorization: Token your_api_key
+X-Signature-Transaction: calculated_hmac_signature
+Content-Type: application/json
+```
+
+## Complete Request Examples
+
+### Card Payment with All Optional Fields
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 1500.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Ana María González López",
+    "email": "ana.gonzalez@empresa.mx"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+  },
+  "client_reference": "order-12345-premium",
+  "metadata": {
+    "customer_id": "cust_789",
+    "order_id": "ord_12345",
+    "store_location": "Mexico City",
+    "sales_channel": "web"
+  },
+  "return_url": "https://mystore.com/payment/return?order=12345"
+}
+```
+
+### SPEI Withdrawal with All Fields
+
+```json
+{
+  "operation_type": "withdrawal",
+  "amount": 2500.00,
+  "currency": "MXN",
+  "reference": "monthly-payout-2024-07",
+  "transfer_method": "SPEI",
+  "description": "Monthly commission payout for July 2024",
+  "beneficiary": {
+    "account": "012345678901234567",
+    "name": "Roberto Martínez García",
+    "rfc": "MAGR850920XY1",
+    "institution": "40012",
+    "email": "roberto.martinez@contractor.com"
+  },
+  "metadata": {
+    "payout_period": "2024-07",
+    "beneficiary_type": "contractor",
+    "approval_id": "APP_789"
+  }
+}
+```
+
+## Request Size Limits
+
+| Field              | Maximum Size   |
+| ------------------ | -------------- |
+| Total request body | 10KB           |
+| Customer name      | 255 characters |
+| Customer email     | 320 characters |
+| Client reference   | 255 characters |
+| Description        | 500 characters |
+| Metadata object    | 2KB            |
+
+## Best Practices
+
+### Required Fields
+
+* Always include required fields to avoid validation errors
+* Use proper data types (strings, numbers, objects)
+* Follow format requirements for special fields (email, RFC, CLABE)
+
+### Optional Fields
+
+* Include `client_reference` for transaction tracking
+* Use `metadata` for additional business information
+* Specify `return_url` for card payments that may require 3DS
+
+### Data Quality
+
+* Validate email addresses before sending
+* Ensure RFC format compliance for Mexican transactions
+* Use correct bank institution codes for SPEI transfers
+* Test with sandbox data before production
+
+### Security
+
+* Never log or store raw card data
+* Use tokenized card data when possible
+* Implement proper HMAC signature generation
+* Validate all input data before sending requests
+
+## Next Steps
+
+* Review Response Format for handling API responses
+* Learn about Payment Methods for specific implementation details
+* Check Error Handling for validation error management
+* Explore Card Tokenization for secure card data handling

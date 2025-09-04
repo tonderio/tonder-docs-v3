@@ -1,0 +1,143 @@
+---
+title: "API Integration Overview"
+'og:description': ""
+---
+
+**Tonder** provides a unified payment processing API that enables businesses to accept payments and send withdrawals across Latin America through a single, streamlined interface. Our **Direct Connect** approach eliminates complex integrations, allowing you to process transactions with a single API call.
+
+### Key Features
+
+* **Single Endpoint Processing**: Handle payments and withdrawals through one API
+* **Regional Payment Methods**: Native support for SPEI, OXXO, Mercado Pago, and more
+* **Instant Response**: Real-time processing with immediate status updates
+* **Simplified Integration**: Reduce development time from weeks to days
+* **Comprehensive Coverage**: Cards, bank transfers, cash, and digital wallets
+
+### Getting Started Process
+
+1. Sign-in to your Tonder account at [app.tonder.io](https://app.tonder.io) or request one through your Tonder Customer Success Manager
+2. Get your API credentials from the developer section
+3. Test your integration in the sandbox environment
+4. Complete production setup and go-live process
+
+***
+
+## Authentication
+
+All API requests require authentication using API keys, and with HMAC SHA256 signatures when specified.
+
+### Required Headers
+
+```http
+Authorization: Token api_key
+X-Signature-Transaction: calculated_hmac_signature
+Content-Type: application/json
+```
+
+### Authentication Requirements
+
+1. **API Credentials**: Each business receives unique API key and secret key
+2. **HMAC Configuration**: HMAC validation is configurable per business (active/inactive)
+3. **Field Mappings**: Different endpoints may have different field mapping requirements
+4. **Signature Calculation**: HMAC-SHA256 signatures ensure request integrity
+5. **Base64 Encoding**: Signatures must be encoded as Base64 strings
+
+**Important Notes:**
+
+* HMAC validation can be configured as active/inactive per business
+* Each business can configure which fields are included in signature calculation
+* The system supports different field mappings for different sources (web, mobile, etc.)
+* For the Direct API `/process/` endpoint, HMAC authentication will be implemented
+
+***
+
+## Base URLs
+
+| Environment    | Base URL                          | Purpose                 |
+| -------------- | --------------------------------- | ----------------------- |
+| **Stage**      | `https://stage.tonder.io/api/v1/` | Testing and development |
+| **Production** | `https://app.tonder.io/api/v1/`   | Live transactions       |
+
+***
+
+## API Architecture
+
+### Unified Processing Endpoint
+
+The API uses a single `/process/` endpoint that handles both payments and withdrawals based on the `operation_type` field in the request.
+
+### Supported Payment Methods
+
+* **Cards**: Credit and debit cards with tokenization support
+* **SPEI**: Mexican bank transfers (real-time)
+* **OXXO**: Cash payments at convenience stores
+* **Mercado Pago**: Digital wallet payments
+* **SafetyPay**: Alternative cash payment methods
+
+### Supported Transfer Methods
+
+* **SPEI**: Bank account transfers (same day processing)
+* **Debit Card**: Direct card deposits (instant)
+
+***
+
+## Documentation Structure
+
+This documentation is organized into the following sections:
+
+### API Reference
+
+* **Card Tokenization** - Secure card data handling
+* **Core Endpoints** - Main API operations
+* **Request Structure** - API request formatting
+* **Response Format** - API response handling
+* **Status Checking** - Transaction monitoring
+
+### Payment Processing
+
+* **Payment Methods** - All supported payment options
+* **Withdrawals** - Payout processing
+
+### Integration
+
+* **Webhooks** - Real-time notifications
+* **Error Handling** - Error management
+
+### Regional Reference
+
+* **Mexican Banking** - Regional requirements
+
+### Resources
+
+* **Production Readiness** - Go-live checklist
+* **Rate Limits** - API usage limits
+* **Support & Resources** - Help and resources
+
+***
+
+## Support Channels
+
+| Channel                     | Response Time | Best For                 |
+| --------------------------- | ------------- | ------------------------ |
+| **Email Support**           | 24 hours      | Integration questions    |
+| **Developer Documentation** | Instant       | API reference and guides |
+| **Status Page**             | Real-time     | Service availability     |
+
+### Useful Links
+
+* **Dashboard**: [https://app.tonder.io](https://app.tonder.io)
+* **API Status**: [https://status.tonder.io](https://status.tonder.io)
+* **Developer Support**: [developers@tonder.io](mailto:developers@tonder.io)
+
+***
+
+## Next Steps
+
+* Follow the Quick Start Guide for hands-on implementation
+* Explore Payment Methods for supported options
+* Review Core Endpoints for API specifications
+* Set up Webhooks for real-time notifications
+
+***
+
+_Tonder API Documentation - Complete API reference for payment processing across Latin America._
