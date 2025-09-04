@@ -157,7 +157,8 @@
         "direct-integration/payment-processing/payment-methods",
         "direct-integration/payment-processing/withdrawals",
         "direct-integration/integration/webhooks",
-        "direct-integration/integration/error-handling"
+        "direct-integration/integration/error-handling",
+        "direct-integration/regional-reference/mexico"
       ]
     },
     {
