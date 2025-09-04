@@ -155,7 +155,9 @@
         "direct-integration/api-reference/response-format",
         "direct-integration/api-reference/transation-status-check",
         "direct-integration/payment-processing/payment-methods",
-        "direct-integration/payment-processing/withdrawals"
+        "direct-integration/payment-processing/withdrawals",
+        "direct-integration/integration/webhooks",
+        "direct-integration/integration/error-handling"
       ]
     },
     {

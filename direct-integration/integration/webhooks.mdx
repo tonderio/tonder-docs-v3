@@ -1,0 +1,690 @@
+---
+title: "Webhooks"
+sidebarTitle: "Webhooks"
+'og:description': ""
+---
+
+## Overview
+
+Webhooks provide real-time notifications about transaction status changes and allow you to configure endpoints for receiving these notifications. Tonder's webhook system ensures reliable delivery of transaction updates through comprehensive retry mechanisms and authentication options.
+
+## Webhook Management
+
+Manage webhook endpoints through the API to receive real-time transaction notifications.
+
+### Create Webhook
+
+```http
+POST /webhooks/
+```
+
+Creates a new webhook endpoint for your business.
+
+**Request Body:**
+
+```json
+{
+  "url": "https://your-site.com/webhook",
+  "auth_method": "BEARER",
+  "credentials": {
+    "token": "your_bearer_token"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": 123,
+  "url": "https://your-site.com/webhook",
+  "status": "active",
+  "auth_method": "BEARER",
+  "credentials": {
+    "token": "your_bearer_token"
+  }
+}
+```
+
+### List Webhooks
+
+```http
+GET /webhooks/
+```
+
+Retrieves all webhook endpoints configured for your business.
+
+**Response:**
+
+```json
+[
+  {
+    "id": 123,
+    "url": "https://your-site.com/webhook",
+    "status": "active",
+    "auth_method": "BEARER",
+    "credentials": {
+      "token": "your_bearer_token"
+    }
+  },
+  {
+    "id": 124,
+    "url": "https://backup.your-site.com/webhook",
+    "status": "inactive",
+    "auth_method": "API_TOKEN",
+    "credentials": {
+      "header": "X-API-Key",
+      "token": "your_api_key"
+    }
+  }
+]
+```
+
+### Update Webhook
+
+```http
+PUT /webhooks/{webhook_id}/
+```
+
+Updates an existing webhook endpoint configuration.
+
+**Request Body:**
+
+```json
+{
+  "url": "https://new-endpoint.com/webhook",
+  "auth_method": "API_TOKEN",
+  "credentials": {
+    "header": "X-API-Key",
+    "token": "new_api_key"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": 123,
+  "url": "https://new-endpoint.com/webhook",
+  "status": "active",
+  "auth_method": "API_TOKEN",
+  "credentials": {
+    "header": "X-API-Key",
+    "token": "new_api_key"
+  }
+}
+```
+
+### Delete Webhook
+
+```http
+DELETE /webhooks/{webhook_id}/
+```
+
+Removes a webhook endpoint from your business configuration.
+
+**Response:** `204 No Content`
+
+### Test Webhook
+
+```http
+POST /webhooks/{webhook_id}/test/
+```
+
+Tests webhook endpoint connectivity and updates status accordingly.
+
+**Response:**
+
+```json
+{
+  "id": 123,
+  "url": "https://your-site.com/webhook",
+  "status": "active",
+  "auth_method": "BEARER",
+  "credentials": {
+    "token": "your_bearer_token"
+  }
+}
+```
+
+## Webhook Configuration
+
+### Authentication Methods
+
+| Method       | Description                 | Credentials Format                                 |
+| ------------ | --------------------------- | -------------------------------------------------- |
+| `BEARER`     | Bearer token authentication | `{"token": "your_bearer_token"}`                   |
+| `API_TOKEN`  | Custom header with API key  | `{"header": "X-API-Key", "token": "your_api_key"}` |
+| `BASIC_AUTH` | HTTP Basic Authentication   | `{"username": "user", "password": "pass"}`         |
+| `NONE`       | No authentication           | `{}` (not recommended for production)              |
+
+### Webhook Status
+
+| Status     | Description                                           |
+| ---------- | ----------------------------------------------------- |
+| `active`   | Webhook is operational and receiving notifications    |
+| `inactive` | Webhook is configured but not receiving notifications |
+| `error`    | Webhook endpoint failed connectivity test             |
+
+## Webhook Events
+
+Tonder sends webhook notifications for various transaction events:
+
+### Payment Events
+
+* Transaction status changes (pending → authorized → success)
+* Payment failures and declines
+* 3DS authentication completions
+* Cash payment confirmations (OXXO, SafetyPay)
+
+### Withdrawal Events
+
+* Withdrawal processing updates
+* Payout completions and failures
+* SPEI transfer confirmations
+* Debit card deposit completions
+
+## Webhook Payload Structure
+
+All webhook notifications follow a consistent payload structure:
+
+```json
+{
+  "event_type": "transaction.status_changed",
+  "event_id": "evt_123456789",
+  "created_at": "2024-07-26T10:32:15Z",
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "operation_type": "payment",
+    "status": "success",
+    "previous_status": "authorized",
+    "amount": 150.00,
+    "currency": "MXN",
+    "merchant_reference": "order-789",
+    "payment_method": "CARD",
+    "customer": {
+      "name": "Ana María Rodríguez",
+      "email": "ana.rodriguez@email.com"
+    },
+    "completed_at": "2024-07-26T10:32:15Z",
+    "authorization_code": "AUTH123456"
+  }
+}
+```
+
+### Payload Fields
+
+| Field                  | Type   | Description                              |
+| ---------------------- | ------ | ---------------------------------------- |
+| `event_type`           | string | Type of event that occurred              |
+| `event_id`             | string | Unique identifier for this webhook event |
+| `created_at`           | string | ISO 8601 timestamp when event occurred   |
+| `data`                 | object | Transaction data and details             |
+| `data.status`          | string | Current transaction status               |
+| `data.previous_status` | string | Previous transaction status              |
+
+## Implementation Examples
+
+### Python Webhook Handler
+
+```python
+from flask import Flask, request, jsonify
+import json
+import logging
+
+app = Flask(__name__)
+
+@app.route('/webhook', methods=['POST'])
+def handle_webhook():
+    """Handle Tonder webhook notifications"""
+    
+    # Verify authentication based on your configured method
+    if not verify_webhook_auth(request.headers):
+        logging.warning("Webhook authentication failed")
+        return jsonify({'error': 'Authentication failed'}), 401
+    
+    try:
+        # Process webhook event
+        event_data = request.get_json()
+        result = process_webhook_event(event_data)
+        
+        if result:
+            return 'OK', 200
+        else:
+            return jsonify({'error': 'Processing failed'}), 500
+            
+    except Exception as e:
+        logging.error(f"Webhook processing error: {e}")
+        return jsonify({'error': 'Processing failed'}), 500
+
+def verify_webhook_auth(headers):
+    """Verify webhook authentication"""
+    
+    # For BEARER: verify Authorization header
+    auth_header = headers.get('Authorization')
+    if auth_header and auth_header.startswith('Bearer '):
+        token = auth_header[7:]
+        return validate_bearer_token(token)
+    
+    # For API_TOKEN: verify custom header
+    api_key = headers.get('X-API-Key')
+    if api_key:
+        return validate_api_key(api_key)
+    
+    # For BASIC_AUTH: verify basic authentication
+    if auth_header and auth_header.startswith('Basic '):
+        return validate_basic_auth(auth_header)
+    
+    return False
+
+def process_webhook_event(event_data):
+    """Process webhook event based on type"""
+    
+    event_type = event_data.get('event_type')
+    transaction_data = event_data.get('data', {})
+    
+    transaction_id = transaction_data.get('id')
+    status = transaction_data.get('status')
+    operation_type = transaction_data.get('operation_type')
+    
+    logging.info(f"Processing webhook: {event_type} for {transaction_id}")
+    
+    if event_type == 'transaction.status_changed':
+        return handle_status_change(transaction_data)
+    else:
+        logging.warning(f"Unknown event type: {event_type}")
+        return True  # Return success for unknown events
+
+def handle_status_change(transaction_data):
+    """Handle transaction status change events"""
+    
+    transaction_id = transaction_data['id']
+    new_status = transaction_data['status']
+    previous_status = transaction_data.get('previous_status')
+    operation_type = transaction_data['operation_type']
+    
+    try:
+        if operation_type == 'payment':
+            return handle_payment_status_change(transaction_data)
+        elif operation_type == 'withdrawal':
+            return handle_withdrawal_status_change(transaction_data)
+        else:
+            logging.warning(f"Unknown operation type: {operation_type}")
+            return True
+            
+    except Exception as e:
+        logging.error(f"Error handling status change for {transaction_id}: {e}")
+        return False
+
+def handle_payment_status_change(transaction_data):
+    """Handle payment status changes"""
+    
+    transaction_id = transaction_data['id']
+    status = transaction_data['status']
+    merchant_reference = transaction_data.get('merchant_reference')
+    
+    if status == 'success':
+        # Payment completed successfully
+        update_order_status(merchant_reference, 'paid')
+        send_confirmation_email(transaction_data)
+        
+    elif status == 'failed':
+        # Payment failed
+        update_order_status(merchant_reference, 'payment_failed')
+        send_failure_notification(transaction_data)
+        
+    elif status == 'declined':
+        # Payment was declined
+        update_order_status(merchant_reference, 'payment_declined')
+        send_decline_notification(transaction_data)
+    
+    return True
+
+def handle_withdrawal_status_change(transaction_data):
+    """Handle withdrawal status changes"""
+    
+    transaction_id = transaction_data['id']
+    status = transaction_data['status']
+    merchant_reference = transaction_data.get('merchant_reference')
+    
+    if status == 'success':
+        # Withdrawal completed successfully
+        update_payout_status(merchant_reference, 'completed')
+        notify_beneficiary(transaction_data)
+        
+    elif status == 'failed':
+        # Withdrawal failed
+        update_payout_status(merchant_reference, 'failed')
+        handle_payout_failure(transaction_data)
+    
+    return True
+
+def validate_bearer_token(token):
+    """Validate bearer token"""
+    # Implement your token validation logic
+    return token == "your_expected_bearer_token"
+
+def validate_api_key(api_key):
+    """Validate API key"""
+    # Implement your API key validation logic
+    return api_key == "your_expected_api_key"
+
+def update_order_status(merchant_reference, status):
+    """Update order status in your system"""
+    # Implement your order status update logic
+    pass
+
+def send_confirmation_email(transaction_data):
+    """Send payment confirmation email"""
+    # Implement your email sending logic
+    pass
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
+```
+
+### Java Webhook Handler
+
+```java
+@RestController
+@RequestMapping("/webhook")
+public class WebhookController {
+    
+    private static final Logger logger = LoggerFactory.getLogger(WebhookController.class);
+    
+    @PostMapping
+    public ResponseEntity<String> handleWebhook(@RequestBody String payload,
+                                              @RequestHeader Map<String, String> headers) {
+        
+        // Verify authentication based on your configured method
+        if (!verifyWebhookAuth(headers)) {
+            logger.warn("Webhook authentication failed");
+            return ResponseEntity.status(401).body("Authentication failed");
+        }
+        
+        // Process webhook event
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> eventData = mapper.readValue(payload, Map.class);
+            
+            boolean success = processWebhookEvent(eventData);
+            
+            if (success) {
+                return ResponseEntity.ok("OK");
+            } else {
+                return ResponseEntity.status(500).body("Processing failed");
+            }
+            
+        } catch (Exception e) {
+            logger.error("Webhook processing error", e);
+            return ResponseEntity.status(500).body("Processing failed");
+        }
+    }
+    
+    private boolean verifyWebhookAuth(Map<String, String> headers) {
+        // For BEARER: verify Authorization header contains "Bearer <token>"
+        String authHeader = headers.get("authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            return validateBearerToken(token);
+        }
+        
+        // For API_TOKEN: verify custom header matches expected value
+        String apiKey = headers.get("x-api-key");
+        if (apiKey != null) {
+            return validateApiKey(apiKey);
+        }
+        
+        // For BASIC_AUTH: verify basic authentication
+        if (authHeader != null && authHeader.startsWith("Basic ")) {
+            return validateBasicAuth(authHeader);
+        }
+        
+        return false;
+    }
+    
+    private boolean processWebhookEvent(Map<String, Object> eventData) {
+        String eventType = (String) eventData.get("event_type");
+        Map<String, Object> transactionData = (Map<String, Object>) eventData.get("data");
+        
+        String transactionId = (String) transactionData.get("id");
+        String status = (String) transactionData.get("status");
+        String operationType = (String) transactionData.get("operation_type");
+        
+        logger.info("Processing webhook: {} for {}", eventType, transactionId);
+        
+        if ("transaction.status_changed".equals(eventType)) {
+            return handleStatusChange(transactionData);
+        } else {
+            logger.warn("Unknown event type: {}", eventType);
+            return true; // Return success for unknown events
+        }
+    }
+    
+    private boolean handleStatusChange(Map<String, Object> transactionData) {
+        String operationType = (String) transactionData.get("operation_type");
+        
+        try {
+            if ("payment".equals(operationType)) {
+                return handlePaymentStatusChange(transactionData);
+            } else if ("withdrawal".equals(operationType)) {
+                return handleWithdrawalStatusChange(transactionData);
+            } else {
+                logger.warn("Unknown operation type: {}", operationType);
+                return true;
+            }
+        } catch (Exception e) {
+            logger.error("Error handling status change", e);
+            return false;
+        }
+    }
+    
+    private boolean handlePaymentStatusChange(Map<String, Object> transactionData) {
+        String transactionId = (String) transactionData.get("id");
+        String status = (String) transactionData.get("status");
+        String merchantReference = (String) transactionData.get("merchant_reference");
+        
+        switch (status) {
+            case "success":
+                updateOrderStatus(merchantReference, "paid");
+                sendConfirmationEmail(transactionData);
+                break;
+            case "failed":
+                updateOrderStatus(merchantReference, "payment_failed");
+                sendFailureNotification(transactionData);
+                break;
+            case "declined":
+                updateOrderStatus(merchantReference, "payment_declined");
+                sendDeclineNotification(transactionData);
+                break;
+        }
+        
+        return true;
+    }
+    
+    private boolean handleWithdrawalStatusChange(Map<String, Object> transactionData) {
+        String transactionId = (String) transactionData.get("id");
+        String status = (String) transactionData.get("status");
+        String merchantReference = (String) transactionData.get("merchant_reference");
+        
+        switch (status) {
+            case "success":
+                updatePayoutStatus(merchantReference, "completed");
+                notifyBeneficiary(transactionData);
+                break;
+            case "failed":
+                updatePayoutStatus(merchantReference, "failed");
+                handlePayoutFailure(transactionData);
+                break;
+        }
+        
+        return true;
+    }
+    
+    private boolean validateBearerToken(String token) {
+        // Implement your token validation logic
+        return "your_expected_bearer_token".equals(token);
+    }
+    
+    private boolean validateApiKey(String apiKey) {
+        // Implement your API key validation logic
+        return "your_expected_api_key".equals(apiKey);
+    }
+    
+    // Additional helper methods...
+}
+```
+
+## Webhook Delivery & Retry Logic
+
+Tonder's webhook service ensures reliable delivery of webhook notifications through AWS SQS-based retry mechanisms and comprehensive error handling.
+
+### Delivery Guarantees
+
+**Retry Configuration:**
+
+* **Maximum retry attempts**: 3 attempts per webhook delivery
+* **Processing timeout**: 30 seconds per delivery attempt
+* **Visibility timeout**: 60 seconds between retry attempts
+* **Total retry window**: Up to 3 minutes (3 attempts × 60 seconds)
+* **Message retention**: 14 days in the primary queue
+
+### Retry Behavior
+
+When a webhook delivery fails, the system automatically:
+
+1. Logs the failure with detailed error information and attempt tracking
+2. Returns the message to the SQS queue for retry
+3. Waits 60 seconds before the next retry attempt becomes available
+4. Repeats up to 3 times total
+
+### Failure Handling
+
+**Immediate Failures:**
+
+* Network connection errors
+* HTTP timeout (30 seconds)
+* Non-2xx HTTP response codes
+* Invalid webhook endpoints
+
+**Dead Letter Queue**: After 3 failed attempts, messages are automatically moved to a Dead Letter Queue (DLQ) for:
+
+* Manual inspection and debugging
+* Potential reprocessing
+* Long-term failure analysis
+
+### Success Criteria
+
+A webhook delivery is considered successful when:
+
+* HTTP response status is 2xx (200-299)
+* Response received within 30 seconds
+* No network or connection errors
+
+## Best Practices for Webhook Endpoints
+
+### Response Requirements
+
+1. **Respond quickly**: Aim for sub-5 second response times
+2. **Return appropriate status codes**: Use 2xx for success, 4xx for permanent failures
+3. **Handle timeouts gracefully**: Process within 30 seconds or implement async processing
+4. **Implement idempotency**: Handle duplicate deliveries gracefully
+
+### Security Best Practices
+
+1. **Use HTTPS**: Always use secure endpoints
+2. **Authenticate requests**: Verify webhook authenticity
+3. **Validate payloads**: Check event structure and content
+4. **Rate limiting**: Protect your endpoints from abuse
+
+### Error Handling
+
+1. **Log all events**: Keep detailed logs for debugging
+2. **Handle failures gracefully**: Don't crash on invalid payloads
+3. **Implement circuit breakers**: Protect downstream systems
+4. **Monitor webhook health**: Alert on repeated failures
+
+### Implementation Tips
+
+1. **Use queues**: Process webhooks asynchronously when possible
+2. **Implement retries**: Handle temporary failures in your system
+3. **Store event IDs**: Prevent duplicate processing
+4. **Test thoroughly**: Verify webhook handling in all scenarios
+
+## Testing Webhooks
+
+### Test Webhook Endpoint
+
+Create a simple test endpoint to verify webhook delivery:
+
+```python
+@app.route('/webhook/test', methods=['POST'])
+def test_webhook():
+    """Simple test endpoint for webhook verification"""
+    
+    event_data = request.get_json()
+    print(f"Received webhook: {json.dumps(event_data, indent=2)}")
+    
+    # Log the event
+    logging.info(f"Test webhook received: {event_data.get('event_type')}")
+    
+    return 'OK', 200
+```
+
+### Manual Testing
+
+1. **Use ngrok** for local testing: `ngrok http 5000`
+2. **Configure webhook URL** with the ngrok URL
+3. **Process test transactions** to trigger webhooks
+4. **Verify payload structure** and authentication
+
+### Production Testing
+
+1. **Test connectivity** using the test webhook endpoint
+2. **Verify authentication** works correctly
+3. **Check retry behavior** by temporarily returning errors
+4. **Monitor webhook logs** for delivery success
+
+## Monitoring and Observability
+
+The webhook service provides comprehensive logging for:
+
+* Individual delivery attempts with timing metrics
+* Retry attempt tracking (attempt\_number, max\_attempts, will\_retry)
+* Performance metrics (request duration, processing time)
+* Failure analysis with exception details
+
+### Webhook Monitoring Checklist
+
+* [ ] Monitor webhook delivery success rates
+* [ ] Set up alerts for repeated failures
+* [ ] Track webhook processing times
+* [ ] Monitor endpoint uptime and availability
+* [ ] Review failed webhook logs regularly
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue                     | Cause               | Solution                               |
+| ------------------------- | ------------------- | -------------------------------------- |
+| 401 Authentication errors | Invalid credentials | Verify webhook authentication settings |
+| 404 Endpoint not found    | Incorrect URL       | Check webhook URL configuration        |
+| Timeout errors            | Slow processing     | Optimize webhook processing time       |
+| 500 Server errors         | Processing failures | Check webhook endpoint logs            |
+
+### Debugging Steps
+
+1. **Check webhook configuration** - Verify URL and authentication
+2. **Test endpoint manually** - Use curl or Postman to test
+3. **Review logs** - Check both Tonder and your endpoint logs
+4. **Verify network connectivity** - Ensure endpoint is accessible
+5. **Test with simple payload** - Use webhook test endpoint
+
+## Next Steps
+
+* Review Error Handling for comprehensive error management
+* Check Production Readiness for webhook monitoring setup
+* Learn about Status Checking as a webhook backup
+* Explore Payment Methods for method-specific webhook events
