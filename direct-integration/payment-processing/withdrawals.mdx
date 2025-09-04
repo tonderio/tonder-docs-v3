@@ -1,0 +1,456 @@
+---
+title: "Withdrawals"
+sidebarTitle: "Withdrawals"
+'og:description': ""
+---
+
+## Overview
+
+Tonder's withdrawal functionality enables businesses to send payouts to beneficiaries through the same unified `/process/` endpoint. Withdrawals support SPEI bank transfers and direct debit card deposits, providing flexible payout options across Mexico.
+
+## Supported Transfer Methods
+
+| Method         | ID           | Description            | Processing Time |
+| -------------- | ------------ | ---------------------- | --------------- |
+| **SPEI**       | `SPEI`       | Bank account transfers | Same day        |
+| **Debit Card** | `DEBIT_CARD` | Direct card deposits   | Instant         |
+
+## Withdrawal Request Structure
+
+All withdrawal requests use `operation_type: "withdrawal"` and must include beneficiary information.
+
+### Required Fields
+
+| Field             | Type    | Required | Description                                  |
+| ----------------- | ------- | -------- | -------------------------------------------- |
+| `operation_type`  | string  | Yes      | Must be `"withdrawal"`                       |
+| `amount`          | decimal | Yes      | Withdrawal amount                            |
+| `currency`        | string  | No       | Currency code (default: `"MXN"`)             |
+| `transfer_method` | string  | Yes      | Transfer method (`"SPEI"` or `"DEBIT_CARD"`) |
+| `beneficiary`     | object  | Yes      | Beneficiary information                      |
+| `reference`       | string  | No       | Your withdrawal reference                    |
+| `description`     | string  | No       | Withdrawal description                       |
+
+### Beneficiary Information
+
+<table><thead><tr><th width="195.3671875">Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody><tr><td><code>beneficiary.account</code></td><td>string</td><td>Yes</td><td>Account number or CLABE</td></tr><tr><td><code>beneficiary.name</code></td><td>string</td><td>Yes</td><td>Beneficiary full name</td></tr><tr><td><code>beneficiary.rfc</code></td><td>string</td><td>Yes</td><td>Mexican tax ID (RFC)</td></tr><tr><td><code>beneficiary.institution</code></td><td>string</td><td>Yes</td><td>Bank institution code</td></tr><tr><td><code>beneficiary.email</code></td><td>string</td><td>Yes</td><td>Beneficiary email</td></tr></tbody></table>
+
+## SPEI Withdrawals
+
+### Overview
+
+SPEI withdrawals transfer funds directly to Mexican bank accounts using the SPEI interbank system. Processing typically completes on the same business day.
+
+### SPEI Withdrawal Request
+
+```json
+{
+  "operation_type": "withdrawal",
+  "amount": 750.00,
+  "currency": "MXN",
+  "reference": "payout-001",
+  "transfer_method": "SPEI",
+  "description": "Commission payment",
+  "beneficiary": {
+    "account": "012345678901234567",
+    "name": "Roberto Martínez García",
+    "rfc": "MAGR850920XY1",
+    "institution": "40012",
+    "email": "roberto.martinez@email.com"
+  }
+}
+```
+
+### SPEI Response
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440001",
+  "operation_type": "withdrawal",
+  "status": "processing",
+  "amount": 750.00,
+  "currency": "MXN",
+  "merchant_reference": "payout-001",
+  "transfer_method": "SPEI",
+  "beneficiary": {
+    "account": "***************4567",
+    "name": "Roberto Martínez García",
+    "institution": "40012"
+  },
+  "created_at": "2024-07-26T10:30:00Z",
+  "status_code": 201
+}
+```
+
+### SPEI Account Validation
+
+**CLABE Format:**
+
+* Total length: 18 digits
+* Bank code: 3 digits (positions 1-3)
+* Branch code: 3 digits (positions 4-6)
+* Account number: 11 digits (positions 7-17)
+* Check digit: 1 digit (position 18)
+
+**Example CLABE Breakdown:**
+
+```
+CLABE: 012345678901234567
+│││└─────────────────── Account number (11 digits)
+││└─────────────────────── Branch code (3 digits)
+│└──────────────────────── Bank code (3 digits)
+└───────────────────────── Check digit (1 digit)
+```
+
+### Institution Codes
+
+| Code  | Bank Name    | CLABE Prefix |
+| ----- | ------------ | ------------ |
+| 40012 | BBVA México  | 012          |
+| 40014 | Santander    | 014          |
+| 40021 | HSBC         | 021          |
+| 40072 | Banorte      | 072          |
+| 40646 | STP          | 646          |
+| 40137 | Banregio     | 137          |
+| 40058 | Banco Azteca | 058          |
+
+## Debit Card Withdrawals
+
+### Overview
+
+Debit card withdrawals enable instant deposits directly to debit cards, providing immediate fund availability to beneficiaries.
+
+### Debit Card Withdrawal Request
+
+```json
+{
+  "operation_type": "withdrawal",
+  "amount": 500.00,
+  "currency": "MXN",
+  "reference": "card-payout-002",
+  "transfer_method": "DEBIT_CARD",
+  "description": "Instant payout to debit card",
+  "beneficiary": {
+    "account": "4111111111111111",
+    "name": "Ana María González",
+    "rfc": "GOAN850315AB2",
+    "institution": "40012",
+    "email": "ana.gonzalez@email.com"
+  }
+}
+```
+
+### Debit Card Response
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440002",
+  "operation_type": "withdrawal",
+  "status": "processing",
+  "amount": 500.00,
+  "currency": "MXN",
+  "merchant_reference": "card-payout-002",
+  "transfer_method": "DEBIT_CARD",
+  "beneficiary": {
+    "account": "****1111",
+    "name": "Ana María González",
+    "institution": "40012"
+  },
+  "created_at": "2024-07-26T11:15:00Z",
+  "status_code": 201
+}
+```
+
+## Withdrawal Status Flow
+
+### Status Progression
+
+| Status       | Description                     | Next Steps             |
+| ------------ | ------------------------------- | ---------------------- |
+| `pending`    | Withdrawal request received     | Monitor for processing |
+| `processing` | Transfer being processed        | Wait for completion    |
+| `success`    | Transfer completed successfully | Transaction complete   |
+| `failed`     | Transfer failed                 | Check error details    |
+| `declined`   | Transfer declined by bank       | Try different account  |
+
+### Status Check
+
+Use the transaction status endpoint to monitor withdrawal progress:
+
+```http
+GET /transactions/{withdrawal_id}/
+```
+
+**Status Response:**
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440001",
+  "operation_type": "withdrawal",
+  "status": "success",
+  "amount": 750.00,
+  "currency": "MXN",
+  "merchant_reference": "payout-001",
+  "created_at": "2024-07-26T10:30:00Z",
+  "updated_at": "2024-07-26T14:45:22Z",
+  "completion_details": {
+    "completed_at": "2024-07-26T14:45:22Z",
+    "reference_number": "SPEI123456789"
+  }
+}
+```
+
+## Implementation Examples
+
+### Python Implementation
+
+```python
+def process_spei_withdrawal():
+    """Process SPEI withdrawal to bank account"""
+    
+    withdrawal_data = {
+        "operation_type": "withdrawal",
+        "amount": 750.00,
+        "currency": "MXN",
+        "reference": "payout-001",
+        "transfer_method": "SPEI",
+        "description": "Commission payment",
+        "beneficiary": {
+            "account": "012345678901234567",
+            "name": "Roberto Martínez García",
+            "rfc": "MAGR850920XY1",
+            "institution": "40012",
+            "email": "roberto.martinez@email.com"
+        }
+    }
+    
+    try:
+        response = tonder_api.process_withdrawal(withdrawal_data)
+        print(f"Withdrawal initiated: {response['id']}")
+        return response
+        
+    except Exception as e:
+        print(f"Withdrawal failed: {e}")
+        return None
+
+def process_card_withdrawal():
+    """Process withdrawal to debit card"""
+    
+    withdrawal_data = {
+        "operation_type": "withdrawal",
+        "amount": 500.00,
+        "currency": "MXN",
+        "reference": "card-payout-002",
+        "transfer_method": "DEBIT_CARD",
+        "description": "Instant payout to debit card",
+        "beneficiary": {
+            "account": "4111111111111111",
+            "name": "Ana María González",
+            "rfc": "GOAN850315AB2",
+            "institution": "40012",
+            "email": "ana.gonzalez@email.com"
+        }
+    }
+    
+    try:
+        response = tonder_api.process_withdrawal(withdrawal_data)
+        print(f"Card withdrawal initiated: {response['id']}")
+        return response
+        
+    except Exception as e:
+        print(f"Card withdrawal failed: {e}")
+        return None
+```
+
+### Java Implementation
+
+```java
+public class WithdrawalProcessor {
+    
+    public Map<String, Object> processSPEIWithdrawal() {
+        Map<String, Object> withdrawalData = new HashMap<>();
+        withdrawalData.put("operation_type", "withdrawal");
+        withdrawalData.put("amount", new BigDecimal("750.00"));
+        withdrawalData.put("currency", "MXN");
+        withdrawalData.put("reference", "payout-001");
+        withdrawalData.put("transfer_method", "SPEI");
+        withdrawalData.put("description", "Commission payment");
+        
+        Map<String, String> beneficiary = new HashMap<>();
+        beneficiary.put("account", "012345678901234567");
+        beneficiary.put("name", "Roberto Martínez García");
+        beneficiary.put("rfc", "MAGR850920XY1");
+        beneficiary.put("institution", "40012");
+        beneficiary.put("email", "roberto.martinez@email.com");
+        withdrawalData.put("beneficiary", beneficiary);
+        
+        try {
+            return tonderAPI.processTransaction(withdrawalData);
+        } catch (Exception e) {
+            System.err.println("SPEI withdrawal failed: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public Map<String, Object> processCardWithdrawal() {
+        Map<String, Object> withdrawalData = new HashMap<>();
+        withdrawalData.put("operation_type", "withdrawal");
+        withdrawalData.put("amount", new BigDecimal("500.00"));
+        withdrawalData.put("currency", "MXN");
+        withdrawalData.put("reference", "card-payout-002");
+        withdrawalData.put("transfer_method", "DEBIT_CARD");
+        withdrawalData.put("description", "Instant payout to debit card");
+        
+        Map<String, String> beneficiary = new HashMap<>();
+        beneficiary.put("account", "4111111111111111");
+        beneficiary.put("name", "Ana María González");
+        beneficiary.put("rfc", "GOAN850315AB2");
+        beneficiary.put("institution", "40012");
+        beneficiary.put("email", "ana.gonzalez@email.com");
+        withdrawalData.put("beneficiary", beneficiary);
+        
+        try {
+            return tonderAPI.processTransaction(withdrawalData);
+        } catch (Exception e) {
+            System.err.println("Card withdrawal failed: " + e.getMessage());
+            return null;
+        }
+    }
+}
+```
+
+## Validation Requirements
+
+### RFC Validation
+
+**Individual RFC Format:**
+
+* 4 letters from name
+* 6 digits for birth date (YYMMDD)
+* 3 alphanumeric characters
+
+**Business RFC Format:**
+
+* 3 letters from business name
+* 6 digits for registration date (YYMMDD)
+* 3 alphanumeric characters
+
+**Example:** `MAGR850920XY1`, `GOAN850315AB2`
+
+### Account Number Validation
+
+**SPEI/CLABE:**
+
+* Exactly 18 digits
+* Valid checksum digit
+* Recognized bank code
+
+**Debit Card:**
+
+* 13-19 digits
+* Valid card number format
+* Must be debit card (not credit)
+
+## Error Handling
+
+### Common Withdrawal Errors
+
+| Error Code              | Description                 | Solution                   |
+| ----------------------- | --------------------------- | -------------------------- |
+| `invalid_clabe`         | CLABE number invalid        | Verify CLABE format        |
+| `institution_not_found` | Bank code not found         | Use valid institution code |
+| `insufficient_balance`  | Not enough balance          | Check account balance      |
+| `beneficiary_blocked`   | Beneficiary account blocked | Contact bank               |
+| `invalid_rfc`           | RFC format invalid          | Use valid RFC format       |
+| `amount_too_high`       | Exceeds withdrawal limits   | Reduce amount              |
+
+### Error Response Format
+
+```json
+{
+  "error": {
+    "code": "invalid_clabe",
+    "message": "CLABE number format is invalid",
+    "type": "validation_error",
+    "details": {
+      "field": "beneficiary.account",
+      "received_value": "12345678901234567"
+    }
+  },
+  "request_id": "req_abc123"
+}
+```
+
+## SPEI Operating Schedule
+
+### Business Days Schedule
+
+* Monday to Friday: 6:00 AM - 6:00 PM (Mexico City time)
+* Same-day processing: Before 5:00 PM
+
+### Weekend and Holiday Limitations
+
+* Saturday: 9:00 AM - 2:00 PM (limited processing)
+* Sunday: No processing
+* Bank holidays: No processing
+
+### Processing Times
+
+* **Same business day**: Requests before 5:00 PM
+* **Next business day**: Requests after 5:00 PM or on weekends
+* **Instant**: Debit card withdrawals (24/7)
+
+## Best Practices
+
+### Beneficiary Data
+
+1. **Validate RFC format** - Ensure proper format before submission
+2. **Verify CLABE numbers** - Check checksum digit calculation
+3. **Use correct institution codes** - Match bank with proper code
+4. **Test with sandbox data** - Validate integration before production
+
+### Transaction Management
+
+1. **Implement status checking** - Monitor withdrawal progress
+2. **Handle async processing** - Use webhooks for status updates
+3. **Store references** - Keep internal references for tracking
+4. **Retry failed transactions** - Implement retry logic for temporary failures
+
+### Security
+
+1. **Validate beneficiary data** - Ensure legitimate recipients
+2. **Implement approval workflows** - Add manual approval for large amounts
+3. **Monitor for fraud** - Watch for suspicious patterns
+4. **Secure beneficiary storage** - Protect stored beneficiary information
+
+### Error Recovery
+
+1. **Graceful failure handling** - Provide clear error messages
+2. **Alternative methods** - Offer different transfer methods if one fails
+3. **Manual intervention** - Support manual processing for edge cases
+4. **Customer communication** - Keep beneficiaries informed of status
+
+## Testing
+
+### Test Bank Accounts
+
+| CLABE              | Scenario            | Expected Result               |
+| ------------------ | ------------------- | ----------------------------- |
+| 646180157000000004 | Successful transfer | `processing` status           |
+| 012345678901234567 | Invalid checksum    | Validation error              |
+| 999999999999999999 | Non-existent bank   | `institution_not_found` error |
+
+### Test Cards
+
+| Card Number      | Scenario              | Expected Result     |
+| ---------------- | --------------------- | ------------------- |
+| 4111111111111111 | Successful withdrawal | `processing` status |
+| 4000000000000002 | Declined card         | `declined` status   |
+| 5555555555554444 | Processing error      | `failed` status     |
+
+## Next Steps
+
+* Review Response Format for handling withdrawal responses
+* Set up Webhooks for real-time withdrawal notifications
+* Check Error Handling for withdrawal error management
+* Explore Mexican Banking Reference for additional bank information

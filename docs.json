@@ -159,6 +159,13 @@
                   "direct-integration/api-reference/response-format",
                   "direct-integration/api-reference/transation-status-check"
                 ]
+              },
+              {
+                "group": "Payment Processing",
+                "pages": [
+                  "direct-integration/payment-processing/payment-methods",
+                  "direct-integration/payment-processing/withdrawals"
+                ]
               }
             ]
           },
