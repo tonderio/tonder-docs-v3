@@ -158,7 +158,10 @@
         "direct-integration/payment-processing/withdrawals",
         "direct-integration/integration/webhooks",
         "direct-integration/integration/error-handling",
-        "direct-integration/regional-reference/mexico"
+        "direct-integration/regional-reference/mexico",
+        "direct-integration/resources/production-readiness",
+        "direct-integration/resources/rate-limits",
+        "direct-integration/resources/support"
       ]
     },
     {

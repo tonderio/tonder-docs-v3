@@ -179,6 +179,14 @@
                 "pages": [
                   "direct-integration/regional-reference/mexico"
                 ]
+              },
+              {
+                "group": "Resources",
+                "pages": [
+                  "direct-integration/resources/production-readiness",
+                  "direct-integration/resources/rate-limits",
+                  "direct-integration/resources/support"
+                ]
               }
             ]
           },

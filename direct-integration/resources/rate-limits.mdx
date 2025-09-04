@@ -1,0 +1,82 @@
+---
+title: "Rate Limits"
+sidebarTitle: "Rate Limits"
+'og:description': ""
+---
+
+## Overview
+
+Tonder implements rate limiting to ensure fair usage and maintain system stability. Understanding these limits is essential for production applications.
+
+## Current Rate Limits
+
+| Endpoint           | Limit        | Window     |
+| ------------------ | ------------ | ---------- |
+| POST /process/     | 100 requests | per minute |
+| GET /transactions/ | 300 requests | per minute |
+
+## Rate Limit Headers
+
+Rate limit headers are included in responses:
+
+```http
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1640995200
+```
+
+### Header Descriptions
+
+* `X-RateLimit-Limit`: Request limit per window
+* `X-RateLimit-Remaining`: Requests remaining in current window
+* `X-RateLimit-Reset`: Unix timestamp when limit resets
+
+## Rate Limit Response
+
+When rate limited, the API returns HTTP 429 with retry information:
+
+```json
+{
+  "error": {
+    "code": "rate_limit_exceeded",
+    "message": "Too many requests",
+    "retry_after": 60
+  }
+}
+```
+
+## Implementation Guidance
+
+### Basic Handling
+
+When you receive a 429 response:
+
+1. **Check the `retry_after` field** in the error response
+2. **Wait the specified time** before retrying
+3. **Monitor rate limit headers** to prevent hitting limits
+4. **Implement exponential backoff** for failed requests
+
+### Example Response Handling
+
+```python
+def handle_rate_limit_response(response):
+    if response.status_code == 429:
+        error_data = response.json()
+        retry_after = error_data.get('error', {}).get('retry_after', 60)
+        print(f"Rate limited. Retry after {retry_after} seconds")
+        return retry_after
+    return 0
+```
+
+## Best Practices
+
+1. **Monitor usage**: Track your API usage against limits
+2. **Implement backoff**: Use exponential backoff for retries
+3. **Cache when possible**: Reduce unnecessary API calls
+4. **Batch operations**: Group multiple operations when supported
+
+## Next Steps
+
+* Review Error Handling for rate limit error management
+* Check Production Readiness for monitoring setup
+* Contact Support for rate limit increase requests
