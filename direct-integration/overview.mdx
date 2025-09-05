@@ -7,18 +7,41 @@ title: "API Integration Overview"
 
 ### Key Features
 
-* **Single Endpoint Processing**: Handle payments and withdrawals through one API
-* **Regional Payment Methods**: Native support for SPEI, OXXO, Mercado Pago, and more
-* **Instant Response**: Real-time processing with immediate status updates
-* **Simplified Integration**: Reduce development time from weeks to days
-* **Comprehensive Coverage**: Cards, bank transfers, cash, and digital wallets
+<Columns cols={2}>
+  <Card title="Single Endpoint Processing">
+    Handle payments and withdrawals through one API.
+  </Card>
+  <Card title="Regional Payment Methods">
+    Native support for SPEI, OXXO, Mercado Pago, and more.
+  </Card>
+  <Card title="Instant Response">
+    Real‑time processing with immediate status updates.
+  </Card>
+  <Card title="Simplified Integration">
+    Reduce development time from weeks to days.
+  </Card>
+  <Card title="Comprehensive Coverage">
+    Cards, bank transfers, cash, and digital wallets.
+  </Card>
+  
+</Columns>
 
 ### Getting Started Process
 
-1. Sign-in to your Tonder account at [app.tonder.io](https://app.tonder.io) or request one through your Tonder Customer Success Manager
-2. Get your API credentials from the developer section
-3. Test your integration in the sandbox environment
-4. Complete production setup and go-live process
+<Steps>
+  <Step title="Sign in or request access">
+    Sign in at [app.tonder.io](https://app.tonder.io) or request an account via your Tonder CSM.
+  </Step>
+  <Step title="Get API credentials">
+    Retrieve your API key and secret from the developer section.
+  </Step>
+  <Step title="Test in Sandbox">
+    Use the stage environment to validate your flow end‑to‑end.
+  </Step>
+  <Step title="Go live">
+    Complete production setup and go‑live checks.
+  </Step>
+</Steps>
 
 ***
 
@@ -26,15 +49,19 @@ title: "API Integration Overview"
 
 All API requests require authentication using API keys, and with HMAC SHA256 signatures when specified.
 
-### Required Headers
+<Accordion.Group>
 
-```http
+<Accordion title="Required Headers">
+
+```http title="HTTP Headers"
 Authorization: Token api_key
 X-Signature-Transaction: calculated_hmac_signature
 Content-Type: application/json
 ```
 
-### Authentication Requirements
+</Accordion>
+
+<Accordion title="Authentication Requirements">
 
 1. **API Credentials**: Each business receives unique API key and secret key
 2. **HMAC Configuration**: HMAC validation is configurable per business (active/inactive)
@@ -42,12 +69,13 @@ Content-Type: application/json
 4. **Signature Calculation**: HMAC-SHA256 signatures ensure request integrity
 5. **Base64 Encoding**: Signatures must be encoded as Base64 strings
 
-**Important Notes:**
+<Callout type="info" title="Important Notes">
+HMAC validation can be enabled per business; fields used in the signature are configurable; the platform supports different field mappings by source (web, mobile, etc.); the Direct API `/process/` endpoint uses HMAC authentication.
+</Callout>
 
-* HMAC validation can be configured as active/inactive per business
-* Each business can configure which fields are included in signature calculation
-* The system supports different field mappings for different sources (web, mobile, etc.)
-* For the Direct API `/process/` endpoint, HMAC authentication will be implemented
+</Accordion>
+
+</Accordion.Group>
 
 ***
 
@@ -68,16 +96,20 @@ The API uses a single `/process/` endpoint that handles both payments and withdr
 
 ### Supported Payment Methods
 
-* **Cards**: Credit and debit cards with tokenization support
-* **SPEI**: Mexican bank transfers (real-time)
-* **OXXO**: Cash payments at convenience stores
-* **Mercado Pago**: Digital wallet payments
-* **SafetyPay**: Alternative cash payment methods
+<Columns cols={2}>
+  <Card title="Cards">Credit and debit cards with tokenization support.</Card>
+  <Card title="SPEI">Mexican bank transfers (real‑time).</Card>
+  <Card title="OXXO">Cash payments at convenience stores.</Card>
+  <Card title="Mercado Pago">Digital wallet payments.</Card>
+  <Card title="SafetyPay">Alternative cash payment methods.</Card>
+</Columns>
 
 ### Supported Transfer Methods
 
-* **SPEI**: Bank account transfers (same day processing)
-* **Debit Card**: Direct card deposits (instant)
+<Columns cols={2}>
+  <Card title="SPEI">Bank account transfers (same‑day processing).</Card>
+  <Card title="Debit Card">Direct card deposits (instant).</Card>
+</Columns>
 
 ***
 
@@ -87,31 +119,31 @@ This documentation is organized into the following sections:
 
 ### API Reference
 
-* **Card Tokenization** - Secure card data handling
-* **Core Endpoints** - Main API operations
-* **Request Structure** - API request formatting
-* **Response Format** - API response handling
-* **Status Checking** - Transaction monitoring
+- **Card Tokenisation** – Secure card data handling
+- **Core Endpoints** – Main API operations
+- **Request Structure** – API request formatting
+- **Response Format** – API response handling
+- **Status Checking** – Transaction monitoring
 
 ### Payment Processing
 
-* **Payment Methods** - All supported payment options
-* **Withdrawals** - Payout processing
+- **Payment Methods** – All supported payment options
+- **Withdrawals** – Payout processing
 
 ### Integration
 
-* **Webhooks** - Real-time notifications
-* **Error Handling** - Error management
+- **Webhooks** – Real-time notifications
+- **Error Handling** – Error management
 
 ### Regional Reference
 
-* **Mexican Banking** - Regional requirements
+- **Mexican Banking** – Regional requirements
 
 ### Resources
 
-* **Production Readiness** - Go-live checklist
-* **Rate Limits** - API usage limits
-* **Support & Resources** - Help and resources
+- **Production Readiness** – Go-live checklist
+- **Rate Limits** – API usage limits
+- **Support & Resources** – Help and resources
 
 ***
 
@@ -125,18 +157,18 @@ This documentation is organized into the following sections:
 
 ### Useful Links
 
-* **Dashboard**: [https://app.tonder.io](https://app.tonder.io)
-* **API Status**: [https://status.tonder.io](https://status.tonder.io)
-* **Developer Support**: [developers@tonder.io](mailto:developers@tonder.io)
+- **Dashboard**: [https://app.tonder.io](https://app.tonder.io)
+- **API Status**: [https://status.tonder.io](https://status.tonder.io)
+- **Developer Support**: [developers@tonder.io](mailto:developers@tonder.io)
 
 ***
 
 ## Next Steps
 
-* Follow the Quick Start Guide for hands-on implementation
-* Explore Payment Methods for supported options
-* Review Core Endpoints for API specifications
-* Set up Webhooks for real-time notifications
+- Follow the Quick Start Guide for hands-on implementation
+- Explore Payment Methods for supported options
+- Review Core Endpoints for API specifications
+- Set up Webhooks for real-time notifications
 
 ***
 

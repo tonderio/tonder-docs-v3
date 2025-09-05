@@ -10,29 +10,35 @@ This guide will walk you through making your first payment using Tonder's Direct
 
 ## Prerequisites
 
+Before you begin, make sure you have the following:
+
 1. Tonder account credentials to sign in at [app.tonder.io](https://app.tonder.io)
 2. API key and secret from your developer dashboard
 3. Basic understanding of REST APIs and HTTP requests
 
 ## Step 1: Set Up Your Environment
 
-### Sandbox Environment
-
 Use the sandbox environment for testing all features without processing real transactions.
 
-**Base URL:** `https://stage.tonder.io/api/v1/`
+### Base URL 
+
+`https://stage.tonder.io/api/v1/`
 
 ### Required Headers
 
+When making requests, you must include these headers:
+
 ```http
-Authorization: Token your_sandbox_api_key
-X-Signature-Transaction: calculated_hmac_signature
+Authorization: Token <YOUR_SANDBOX_API_KEY>
+X-Signature-Transaction: <CALCULATED_HMAC_SIGNATURE>
 Content-Type: application/json
 ```
 
 ## Step 2: Implement HMAC Signature
 
-For secure API access, implement HMAC signature generation:
+For secure API access, you must generate an HMAC signature for each request. The signature is a hash of the request payload, calculated using your secret key.
+
+Here is a full example of a Python implementation for generating the signature.
 
 ### Python Implementation
 
@@ -97,7 +103,11 @@ headers = {
 
 ## Step 3: Make Your First Payment
 
+This step will guide you through making a basic card payment.
+
 ### Basic Card Payment Request
+
+This is an example request to the process endpoint.
 
 ```json
 {
@@ -122,6 +132,8 @@ headers = {
 
 ### Expected Response
 
+A successful request returns a `201` Created status code and a transaction object.
+
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -139,6 +151,8 @@ headers = {
 ```
 
 ## Step 4: Test Different Payment Methods
+
+After successfully completing the card payment, you can experiment with other payment methods.
 
 ### SPEI Bank Transfer
 
@@ -178,6 +192,8 @@ headers = {
 
 ## Step 5: Test Cards for Different Scenarios
 
+The following tables provide test data for various scenarios and expected outcomes.
+
 | Card Number      | Scenario           | Expected Result         |
 | ---------------- | ------------------ | ----------------------- |
 | 4242424242424242 | Successful payment | `authorized` status     |
@@ -195,6 +211,8 @@ headers = {
 | 999999999999999999 | Non-existent bank   | `institution_not_found` error |
 
 ## Step 7: Check Transaction Status
+
+After a payment is initiated, you can check its status by making a GET request.
 
 ### Status Check Request
 
@@ -309,46 +327,70 @@ if __name__ == "__main__":
 
 ## Common Testing Scenarios
 
-### 1. Successful Payment Flow
+Before going live, it’s a good idea to run through these typical test cases to make sure your integration is working as expected:
 
-* Use test card `4242424242424242`
-* Expect `authorized` or `success` status
-* Verify transaction ID is returned
+### 1. Successful Payment
+
+To verify that your integration can process a standard payment, use the following test scenario:
+
+- **Test card number:** `4242424242424242`
+- **How to test:** Submit a payment request using the above card details.
+- **What should happen:** The API should return a response with a status of either `authorized` or `success`.
+- **What to look for:** Make sure the response includes a valid transaction ID, confirming that the payment was processed successfully.
+
+---
 
 ### 2. Declined Payment
 
-* Use test card `4000000000000002`
-* Expect `declined` status
-* Check error message in response
+This scenario checks how your integration handles declined transactions:
+
+- **Test card number:** `4000000000000002`
+- **How to test:** Attempt a payment using this card number.
+- **What should happen:** The API should respond with a status of `declined`.
+- **What to look for:** The response should contain an error message explaining why the payment was declined. Confirm that your application displays or logs this error appropriately.
+
+---
 
 ### 3. 3D Secure Challenge
 
-* Use test card `4000000000000119`
-* Expect `pending` status with `next_action.redirect_to_url`
-* Handle redirect flow for authentication
+Test your handling of payments that require additional authentication (3D Secure):
 
-### 4. OXXO Payment Instructions
+- **Test card number:** `4000000000000119`
+- **How to test:** Initiate a payment with this card number.
+- **What should happen:** The API will return a status of `pending` and include a `next_action.redirect_to_url` field in the response.
+- **What to do:** Simulate the customer being redirected to the provided URL and completing the authentication process. Ensure your integration can handle the redirect and update the transaction status accordingly.
 
-* Use OXXO payment method
-* Expect `pending` status with `payment_instructions`
-* Verify barcode and reference code are provided
+---
+
+### 4. OXXO Cash Payment
+
+Validate your support for cash payments via OXXO:
+
+- **Payment method:** Select OXXO as the payment method in your request.
+- **How to test:** Submit a payment request using OXXO.
+- **What should happen:** The API should respond with a status of `pending` and provide a `payment_instructions` object.
+- **What to look for:** Check that the response includes both a barcode and a reference code. These details are needed for the customer to complete the payment at an OXXO location. Make sure your application displays these instructions clearly to the user.
+
+---
 
 ## Troubleshooting
 
-### Common Issues
+If you run into issues during testing, here are some common problems and how to resolve them:
 
-| Issue                    | Solution                                         |
-| ------------------------ | ------------------------------------------------ |
-| 401 Authentication Error | Verify API key is correct and properly formatted |
-| 422 Validation Error     | Check required fields and data formats           |
-| 500 Server Error         | Retry request or contact support                 |
-| Rate limit exceeded      | Implement retry with backoff                     |
+| Issue                    | What to Do                                                      |
+|--------------------------|-----------------------------------------------------------------|
+| 401 Authentication Error | Double-check your API key – is it correct and in the right format? |
+| 422 Validation Error     | Make sure all required fields are present and data formats are valid |
+| 500 Server Error         | Try again, and if it keeps happening, contact support           |
+| Rate limit exceeded      | Add a delay and implement exponential backoff before retrying   |
 
-## Next Steps
+---
 
-Once you've successfully tested payments in sandbox:
+## What’s Next?
 
-1. **Review Payment Methods** - Learn about all supported payment options
-2. **Set up Webhooks** - Receive real-time transaction updates
-3. **Implement Error Handling** - Handle failures gracefully
-4. **Move to Production** - Follow the Production Readiness checklist
+After you’ve confirmed payments are working in the sandbox:
+
+1. **Review Payment Methods** – Explore all the payment options you can offer
+2. **Set Up Webhooks** – Get real-time updates on transaction events
+3. **Implement Error Handling** – Make sure your app handles failures smoothly
+4. **Go Live** – Follow the Production Readiness checklist to launch safely
