@@ -150,7 +150,35 @@ A successful request returns a `201` Created status code and a transaction objec
 }
 ```
 
-## Step 4: Test Different Payment Methods
+### Status Check Request
+
+After a payment is initiated, you can check its status by making a GET request.
+
+
+```http
+GET /transactions/{transaction_id}/
+```
+
+### Sample Status Response
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "success",
+  "amount": 150.00,
+  "currency": "MXN",
+  "merchant_reference": "test-payment-001",
+  "created_at": "2024-07-26T10:30:00Z",
+  "updated_at": "2024-07-26T10:32:15Z",
+  "completion_details": {
+    "completed_at": "2024-07-26T10:32:15Z",
+    "authorization_code": "AUTH123456"
+  }
+}
+```
+
+## Test Different Payment Methods
 
 After successfully completing the card payment, you can experiment with other payment methods.
 
@@ -190,9 +218,11 @@ After successfully completing the card payment, you can experiment with other pa
 }
 ```
 
-## Step 5: Test Cards for Different Scenarios
+## Test Data for Different Scenarios
 
 The following tables provide test data for various scenarios and expected outcomes.
+
+### Test Cards
 
 | Card Number      | Scenario           | Expected Result         |
 | ---------------- | ------------------ | ----------------------- |
@@ -202,7 +232,7 @@ The following tables provide test data for various scenarios and expected outcom
 | 4000000000000119 | 3D Secure required | `pending` with redirect |
 | 4000000000000341 | Processing error   | `failed` status         |
 
-## Step 6: Test Bank Accounts
+### Test Bank Accounts
 
 | CLABE              | Scenario            | Expected Result               |
 | ------------------ | ------------------- | ----------------------------- |
@@ -210,38 +240,10 @@ The following tables provide test data for various scenarios and expected outcom
 | 012345678901234567 | Invalid checksum    | Validation error              |
 | 999999999999999999 | Non-existent bank   | `institution_not_found` error |
 
-## Step 7: Check Transaction Status
-
-After a payment is initiated, you can check its status by making a GET request.
-
-### Status Check Request
-
-```http
-GET /transactions/{transaction_id}/
-```
-
-### Sample Status Response
-
-```json
-{
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "operation_type": "payment",
-  "status": "success",
-  "amount": 150.00,
-  "currency": "MXN",
-  "merchant_reference": "test-payment-001",
-  "created_at": "2024-07-26T10:30:00Z",
-  "updated_at": "2024-07-26T10:32:15Z",
-  "completion_details": {
-    "completed_at": "2024-07-26T10:32:15Z",
-    "authorization_code": "AUTH123456"
-  }
-}
-```
 
 ## Complete Test Flow Example
 
-### Python Implementation
+This is a complete test flow example of an implementation in Python.
 
 ```python
 import requests
@@ -329,7 +331,7 @@ if __name__ == "__main__":
 
 Before going live, it’s a good idea to run through these typical test cases to make sure your integration is working as expected:
 
-### 1. Successful Payment
+### Successful Payment
 
 To verify that your integration can process a standard payment, use the following test scenario:
 
@@ -340,7 +342,7 @@ To verify that your integration can process a standard payment, use the followin
 
 ---
 
-### 2. Declined Payment
+### Declined Payment
 
 This scenario checks how your integration handles declined transactions:
 
@@ -351,7 +353,7 @@ This scenario checks how your integration handles declined transactions:
 
 ---
 
-### 3. 3D Secure Challenge
+### 3D Secure Challenge
 
 Test your handling of payments that require additional authentication (3D Secure):
 
@@ -362,7 +364,7 @@ Test your handling of payments that require additional authentication (3D Secure
 
 ---
 
-### 4. OXXO Cash Payment
+### OXXO Cash Payment
 
 Validate your support for cash payments via OXXO:
 
