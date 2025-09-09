@@ -4,8 +4,6 @@ sidebarTitle: "Mexican Banking Reference"
 'og:description': ""
 ---
 
-## Overview
-
 This reference guide provides essential information about the Mexican banking system, including institution codes, CLABE validation, RFC formats, and SPEI operating schedules. This information is crucial for implementing SPEI transfers and withdrawals in Mexico.
 
 ## Institution Codes
@@ -59,31 +57,28 @@ CLABE (Clave Bancaria Estandarizada) is Mexico's standardized bank account numbe
 
 ### CLABE Format Structure
 
-**Total Length:** 18 digits
+- Total length: 18 digits
+- Bank code: 3 digits (positions 1-3)
+- Branch code: 3 digits (positions 4-6)
+- Account number: 11 digits (positions 7-17)
+- Check digit: 1 digit (position 18)
 
-**Format Structure:**
-
-* **Bank Code**: 3 digits (positions 1-3)
-* **Branch Code**: 3 digits (positions 4-6)
-* **Account Number**: 11 digits (positions 7-17)
-* **Check Digit**: 1 digit (position 18)
-
-### CLABE Example Breakdown
+Example CLABE Breakdown:
 
 ```
 CLABE: 012345678901234567
-│││└─────────────────── Account number (67890123456)
-││└─────────────────────── Branch code (456)
-│└──────────────────────── Bank code (012)
-└───────────────────────── Check digit (7)
+│││└─────────────────── Account number (11 digits)
+││└─────────────────────── Branch code (3 digits)
+│└──────────────────────── Bank code (3 digits)
+└───────────────────────── Check digit (1 digit)
 ```
 
-**Field Details:**
+Where:
 
-* **012**: BBVA México bank code
-* **345**: Branch code (specific branch)
-* **67890123456**: Account number (11 digits)
-* **7**: Check digit (calculated using algorithm)
+- **012**: BBVA México bank code
+- **345**: Branch code (specific branch)
+- **67890123456**: Account number (11 digits)
+- **7**: Check digit (calculated using algorithm)
 
 ### CLABE Validation Algorithm
 
@@ -159,6 +154,8 @@ public class CLABEValidator {
 
 ### CLABE Components Extraction
 
+The code block below shows how to parse the CLABE into its components.
+
 ```python
 def parse_clabe(clabe):
     """Parse CLABE into its components"""
@@ -187,33 +184,21 @@ RFC (Registro Federal de Contribuyentes) is Mexico's tax identification system.
 
 ### RFC Format Types
 
-#### Individual RFC Format
+| Type          | Length | Structure                                                                 | Pattern                        | Example            |
+|---------------|--------|---------------------------------------------------------------------------|--------------------------------|--------------------|
+| **Individual**| 13     | 4 letters + 6 digits + 3 alphanumeric characters                         | `^[A-Z&Ñ]{4}\\d{6}[A-Z\\d]{3}$` | `MAGR850920XY1`    |
+| **Business**  | 12     | 3 letters + 6 digits + 3 alphanumeric characters                         | `^[A-Z&Ñ]{3}\\d{6}[A-Z\\d]{3}$` | `ABC850920123`     |
 
-* **Length**: 13 characters
-* **Structure**: 4 letters + 6 digits + 3 alphanumeric characters
-* **Pattern**: `^[A-Z&Ñ]{4}\\d{6}[A-Z\\d]{3}$`
-* **Example**: `MAGR850920XY1`
+### RFC Format Breakdown
 
-**Breakdown:**
-
-* **MAGR**: Name-derived letters (Martínez García Roberto)
-* **850920**: Birth date (September 20, 1985)
-* **XY1**: Verification code
-
-#### Business RFC Format
-
-* **Length**: 12 characters
-* **Structure**: 3 letters + 6 digits + 3 alphanumeric characters
-* **Pattern**: `^[A-Z&Ñ]{3}\\d{6}[A-Z\\d]{3}$`
-* **Example**: `ABC850920123`
-
-**Breakdown:**
-
-* **ABC**: Business name-derived letters
-* **850920**: Registration date (September 20, 1985)
-* **123**: Verification code
+| Type          | Letters Part | Digits Part | Verification Part | Description                    |
+|---------------|--------------|-------------|-------------------|--------------------------------|
+| **Individual**| MAGR         | 850920      | XY1               | Name-derived letters + birth date + verification code |
+| **Business**  | ABC          | 850920      | 123               | Business name-derived letters + registration date + verification code |
 
 ### RFC Validation
+
+Here is an example of how to validate the RFC format.
 
 ```python
 import re
@@ -249,6 +234,8 @@ print(f"Business RFC {business_rfc}: {'Valid' if validate_rfc(business_rfc) else
 
 ### RFC Type Detection
 
+The code block below shows how to determine the type of RFC.
+
 ```python
 def get_rfc_type(rfc):
     """Determine if RFC is for individual or business"""
@@ -271,34 +258,35 @@ rfc_type = get_rfc_type(rfc)
 print(f"RFC {rfc} is for: {rfc_type}")
 ```
 
-Here is an updated version of the SPEI Operating Hours notice, using the same structure and visual tone but reflecting the current and accurate information as of 2025:
+### SPEI Timing and Operational Constraints
 
-***
+SPEI operates with specific timing considerations that affect when transfers can be processed and completed. Understanding these constraints helps ensure reliable payment processing.
 
-### SPEI Operating Hours
+<Expandable title="Operating Hours">
 
-#### G**eneral Availability**
+| Day/Period                | Processing Hours                | Notes                        |
+|---------------------------|---------------------------------|------------------------------|
+| Monday to Friday          | 6:00 AM – 6:00 PM (CDMX time)   | Same-day processing if before 5:00 PM |
+| Saturday                  | 9:00 AM – 2:00 PM               | Limited processing           |
+| Sunday                    | No processing                   |                              |
+| Bank holidays             | No processing                   |                              |
 
-* 24 hours a day, 7 days a week, 365 days a year
-* Includes weekends and official bank holidays
-* All times in Mexico City time (CT)
+<Note>
+**Processing Times for SPEI**
 
-#### **Same-Day Processing**
+SPEI generally operates 24/7, but individual institutions may apply maintenance windows or additional validations that can introduce delays. Some banks or payment providers may apply their own internal processing schedules or restrictions.
 
-* Most transfers are processed in real-time, regardless of time or date
-* No cut-off time applies for same-day settlement
-
-#### Bank and Platform Considerations
-
-* Some banks or payment providers may apply their own internal processing schedules or restrictions
-* Possible delays may occur due to:
-  * Scheduled maintenance windows
-  * Anti-fraud validations
-  * Institutional batch processing policies
+Possible delays may occur due to:
+- Scheduled maintenance windows
+- Anti-fraud validations
+- Institutional batch processing policies
 
 Please verify specific hours or limitations with your financial institution or provider.
+</Note>
 
-### Processing Time Examples (Effective 2025)
+</Expandable>
+
+<Expandable title="Processing Time Examples">
 
 | Submission Time | Day       | Expected Processing Time  |
 | --------------- | --------- | ------------------------- |
@@ -309,16 +297,19 @@ Please verify specific hours or limitations with your financial institution or p
 | 2:30 PM         | Saturday  | Same day (within minutes) |
 | 10:00 AM        | Sunday    | Same day (within minutes) |
 
-#### Notes
+<Note>
+- All times are shown in local Mexico City time.
+- Actual processing times can vary depending on:
+  - Your bank or fintech provider's policies
+  - Internal fraud or compliance checks
+  - Scheduled maintenance windows
 
-* All times are local (Mexico City time).
-* Actual processing time may vary depending on:
-  * Bank or fintech platform policies
-  * Fraud checks or internal risk rules
-  * Scheduled maintenance
-* SPEI itself does not impose business day cut-offs anymore.
+SPEI itself doesn't enforce business day cut-off times anymore, so in theory, transfers can go through at any hour. However, your provider or bank might still have their own restrictions or delays—so it's always worth double-checking if you need funds to arrive urgently.
+</Note>
 
-### Holiday Calendar Considerations
+</Expandable>
+
+<Expandable title="Holiday Calendar">
 
 **Major Mexican Holidays Affecting SPEI:**
 
@@ -331,13 +322,19 @@ Please verify specific hours or limitations with your financial institution or p
 * Revolution Day (November 20)
 * Christmas Day (December 25)
 
-### Time Zone Considerations
+</Expandable>
+
+<Expandable title="Time Zone Considerations">
 
 **Mexico City Time (Central Time):**
 
 * **UTC Offset**: UTC-6 (Standard Time)
 * **UTC Offset**: UTC-5 (Daylight Time)
 * **Daylight Saving**: First Sunday in April to last Sunday in October
+
+</Expandable>
+
+The code block below shows how to check if SPEI is currently operating.
 
 ```python
 from datetime import datetime
@@ -375,7 +372,7 @@ print(f"SPEI is {'operating' if is_operating else 'not operating'} right now")
 
 ## Bank Account Types
 
-### Account Type Codes
+The table below shows the different account types in Mexico.
 
 | Code | Type               | Description             |
 | ---- | ------------------ | ----------------------- |
@@ -385,9 +382,10 @@ print(f"SPEI is {'operating' if is_operating else 'not operating'} right now")
 | 40   | CLABE Account      | Cuenta CLABE (for SPEI) |
 | 10   | Investment Account | Cuenta de inversión     |
 
-### Usage in Withdrawals
+<Note>
+**Usage in Withdrawals**
 
-For SPEI withdrawals, the account type is typically determined automatically based on the CLABE format. However, for certain operations, you may need to specify:
+For SPEI withdrawals, the account type is usually picked up automatically from the CLABE format. However, for some operations, you might need to specify it yourself:
 
 ```json
 {
@@ -400,10 +398,11 @@ For SPEI withdrawals, the account type is typically determined automatically bas
   }
 }
 ```
+</Note>
 
-## Validation Utilities
+## Complete Validation Function
 
-### Complete Validation Function
+The code block below shows a complete validation function for Mexican banking data.
 
 ```python
 def validate_mexican_banking_data(data):
@@ -455,7 +454,9 @@ else:
 
 ## Common Implementation Patterns
 
-### CLABE Formatting for Display
+Expand the items below to see the code for some common implementation patterns.
+
+<Expandable title="CLABE Formatting for Display">
 
 ```python
 def format_clabe_for_display(clabe):
@@ -473,7 +474,9 @@ formatted = format_clabe_for_display(clabe)
 print(f"Formatted CLABE: {formatted}")
 ```
 
-### Account Masking for Security
+</Expandable>
+
+<Expandable title="Account Masking for Security">
 
 ```python
 def mask_account_number(clabe):
@@ -491,9 +494,24 @@ masked = mask_account_number(clabe)
 print(f"Masked CLABE: {masked}")
 ```
 
+</Expandable>
+
 ## Error Messages
 
-### Validation Error Messages
+The table below shows the error messages for Mexican banking data.
+
+| Error Code                   | English Message                                                      |
+|------------------------------|---------------------------------------------------------------------|
+| `invalid_clabe`              | CLABE must be exactly 18 digits with valid checksum                 |
+| `invalid_clabe_checksum`     | CLABE checksum is invalid                                           |
+| `invalid_rfc`                | RFC format is invalid (must be 12-13 alphanumeric characters)       |
+| `invalid_institution`        | Institution code not found in Mexican banking system                |
+| `clabe_institution_mismatch` | CLABE bank code does not match institution code                     |
+| `spei_not_operating`         | SPEI transfers are not processed outside business hours             |
+| `invalid_account_type`       | Account type must be valid for SPEI transfers                       |
+
+
+You can use the code block below to get the error message for a given error code.
 
 ```python
 MEXICAN_BANKING_ERRORS = {
@@ -523,7 +541,7 @@ def get_error_message(error_code, lang='en'):
 
 ## Next Steps
 
-* Review Payment Methods for SPEI implementation details
-* Check Withdrawals for withdrawal processing with Mexican banks
-* Learn about Error Handling for banking validation errors
-* Explore Production Readiness for banking compliance requirements
+- [Payment Methods](../payment-processing/payment-methods.mdx) – Details on implementing SPEI and other payment options
+- [Withdrawals](../payment-processing/withdrawals.mdx) – How to process withdrawals with Mexican banks
+- [Error Handling](../payment-processing/withdrawals.mdx#error-handling) – Common banking validation errors and solutions
+- [Production Readiness](../production-readiness/overview.mdx) – Compliance and operational requirements for going live
