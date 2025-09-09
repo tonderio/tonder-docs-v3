@@ -10,23 +10,21 @@ Tonder supports a comprehensive range of payment methods across Latin America, d
 
 ## Supported Payment Methods
 
-| Method           | Type Value    | Description                  | Processing Time |
-| ---------------- | ------------- | ---------------------------- | --------------- |
-| **Cards**        | `CARD`        | Credit and debit cards       | Instant         |
-| **SPEI**         | `SPEI`        | Mexican bank transfers       | Real-time       |
-| **OXXO**         | `OXXO`        | Cash payments at OXXO stores | 24-48 hours     |
-| **Mercado Pago** | `MERCADOPAGO` | Digital wallet               | Instant         |
-| **SafetyPay**    | `SAFETYPAY`   | Alternative cash payment     | 24-48 hours     |
+| Method                                                                 | Type Value    | Description                  | Processing Time |
+| ---------------------------------------------------------------------- | ------------- | ---------------------------- | --------------- |
+| [**Cards**](#process-card-payments)                                    | `CARD`        | Credit and debit cards       | Instant         |
+| [**SPEI**](#spei-bank-transfers)                                       | `SPEI`        | Mexican bank transfers       | Real-time       |
+| [**OXXO**](#oxxo-cash-payments)                                        | `OXXO`        | Cash payments at OXXO stores | 24-48 hours     |
+| [**Mercado Pago**](#mercado-pago-digital-wallet)                                      | `MERCADOPAGO` | Digital wallet               | Instant         |
+| [**SafetyPay**](#safetypay-cash-payments)                                            | `SAFETYPAY`   | Alternative cash payment     | 24-48 hours     |
 
-## Card Payments
-
-### Overview
+## Process Card Payments
 
 Card payments support major credit and debit cards including Visa, Mastercard, and American Express. Cards can be processed using either raw card data or tokenized card information.
 
-### Card Payment Request
+### Send Card Payment Request
 
-**Using Tokenized Card (Recommended):**
+Here's an example of a card payment request using a tokenized card (recommended):
 
 ```json
 {
@@ -80,20 +78,30 @@ Some card transactions may require 3D Secure authentication. When this occurs, t
 }
 ```
 
-**Implementation:**
+### 3D Secure Flow
+
+This is the usual flow of 3D Secure payments:
 
 1. Redirect customer to the provided URL
-2. Customer completes 3DS authentication
-3. Customer is redirected back to your `return_url`
+2. Complete 3DS authentication
+3. Redirect customer back to your `return_url`
 4. Check transaction status using the `verify_transaction_status_url` or the main status endpoint
 
-## SPEI Bank Transfers
+### Status Flow
 
-### Overview
+| Status       | Description                      |
+|--------------|----------------------------------|
+| `pending`    | Processing                        |
+| `authorized` | Payment authorised (capturable)   |
+| `success`    | Payment completed                 |
+
+## SPEI Bank Transfers
 
 SPEI (Sistema de Pagos Electrónicos Interbancarios) enables real-time bank transfers within Mexico. SPEI payments are processed immediately during business hours.
 
 ### SPEI Payment Request
+
+Here's an example of a SPEI payment request:
 
 ```json
 {
@@ -113,42 +121,48 @@ SPEI (Sistema de Pagos Electrónicos Interbancarios) enables real-time bank tran
 
 ### SPEI Payment Fields
 
-<table><thead><tr><th width="204.9296875">Field</th><th>Type</th><th width="169.08203125">Required</th><th>Description</th></tr></thead><tbody><tr><td><code>payment_method.type</code></td><td>string</td><td>Yes</td><td>Must be <code>"SPEI"</code></td></tr><tr><td><code>currency</code></td><td>string</td><td>Yes</td><td>Must be <code>"MXN"</code></td></tr></tbody></table>
-
-Here is an updated version of the SPEI Operating Hours notice, using the same structure and visual tone but reflecting the current and accurate information as of 2025:
-
-***
+| Field                | Type   | Required | Description           |
+|----------------------|--------|----------|-----------------------|
+| `payment_method.type`| string | Yes      | Must be `"SPEI"`      |
+| `currency`           | string | Yes      | Must be `"MXN"`       |
 
 ### SPEI Operating Hours
 
-**General Availability**
+There are two operating hours for SPEI:
 
-* 24 hours a day, 7 days a week, 365 days a year
-* Includes weekends and official bank holidays
-* All times in Mexico City time (CT)
+#### General Availability
 
-**Same-Day Processing**
+- 24 hours a day, 7 days a week, 365 days a year
+- Includes weekends and official bank holidays
+- All times in Mexico City time (CT)
 
-* Most transfers are processed in real-time, regardless of time or date
-* No cut-off time applies for same-day settlement
+#### Same-Day Processing
 
-***
+- Most transfers are processed in real-time, regardless of time or date
+- No cut-off time applies for same-day settlement
 
-#### Bank and Platform Considerations:
+<Note>
+### Bank and Platform Considerations
 
-* Some banks or payment providers may apply their own internal processing schedules or restrictions
-* Possible delays may occur due to:
-  * Scheduled maintenance windows
-  * Anti-fraud validations
-  * Institutional batch processing policies
+Some banks or payment providers may apply their own internal processing schedules or restrictions
+Possible delays may occur due to:
+  - Scheduled maintenance windows
+  - Anti-fraud validations
+  - Institutional batch processing policies
 
 Please verify specific hours or limitations with your financial institution or provider.
 
-***
+</Note>
+
+### Status Flow
+
+| Status        | Description                   |
+|---------------|-------------------------------|
+| `pending`     | Awaiting bank processing      |
+| `processing`  | Bank transfer in progress     |
+| `success`     | Transfer completed            |
 
 ## OXXO Cash Payments
-
-### Overview
 
 OXXO is Mexico's largest convenience store chain. Customers receive a payment voucher that can be paid at any OXXO location with cash.
 
@@ -172,7 +186,10 @@ OXXO is Mexico's largest convenience store chain. Customers receive a payment vo
 
 ### OXXO Payment Fields
 
-<table><thead><tr><th width="207.71875">Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody><tr><td><code>payment_method.type</code></td><td>string</td><td>Yes</td><td>Must be <code>"OXXO"</code></td></tr><tr><td><code>currency</code></td><td>string</td><td>Yes</td><td>Must be <code>"MXN"</code></td></tr></tbody></table>
+| Field                 | Type   | Required | Description           |
+| --------------------- | ------ | -------- | --------------------- |
+| `payment_method.type` | string | Yes      | Must be `"OXXO"`      |
+| `currency`           | string | Yes      | Must be `"MXN"`       |
 
 ### OXXO Payment Response
 
@@ -204,19 +221,26 @@ The response includes payment instructions for the customer:
 
 ### OXXO Payment Process
 
-1. **Customer receives voucher** - Payment instructions with barcode
-2. **Customer visits OXXO** - Any OXXO store location
-3. **Payment at store** - Present barcode and pay exact amount in cash
-4. **Confirmation** - Payment confirmed within 24-48 hours
-5. **Webhook notification** - Real-time status update sent to your system
+1. Customer gets the payment voucher (with barcode and reference code).
+2. Customer pops into any OXXO shop.
+3. They show the barcode at the till and pay the exact amount in cash.
+4. OXXO processes the payment and issues a receipt.
+5. Tonder sends a webhook to confirm the payment status.
+
+### Status Flow
+
+| Status     | Description                         |
+|------------|-------------------------------------|
+| `pending`  | Awaiting customer payment           |
+| `success`  | Cash payment received and confirmed |
 
 ## Mercado Pago Digital Wallet
-
-### Overview
 
 Mercado Pago is a popular digital wallet across Latin America, offering instant payment processing with broad customer adoption.
 
 ### Mercado Pago Payment Request
+
+Here's an example of a Mercado Pago payment request:
 
 ```json
 {
@@ -244,11 +268,11 @@ Mercado Pago is a popular digital wallet across Latin America, offering instant 
 
 ## SafetyPay Cash Payments
 
-### Overview
-
 SafetyPay provides alternative cash payment methods across Latin America, supporting various local payment options.
 
 ### SafetyPay Payment Request
+
+Here's an example of a SafetyPay payment request:
 
 ```json
 {
@@ -272,25 +296,36 @@ SafetyPay provides alternative cash payment methods across Latin America, suppor
 | --------------------- | ------ | -------- | --------------------- |
 | `payment_method.type` | string | Yes      | Must be `"SAFETYPAY"` |
 
+### Status Flow
+
+| Status     | Description                         |
+|------------|-------------------------------------|
+| `pending`  | Awaiting customer payment           |
+| `success`  | Cash payment received and confirmed |
+
 ## Payment Method Selection Guidelines
+
+Here are some guidelines for selecting the best payment method for your use case:
 
 ### For E-commerce
 
-* **Cards**: Best for immediate payment confirmation
-* **SPEI**: Good for higher-value transactions
-* **Digital Wallets**: Popular among younger demographics
+- **Cards**: Best for immediate payment confirmation
+- **SPEI**: Good for higher-value transactions
+- **Digital Wallets**: Popular among younger demographics
 
 ### For Cash Payments
 
-* **OXXO**: Ideal for customers without bank accounts
-* **SafetyPay**: Alternative for regions without OXXO coverage
+- **OXXO**: Ideal for customers without bank accounts
+- **SafetyPay**: Alternative for regions without OXXO coverage
 
 ### For B2B Transactions
 
-* **SPEI**: Preferred for business-to-business payments
-* **Cards**: Good for smaller business purchases
+- **SPEI**: Preferred for business-to-business payments
+- **Cards**: Good for smaller business purchases
 
 ## Implementation Examples
+
+Here are some examples of how to implement payment methods in your application:
 
 ### Multi-Method Payment Flow
 
@@ -344,25 +379,6 @@ def get_available_payment_methods(country="MX", currency="MXN"):
     return methods.get(country, {}).get(currency, ["CARD"])
 ```
 
-## Payment Status Flow
-
-### Card Payments
-
-1. `pending` → Processing
-2. `authorized` → Payment authorized (capturable)
-3. `success` → Payment completed
-
-### SPEI Transfers
-
-1. `pending` → Awaiting bank processing
-2. `processing` → Bank transfer in progress
-3. `success` → Transfer completed
-
-### Cash Payments (OXXO/SafetyPay)
-
-1. `pending` → Awaiting customer payment
-2. `success` → Cash payment received and confirmed
-
 ## Error Scenarios
 
 ### Common Payment Errors
@@ -377,42 +393,39 @@ def get_available_payment_methods(country="MX", currency="MXN"):
 
 ### Method-Specific Errors
 
-**SPEI Errors:**
-
-* `spei_unavailable` - Outside operating hours
-* `invalid_amount` - Amount exceeds SPEI limits
-
-**OXXO Errors:**
-
-* `amount_too_high` - Exceeds OXXO payment limits
-* `amount_too_low` - Below minimum payment amount
+| Payment Method | Error Code         | Description                          |
+| -------------- | ----------------- | ------------------------------------ |
+| SPEI           | `spei_unavailable`| Outside operating hours              |
+| SPEI           | `invalid_amount`  | Amount exceeds SPEI limits           |
+| OXXO           | `amount_too_high` | Exceeds OXXO payment limits          |
+| OXXO           | `amount_too_low`  | Below minimum payment amount         |
 
 ## Best Practices
 
 ### Payment Method Selection
 
-1. **Offer multiple options** - Different customers prefer different methods
-2. **Consider demographics** - Younger users prefer digital, older users prefer cash
-3. **Regional preferences** - Research local payment preferences
-4. **Transaction amounts** - Higher amounts work better with bank transfers
+- Offer multiple payment options so customers can choose their preferred method.
+- Consider demographic differences, as younger users often want digital and older users may prefer cash.
+- Research regional payment preferences for each market you serve.
+- Use bank transfers for higher transaction amounts.
 
 ### Implementation
 
-1. **Handle async payments** - Use webhooks for status updates
-2. **Implement retries** - Network issues can cause temporary failures
-3. **Validate inputs** - Check data format before sending requests
-4. **Test thoroughly** - Use sandbox environment extensively
+- Handle async payments by using webhooks for status updates.
+- Implement retry logic to recover from temporary network issues.
+- Validate all input data before sending requests.
+- Test thoroughly in the sandbox environment before going live.
 
 ### Customer Experience
 
-1. **Clear instructions** - Provide payment instructions for cash methods
-2. **Status updates** - Keep customers informed of payment progress
-3. **Fallback options** - Offer alternative methods if first choice fails
-4. **Mobile optimization** - Ensure payment flow works on mobile devices
+- Provide clear instructions for cash payment methods.
+- Send status updates to keep customers informed about their payment.
+- Offer fallback options if a customer's first choice fails.
+- Optimise the payment flow for mobile devices.
 
 ## Next Steps
 
-* Learn about Withdrawals for payout processing
-* Review Response Format for handling payment responses
-* Set up Webhooks for real-time payment notifications
-* Check Error Handling for payment error management
+- [Learn about Withdrawals for payout processing](../withdrawals/overview.mdx)
+- [Review Response Format for handling payment responses](../api-reference/response-format.mdx)
+- [Set up Webhooks for real-time payment notifications](../webhooks/overview.mdx)
+- [Check Error Handling for payment error management](../api-reference/errors.mdx)
