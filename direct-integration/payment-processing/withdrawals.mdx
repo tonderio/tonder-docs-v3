@@ -33,16 +33,19 @@ All withdrawal requests use `operation_type: "withdrawal"` and must include bene
 
 ### Beneficiary Information
 
-<table><thead><tr><th width="195.3671875">Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead><tbody><tr><td><code>beneficiary.account</code></td><td>string</td><td>Yes</td><td>Account number or CLABE</td></tr><tr><td><code>beneficiary.name</code></td><td>string</td><td>Yes</td><td>Beneficiary full name</td></tr><tr><td><code>beneficiary.rfc</code></td><td>string</td><td>Yes</td><td>Mexican tax ID (RFC)</td></tr><tr><td><code>beneficiary.institution</code></td><td>string</td><td>Yes</td><td>Bank institution code</td></tr><tr><td><code>beneficiary.email</code></td><td>string</td><td>Yes</td><td>Beneficiary email</td></tr></tbody></table>
+| Field                       | Type   | Required | Description                |
+|-----------------------------|--------|----------|----------------------------|
+| `beneficiary.account`       | string | Yes      | Account number or CLABE    |
+| `beneficiary.name`          | string | Yes      | Beneficiary full name      |
+| `beneficiary.rfc`           | string | Yes      | Mexican tax ID (RFC)       |
+| `beneficiary.institution`   | string | Yes      | Bank institution code      |
+| `beneficiary.email`         | string | Yes      | Beneficiary email          |
 
 ## SPEI Withdrawals
 
-### Overview
-
 SPEI withdrawals transfer funds directly to Mexican bank accounts using the SPEI interbank system. Processing typically completes on the same business day.
 
-### SPEI Withdrawal Request
-
+<Expandable title="SPEI withdrawal request example">
 ```json
 {
   "operation_type": "withdrawal",
@@ -61,8 +64,9 @@ SPEI withdrawals transfer funds directly to Mexican bank accounts using the SPEI
 }
 ```
 
-### SPEI Response
+</Expandable>
 
+<Expandable title="SPEI response example">
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440001",
@@ -82,15 +86,17 @@ SPEI withdrawals transfer funds directly to Mexican bank accounts using the SPEI
 }
 ```
 
+</Expandable>
+
 ### SPEI Account Validation
 
-**CLABE Format:**
+SPEI validates accounts using the CLABE format, which is a 18-digit bank account number format used in Mexico. It consists of the following components:
 
-* Total length: 18 digits
-* Bank code: 3 digits (positions 1-3)
-* Branch code: 3 digits (positions 4-6)
-* Account number: 11 digits (positions 7-17)
-* Check digit: 1 digit (position 18)
+- Total length: 18 digits
+- Bank code: 3 digits (positions 1-3)
+- Branch code: 3 digits (positions 4-6)
+- Account number: 11 digits (positions 7-17)
+- Check digit: 1 digit (position 18)
 
 **Example CLABE Breakdown:**
 
@@ -104,6 +110,8 @@ CLABE: 012345678901234567
 
 ### Institution Codes
 
+Major Mexican financial institutions and their corresponding codes for SPEI transactions:
+
 | Code  | Bank Name    | CLABE Prefix |
 | ----- | ------------ | ------------ |
 | 40012 | BBVA México  | 012          |
@@ -116,12 +124,9 @@ CLABE: 012345678901234567
 
 ## Debit Card Withdrawals
 
-### Overview
-
 Debit card withdrawals enable instant deposits directly to debit cards, providing immediate fund availability to beneficiaries.
 
-### Debit Card Withdrawal Request
-
+<Expandable title="Debit card withdrawal request example">
 ```json
 {
   "operation_type": "withdrawal",
@@ -140,8 +145,9 @@ Debit card withdrawals enable instant deposits directly to debit cards, providin
 }
 ```
 
-### Debit Card Response
+</Expandable>
 
+<Expandable title="Debit card response example">
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440002",
@@ -161,9 +167,11 @@ Debit card withdrawals enable instant deposits directly to debit cards, providin
 }
 ```
 
+</Expandable>
+
 ## Withdrawal Status Flow
 
-### Status Progression
+Withdrawals have their own status flow, which is different from payments.
 
 | Status       | Description                     | Next Steps             |
 | ------------ | ------------------------------- | ---------------------- |
@@ -181,8 +189,7 @@ Use the transaction status endpoint to monitor withdrawal progress:
 GET /transactions/{withdrawal_id}/
 ```
 
-**Status Response:**
-
+<Expandable title="Status check response">
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440001",
@@ -200,10 +207,13 @@ GET /transactions/{withdrawal_id}/
 }
 ```
 
+</Expandable>
+
 ## Implementation Examples
 
-### Python Implementation
+Below you'll find examples of how to implement withdrawals in different programming languages.
 
+<Expandable title="Python implementation example">
 ```python
 def process_spei_withdrawal():
     """Process SPEI withdrawal to bank account"""
@@ -262,8 +272,10 @@ def process_card_withdrawal():
         return None
 ```
 
-### Java Implementation
+</Expandable>
 
+
+<Expandable title="Java implementation example">
 ```java
 public class WithdrawalProcessor {
     
@@ -319,41 +331,39 @@ public class WithdrawalProcessor {
 }
 ```
 
+</Expandable>
+
 ## Validation Requirements
+
+Withdrawals can go through a validation process to ensure the data is correct.
 
 ### RFC Validation
 
-**Individual RFC Format:**
+RFC is used to validate the beneficiary's tax identification number. This is a 12-13 alphanumeric characters format and can be either an individual or business RFC.
 
-* 4 letters from name
-* 6 digits for birth date (YYMMDD)
-* 3 alphanumeric characters
+#### RFC Format Reference
 
-**Business RFC Format:**
+| Type          | Structure                                                                 | Example            |
+|---------------|--------------------------------------------------------------------------|--------------------|
+| **Individual**| 4 letters from the name <br/> 6 digits for date of birth (YYMMDD) <br/> 3 alphanumeric characters | `MAGR850920XY1`    |
+| **Business**  | 3 letters from the business name <br/> 6 digits for registration date (YYMMDD) <br/> 3 alphanumeric characters | `ABC9901011A2`     |
 
-* 3 letters from business name
-* 6 digits for registration date (YYMMDD)
-* 3 alphanumeric characters
-
-**Example:** `MAGR850920XY1`, `GOAN850315AB2`
+*For individuals, the RFC is generated from the person's name and date of birth. For businesses, it's based on the business name and registration date.*
 
 ### Account Number Validation
 
-**SPEI/CLABE:**
+Account number is used to validate the beneficiary's bank account number. This is a 18 digits number and can be either a SPEI/CLABE or a debit card number.
 
-* Exactly 18 digits
-* Valid checksum digit
-* Recognized bank code
+### Account Number Validation Table
 
-**Debit Card:**
-
-* 13-19 digits
-* Valid card number format
-* Must be debit card (not credit)
+| Type            | Validation Criteria                                                                                  |
+|-----------------|-----------------------------------------------------------------------------------------------------|
+| **SPEI/CLABE**  | - Exactly 18 digits<br/>- Valid checksum digit<br/>- Recognised bank code                           |
+| **Debit Card**  | - 13–19 digits<br/>- Valid card number format<br/>- Must be a debit card (not a credit card)        |
 
 ## Error Handling
 
-### Common Withdrawal Errors
+Here you'll find the common errors that can happen when processing withdrawals.
 
 | Error Code              | Description                 | Solution                   |
 | ----------------------- | --------------------------- | -------------------------- |
@@ -364,8 +374,7 @@ public class WithdrawalProcessor {
 | `invalid_rfc`           | RFC format invalid          | Use valid RFC format       |
 | `amount_too_high`       | Exceeds withdrawal limits   | Reduce amount              |
 
-### Error Response Format
-
+<Expandable title="Error response example">
 ```json
 {
   "error": {
@@ -381,56 +390,72 @@ public class WithdrawalProcessor {
 }
 ```
 
+</Expandable>
+
 ## SPEI Operating Schedule
 
-### Business Days Schedule
+Here are some information about the operating hours for SPEI transactions.
 
-* Monday to Friday: 6:00 AM - 6:00 PM (Mexico City time)
-* Same-day processing: Before 5:00 PM
+| Day/Period                | Processing Hours                | Notes                        |
+|---------------------------|---------------------------------|------------------------------|
+| Monday to Friday          | 6:00 AM – 6:00 PM (CDMX time)   | Same-day processing if before 5:00 PM |
+| Saturday                  | 9:00 AM – 2:00 PM               | Limited processing           |
+| Sunday                    | No processing                   |                              |
+| Bank holidays             | No processing                   |                              |
 
-### Weekend and Holiday Limitations
+<Note>
+**Processing Times for Withdrawals**
 
-* Saturday: 9:00 AM - 2:00 PM (limited processing)
-* Sunday: No processing
-* Bank holidays: No processing
+Withdrawals are processed according to the method and the time you submit your request:
 
-### Processing Times
-
-* **Same business day**: Requests before 5:00 PM
-* **Next business day**: Requests after 5:00 PM or on weekends
-* **Instant**: Debit card withdrawals (24/7)
+- **Same business day**: Requests before 5:00 PM (CDMX) on business days are processed the same day.
+- **Next business day**: Requests after 5:00 PM or on weekends are processed the next business day.
+- **Instant**: Debit card withdrawals are instant, 24/7.
+</Note>
 
 ## Best Practices
 
-### Beneficiary Data
+Here you'll find some best practices to follow when processing withdrawals.
 
-1. **Validate RFC format** - Ensure proper format before submission
-2. **Verify CLABE numbers** - Check checksum digit calculation
-3. **Use correct institution codes** - Match bank with proper code
-4. **Test with sandbox data** - Validate integration before production
+<Expandable title="Beneficiary Data">
+  
+1. **Validate RFC format** – Make sure the RFC is in the correct format before you send it off.
+2. **Verify CLABE numbers** – Double-check the CLABE, including the checksum digit, to avoid rejections.
+3. **Use correct institution codes** – Always match the bank with the right institution code.
+4. **Test with sandbox data** – Run your integration in the sandbox first to catch any issues before going live.
 
-### Transaction Management
+</Expandable>
 
-1. **Implement status checking** - Monitor withdrawal progress
-2. **Handle async processing** - Use webhooks for status updates
-3. **Store references** - Keep internal references for tracking
-4. **Retry failed transactions** - Implement retry logic for temporary failures
+<Expandable title="Transaction Management">
 
-### Security
+1. **Implement status checking** – Keep an eye on your withdrawals by checking their status regularly.
+2. **Handle async processing** – Set up webhooks so you get notified when the status changes.
+3. **Store references** – Save your own internal references for easy tracking and reconciliation.
+4. **Retry failed transactions** – Add retry logic for temporary hiccups, so you don’t miss a payout.
 
-1. **Validate beneficiary data** - Ensure legitimate recipients
-2. **Implement approval workflows** - Add manual approval for large amounts
-3. **Monitor for fraud** - Watch for suspicious patterns
-4. **Secure beneficiary storage** - Protect stored beneficiary information
+</Expandable>
 
-### Error Recovery
+<Expandable title="Security">
 
-1. **Graceful failure handling** - Provide clear error messages
-2. **Alternative methods** - Offer different transfer methods if one fails
-3. **Manual intervention** - Support manual processing for edge cases
-4. **Customer communication** - Keep beneficiaries informed of status
+1. **Validate beneficiary data** – Only pay out to legitimate recipients; double-check their details.
+2. **Implement approval workflows** – For big withdrawals, add a manual approval step to stay safe.
+3. **Monitor for fraud** – Keep an eye out for anything dodgy or out of the ordinary.
+4. **Secure beneficiary storage** – Make sure any stored beneficiary info is properly protected.
+
+</Expandable>
+
+<Expandable title="Error Recovery">
+
+1. **Graceful failure handling** – Give clear, helpful error messages if something goes wrong.
+2. **Alternative methods** – If one transfer method fails, offer another way to get the money out.
+3. **Manual intervention** – Be ready to step in and handle tricky cases by hand if needed.
+4. **Customer communication** – Keep your beneficiaries in the loop about what’s happening with their withdrawal.
+
+</Expandable>
 
 ## Testing
+
+Here you'll find some information about the test bank accounts and cards that you can use to test your withdrawals.
 
 ### Test Bank Accounts
 
@@ -450,7 +475,7 @@ public class WithdrawalProcessor {
 
 ## Next Steps
 
-* Review Response Format for handling withdrawal responses
-* Set up Webhooks for real-time withdrawal notifications
-* Check Error Handling for withdrawal error management
-* Explore Mexican Banking Reference for additional bank information
+- [Review Response Format](#spei-response-example) for handling withdrawal responses
+- [Set up Webhooks](../webhooks/) for real-time withdrawal notifications
+- [Check Error Handling](../error-handling/) for withdrawal error management
+- [Explore Mexican Banking Reference](https://www.banxico.org.mx/cep/) for additional bank information
