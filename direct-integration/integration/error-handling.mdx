@@ -4,8 +4,6 @@ sidebarTitle: "Error Handling"
 'og:description': ""
 ---
 
-## Overview
-
 Comprehensive error handling is essential for building robust integrations with the Tonder API. This guide covers error response formats, common error scenarios, and HTTP status codes.
 
 ## Error Response Format
@@ -27,7 +25,7 @@ All errors follow a consistent format:
 }
 ```
 
-### Error Fields
+Where:
 
 | Field           | Type   | Description                           |
 | --------------- | ------ | ------------------------------------- |
@@ -38,6 +36,8 @@ All errors follow a consistent format:
 | `request_id`    | string | Unique request identifier for support |
 
 ## HTTP Status Codes
+
+Here are the HTTP status codes that you may receive in the response:
 
 ### Success Codes
 
@@ -67,6 +67,8 @@ All errors follow a consistent format:
 | 503  | Server Error | Service unavailable   | Retry later   |
 
 ## Common Error Categories
+
+Errors can belong to the following categories:
 
 ### Authentication Errors
 
@@ -104,13 +106,14 @@ All errors follow a consistent format:
 | `insufficient_balance`  | Not enough balance          | Check account balance      |
 | `beneficiary_blocked`   | Beneficiary account blocked | Contact bank               |
 
-## Error Handling Best Practices
+## Basic Error Handling
 
-### Basic Error Handling
+Here are some examples of how to handle errors in different programming languages:
 
-**Java Error Handling:**
+<Accordion title="Error Handling Examples">
 
-```java
+<CodeGroup>
+```java Java
 public class TonderApiException extends Exception {
     private final String errorCode;
     private final String errorType;
@@ -149,9 +152,7 @@ public static PaymentResponse processPaymentWithErrorHandling(PaymentRequest req
 }
 ```
 
-**Python Error Handling:**
-
-```python
+```python Python
 import time
 import random
 
@@ -183,30 +184,40 @@ def process_payment_with_retry(request_data, max_retries=3):
     
     raise TonderApiError("Max retries exceeded")
 ```
+</CodeGroup>
+</Accordion>
 
 ## Common Troubleshooting
 
-### Authentication Issues
+Here are some common troubleshooting checks for different error scenarios:
 
-* Verify API key format: `Authorization: Token your_api_key`
-* Check HMAC signature calculation matches expected format
-* Ensure all required headers are included
+<Accordion title="Authentication Issues">
 
-### Payment Failures
+- Verify API key format: `Authorization: Token your_api_key`
+- Check HMAC signature calculation matches expected format
+- Ensure all required headers are included
 
-* Check error code in response for specific failure reason
-* Verify card data format and validity
-* Test with known good test cards in sandbox
+</Accordion>
 
-### Validation Errors
+<Accordion title="Payment Failures">
 
-* Review required fields for each operation type
-* Check data format requirements (email, amounts, etc.)
-* Validate regional requirements (RFC, CLABE formats)
+- Check error code in response for specific failure reason
+- Verify card data format and validity
+- Test with known good test cards in sandbox
+
+</Accordion>
+
+<Accordion title="Validation Errors">
+
+- Review required fields for each operation type
+- Check data format requirements (email, amounts, etc.)
+- Validate regional requirements (RFC, CLABE formats)
+
+</Accordion>
 
 ## Next Steps
 
-* Review Webhooks for real-time error notifications
-* Check Status Checking for transaction monitoring
-* Learn about Payment Methods for method-specific error handling
-* Explore Mexican Banking Reference for regional validation
+- [Review Webhooks](./webhooks) for real-time error notifications
+- [Check Status Checking](./status-checking) for transaction monitoring
+- [Learn about Payment Methods](./payment-methods) for method-specific error handling
+- [Explore Mexican Banking Reference](./mexican-banking-reference) for regional validation
