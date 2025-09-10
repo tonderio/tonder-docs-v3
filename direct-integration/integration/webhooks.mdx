@@ -4,8 +4,6 @@ sidebarTitle: "Webhooks"
 'og:description': ""
 ---
 
-## Overview
-
 Webhooks provide real-time notifications about transaction status changes and allow you to configure endpoints for receiving these notifications. Tonder's webhook system ensures reliable delivery of transaction updates through comprehensive retry mechanisms and authentication options.
 
 ## Webhook Management
@@ -20,9 +18,8 @@ POST /webhooks/
 
 Creates a new webhook endpoint for your business.
 
-**Request Body:**
-
-```json
+<CodeGroup>
+```json Request
 {
   "url": "https://your-site.com/webhook",
   "auth_method": "BEARER",
@@ -31,10 +28,7 @@ Creates a new webhook endpoint for your business.
   }
 }
 ```
-
-**Response:**
-
-```json
+```json Response
 {
   "id": 123,
   "url": "https://your-site.com/webhook",
@@ -45,6 +39,7 @@ Creates a new webhook endpoint for your business.
   }
 }
 ```
+</CodeGroup>
 
 ### List Webhooks
 
@@ -54,9 +49,8 @@ GET /webhooks/
 
 Retrieves all webhook endpoints configured for your business.
 
-**Response:**
-
-```json
+<CodeGroup>
+```json Response
 [
   {
     "id": 123,
@@ -79,6 +73,7 @@ Retrieves all webhook endpoints configured for your business.
   }
 ]
 ```
+</CodeGroup>
 
 ### Update Webhook
 
@@ -88,9 +83,9 @@ PUT /webhooks/{webhook_id}/
 
 Updates an existing webhook endpoint configuration.
 
-**Request Body:**
+<CodeGroup>
 
-```json
+```json Request
 {
   "url": "https://new-endpoint.com/webhook",
   "auth_method": "API_TOKEN",
@@ -101,9 +96,7 @@ Updates an existing webhook endpoint configuration.
 }
 ```
 
-**Response:**
-
-```json
+```json Response
 {
   "id": 123,
   "url": "https://new-endpoint.com/webhook",
@@ -115,6 +108,7 @@ Updates an existing webhook endpoint configuration.
   }
 }
 ```
+</CodeGroup>
 
 ### Delete Webhook
 
@@ -124,7 +118,7 @@ DELETE /webhooks/{webhook_id}/
 
 Removes a webhook endpoint from your business configuration.
 
-**Response:** `204 No Content`
+The server will respond with a `204 No Content` status, indicating the webhook has been successfully deleted and there is no further information to return.
 
 ### Test Webhook
 
@@ -134,9 +128,9 @@ POST /webhooks/{webhook_id}/test/
 
 Tests webhook endpoint connectivity and updates status accordingly.
 
-**Response:**
+<CodeGroup>
 
-```json
+```json Response
 {
   "id": 123,
   "url": "https://your-site.com/webhook",
@@ -148,9 +142,15 @@ Tests webhook endpoint connectivity and updates status accordingly.
 }
 ```
 
+</CodeGroup>
+
 ## Webhook Configuration
 
+The following tables give you a quick overview of the available webhook authentication methods and status values.
+
 ### Authentication Methods
+
+These are the available webhook authentication methods.
 
 | Method       | Description                 | Credentials Format                                 |
 | ------------ | --------------------------- | -------------------------------------------------- |
@@ -160,6 +160,8 @@ Tests webhook endpoint connectivity and updates status accordingly.
 | `NONE`       | No authentication           | `{}` (not recommended for production)              |
 
 ### Webhook Status
+
+These are the available webhook status values.
 
 | Status     | Description                                           |
 | ---------- | ----------------------------------------------------- |
@@ -173,23 +175,24 @@ Tonder sends webhook notifications for various transaction events:
 
 ### Payment Events
 
-* Transaction status changes (pending → authorized → success)
-* Payment failures and declines
-* 3DS authentication completions
-* Cash payment confirmations (OXXO, SafetyPay)
+- Transaction status changes (pending → authorized → success)
+- Payment failures and declines
+- 3DS authentication completions
+- Cash payment confirmations (OXXO, SafetyPay)
 
 ### Withdrawal Events
 
-* Withdrawal processing updates
-* Payout completions and failures
-* SPEI transfer confirmations
-* Debit card deposit completions
+- Withdrawal processing updates
+- Payout completions and failures
+- SPEI transfer confirmations
+- Debit card deposit completions
 
 ## Webhook Payload Structure
 
 All webhook notifications follow a consistent payload structure:
 
-```json
+<CodeGroup>
+```json Payload
 {
   "event_type": "transaction.status_changed",
   "event_id": "evt_123456789",
@@ -212,8 +215,9 @@ All webhook notifications follow a consistent payload structure:
   }
 }
 ```
+</CodeGroup>
 
-### Payload Fields
+Where:
 
 | Field                  | Type   | Description                              |
 | ---------------------- | ------ | ---------------------------------------- |
@@ -226,9 +230,10 @@ All webhook notifications follow a consistent payload structure:
 
 ## Implementation Examples
 
-### Python Webhook Handler
+The following examples show how to implement webhook handling in different programming languages.
 
-```python
+<CodeGroup>
+```python Python Webhook Handler
 from flask import Flask, request, jsonify
 import json
 import logging
@@ -384,9 +389,7 @@ if __name__ == '__main__':
     app.run(debug=True, port=5000)
 ```
 
-### Java Webhook Handler
-
-```java
+```java Java Webhook Handler
 @RestController
 @RequestMapping("/webhook")
 public class WebhookController {
@@ -535,20 +538,21 @@ public class WebhookController {
     // Additional helper methods...
 }
 ```
+</CodeGroup>
 
 ## Webhook Delivery & Retry Logic
 
 Tonder's webhook service ensures reliable delivery of webhook notifications through AWS SQS-based retry mechanisms and comprehensive error handling.
 
-### Delivery Guarantees
+The following are the retry configuration for webhook delivery:
 
-**Retry Configuration:**
-
-* **Maximum retry attempts**: 3 attempts per webhook delivery
-* **Processing timeout**: 30 seconds per delivery attempt
-* **Visibility timeout**: 60 seconds between retry attempts
-* **Total retry window**: Up to 3 minutes (3 attempts × 60 seconds)
-* **Message retention**: 14 days in the primary queue
+| Setting                   | Value                                  | Description                                              |
+|---------------------------|----------------------------------------|----------------------------------------------------------|
+| **Maximum retry attempts**| 3                                      | Each webhook delivery will be tried up to 3 times        |
+| **Processing timeout**    | 30 seconds per attempt                 | Each delivery attempt has a 30-second processing window  |
+| **Visibility timeout**    | 60 seconds between retries             | 60 seconds wait before a failed attempt is retried       |
+| **Total retry window**    | Up to 3 minutes (3 × 60 seconds)       | Maximum time spent retrying a single webhook             |
+| **Message retention**     | 14 days in the primary queue           | Messages are kept for up to 14 days if not delivered     |
 
 ### Retry Behavior
 
@@ -561,64 +565,76 @@ When a webhook delivery fails, the system automatically:
 
 ### Failure Handling
 
-**Immediate Failures:**
+These are the reasons why a webhook delivery is considered to have failed straight away:
 
-* Network connection errors
-* HTTP timeout (30 seconds)
-* Non-2xx HTTP response codes
-* Invalid webhook endpoints
+- Network connection errors
+- HTTP timeout (30 seconds)
+- Non-2xx HTTP response codes
+- Invalid webhook endpoints
 
-**Dead Letter Queue**: After 3 failed attempts, messages are automatically moved to a Dead Letter Queue (DLQ) for:
+<Important>
+After three failed attempts, messages are automatically shifted to a Dead Letter Queue (DLQ). This allows for:
 
-* Manual inspection and debugging
-* Potential reprocessing
-* Long-term failure analysis
+- Manual inspection and debugging
+- Potential reprocessing
+- Long-term failure analysis
+</Important>
 
 ### Success Criteria
 
 A webhook delivery is considered successful when:
 
-* HTTP response status is 2xx (200-299)
-* Response received within 30 seconds
-* No network or connection errors
+- HTTP response status is 2xx (200-299)
+- Response received within 30 seconds
+- No network or connection errors
 
 ## Best Practices for Webhook Endpoints
 
-### Response Requirements
+Below are some best practices to help you build reliable, secure, and robust webhook endpoints.
 
-1. **Respond quickly**: Aim for sub-5 second response times
-2. **Return appropriate status codes**: Use 2xx for success, 4xx for permanent failures
-3. **Handle timeouts gracefully**: Process within 30 seconds or implement async processing
-4. **Implement idempotency**: Handle duplicate deliveries gracefully
+<Expandable title="Response Requirements">
+  
+1. **Respond quickly** – Try to reply in under 5 seconds if you can.
+2. **Return the right status codes** – Use 2xx for success, 4xx for permanent failures.
+3. **Handle timeouts gracefully** – Make sure you process within 30 seconds, or use async processing if it might take longer.
+4. **Implement idempotency** – Be ready for duplicate deliveries and handle them without causing issues.
 
-### Security Best Practices
+</Expandable>
 
-1. **Use HTTPS**: Always use secure endpoints
-2. **Authenticate requests**: Verify webhook authenticity
-3. **Validate payloads**: Check event structure and content
-4. **Rate limiting**: Protect your endpoints from abuse
+<Expandable title="Security Best Practices">
 
-### Error Handling
+1. **Use HTTPS** – Always use secure (HTTPS) endpoints for your webhooks.
+2. **Authenticate requests** – Make sure you verify that webhook requests are actually from us.
+3. **Validate payloads** – Double-check the event structure and content before processing.
+4. **Rate limiting** – Protect your endpoints from abuse with sensible rate limits.
 
-1. **Log all events**: Keep detailed logs for debugging
-2. **Handle failures gracefully**: Don't crash on invalid payloads
-3. **Implement circuit breakers**: Protect downstream systems
-4. **Monitor webhook health**: Alert on repeated failures
+</Expandable>
 
-### Implementation Tips
+<Expandable title="Error Handling">
 
-1. **Use queues**: Process webhooks asynchronously when possible
-2. **Implement retries**: Handle temporary failures in your system
-3. **Store event IDs**: Prevent duplicate processing
-4. **Test thoroughly**: Verify webhook handling in all scenarios
+1. **Log all events** – Keep detailed logs so you can debug if something goes wrong.
+2. **Handle failures gracefully** – Don’t let a dodgy payload crash your system.
+3. **Implement circuit breakers** – Protect your downstream systems from overload.
+4. **Monitor webhook health** – Set up alerts for repeated failures so you can jump in quickly.
+
+</Expandable>
+
+<Expandable title="Implementation Tips">
+
+1. **Use queues** – Process webhooks asynchronously where possible for better reliability.
+2. **Implement retries** – Add retry logic for temporary failures in your own system.
+3. **Store event IDs** – Keep track of event IDs to avoid processing the same event twice.
+4. **Test thoroughly** – Make sure you test your webhook handling in all sorts of scenarios.
+
+</Expandable>
 
 ## Testing Webhooks
 
-### Test Webhook Endpoint
+There are two main approaches to testing webhook integration: local development testing and production environment testing.
 
-Create a simple test endpoint to verify webhook delivery:
+Use this code example to create a test endpoint that works for both local and production testing approaches:
 
-```python
+```python Test Webhook Endpoint
 @app.route('/webhook/test', methods=['POST'])
 def test_webhook():
     """Simple test endpoint for webhook verification"""
@@ -632,40 +648,44 @@ def test_webhook():
     return 'OK', 200
 ```
 
-### Manual Testing
+### Local Development Testing
 
-1. **Use ngrok** for local testing: `ngrok http 5000`
-2. **Configure webhook URL** with the ngrok URL
-3. **Process test transactions** to trigger webhooks
-4. **Verify payload structure** and authentication
+Use this approach during development to test webhook integration:
 
-### Production Testing
+1. Use ngrok for local testing: `ngrok http 5000`
+2. Configure webhook URL with the ngrok URL
+3. Process test transactions to trigger webhooks
+4. Verify payload structure and authentication
 
-1. **Test connectivity** using the test webhook endpoint
-2. **Verify authentication** works correctly
-3. **Check retry behavior** by temporarily returning errors
-4. **Monitor webhook logs** for delivery success
+### Production Environment Testing
+
+Use this approach to test webhooks in a production-like environment:
+
+1. Test connectivity using the test webhook endpoint
+2. Verify authentication works correctly
+3. Check retry behaviour by temporarily returning errors
+4. Monitor webhook logs for delivery success
 
 ## Monitoring and Observability
 
 The webhook service provides comprehensive logging for:
 
-* Individual delivery attempts with timing metrics
-* Retry attempt tracking (attempt\_number, max\_attempts, will\_retry)
-* Performance metrics (request duration, processing time)
-* Failure analysis with exception details
+- Individual delivery attempts with timing metrics
+- Retry attempt tracking (attempt\_number, max\_attempts, will\_retry)
+- Performance metrics (request duration, processing time)
+- Failure analysis with exception details
 
-### Webhook Monitoring Checklist
+To help you make sure everything’s running smoothly, follow this monitoring checklist:
 
-* [ ] Monitor webhook delivery success rates
-* [ ] Set up alerts for repeated failures
-* [ ] Track webhook processing times
-* [ ] Monitor endpoint uptime and availability
-* [ ] Review failed webhook logs regularly
+- [ ] Monitor webhook delivery success rates
+- [ ] Set up alerts for repeated failures
+- [ ] Track webhook processing times
+- [ ] Monitor endpoint uptime and availability
+- [ ] Review failed webhook logs regularly
 
 ## Troubleshooting
 
-### Common Issues
+These are the most common issues you might encounter and how to resolve them:
 
 | Issue                     | Cause               | Solution                               |
 | ------------------------- | ------------------- | -------------------------------------- |
@@ -674,17 +694,17 @@ The webhook service provides comprehensive logging for:
 | Timeout errors            | Slow processing     | Optimize webhook processing time       |
 | 500 Server errors         | Processing failures | Check webhook endpoint logs            |
 
-### Debugging Steps
+To help you troubleshoot issues, follow these debugging steps:
 
-1. **Check webhook configuration** - Verify URL and authentication
-2. **Test endpoint manually** - Use curl or Postman to test
-3. **Review logs** - Check both Tonder and your endpoint logs
-4. **Verify network connectivity** - Ensure endpoint is accessible
-5. **Test with simple payload** - Use webhook test endpoint
+1. Check webhook configuration - Verify URL and authentication
+2. Test endpoint manually - Use curl or Postman to test
+3. Review logs - Check both Tonder and your endpoint logs
+4. Verify network connectivity - Ensure endpoint is accessible
+5. Test with simple payload - Use webhook test endpoint
 
 ## Next Steps
 
-* Review Error Handling for comprehensive error management
-* Check Production Readiness for webhook monitoring setup
-* Learn about Status Checking as a webhook backup
-* Explore Payment Methods for method-specific webhook events
+- [Review Error Handling](./error-handling) for comprehensive error management
+- [Check Production Readiness](./production-readiness) for webhook monitoring setup
+- [Learn about Status Checking](./status-checking) as a webhook backup
+- [Explore Payment Methods](./payment-methods) for method-specific webhook events
