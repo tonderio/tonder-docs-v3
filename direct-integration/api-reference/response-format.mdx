@@ -4,8 +4,6 @@ sidebarTitle: "Response Format"
 'og:description': ""
 ---
 
-## Overview
-
 All Tonder API responses follow a consistent structure, providing standardized information regardless of the operation type (payment or withdrawal). This consistency simplifies integration and error handling across different transaction types.
 
 ## Standard Response Structure
@@ -28,7 +26,7 @@ All successful requests return a consistent response format:
 }
 ```
 
-## Core Response Fields
+Where:
 
 | Field              | Type    | Description                            |
 | ------------------ | ------- | -------------------------------------- |
@@ -42,6 +40,8 @@ All successful requests return a consistent response format:
 | `status_code`      | integer | HTTP status code                       |
 
 ## Transaction Status Values
+
+The `status` field can have the following values:
 
 | Status             | Label            | Description                            | Next Steps                        |
 | ------------------ | ---------------- | -------------------------------------- | --------------------------------- |
@@ -62,7 +62,11 @@ All successful requests return a consistent response format:
 
 ## Payment Response Examples
 
-### Successful Card Payment
+Here are some examples of payment responses.
+
+<AccordionGroup>
+
+<Accordion title="Card Payment Response">
 
 ```json
 {
@@ -80,7 +84,9 @@ All successful requests return a consistent response format:
 }
 ```
 
-### SPEI Payment Response
+</Accordion>
+
+<Accordion title="SPEI Payment Response">
 
 ```json
 {
@@ -98,9 +104,9 @@ All successful requests return a consistent response format:
 }
 ```
 
-## Withdrawal Response Examples
+</Accordion>
 
-### SPEI Withdrawal Response
+<Accordion title="SPEI Withdrawal Response">
 
 ```json
 {
@@ -115,7 +121,9 @@ All successful requests return a consistent response format:
 }
 ```
 
-### Debit Card Withdrawal Response
+</Accordion>
+
+<Accordion title="Debit Card Withdrawal Response">
 
 ```json
 {
@@ -130,11 +138,19 @@ All successful requests return a consistent response format:
 }
 ```
 
+</Accordion>
+
+</AccordionGroup>
+
 ## Next Action Handling
 
 Some transactions require additional steps (3D Secure, redirects, iframe interactions). The `next_action` object will contain specific instructions for handling these scenarios.
 
-### Redirect to URL (3DS Authentication)
+Here are some examples of responses that require additional action.
+
+<AccordionGroup>
+
+<Accordion title="Redirect to URL (3DS Authentication)">
 
 For card payments requiring 3D Secure authentication:
 
@@ -164,7 +180,9 @@ For card payments requiring 3D Secure authentication:
 3. Customer is redirected back to your `return_url`
 4. Check transaction status using the `verify_transaction_status_url`
 
-### Iframe Resources (MercadoPago)
+</Accordion>
+
+<Accordion title="Iframe Resources (MercadoPago)">
 
 For providers requiring iframe-based authentication:
 
@@ -187,6 +205,10 @@ For providers requiring iframe-based authentication:
   "status_code": 202
 }
 ```
+
+</Accordion>
+
+</AccordionGroup>
 
 ## Payment Instructions Response
 
@@ -218,6 +240,8 @@ For cash payment methods (OXXO, SafetyPay), the response includes detailed payme
 
 ### Payment Instructions Fields
 
+The following table lists the fields that are included in the `payment_instructions` object.
+
 | Field             | Type   | Description                         |
 | ----------------- | ------ | ----------------------------------- |
 | `reference_code`  | string | Payment reference for cash payment  |
@@ -228,6 +252,8 @@ For cash payment methods (OXXO, SafetyPay), the response includes detailed payme
 | `voucher_pdf`     | string | URL to downloadable payment voucher |
 
 ## HTTP Status Codes
+
+The following tables lists the HTTP status codes that are returned by the API.
 
 ### Success Codes
 
@@ -269,7 +295,7 @@ X-RateLimit-Remaining: 95
 X-RateLimit-Reset: 1640995200
 ```
 
-### Header Descriptions
+The following table provides a description of the headers that are included in the response.
 
 | Header                  | Description                             |
 | ----------------------- | --------------------------------------- |
@@ -297,7 +323,7 @@ When requests fail, errors follow a consistent format:
 }
 ```
 
-### Error Fields
+Where:
 
 | Field           | Type   | Description                    |
 | --------------- | ------ | ------------------------------ |
@@ -309,9 +335,11 @@ When requests fail, errors follow a consistent format:
 
 ## Implementation Examples
 
-### Python Response Handling
+Here are some examples of how to handle responses in different programming languages.
 
-```python
+<CodeGroup>
+
+```python Python
 def handle_transaction_response(response):
     """Handle Tonder API response"""
     
@@ -386,9 +414,7 @@ def handle_payment_instructions(response_data):
     }
 ```
 
-### Java Response Handling
-
-```java
+```java Java
 public class ResponseHandler {
     
     public TransactionResult handleResponse(HttpResponse<String> response) {
@@ -448,32 +474,46 @@ public class ResponseHandler {
 }
 ```
 
+</CodeGroup>
+
 ## Best Practices
 
-### Response Processing
+Make sure to follow these best practices to handle responses properly.
+
+<AccordionGroup>
+
+<Accordion title="Response Processing">
 
 1. **Always check status code** - Don't assume success based on HTTP 200
 2. **Handle next actions** - Process 3DS and iframe requirements properly
 3. **Store transaction IDs** - Keep references for status checking
 4. **Process payment instructions** - Display cash payment details to customers
 
-### Error Handling
+</Accordion>
+
+<Accordion title="Error Handling">
 
 1. **Use error codes** - Don't rely on error messages for logic
 2. **Log request IDs** - Include in support requests
 3. **Implement retries** - For server errors (5xx status codes)
 4. **Validate responses** - Check for required fields before processing
 
-### Status Management
+</Accordion>
+
+<Accordion title="Status Management">
 
 1. **Monitor pending transactions** - Use webhooks or periodic status checks
 2. **Handle status changes** - Update UI based on current status
 3. **Set timeouts** - Don't wait indefinitely for completion
 4. **Notify customers** - Keep users informed of transaction progress
 
+</Accordion>
+
+</AccordionGroup>
+
 ## Next Steps
 
-* Learn about Status Checking for monitoring transactions
-* Set up Webhooks for real-time status updates
-* Review Error Handling for comprehensive error management
-* Check Payment Methods for method-specific responses
+- [Learn about Status Checking](./status-checking.mdx) for monitoring transactions
+- [Set up Webhooks](./webhooks.mdx) for real-time status updates
+- [Review Error Handling](./error-handling.mdx) for comprehensive error management
+- [Check Payment Methods](./payment-methods.mdx) for method-specific responses
