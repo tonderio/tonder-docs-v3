@@ -8,7 +8,7 @@ sidebarTitle: "Withdrawals"
 
 Tonder's withdrawal functionality enables businesses to send payouts to beneficiaries through the same unified `/process/` endpoint. Withdrawals support SPEI bank transfers and direct debit card deposits, providing flexible payout options across Mexico.
 
-## Supported Transfer Methods
+These are the withdrawal methods supported by Tonder:
 
 | Method         | ID           | Description            | Processing Time |
 | -------------- | ------------ | ---------------------- | --------------- |
@@ -19,7 +19,7 @@ Tonder's withdrawal functionality enables businesses to send payouts to benefici
 
 All withdrawal requests use `operation_type: "withdrawal"` and must include beneficiary information.
 
-### Required Fields
+The following fields are required for withdrawal requests:
 
 | Field             | Type    | Required | Description                                  |
 | ----------------- | ------- | -------- | -------------------------------------------- |
@@ -31,7 +31,7 @@ All withdrawal requests use `operation_type: "withdrawal"` and must include bene
 | `reference`       | string  | No       | Your withdrawal reference                    |
 | `description`     | string  | No       | Withdrawal description                       |
 
-### Beneficiary Information
+The `beneficiary` object includes the following fields:
 
 | Field                       | Type   | Required | Description                |
 |-----------------------------|--------|----------|----------------------------|
@@ -45,7 +45,9 @@ All withdrawal requests use `operation_type: "withdrawal"` and must include bene
 
 SPEI withdrawals transfer funds directly to Mexican bank accounts using the SPEI interbank system. Processing typically completes on the same business day.
 
-<Expandable title="SPEI withdrawal request example">
+<AccordionGroup>
+
+<Accordion title="SPEI withdrawal request example">
 ```json
 {
   "operation_type": "withdrawal",
@@ -64,9 +66,9 @@ SPEI withdrawals transfer funds directly to Mexican bank accounts using the SPEI
 }
 ```
 
-</Expandable>
+</Accordion>
 
-<Expandable title="SPEI response example">
+<Accordion title="SPEI response example">
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440001",
@@ -86,7 +88,8 @@ SPEI withdrawals transfer funds directly to Mexican bank accounts using the SPEI
 }
 ```
 
-</Expandable>
+</Accordion>
+</AccordionGroup>
 
 ### SPEI Account Validation
 
@@ -126,7 +129,9 @@ Major Mexican financial institutions and their corresponding codes for SPEI tran
 
 Debit card withdrawals enable instant deposits directly to debit cards, providing immediate fund availability to beneficiaries.
 
-<Expandable title="Debit card withdrawal request example">
+<AccordionGroup>
+
+<Accordion title="Debit card withdrawal request example">
 ```json
 {
   "operation_type": "withdrawal",
@@ -145,9 +150,9 @@ Debit card withdrawals enable instant deposits directly to debit cards, providin
 }
 ```
 
-</Expandable>
+</Accordion>
 
-<Expandable title="Debit card response example">
+<Accordion title="Debit card response example">
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440002",
@@ -167,7 +172,9 @@ Debit card withdrawals enable instant deposits directly to debit cards, providin
 }
 ```
 
-</Expandable>
+</Accordion>
+
+</AccordionGroup>
 
 ## Withdrawal Status Flow
 
@@ -189,7 +196,7 @@ Use the transaction status endpoint to monitor withdrawal progress:
 GET /transactions/{withdrawal_id}/
 ```
 
-<Expandable title="Status check response">
+<Accordion title="Status check response">
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440001",
@@ -207,14 +214,15 @@ GET /transactions/{withdrawal_id}/
 }
 ```
 
-</Expandable>
+</Accordion>
 
 ## Implementation Examples
 
 Below you'll find examples of how to implement withdrawals in different programming languages.
 
-<Expandable title="Python implementation example">
-```python
+<CodeGroup>
+
+```python Python Implementation
 def process_spei_withdrawal():
     """Process SPEI withdrawal to bank account"""
     
@@ -272,11 +280,7 @@ def process_card_withdrawal():
         return None
 ```
 
-</Expandable>
-
-
-<Expandable title="Java implementation example">
-```java
+```java Java Implementation
 public class WithdrawalProcessor {
     
     public Map<String, Object> processSPEIWithdrawal() {
@@ -331,7 +335,7 @@ public class WithdrawalProcessor {
 }
 ```
 
-</Expandable>
+</CodeGroup>
 
 ## Validation Requirements
 
@@ -341,7 +345,6 @@ Withdrawals can go through a validation process to ensure the data is correct.
 
 RFC is used to validate the beneficiary's tax identification number. This is a 12-13 alphanumeric characters format and can be either an individual or business RFC.
 
-#### RFC Format Reference
 
 | Type          | Structure                                                                 | Example            |
 |---------------|--------------------------------------------------------------------------|--------------------|
@@ -354,7 +357,6 @@ RFC is used to validate the beneficiary's tax identification number. This is a 1
 
 Account number is used to validate the beneficiary's bank account number. This is a 18 digits number and can be either a SPEI/CLABE or a debit card number.
 
-### Account Number Validation Table
 
 | Type            | Validation Criteria                                                                                  |
 |-----------------|-----------------------------------------------------------------------------------------------------|
@@ -374,7 +376,7 @@ Here you'll find the common errors that can happen when processing withdrawals.
 | `invalid_rfc`           | RFC format invalid          | Use valid RFC format       |
 | `amount_too_high`       | Exceeds withdrawal limits   | Reduce amount              |
 
-<Expandable title="Error response example">
+<Accordion title="Error response example">
 ```json
 {
   "error": {
@@ -390,7 +392,7 @@ Here you'll find the common errors that can happen when processing withdrawals.
 }
 ```
 
-</Expandable>
+</Accordion>
 
 ## SPEI Operating Schedule
 
@@ -417,41 +419,45 @@ Withdrawals are processed according to the method and the time you submit your r
 
 Here you'll find some best practices to follow when processing withdrawals.
 
-<Expandable title="Beneficiary Data">
-  
-1. **Validate RFC format** – Make sure the RFC is in the correct format before you send it off.
-2. **Verify CLABE numbers** – Double-check the CLABE, including the checksum digit, to avoid rejections.
-3. **Use correct institution codes** – Always match the bank with the right institution code.
-4. **Test with sandbox data** – Run your integration in the sandbox first to catch any issues before going live.
+<AccordionGroup>
 
-</Expandable>
+<Accordion title="Beneficiary Data">
 
-<Expandable title="Transaction Management">
+1. Validate RFC format – Make sure the RFC is in the correct format before you send it off.
+2. Verify CLABE numbers – Double-check the CLABE, including the checksum digit, to avoid rejections.
+3. Use correct institution codes – Always match the bank with the right institution code.
+4. Test with sandbox data – Run your integration in the sandbox first to catch any issues before going live.
 
-1. **Implement status checking** – Keep an eye on your withdrawals by checking their status regularly.
-2. **Handle async processing** – Set up webhooks so you get notified when the status changes.
-3. **Store references** – Save your own internal references for easy tracking and reconciliation.
-4. **Retry failed transactions** – Add retry logic for temporary hiccups, so you don’t miss a payout.
+</Accordion>
 
-</Expandable>
+<Accordion title="Transaction Management">
 
-<Expandable title="Security">
+1. Implement status checking – Keep an eye on your withdrawals by checking their status regularly.
+2. Handle async processing – Set up webhooks so you get notified when the status changes.
+3. Store references – Save your own internal references for easy tracking and reconciliation.
+4. Retry failed transactions – Add retry logic for temporary hiccups, so you don't miss a payout.
 
-1. **Validate beneficiary data** – Only pay out to legitimate recipients; double-check their details.
-2. **Implement approval workflows** – For big withdrawals, add a manual approval step to stay safe.
-3. **Monitor for fraud** – Keep an eye out for anything dodgy or out of the ordinary.
-4. **Secure beneficiary storage** – Make sure any stored beneficiary info is properly protected.
+</Accordion>
 
-</Expandable>
+<Accordion title="Security">
 
-<Expandable title="Error Recovery">
+1. Validate beneficiary data – Only pay out to legitimate recipients; double-check their details.
+2. Implement approval workflows – For big withdrawals, add a manual approval step to stay safe.
+3. Monitor for fraud – Keep an eye out for anything dodgy or out of the ordinary.
+4. Secure beneficiary storage – Make sure any stored beneficiary info is properly protected.
 
-1. **Graceful failure handling** – Give clear, helpful error messages if something goes wrong.
-2. **Alternative methods** – If one transfer method fails, offer another way to get the money out.
-3. **Manual intervention** – Be ready to step in and handle tricky cases by hand if needed.
-4. **Customer communication** – Keep your beneficiaries in the loop about what’s happening with their withdrawal.
+</Accordion>
 
-</Expandable>
+<Accordion title="Error Recovery">
+
+1. Graceful failure handling – Give clear, helpful error messages if something goes wrong.
+2. Alternative methods – If one transfer method fails, offer another way to get the money out.
+3. Manual intervention – Be ready to step in and handle tricky cases by hand if needed.
+4. Customer communication – Keep your beneficiaries in the loop about what's happening with their withdrawal.
+
+</Accordion>
+
+</AccordionGroup>
 
 ## Testing
 

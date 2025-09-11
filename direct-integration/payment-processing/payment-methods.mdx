@@ -4,11 +4,9 @@ sidebarTitle: "Payment Methods"
 'og:description': ""
 ---
 
-## Overview
-
 Tonder supports a comprehensive range of payment methods across Latin America, designed to meet the diverse preferences of customers in different regions. All payment methods are processed through the unified `/process/` endpoint with `operation_type: "payment"`.
 
-## Supported Payment Methods
+Here are the payment methods supported by Tonder:
 
 | Method                                                                 | Type Value    | Description                  | Processing Time |
 | ---------------------------------------------------------------------- | ------------- | ---------------------------- | --------------- |
@@ -22,7 +20,9 @@ Tonder supports a comprehensive range of payment methods across Latin America, d
 
 Card payments support major credit and debit cards including Visa, Mastercard, and American Express. Cards can be processed using either raw card data or tokenized card information.
 
-### Send Card Payment Request
+<AccordionGroup>
+
+<Accordion title="Send Card Payment Request">
 
 Here's an example of a card payment request using a tokenized card (recommended):
 
@@ -48,19 +48,39 @@ Here's an example of a card payment request using a tokenized card (recommended)
 }
 ```
 
-### Card Payment Fields
+Where:
 
-| Field                             | Type   | Required    | Description                         |
-| --------------------------------- | ------ | ----------- | ----------------------------------- |
-| `payment_method.type`             | string | Yes         | Must be `"CARD"`                    |
-| `payment_method.card_number`      | string | Yes         | Card number (raw or tokenized)      |
-| `payment_method.cardholder_name`  | string | Yes         | Cardholder name (raw or tokenized)  |
-| `payment_method.cvv`              | string | Yes         | Security code (raw or tokenized)    |
-| `payment_method.expiration_month` | string | Yes         | Expiration month (raw or tokenized) |
-| `payment_method.expiration_year`  | string | Yes         | Expiration year (raw or tokenized)  |
-| `return_url`                      | string | Recommended | URL for 3DS redirects               |
+<ParamField path="payment_method.type" type="string" required>
+Must be `"CARD"`
+</ParamField>
 
-### 3D Secure Handling
+<ParamField path="payment_method.card_number" type="string" required>
+Card number (raw or tokenized)
+</ParamField>
+
+<ParamField path="payment_method.cardholder_name" type="string" required>
+Cardholder name (raw or tokenized)
+</ParamField>
+
+<ParamField path="payment_method.cvv" type="string" required>
+Security code (raw or tokenized)
+</ParamField>
+
+<ParamField path="payment_method.expiration_month" type="string" required>
+Expiration month (raw or tokenized)
+</ParamField>
+
+<ParamField path="payment_method.expiration_year" type="string" required>
+Expiration year (raw or tokenized)
+</ParamField>
+
+<ParamField path="return_url" type="string">
+URL for 3DS redirects
+</ParamField>
+
+</Accordion>
+
+<Accordion title="3D Secure Handling">
 
 Some card transactions may require 3D Secure authentication. When this occurs, the response will include a `next_action` object:
 
@@ -78,7 +98,9 @@ Some card transactions may require 3D Secure authentication. When this occurs, t
 }
 ```
 
-### 3D Secure Flow
+</Accordion>
+
+<Accordion title="3D Secure Flow">
 
 This is the usual flow of 3D Secure payments:
 
@@ -87,7 +109,9 @@ This is the usual flow of 3D Secure payments:
 3. Redirect customer back to your `return_url`
 4. Check transaction status using the `verify_transaction_status_url` or the main status endpoint
 
-### Status Flow
+</Accordion>
+
+<Accordion title="Status Flow">
 
 | Status       | Description                      |
 |--------------|----------------------------------|
@@ -95,11 +119,15 @@ This is the usual flow of 3D Secure payments:
 | `authorized` | Payment authorised (capturable)   |
 | `success`    | Payment completed                 |
 
+</Accordion>
+
+</AccordionGroup>
+
 ## SPEI Bank Transfers
 
 SPEI (Sistema de Pagos Electrónicos Interbancarios) enables real-time bank transfers within Mexico. SPEI payments are processed immediately during business hours.
 
-### SPEI Payment Request
+<Accordion title="SPEI Payment Request">
 
 Here's an example of a SPEI payment request:
 
@@ -119,12 +147,17 @@ Here's an example of a SPEI payment request:
 }
 ```
 
-### SPEI Payment Fields
+Where:
 
-| Field                | Type   | Required | Description           |
-|----------------------|--------|----------|-----------------------|
-| `payment_method.type`| string | Yes      | Must be `"SPEI"`      |
-| `currency`           | string | Yes      | Must be `"MXN"`       |
+<ParamField path="payment_method.type" type="string" required>
+Must be `"SPEI"`
+</ParamField>
+
+<ParamField path="currency" type="string" required>
+Must be `"MXN"`
+</ParamField>
+
+</Accordion>
 
 ### SPEI Operating Hours
 
@@ -156,6 +189,8 @@ Please verify specific hours or limitations with your financial institution or p
 
 ### Status Flow
 
+These are the statuses that can be returned by the SPEI payment method:
+
 | Status        | Description                   |
 |---------------|-------------------------------|
 | `pending`     | Awaiting bank processing      |
@@ -166,7 +201,9 @@ Please verify specific hours or limitations with your financial institution or p
 
 OXXO is Mexico's largest convenience store chain. Customers receive a payment voucher that can be paid at any OXXO location with cash.
 
-### OXXO Payment Request
+<AccordionGroup>
+
+<Accordion title="OXXO Payment Request">
 
 ```json
 {
@@ -184,14 +221,19 @@ OXXO is Mexico's largest convenience store chain. Customers receive a payment vo
 }
 ```
 
-### OXXO Payment Fields
+Where:
 
-| Field                 | Type   | Required | Description           |
-| --------------------- | ------ | -------- | --------------------- |
-| `payment_method.type` | string | Yes      | Must be `"OXXO"`      |
-| `currency`           | string | Yes      | Must be `"MXN"`       |
+<ParamField path="payment_method.type" type="string" required>
+Must be `"OXXO"`
+</ParamField>
 
-### OXXO Payment Response
+<ParamField path="currency" type="string" required>
+Must be `"MXN"`
+</ParamField>
+
+</Accordion>
+
+<Accordion title="OXXO Payment Response">
 
 The response includes payment instructions for the customer:
 
@@ -219,7 +261,13 @@ The response includes payment instructions for the customer:
 }
 ```
 
+</Accordion>
+
+</AccordionGroup>
+
 ### OXXO Payment Process
+
+The process for OXXO cash payments is the following:
 
 1. Customer gets the payment voucher (with barcode and reference code).
 2. Customer pops into any OXXO shop.
@@ -227,7 +275,7 @@ The response includes payment instructions for the customer:
 4. OXXO processes the payment and issues a receipt.
 5. Tonder sends a webhook to confirm the payment status.
 
-### Status Flow
+Here are the statuses that can be returned by the OXXO payment method:
 
 | Status     | Description                         |
 |------------|-------------------------------------|
@@ -238,7 +286,7 @@ The response includes payment instructions for the customer:
 
 Mercado Pago is a popular digital wallet across Latin America, offering instant payment processing with broad customer adoption.
 
-### Mercado Pago Payment Request
+<Accordion title="Mercado Pago Payment Request">
 
 Here's an example of a Mercado Pago payment request:
 
@@ -259,18 +307,23 @@ Here's an example of a Mercado Pago payment request:
 }
 ```
 
-### Mercado Pago Payment Fields
+Where:
 
-| Field                 | Type   | Required    | Description                    |
-| --------------------- | ------ | ----------- | ------------------------------ |
-| `payment_method.type` | string | Yes         | Must be `"MERCADOPAGO"`        |
-| `return_url`          | string | Recommended | URL for redirect after payment |
+<ParamField path="payment_method.type" type="string" required>
+Must be `"MERCADOPAGO"`
+</ParamField>
+
+<ParamField path="return_url" type="string">
+URL for redirect after payment
+</ParamField>
+
+</Accordion>
 
 ## SafetyPay Cash Payments
 
 SafetyPay provides alternative cash payment methods across Latin America, supporting various local payment options.
 
-### SafetyPay Payment Request
+<Accordion title="SafetyPay Payment Request">
 
 Here's an example of a SafetyPay payment request:
 
@@ -289,14 +342,15 @@ Here's an example of a SafetyPay payment request:
   "client_reference": "safetypay-001"
 }
 ```
+Where:
 
-### SafetyPay Payment Fields
+<ParamField path="payment_method.type" type="string" required>
+Must be `"SAFETYPAY"`
+</ParamField>
 
-| Field                 | Type   | Required | Description           |
-| --------------------- | ------ | -------- | --------------------- |
-| `payment_method.type` | string | Yes      | Must be `"SAFETYPAY"` |
+</Accordion>
 
-### Status Flow
+Here are the statuses that can be returned by the SafetyPay payment method:
 
 | Status     | Description                         |
 |------------|-------------------------------------|
@@ -307,29 +361,39 @@ Here's an example of a SafetyPay payment request:
 
 Here are some guidelines for selecting the best payment method for your use case:
 
-### For E-commerce
+<AccordionGroup>
+
+<Accordion title="For E-commerce">
 
 - **Cards**: Best for immediate payment confirmation
 - **SPEI**: Good for higher-value transactions
 - **Digital Wallets**: Popular among younger demographics
 
-### For Cash Payments
+</Accordion>
+
+<Accordion title="For Cash Payments">
 
 - **OXXO**: Ideal for customers without bank accounts
 - **SafetyPay**: Alternative for regions without OXXO coverage
 
-### For B2B Transactions
+</Accordion>
+
+<Accordion title="For B2B Transactions">
 
 - **SPEI**: Preferred for business-to-business payments
 - **Cards**: Good for smaller business purchases
+
+</Accordion>
+
+</AccordionGroup>
 
 ## Implementation Examples
 
 Here are some examples of how to implement payment methods in your application:
 
-### Multi-Method Payment Flow
+<CodeGroup>
 
-```python
+```python Multi-Method Payment Flow
 def process_payment_with_fallback(customer_data, amount, preferred_method):
     """Process payment with fallback methods"""
     
@@ -363,9 +427,7 @@ def process_payment_with_fallback(customer_data, amount, preferred_method):
     raise Exception("All payment methods failed")
 ```
 
-### Payment Method Availability Check
-
-```python
+```python Payment Method Availability Check
 def get_available_payment_methods(country="MX", currency="MXN"):
     """Get available payment methods for a region"""
     
@@ -379,7 +441,11 @@ def get_available_payment_methods(country="MX", currency="MXN"):
     return methods.get(country, {}).get(currency, ["CARD"])
 ```
 
+</CodeGroup>
+
 ## Error Scenarios
+
+The following tables show the common payment errors and method-specific errors.
 
 ### Common Payment Errors
 
@@ -402,26 +468,38 @@ def get_available_payment_methods(country="MX", currency="MXN"):
 
 ## Best Practices
 
-### Payment Method Selection
+Following are the best practices for implementing payment methods.
+
+<AccordionGroup>
+
+<Accordion title="Payment Method Selection">
 
 - Offer multiple payment options so customers can choose their preferred method.
 - Consider demographic differences, as younger users often want digital and older users may prefer cash.
 - Research regional payment preferences for each market you serve.
 - Use bank transfers for higher transaction amounts.
 
-### Implementation
+</Accordion>
+
+<Accordion title="Implementation">
 
 - Handle async payments by using webhooks for status updates.
 - Implement retry logic to recover from temporary network issues.
 - Validate all input data before sending requests.
 - Test thoroughly in the sandbox environment before going live.
 
-### Customer Experience
+</Accordion>
+
+<Accordion title="Customer Experience">
 
 - Provide clear instructions for cash payment methods.
 - Send status updates to keep customers informed about their payment.
 - Offer fallback options if a customer's first choice fails.
 - Optimise the payment flow for mobile devices.
+
+</Accordion>
+
+</AccordionGroup>
 
 ## Next Steps
 
