@@ -4,111 +4,133 @@ sidebarTitle: "Production Readiness"
 'og:description': ""
 ---
 
-## Overview
-
-This checklist ensures your integration is ready for production deployment with proper security, monitoring, and operational procedures.
+In this page you will find checklists and important information to ensure your integration is ready for production deployment.
 
 ## Pre-Production Checklist
 
+This checklist ensures your integration is ready for production deployment with proper security, monitoring, and operational procedures.
+
 ### API Configuration
 
-* [ ] **Production API credentials**: Production keys configured securely
-* [ ] **Environment separation**: Clear separation between staging and production
-* [ ] **Base URL configuration**: Production base URL configured
-* [ ] **API key rotation**: Process established for regular credential rotation
+- [ ] Configure production API credentials securely
+- [ ] Establish clear separation between staging and production environments
+- [ ] Set up production base URL configuration
+- [ ] Implement process for regular API key rotation
 
 ### Security Implementation
 
-* [ ] **HTTPS enforcement**: All communications over HTTPS
-* [ ] **Credential security**: API keys stored securely (environment variables, secret management)
-* [ ] **Request validation**: Input validation and sanitization implemented
-* [ ] **Error handling**: Secure error messages that don't expose sensitive data
+- [ ] Enforce HTTPS for all communications
+- [ ] Store API keys securely using environment variables or secret management
+- [ ] Implement input validation and sanitization
+- [ ] Ensure error messages don't expose sensitive data
 
 ### Integration Testing
 
-* [ ] **All payment methods tested**: Cards, SPEI, OXXO, Mercado Pago, SafetyPay
-* [ ] **All withdrawal methods tested**: SPEI and debit card withdrawals
-* [ ] **Error scenarios tested**: Declined payments, validation errors, network failures
-* [ ] **3DS flow tested**: Card payments requiring 3D Secure authentication
-* [ ] **Webhook integration tested**: Real-time notifications working correctly
+- [ ] Test all payment methods (Cards, SPEI, OXXO, Mercado Pago, SafetyPay)
+- [ ] Test all withdrawal methods (SPEI and debit card withdrawals)
+- [ ] Test error scenarios (declined payments, validation errors, network failures)
+- [ ] Test 3DS flow for card payments requiring 3D Secure authentication
+- [ ] Test webhook integration for real-time notifications
 
 ### Monitoring and Alerting
 
-* [ ] **Transaction monitoring**: Real-time monitoring of payment success/failure rates
-* [ ] **Error alerting**: Alerts for unusual error rates or API failures
-* [ ] **Performance monitoring**: Response time and latency tracking
-* [ ] **Webhook monitoring**: Webhook delivery success monitoring
+- [ ] Monitor payment success/failure rates in real-time
+- [ ] Set up alerts for unusual error rates or API failures
+- [ ] Track response time and latency performance
+- [ ] Monitor webhook delivery success rates
 
 ### Operational Procedures
 
-* [ ] **Support procedures**: Escalation paths for payment issues
-* [ ] **Incident response**: Procedures for handling payment failures
-* [ ] **Backup systems**: Fallback procedures for API outages
-* [ ] **Documentation**: Complete operational documentation for team
-* [ ] **Team training**: Staff trained on payment operations and troubleshooting
+- [ ] Establish escalation paths for payment issues
+- [ ] Create procedures for handling payment failures
+- [ ] Implement fallback procedures for API outages
+- [ ] Complete operational documentation for team
+- [ ] Train staff on payment operations and troubleshooting
 
 ## Security Best Practices
 
-### Credential Management
+Here are some security best practices to follow.
 
-1. **Store credentials securely** - Use environment variables or secret management
-2. **Use HTTPS** - Ensure all communications are encrypted
-3. **Implement rate limiting** - Protect your webhook endpoints
-4. **Log security events** - Monitor for suspicious activity
-5. **Keep credentials rotated** - Regularly rotate API keys
+<AccordionGroup>
 
-### Performance Optimization
+<Accordion title="Credential Management">
 
-1. **Connection pooling** - Reuse HTTP connections
-2. **Timeout configuration** - Set appropriate timeouts (30s recommended)
-3. **Retry with backoff** - Implement exponential backoff for retries
-4. **Asynchronous processing** - Use webhooks for status updates
-5. **Cache lookups** - Cache transaction statuses when appropriate
+- **Store credentials securely** – Use environment variables or a secrets manager
+- **Use HTTPS** – Make sure all communications are encrypted
+- **Implement rate limiting** – Protect your webhook endpoints from abuse
+- **Log security events** – Keep an eye out for anything suspicious
+- **Keep credentials rotated** – Regularly rotate your API keys
+
+</Accordion>
+
+<Accordion title="Performance Optimisation">
+
+- **Connection pooling** – Reuse HTTP connections where possible
+- **Timeout configuration** – Set sensible timeouts (30s is a good starting point)
+- **Retry with backoff** – Use exponential backoff for retries
+- **Asynchronous processing** – Use webhooks for status updates instead of polling
+- **Cache lookups** – Cache transaction statuses when it makes sense
+
+</Accordion>
+
+</AccordionGroup>
 
 ## Final Deployment Checklist
 
-### Go-Live Readiness
+For the final deployment, ensure you have completed the following checklist.
 
-* [ ] **Security audit completed**: All security measures implemented and tested
-* [ ] **Performance testing passed**: Load testing with expected traffic volumes
-* [ ] **Monitoring active**: All monitoring and alerting systems operational
-* [ ] **Backup procedures tested**: Disaster recovery procedures validated
-* [ ] **Team training completed**: All team members trained on production procedures
-* [ ] **Documentation updated**: All operational documentation current
-* [ ] **Rollback plan ready**: Clear rollback procedures in case of issues
-* [ ] **Support contacts established**: Emergency contact procedures defined
-* [ ] **Compliance verified**: All regulatory requirements met
-* [ ] **Final testing completed**: End-to-end testing in production environment
+- [ ] Complete security audit with all measures implemented and tested
+- [ ] Pass performance testing with load testing at expected traffic volumes
+- [ ] Activate all monitoring and alerting systems
+- [ ] Test backup procedures and validate disaster recovery procedures
+- [ ] Complete team training on production procedures
+- [ ] Update all operational documentation to current state
+- [ ] Prepare clear rollback procedures in case of issues
+- [ ] Establish emergency contact procedures and support contacts
+- [ ] Verify compliance with all regulatory requirements
+- [ ] Complete end-to-end testing in production environment
 
 ### Post-Deployment Monitoring
 
-#### First 24 Hours
+We recommend monitoring the following metrics for the first 24 hours and first week. Follow the procedures below to ensure everything is running smoothly.
 
-* Monitor all payment flows continuously
-* Check error rates every 15 minutes
-* Verify webhook delivery success
-* Monitor system performance metrics
-* Have team member on standby for issues
+<AccordionGroup>
 
-#### First Week
+<Accordion title="First 24 Hours">
 
-* Daily metrics review
-* Weekly performance reports
-* Customer feedback monitoring
-* Error pattern analysis
-* System optimization based on real traffic
+- Keep a close eye on all payment flows, monitoring them continuously
+- Check error rates every 15 minutes and investigate any spikes
+- Make sure webhook deliveries are successful and retry any failures
+- Track key system performance metrics (CPU, memory, latency, etc.)
+- Have a team member on standby to respond quickly to any issues
 
-#### Ongoing Operations
+</Accordion>
 
-* Monthly security reviews
-* Quarterly performance assessments
-* Regular disaster recovery testing
-* Continuous monitoring optimization
-* Regular team training updates
+<Accordion title="First Week">
+
+- Review daily metrics and logs for any anomalies
+- Generate and review weekly performance reports
+- Collect and monitor customer feedback for any pain points
+- Analyse error patterns to spot recurring issues
+- Optimise the system based on real traffic and usage data
+
+</Accordion>
+
+<Accordion title="Ongoing Operations">
+
+- Carry out monthly security reviews and address any findings
+- Run quarterly performance assessments to ensure everything’s running smoothly
+- Regularly test disaster recovery procedures
+- Continuously improve monitoring and alerting setups
+- Keep team training up to date with regular refreshers
+
+</Accordion>
+
+</AccordionGroup>
 
 ## Next Steps
 
-* Review Support & Resources for ongoing operational support
-* Check Rate Limits for production traffic planning
-* Monitor Error Handling patterns in production
-* Set up Webhooks monitoring and alerting
+- Review [Support & Resources](./support-and-resources) for ongoing operational support
+- Check [Rate Limits](../api-reference/rate-limits) for production traffic planning
+- Monitor [Error Handling](../api-reference/error-handling) patterns in production
+- Set up [Webhooks](../api-reference/webhooks) monitoring and alerting
