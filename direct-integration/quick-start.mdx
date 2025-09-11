@@ -18,11 +18,11 @@ Before you begin, make sure you have the following:
 
 ## Step 1: Set Up Your Environment
 
-Use the sandbox environment for testing all features without processing real transactions.
+Use the sandbox environment for testing all features without processing real transactions. Use the base URL below when making requests.
 
-### Base URL 
-
-`https://stage.tonder.io/api/v1/`
+```http Base URL
+https://stage.tonder.io/api/v1/
+```
 
 ### Required Headers
 
@@ -38,9 +38,9 @@ Content-Type: application/json
 
 For secure API access, you must generate an HMAC signature for each request. The signature is a hash of the request payload, calculated using your secret key.
 
-Here is a full example of a Python implementation for generating the signature.
+<Accordion title="Python Implementation">
 
-### Python Implementation
+Here is a full example of a Python implementation for generating the signature.
 
 ```python
 import json
@@ -101,11 +101,15 @@ headers = {
 }
 ```
 
+</Accordion>
+
 ## Step 3: Make Your First Payment
 
-This step will guide you through making a basic card payment.
+Make your first payment by sending a POST request to the process endpoint. You can use the following request body to test a card payment.
 
-### Basic Card Payment Request
+<AccordionGroup>
+
+<Accordion title="Basic Card Payment Request">
 
 This is an example request to the process endpoint.
 
@@ -125,12 +129,14 @@ This is an example request to the process endpoint.
     "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
     "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
     "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
-  },,
+  },
   "client_reference": "test-payment-001"
 }
 ```
 
-### Expected Response
+</Accordion>
+
+<Accordion title="Expected Response">
 
 A successful request returns a `201` Created status code and a transaction object.
 
@@ -150,16 +156,17 @@ A successful request returns a `201` Created status code and a transaction objec
 }
 ```
 
-### Status Check Request
+</Accordion>
+
+<Accordion title="Status Check Request">
 
 After a payment is initiated, you can check its status by making a GET request.
-
 
 ```http
 GET /transactions/{transaction_id}/
 ```
 
-### Sample Status Response
+The expected response is as follows:
 
 ```json
 {
@@ -178,13 +185,17 @@ GET /transactions/{transaction_id}/
 }
 ```
 
+</Accordion>
+
+</AccordionGroup>
+
 ## Test Different Payment Methods
 
-After successfully completing the card payment, you can experiment with other payment methods.
+After successfully completing the card payment, you can experiment with other payment methods. Below are the example request bodies for SPEI and OXXO cash payments.
 
-### SPEI Bank Transfer
+<CodeGroup>
 
-```json
+```json SPEI Bank Transfer
 {
   "operation_type": "payment",
   "amount": 500.00,
@@ -200,9 +211,7 @@ After successfully completing the card payment, you can experiment with other pa
 }
 ```
 
-### OXXO Cash Payment
-
-```json
+```json OXXO Cash Payment
 {
   "operation_type": "payment",
   "amount": 250.00,
@@ -217,6 +226,8 @@ After successfully completing the card payment, you can experiment with other pa
   "client_reference": "oxxo-test-001"
 }
 ```
+
+</CodeGroup>
 
 ## Test Data for Different Scenarios
 
@@ -329,51 +340,55 @@ if __name__ == "__main__":
 
 ## Common Testing Scenarios
 
-Before going live, it’s a good idea to run through these typical test cases to make sure your integration is working as expected:
+Before going live, it's a good idea to run through these typical test cases to make sure your integration is working as expected:
 
-### Successful Payment
+<AccordionGroup>
+
+<Accordion title="Successful Payment">
 
 To verify that your integration can process a standard payment, use the following test scenario:
 
-- **Test card number:** `4242424242424242`
-- **How to test:** Submit a payment request using the above card details.
-- **What should happen:** The API should return a response with a status of either `authorized` or `success`.
-- **What to look for:** Make sure the response includes a valid transaction ID, confirming that the payment was processed successfully.
+- Test card number: `4242424242424242`
+- How to test: Submit a payment request using the above card details.
+- What should happen: The API should return a response with a status of either `authorized` or `success`.
+- What to look for: Make sure the response includes a valid transaction ID, confirming that the payment was processed successfully.
 
----
+</Accordion>
 
-### Declined Payment
+<Accordion title="Declined Payment">
 
 This scenario checks how your integration handles declined transactions:
 
-- **Test card number:** `4000000000000002`
-- **How to test:** Attempt a payment using this card number.
-- **What should happen:** The API should respond with a status of `declined`.
-- **What to look for:** The response should contain an error message explaining why the payment was declined. Confirm that your application displays or logs this error appropriately.
+- Test card number: `4000000000000002`
+- How to test: Attempt a payment using this card number.
+- What should happen: The API should respond with a status of `declined`.
+- What to look for: The response should contain an error message explaining why the payment was declined. Confirm that your application displays or logs this error appropriately.
 
----
+</Accordion>
 
-### 3D Secure Challenge
+<Accordion title="3D Secure Challenge">
 
 Test your handling of payments that require additional authentication (3D Secure):
 
-- **Test card number:** `4000000000000119`
-- **How to test:** Initiate a payment with this card number.
-- **What should happen:** The API will return a status of `pending` and include a `next_action.redirect_to_url` field in the response.
-- **What to do:** Simulate the customer being redirected to the provided URL and completing the authentication process. Ensure your integration can handle the redirect and update the transaction status accordingly.
+- Test card number: `4000000000000119`
+- How to test: Initiate a payment with this card number.
+- What should happen: The API will return a status of `pending` and include a `next_action.redirect_to_url` field in the response.
+- What to do: Simulate the customer being redirected to the provided URL and completing the authentication process. Ensure your integration can handle the redirect and update the transaction status accordingly.
 
----
+</Accordion>
 
-### OXXO Cash Payment
+<Accordion title="OXXO Cash Payment">
 
 Validate your support for cash payments via OXXO:
 
-- **Payment method:** Select OXXO as the payment method in your request.
-- **How to test:** Submit a payment request using OXXO.
-- **What should happen:** The API should respond with a status of `pending` and provide a `payment_instructions` object.
-- **What to look for:** Check that the response includes both a barcode and a reference code. These details are needed for the customer to complete the payment at an OXXO location. Make sure your application displays these instructions clearly to the user.
+- Payment method: Select OXXO as the payment method in your request.
+- How to test: Submit a payment request using OXXO.
+- What should happen: The API should respond with a status of `pending` and provide a `payment_instructions` object.
+- What to look for: Check that the response includes both a barcode and a reference code. These details are needed for the customer to complete the payment at an OXXO location. Make sure your application displays these instructions clearly to the user.
 
----
+</Accordion>
+
+</AccordionGroup>
 
 ## Troubleshooting
 
@@ -386,13 +401,9 @@ If you run into issues during testing, here are some common problems and how to 
 | 500 Server Error         | Try again, and if it keeps happening, contact support           |
 | Rate limit exceeded      | Add a delay and implement exponential backoff before retrying   |
 
----
-
 ## What’s Next?
 
-After you’ve confirmed payments are working in the sandbox:
-
-1. **Review Payment Methods** – Explore all the payment options you can offer
-2. **Set Up Webhooks** – Get real-time updates on transaction events
-3. **Implement Error Handling** – Make sure your app handles failures smoothly
-4. **Go Live** – Follow the Production Readiness checklist to launch safely
+- [Review Payment Methods](../api-reference/payment-methods) – Explore all the payment options you can offer
+- [Set Up Webhooks](../api-reference/webhooks) – Get real-time updates on transaction events
+- [Implement Error Handling](../api-reference/error-handling) – Make sure your app handles failures smoothly
+- [Go Live](../resources/production-readiness) – Follow the Production Readiness checklist to launch safely

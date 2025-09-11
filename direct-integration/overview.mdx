@@ -7,6 +7,8 @@ title: "API Integration Overview"
 
 ### Key Features
 
+Key features of the Direct API include:
+
 <Columns cols={2}>
   <Card title="Single Endpoint Processing">
     Handle payments and withdrawals through one API.
@@ -28,6 +30,8 @@ title: "API Integration Overview"
 
 ### Getting Started Process
 
+Here are the steps to get started with Tonder's Direct API.
+
 <Steps>
   <Step title="Sign in or request access">
     Sign in at [app.tonder.io](https://app.tonder.io) or request an account via your Tonder CSM.
@@ -43,7 +47,6 @@ title: "API Integration Overview"
   </Step>
 </Steps>
 
-***
 
 ## Authentication
 
@@ -77,16 +80,19 @@ HMAC validation can be enabled per business; fields used in the signature are co
 
 </Accordion.Group>
 
-***
-
 ## Base URLs
+
+The base URL to use for your requests is the following:
 
 | Environment    | Base URL                          | Purpose                 |
 | -------------- | --------------------------------- | ----------------------- |
 | **Stage**      | `https://stage.tonder.io/api/v1/` | Testing and development |
 | **Production** | `https://app.tonder.io/api/v1/`   | Live transactions       |
 
-***
+<Note>
+For detailed information on endpoints, request/response formats, and error handling, see the [API Reference](#documentation-structure) section below. It covers everything from card tokenisation and core endpoints to webhooks and status checking.
+</Note>
+
 
 ## API Architecture
 
@@ -111,43 +117,55 @@ The API uses a single `/process/` endpoint that handles both payments and withdr
   <Card title="Debit Card">Direct card deposits (instant).</Card>
 </Columns>
 
-***
-
 ## Documentation Structure
 
-This documentation is organized into the following sections:
+This documentation is organised into the following sections:
 
-### API Reference
+<AccordionGroup>
 
-- **Card Tokenisation** – Secure card data handling
-- **Core Endpoints** – Main API operations
-- **Request Structure** – API request formatting
-- **Response Format** – API response handling
-- **Status Checking** – Transaction monitoring
+<Accordion title="API Reference">
 
-### Payment Processing
+- [Card Tokenisation](../api-reference/card-tokenisation) – Secure card data handling
+- [Core Endpoints](../api-reference/core-endpoints) – Main API operations
+- [Request Structure](../api-reference/request-structure) – API request formatting
+- [Response Format](../api-reference/response-format) – API response handling
+- [Status Checking](../api-reference/status-checking) – Transaction monitoring
 
-- **Payment Methods** – All supported payment options
-- **Withdrawals** – Payout processing
+</Accordion>
 
-### Integration
+<Accordion title="Payment Processing">
 
-- **Webhooks** – Real-time notifications
-- **Error Handling** – Error management
+- [Payment Methods](../api-reference/payment-methods) – All supported payment options
+- [Withdrawals](../api-reference/withdrawals) – Payout processing
 
-### Regional Reference
+</Accordion>
 
-- **Mexican Banking** – Regional requirements
+<Accordion title="Integration">
 
-### Resources
+- [Webhooks](../api-reference/webhooks) – Real-time notifications
+- [Error Handling](../api-reference/error-handling) – Error management
 
-- **Production Readiness** – Go-live checklist
-- **Rate Limits** – API usage limits
-- **Support & Resources** – Help and resources
+</Accordion>
 
-***
+<Accordion title="Regional Reference">
+
+- [Mexican Banking](../regional-reference/mexican-banking) – Regional requirements
+
+</Accordion>
+
+<Accordion title="Resources">
+
+- [Production Readiness](./resources/production-readiness) – Go-live checklist
+- [Rate Limits](./resources/rate-limits) – API usage limits
+- [Support & Resources](./resources/support) – Help and resources
+
+</Accordion>
+
+</AccordionGroup>
 
 ## Support Channels
+
+If in need of support, you can contact us via the following channels:
 
 | Channel                     | Response Time | Best For                 |
 | --------------------------- | ------------- | ------------------------ |
@@ -155,21 +173,24 @@ This documentation is organized into the following sections:
 | **Developer Documentation** | Instant       | API reference and guides |
 | **Status Page**             | Real-time     | Service availability     |
 
+<Note>
+For more details on support options and getting help, check out the [Support & Resources](./resources/support) page.
+</Note>
+
+
 ### Useful Links
 
-- **Dashboard**: [https://app.tonder.io](https://app.tonder.io)
-- **API Status**: [https://status.tonder.io](https://status.tonder.io)
-- **Developer Support**: [developers@tonder.io](mailto:developers@tonder.io)
+Some useful links to help you with your integration include:
 
-***
+| Resource            | Link/Contact                                      | What it’s for                        |
+|---------------------|---------------------------------------------------|--------------------------------------|
+| **Dashboard**       | [https://app.tonder.io](https://app.tonder.io)    | Manage transactions and API keys     |
+| **API Status**      | [https://status.tonder.io](https://status.tonder.io) | Check real-time service status       |
+| **Developer Support** | [developers@tonder.io](mailto:developers@tonder.io) | Get help with integration questions  |
 
 ## Next Steps
 
-- Follow the Quick Start Guide for hands-on implementation
-- Explore Payment Methods for supported options
-- Review Core Endpoints for API specifications
-- Set up Webhooks for real-time notifications
-
-***
-
-_Tonder API Documentation - Complete API reference for payment processing across Latin America._
+- [Quick Start Guide](./resources/getting-started) – Get stuck in with a hands-on setup
+- [Payment Methods](./payment-methods/overview) – See which payment options are supported
+- [Core Endpoints](./api-reference/core-endpoints) – Check out the main API specs
+- [Webhooks](./api-reference/webhooks) – Set up real-time notifications
