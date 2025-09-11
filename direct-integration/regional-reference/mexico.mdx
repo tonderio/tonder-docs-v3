@@ -84,9 +84,10 @@ Where:
 
 The check digit is calculated using a weighted sum algorithm:
 
-**Python Implementation:**
 
-```python
+<CodeGroup>
+
+```python Python Implementation
 def validate_clabe(clabe):
     """Validate CLABE number using check digit algorithm"""
     
@@ -114,9 +115,7 @@ is_valid = validate_clabe(clabe)
 print(f"CLABE {clabe} is {'valid' if is_valid else 'invalid'}")
 ```
 
-**Java Implementation:**
-
-```java
+```java Java Implementation
 public class CLABEValidator {
     
     private static final int[] WEIGHTS = {3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7};
@@ -152,9 +151,13 @@ public class CLABEValidator {
 }
 ```
 
+</CodeGroup>
+
 ### CLABE Components Extraction
 
 The code block below shows how to parse the CLABE into its components.
+
+<Accordion title="Python Implementation">
 
 ```python
 def parse_clabe(clabe):
@@ -178,6 +181,8 @@ print(f"Branch: {clabe_parts['branch_code']}")
 print(f"Account: {clabe_parts['account_number']}")
 ```
 
+</Accordion>
+
 ## RFC (Tax ID) Format
 
 RFC (Registro Federal de Contribuyentes) is Mexico's tax identification system.
@@ -200,6 +205,7 @@ RFC (Registro Federal de Contribuyentes) is Mexico's tax identification system.
 
 Here is an example of how to validate the RFC format.
 
+<Accordion title="Python Implementation">
 ```python
 import re
 
@@ -232,9 +238,13 @@ print(f"Individual RFC {individual_rfc}: {'Valid' if validate_rfc(individual_rfc
 print(f"Business RFC {business_rfc}: {'Valid' if validate_rfc(business_rfc) else 'Invalid'}")
 ```
 
+</Accordion>
+
 ### RFC Type Detection
 
 The code block below shows how to determine the type of RFC.
+
+<Accordion title="Python Implementation">
 
 ```python
 def get_rfc_type(rfc):
@@ -258,11 +268,13 @@ rfc_type = get_rfc_type(rfc)
 print(f"RFC {rfc} is for: {rfc_type}")
 ```
 
+</Accordion>
+
 ### SPEI Timing and Operational Constraints
 
 SPEI operates with specific timing considerations that affect when transfers can be processed and completed. Understanding these constraints helps ensure reliable payment processing.
 
-<Expandable title="Operating Hours">
+<Accordion title="Operating Hours">
 
 | Day/Period                | Processing Hours                | Notes                        |
 |---------------------------|---------------------------------|------------------------------|
@@ -284,9 +296,9 @@ Possible delays may occur due to:
 Please verify specific hours or limitations with your financial institution or provider.
 </Note>
 
-</Expandable>
+</Accordion>
 
-<Expandable title="Processing Time Examples">
+<Accordion title="Processing Time Examples">
 
 | Submission Time | Day       | Expected Processing Time  |
 | --------------- | --------- | ------------------------- |
@@ -307,34 +319,36 @@ Please verify specific hours or limitations with your financial institution or p
 SPEI itself doesn't enforce business day cut-off times anymore, so in theory, transfers can go through at any hour. However, your provider or bank might still have their own restrictions or delays—so it's always worth double-checking if you need funds to arrive urgently.
 </Note>
 
-</Expandable>
+</Accordion>
 
-<Expandable title="Holiday Calendar">
+<Accordion title="Holiday Calendar">
 
 **Major Mexican Holidays Affecting SPEI:**
 
-* New Year's Day (January 1)
-* Constitution Day (February 5)
-* Benito Juárez's Birthday (March 21)
-* Easter (varies)
-* Labor Day (May 1)
-* Independence Day (September 16)
-* Revolution Day (November 20)
-* Christmas Day (December 25)
+- New Year's Day (January 1)
+- Constitution Day (February 5)
+- Benito Juárez's Birthday (March 21)
+- Easter (varies)
+- Labor Day (May 1)
+- Independence Day (September 16)
+- Revolution Day (November 20)
+- Christmas Day (December 25)
 
-</Expandable>
+</Accordion>
 
-<Expandable title="Time Zone Considerations">
+<Accordion title="Time Zone Considerations">
 
-**Mexico City Time (Central Time):**
+Mexico City Time (Central Time):
 
-* **UTC Offset**: UTC-6 (Standard Time)
-* **UTC Offset**: UTC-5 (Daylight Time)
-* **Daylight Saving**: First Sunday in April to last Sunday in October
+- UTC Offset: UTC-6 (Standard Time)
+- UTC Offset: UTC-5 (Daylight Time)
+- Daylight Saving: First Sunday in April to last Sunday in October
 
-</Expandable>
+</Accordion>
 
 The code block below shows how to check if SPEI is currently operating.
+
+<Accordion title="Python Implementation">
 
 ```python
 from datetime import datetime
@@ -370,6 +384,8 @@ is_operating = is_spei_operating_time(now)
 print(f"SPEI is {'operating' if is_operating else 'not operating'} right now")
 ```
 
+</Accordion>
+
 ## Bank Account Types
 
 The table below shows the different account types in Mexico.
@@ -403,6 +419,8 @@ For SPEI withdrawals, the account type is usually picked up automatically from t
 ## Complete Validation Function
 
 The code block below shows a complete validation function for Mexican banking data.
+
+<Accordion title="Python Implementation">
 
 ```python
 def validate_mexican_banking_data(data):
@@ -452,11 +470,13 @@ else:
     print("Validation errors:", validation_result['errors'])
 ```
 
+</Accordion>
+
 ## Common Implementation Patterns
 
 Expand the items below to see the code for some common implementation patterns.
 
-<Expandable title="CLABE Formatting for Display">
+<Accordion title="CLABE Formatting for Display">
 
 ```python
 def format_clabe_for_display(clabe):
@@ -474,9 +494,9 @@ formatted = format_clabe_for_display(clabe)
 print(f"Formatted CLABE: {formatted}")
 ```
 
-</Expandable>
+</Accordion>
 
-<Expandable title="Account Masking for Security">
+<Accordion title="Account Masking for Security">
 
 ```python
 def mask_account_number(clabe):
@@ -494,7 +514,7 @@ masked = mask_account_number(clabe)
 print(f"Masked CLABE: {masked}")
 ```
 
-</Expandable>
+</Accordion>
 
 ## Error Messages
 
