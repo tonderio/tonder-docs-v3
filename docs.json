@@ -155,6 +155,7 @@
                 "pages": [
                   "direct-integration/api-reference/card-tokenization",
                   "direct-integration/api-reference/core-endpoints",
+                  "direct-integration/api-reference/raw-card-processing",
                   "direct-integration/api-reference/request-structure",
                   "direct-integration/api-reference/response-format",
                   "direct-integration/api-reference/transation-status-check"
