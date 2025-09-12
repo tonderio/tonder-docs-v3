@@ -1,0 +1,597 @@
+---
+title: "Transaction Status Check"
+sidebarTitle: "Transaction Status Check"
+'og:description': ""
+---
+
+The transaction status endpoint allows you to retrieve the current status and details of any transaction (payment or withdrawal) at any time. This is essential for monitoring transaction progress, especially for asynchronous payment methods like SPEI transfers and cash payments.
+
+## Get Transaction Status
+
+Use this endpoint to get the current status and details of any transaction.
+
+```http
+GET /transactions/{transaction_id}/
+```
+
+<AccordionGroup>
+
+<Accordion title="Parameters">
+
+<ParamField path="transaction_id" type="string" required>
+The unique transaction identifier returned from the `/process/` endpoint
+</ParamField>
+
+**Headers:**
+
+```http
+Authorization: Token your_api_key
+X-Signature-Transaction: calculated_hmac_signature
+Content-Type: application/json
+```
+</Accordion>
+
+<Accordion title="Example Request">
+
+```http
+GET /transactions/550e8400-e29b-41d4-a716-446655440000/
+Authorization: Token your_api_key
+X-Signature-Transaction: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+Content-Type: application/json
+```
+
+</Accordion>
+
+</AccordionGroup>
+
+## Response Examples
+
+Below are some examples of responses for payment and withdrawal transactions.
+
+<AccordionGroup>
+
+<Accordion title="Payment Status Response">
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "success",
+  "amount": 150.00,
+  "currency": "MXN",
+  "merchant_reference": "order-789",
+  "created_at": "2024-07-26T10:30:00Z",
+  "updated_at": "2024-07-26T10:32:15Z",
+  "completion_details": {
+    "completed_at": "2024-07-26T10:32:15Z",
+    "authorization_code": "AUTH123456"
+  }
+}
+```
+
+</Accordion>
+
+<Accordion title="Withdrawal Status Response">
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440001",
+  "operation_type": "withdrawal",
+  "status": "processing",
+  "amount": 750.00,
+  "currency": "MXN",
+  "merchant_reference": "payout-001",
+  "created_at": "2024-07-26T10:30:00Z",
+  "updated_at": "2024-07-26T10:35:22Z",
+  "transfer_details": {
+    "transfer_method": "SPEI",
+    "beneficiary_account": "***************4567",
+    "estimated_completion": "2024-07-26T18:00:00Z"
+  }
+}
+```
+
+</Accordion>
+
+<Accordion title="Pending OXXO Payment Response">
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440002",
+  "operation_type": "payment",
+  "status": "pending",
+  "amount": 250.00,
+  "currency": "MXN",
+  "merchant_reference": "cash-payment-789",
+  "created_at": "2024-07-26T10:30:00Z",
+  "updated_at": "2024-07-26T10:30:00Z",
+  "payment_instructions": {
+    "reference_code": "99900012345678",
+    "barcode": "||99900012345678||",
+    "store_name": "OXXO",
+    "expiration_date": "2024-07-29T23:59:59Z",
+    "instructions": [
+      "Acude a cualquier tienda OXXO",
+      "Presenta este código de barras en caja",
+      "Paga exactamente $250.00 MXN en efectivo"
+    ]
+  },
+  "voucher_pdf": "https://api.tonder.io/vouchers/abc123.pdf"
+}
+```
+
+</Accordion>
+
+</AccordionGroup>
+
+## Status Values Reference
+
+Check the following table to see the different status values that can be returned by the API.
+
+| Status             | Description                          | Typical Duration | Next Steps                  |
+| ------------------ | ------------------------------------ | ---------------- | --------------------------- |
+| `pending`          | Transaction awaiting completion      | Varies by method | Monitor or wait for webhook |
+| `on_hold`          | Transaction temporarily held         | Manual review    | Wait for review completion  |
+| `processing`       | Transaction being processed          | Minutes to hours | Monitor for completion      |
+| `sent_to_provider` | Sent to payment provider             | Minutes          | Monitor for completion      |
+| `success`          | Transaction successfully completed   | N/A              | Transaction complete        |
+| `paid_full`        | Payment completed in full            | N/A              | Transaction complete        |
+| `in_transit`       | Payment in transit to destination    | Hours            | Monitor for completion      |
+| `authorized`       | Payment authorized (cards only)      | N/A              | Transaction complete        |
+| `canceled`         | Transaction was cancelled            | N/A              | No further action           |
+| `declined`         | Payment declined by provider/issuer  | N/A              | Try different method        |
+| `rejected`         | Transaction was rejected             | N/A              | Try different method        |
+| `failed`           | Transaction processing failed        | N/A              | Check error details         |
+| `Unknown`          | Status cannot be determined          | N/A              | Contact support             |
+| `expired`          | Transaction or authorization expired | N/A              | Create new transaction      |
+
+### Status by Payment Method
+
+Each payment method has a different status progression. Check the following items to see the different status progression for each payment method.
+
+<AccordionGroup>
+  <Accordion title="Card Payments">
+  
+**Card Payments Status Progression:**
+
+- `pending` → `authorized` → `success`
+- `pending` → `declined`
+- `pending` → `failed`
+
+</Accordion>
+<Accordion title="SPEI Transfers">
+  
+**SPEI Transfers Status Progression:**
+
+- `pending` → `processing` → `success`
+- `pending` → `failed`
+
+</Accordion>
+<Accordion title="Cash Payments (OXXO/SafetyPay)">
+  
+**Cash Payments Status Progression:**
+
+- `pending` → `success` (when customer pays)
+- `pending` → `expired` (if not paid by expiration)
+
+</Accordion>
+<Accordion title="Withdrawals">
+  
+**Withdrawals Status Progression:**
+
+- `pending` → `processing` → `success`
+- `pending` → `failed`
+
+</Accordion>
+</AccordionGroup>
+
+## Response Fields
+
+Below are the fields that are included in the response.
+
+| Field                | Type    | Description                       |
+| -------------------- | ------- | --------------------------------- |
+| `id`                 | string  | Unique transaction identifier     |
+| `operation_type`     | string  | `"payment"` or `"withdrawal"`     |
+| `status`             | string  | Current transaction status        |
+| `amount`             | decimal | Transaction amount                |
+| `currency`           | string  | Currency code                     |
+| `merchant_reference` | string  | Your reference identifier         |
+| `created_at`         | string  | ISO 8601 timestamp of creation    |
+| `updated_at`         | string  | ISO 8601 timestamp of last update |
+
+### Completion Details fields
+
+When the field `completion_details` is present in the response, it means that the transaction has been completed. Here are the fields that are included in the `completion_details` object.
+
+| Field                                   | Type   | Description                |
+| --------------------------------------- | ------ | -------------------------- |
+| `completion_details.completed_at`       | string | Completion timestamp       |
+| `completion_details.authorization_code` | string | Payment authorization code |
+| `completion_details.reference_number`   | string | Provider reference number  |
+
+### Transfer Details Fields
+
+The field `transfer_details` is present in the response when the transaction is a withdrawal. Here are the fields that are included in the `transfer_details` object.
+
+| Field                                   | Type   | Description                |
+| --------------------------------------- | ------ | -------------------------- |
+| `transfer_details.transfer_method`      | string | Transfer method used       |
+| `transfer_details.beneficiary_account`  | string | Masked beneficiary account |
+| `transfer_details.estimated_completion` | string | Estimated completion time  |
+
+## Implementation Examples
+
+Here are some examples of how to implement the status check in different programming languages.
+
+<CodeGroup>
+
+```python Python
+import requests
+import time
+
+class TransactionMonitor:
+    def __init__(self, api_key, base_url):
+        self.api_key = api_key
+        self.base_url = base_url
+        self.headers = {
+            'Authorization': f'Token {api_key}',
+            'Content-Type': 'application/json'
+        }
+    
+    def get_transaction_status(self, transaction_id):
+        """Get current transaction status"""
+        response = requests.get(
+            f"{self.base_url}transactions/{transaction_id}/",
+            headers=self.headers
+        )
+        
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise Exception(f"Status check failed: {response.status_code}")
+    
+    def wait_for_completion(self, transaction_id, timeout=300, poll_interval=10):
+        """Wait for transaction to complete with polling"""
+        start_time = time.time()
+        
+        while time.time() - start_time < timeout:
+            try:
+                status_data = self.get_transaction_status(transaction_id)
+                current_status = status_data['status']
+                
+                # Check if transaction is complete
+                if current_status in ['success', 'paid_full', 'authorized']:
+                    return {
+                        'completed': True,
+                        'status': current_status,
+                        'data': status_data
+                    }
+                
+                # Check for failure states
+                elif current_status in ['failed', 'declined', 'rejected', 'expired']:
+                    return {
+                        'completed': True,
+                        'status': current_status,
+                        'data': status_data,
+                        'error': True
+                    }
+                
+                # Transaction still pending, continue polling
+                print(f"Transaction {transaction_id} status: {current_status}")
+                time.sleep(poll_interval)
+                
+            except Exception as e:
+                print(f"Error checking status: {e}")
+                time.sleep(poll_interval)
+        
+        # Timeout reached
+        return {
+            'completed': False,
+            'status': 'timeout',
+            'error': True
+        }
+    
+    def monitor_multiple_transactions(self, transaction_ids):
+        """Monitor multiple transactions simultaneously"""
+        results = {}
+        
+        for transaction_id in transaction_ids:
+            try:
+                status_data = self.get_transaction_status(transaction_id)
+                results[transaction_id] = {
+                    'status': status_data['status'],
+                    'amount': status_data['amount'],
+                    'updated_at': status_data['updated_at']
+                }
+            except Exception as e:
+                results[transaction_id] = {
+                    'status': 'error',
+                    'error': str(e)
+                }
+        
+        return results
+
+# Example usage
+def main():
+    monitor = TransactionMonitor(
+        api_key="your_api_key",
+        base_url="https://stage.tonder.io/api/v1/"
+    )
+    
+    # Check single transaction
+    transaction_id = "550e8400-e29b-41d4-a716-446655440000"
+    
+    try:
+        status = monitor.get_transaction_status(transaction_id)
+        print(f"Transaction status: {status['status']}")
+        
+        # Wait for completion if pending
+        if status['status'] in ['pending', 'processing']:
+            result = monitor.wait_for_completion(transaction_id)
+            if result['completed'] and not result.get('error'):
+                print("Transaction completed successfully!")
+            else:
+                print(f"Transaction failed or timed out: {result['status']}")
+                
+    except Exception as e:
+        print(f"Error: {e}")
+```
+
+```java Java
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.URI;
+import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class TransactionMonitor {
+    private final String apiKey;
+    private final String baseUrl;
+    private final HttpClient client;
+    private final ObjectMapper mapper;
+    
+    public TransactionMonitor(String apiKey, String baseUrl) {
+        this.apiKey = apiKey;
+        this.baseUrl = baseUrl;
+        this.client = HttpClient.newHttpClient();
+        this.mapper = new ObjectMapper();
+    }
+    
+    public Map<String, Object> getTransactionStatus(String transactionId) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "transactions/" + transactionId + "/"))
+                .header("Authorization", "Token " + apiKey)
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+            
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            
+            if (response.statusCode() == 200) {
+                return mapper.readValue(response.body(), Map.class);
+            } else {
+                throw new RuntimeException("Status check failed: " + response.statusCode());
+            }
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Status check failed", e);
+        }
+    }
+    
+    public CompletableFuture<Map<String, Object>> waitForCompletion(String transactionId, int timeoutSeconds) {
+        return CompletableFuture.supplyAsync(() -> {
+            long startTime = System.currentTimeMillis();
+            long timeout = timeoutSeconds * 1000L;
+            
+            while (System.currentTimeMillis() - startTime < timeout) {
+                try {
+                    Map<String, Object> statusData = getTransactionStatus(transactionId);
+                    String status = (String) statusData.get("status");
+                    
+                    // Check if transaction is complete
+                    if (isCompleteStatus(status)) {
+                        return statusData;
+                    }
+                    
+                    // Check for failure states
+                    if (isFailureStatus(status)) {
+                        statusData.put("error", true);
+                        return statusData;
+                    }
+                    
+                    // Continue polling
+                    Thread.sleep(10000); // 10 seconds
+                    
+                } catch (Exception e) {
+                    System.err.println("Error checking status: " + e.getMessage());
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
+                }
+            }
+            
+            // Timeout
+            Map<String, Object> timeoutResult = new HashMap<>();
+            timeoutResult.put("status", "timeout");
+            timeoutResult.put("error", true);
+            return timeoutResult;
+        });
+    }
+    
+    private boolean isCompleteStatus(String status) {
+        return Arrays.asList("success", "paid_full", "authorized").contains(status);
+    }
+    
+    private boolean isFailureStatus(String status) {
+        return Arrays.asList("failed", "declined", "rejected", "expired").contains(status);
+    }
+}
+```
+
+</CodeGroup>
+
+## Polling Best Practices
+
+When using polling to retrieve the status of a transaction, you should use the following best practices:
+
+### Polling Intervals
+
+Use these recommendations to set the polling intervals and timeouts for each transaction type.
+
+| Transaction Type | Recommended Interval | Maximum Timeout |
+| ---------------- | -------------------- | --------------- |
+| Card payments    | 5 seconds            | 5 minutes       |
+| SPEI transfers   | 30 seconds           | 4 hours         |
+| Cash payments    | 5 minutes            | 72 hours        |
+| Withdrawals      | 30 seconds           | 4 hours         |
+
+### Efficient Polling Strategy
+
+Here is an example of an efficient polling strategy.
+
+```python
+def adaptive_polling(transaction_id, transaction_type):
+    """Adaptive polling based on transaction type"""
+    
+    intervals = {
+        'card': [5, 5, 10, 10, 30],  # Quick initial checks
+        'spei': [30, 60, 300, 300],  # Slower for bank transfers
+        'cash': [300, 600, 1800],    # Very slow for cash payments
+        'withdrawal': [30, 60, 300]   # Similar to SPEI
+    }
+    
+    timeouts = {
+        'card': 300,      # 5 minutes
+        'spei': 14400,    # 4 hours
+        'cash': 259200,   # 72 hours
+        'withdrawal': 14400  # 4 hours
+    }
+    
+    poll_intervals = intervals.get(transaction_type, [30, 60, 300])
+    timeout = timeouts.get(transaction_type, 3600)
+    
+    return poll_with_backoff(transaction_id, poll_intervals, timeout)
+```
+
+## Error Handling
+
+Here are some common errors that you may encounter when checking the status of a transaction.
+
+| Error Code               | Description              | Solution              |
+| ------------------------ | ------------------------ | --------------------- |
+| `transaction_not_found`  | Transaction ID not found | Verify transaction ID |
+| `invalid_transaction_id` | Invalid ID format        | Check ID format       |
+| `authentication_failed`  | Invalid API key          | Verify credentials    |
+| `rate_limit_exceeded`    | Too many requests        | Implement backoff     |
+
+### Error Response Example
+
+```json
+{
+  "error": {
+    "code": "transaction_not_found",
+    "message": "Transaction with ID 550e8400-e29b-41d4-a716-446655440000 not found",
+    "type": "not_found_error"
+  },
+  "request_id": "req_abc123"
+}
+```
+
+## When to Check Status
+
+There are different scenarios when you should check the status of a transaction. See details below for some recommendations.
+
+<AccordionGroup>
+
+<Accordion title="Immediate Status Check">
+
+- After receiving an HTTP 202 (Accepted) response
+- When `next_action` is present in the response
+- For transactions that require additional steps
+
+</Accordion>
+
+<Accordion title="Periodic Status Check">
+
+- For pending cash payments (every 5–30 minutes)
+- For processing SPEI transfers (every 30–60 seconds)
+- For withdrawal processing (every 30–60 seconds)
+
+</Accordion>
+
+<Accordion title="Webhook vs Polling">
+
+- **Use webhooks** for real-time status updates (recommended)
+- **Use polling** as a backup or when webhooks aren’t available
+- **Combine both** for maximum reliability
+
+</Accordion>
+
+</AccordionGroup>
+
+## Rate Limits
+
+The transaction status endpoint is rate-limited to ensure fair usage and system stability. You can make up to 300 requests per minute to check transaction statuses.
+
+| Endpoint                | Limit        | Window     |
+| ----------------------- | ------------ | ---------- |
+| GET /transactions/{id}/ | 300 requests | per minute |
+
+**Rate Limit Headers:**
+
+The API includes rate limit information in every response to help you monitor your usage and avoid hitting limits. These headers allow you to implement intelligent polling strategies and backoff mechanisms.
+
+| Header                   | Example Value   | Description                                                                 |
+|--------------------------|----------------|-----------------------------------------------------------------------------|
+| `X-RateLimit-Limit`      | 300            | Maximum number of requests allowed per window (300)                         |
+| `X-RateLimit-Remaining`  | 295            | Number of requests you’ve got left in the current window (295)              |
+| `X-RateLimit-Reset`      | 1640995200     | Unix timestamp for when the rate limit window resets (1640995200)           |
+
+## Best Practices
+
+Here are some best practices to follow when checking the status of a transaction.
+
+<AccordionGroup>
+
+<Accordion title="Status Monitoring">
+
+1. **Use appropriate intervals** - Don't poll too frequently
+2. **Implement exponential backoff** - Increase intervals over time
+3. **Set reasonable timeouts** - Don't wait indefinitely
+4. **Handle rate limits** - Respect API limits
+
+</Accordion>
+
+<Accordion title="Error Recovery">
+
+1. **Retry on network errors** - Temporary failures are common
+2. **Log status changes** - Track transaction progression
+3. **Alert on stuck transactions** - Monitor for unusual delays
+4. **Fallback to support** - Escalate unresolved issues
+
+</Accordion>
+
+<Accordion title="Performance">
+
+1. **Batch status checks** when possible
+2. **Cache recent status** to avoid duplicate calls
+3. **Use webhooks** instead of polling when available
+4. **Monitor API usage** to stay within limits
+
+</Accordion>
+
+</AccordionGroup>
+
+## Next Steps
+
+- [Set up Webhooks](../integration/webhooks) for real-time status updates
+- [Review Error Handling](../integration/error-handling) for comprehensive error management
+- [Learn about Payment Methods](../payment-processing/payment-methods) for method-specific status flows
+- [Check Production Readiness](../resources/production-readiness) for monitoring setup

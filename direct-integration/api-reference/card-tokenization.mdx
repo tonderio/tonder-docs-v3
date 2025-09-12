@@ -1,0 +1,311 @@
+---
+title: "Card Tokenization"
+sidebarTitle: "Card Tokenization"
+'og:description': ""
+---
+
+## Overview
+
+To maintain PCI compliance and enhance security, Tonder provides card tokenization capabilities that allow you to securely store and reference card data without handling sensitive information directly. Card tokens can be used in payment requests instead of raw card data.
+
+Card tokenization is handled through our secure tokenization service powered by Skyflow Inc. This service converts sensitive card data into secure tokens that can be safely stored and transmitted.
+
+> **Note:** Due to PCI DSS requirements, your company must share relevant attestation documents before Tonder activates production endpoint access.
+
+## Authentication for Tokenization
+
+Before tokenizing cards, you need to obtain an access token for the tokenization service.
+
+### Get Access Token
+
+```http
+GET /tokenization/auth/
+```
+
+Obtain an access token required for card tokenization requests. This token should be used immediately.
+
+**Headers:**
+
+```http
+Authorization: Token your_tonder_api_key
+```
+
+**Response:**
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+## Tokenization Process
+
+### Tokenize Card Data
+
+```http
+POST https://token.tonder.io/v1/gateway/inboundRoutes/f6eb7af640b041b590a0b2f095a83fa4/token
+```
+
+**Required Headers:**
+
+```http
+X-Skyflow-Authorization: YOUR_ACCESS_TOKEN
+Content-Type: application/json
+```
+
+**Request Body:**
+
+```json
+{
+  "card_number": "4242424242424242",
+  "cardholder_name": "Ozzy Osbourne",
+  "cvv": "123",
+  "expiration_month": "07",
+  "expiration_year": "2025"
+}
+```
+
+**Response:**
+
+```json
+{
+  "card_number": "9230-0892-4469-1474",
+  "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+  "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+  "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+  "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+}
+```
+
+## Using Tokenized Cards in Payments
+
+Once you have tokenized the card fields, you can use them in payment requests instead of raw card data:
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 150.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "John Doe",
+    "email": "john.doe@email.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+  },
+  "client_reference": "order-789"
+}
+```
+
+## Implementation Examples
+
+### Python Tokenization Example
+
+```python
+import requests
+import json
+
+class CardTokenization:
+    
+    AUTH_URL = "https://app.tonder.io/api/v1/tokenization/auth/"
+    TOKENIZATION_URL = "https://token.tonder.io/v1/gateway/inboundRoutes/f6eb7af640b041b590a0b2f095a83fa4/token"
+    
+    @staticmethod
+    def get_access_token(api_key):
+        """Get access token for Skyflow tokenization service"""
+        headers = {
+            'Authorization': api_key
+        }
+        
+        response = requests.get(
+            CardTokenization.AUTH_URL,
+            headers=headers
+        )
+        
+        if response.status_code == 200:
+            return response.json()['access_token']
+        else:
+            raise Exception(f"Failed to get access token: {response.status_code}")
+    
+    @staticmethod
+    def tokenize_card(access_token, card_data):
+        """Tokenize card data using Skyflow service"""
+        headers = {
+            'X-Skyflow-Authorization': access_token,
+            'Content-Type': 'application/json'
+        }
+        
+        payload = {
+            'card_number': card_data['number'],
+            'cardholder_name': card_data['holder_name'],
+            'cvv': card_data['cvv'],
+            'expiration_month': card_data['expiration_month'],
+            'expiration_year': card_data['expiration_year']
+        }
+        
+        response = requests.post(
+            CardTokenization.TOKENIZATION_URL,
+            headers=headers,
+            json=payload
+        )
+        
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise Exception(f"Tokenization failed: {response.status_code}")
+    
+    @staticmethod
+    def complete_tokenization_workflow(api_key, card_data):
+        """Complete workflow: get token, tokenize card, process payment"""
+        try:
+            # Step 1: Get access token
+            access_token = CardTokenization.get_access_token(api_key)
+            
+            # Step 2: Tokenize card
+            tokenized_card = CardTokenization.tokenize_card(access_token, card_data)
+            
+            # Step 3: Use tokenized card for payment
+            return tokenized_card
+            
+        except Exception as e:
+            print(f"Tokenization workflow failed: {e}")
+            raise
+
+# Example usage
+def main():
+    api_key = "your_tonder_api_key"
+    
+    card_data = {
+        'number': '4242424242424242',
+        'holder_name': 'Ozzy Osbourne',
+        'cvv': '123',
+        'expiration_month': '07',
+        'expiration_year': '2025'
+    }
+    
+    try:
+        # Complete workflow
+        tokenized_card = CardTokenization.complete_tokenization_workflow(api_key, card_data)
+        print("Card tokenized successfully")
+        print(f"Tokenized card number: {tokenized_card['card_number']}")
+        
+    except Exception as e:
+        print(f"Error: {e}")
+```
+
+### Java Tokenization Example
+
+```java
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.URI;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class CardTokenization {
+    
+    private static final String AUTH_URL = "https://app.tonder.io/api/v1/tokenization/auth/";
+    private static final String TOKENIZATION_URL = "https://token.tonder.io/v1/gateway/inboundRoutes/f6eb7af640b041b590a0b2f095a83fa4/token";
+    
+    public static String getAccessToken(String apiKey) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(AUTH_URL))
+                .header("Authorization", apiKey)
+                .GET()
+                .build();
+            
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            
+            if (response.statusCode() == 200) {
+                ObjectMapper mapper = new ObjectMapper();
+                Map<String, Object> responseBody = mapper.readValue(response.body(), Map.class);
+                return (String) responseBody.get("access_token");
+            } else {
+                throw new RuntimeException("Failed to get access token: " + response.statusCode());
+            }
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Access token retrieval failed", e);
+        }
+    }
+    
+    public static Map<String, String> tokenizeCard(String accessToken, CardData cardData) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("card_number", cardData.getNumber());
+            requestBody.put("cardholder_name", cardData.getHolderName());
+            requestBody.put("cvv", cardData.getCvv());
+            requestBody.put("expiration_month", cardData.getExpirationMonth());
+            requestBody.put("expiration_year", cardData.getExpirationYear());
+            
+            String jsonBody = mapper.writeValueAsString(requestBody);
+            
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(TOKENIZATION_URL))
+                .header("X-Skyflow-Authorization", accessToken)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+            
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            
+            if (response.statusCode() == 200) {
+                Map<String, Object> responseBody = mapper.readValue(response.body(), Map.class);
+                Map<String, String> tokenizedCard = new HashMap<>();
+                tokenizedCard.put("card_number", (String) responseBody.get("card_number"));
+                tokenizedCard.put("cardholder_name", (String) responseBody.get("cardholder_name"));
+                tokenizedCard.put("cvv", (String) responseBody.get("cvv"));
+                tokenizedCard.put("expiration_month", (String) responseBody.get("expiration_month"));
+                tokenizedCard.put("expiration_year", (String) responseBody.get("expiration_year"));
+                return tokenizedCard;
+            } else {
+                throw new RuntimeException("Tokenization failed: " + response.statusCode());
+            }
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Card tokenization failed", e);
+        }
+    }
+}
+```
+
+## Security Benefits
+
+1. **PCI Compliance**: Raw card data never touches your servers
+2. **Reduced Scope**: Minimizes PCI DSS compliance requirements
+3. **Secure Storage**: Tokens can be safely stored in your database
+4. **Reusable**: Tokens can be used for recurring payments
+5. **Audit Trail**: All tokenization events are logged securely
+
+## Best Practices
+
+1. **Store tokens securely**: While tokens are safe, treat them as sensitive data
+2. **Handle expiration**: Monitor token expiration dates and re-tokenize when needed
+3. **Error handling**: Implement proper error handling for tokenization failures
+4. **Access control**: Secure your Skyflow access tokens appropriately
+5. **Testing**: Use test card numbers in sandbox environment
+
+## Token Lifecycle
+
+1. **Authentication**: Obtain access token using Tonder API key
+2. **Creation**: Card data is tokenized through Skyflow service using access token
+3. **Storage**: Token is safely stored in your system
+4. **Usage**: Token is used for payment processing via Tonder API
+5. **Expiration**: Tokens expire based on card expiration date
+6. **Renewal**: Re-tokenize cards before token expiration
+
+## Next Steps
+
+* Learn about Core Endpoints for processing payments with tokens
+* Review Request Structure for proper API formatting
+* Explore Payment Methods for card payment specifics

@@ -46,6 +46,10 @@
       "url": "integration"
     },
     {
+      "name": "Direct Integration",
+      "url": "direct-integration"
+    },
+    {
       "name": "Dashboard",
       "url": "dashboard"
     },
@@ -138,6 +142,26 @@
       "pages": [
         "integration/intro",
         "integration/choose-integration"
+      ]
+    },
+    {
+      "group": "Direct Integration",
+      "pages": [
+        "direct-integration/overview",
+        "direct-integration/quick-start",
+        "direct-integration/api-reference/card-tokenization",
+        "direct-integration/api-reference/core-endpoints",
+        "direct-integration/api-reference/request-structure",
+        "direct-integration/api-reference/response-format",
+        "direct-integration/api-reference/transation-status-check",
+        "direct-integration/payment-processing/payment-methods",
+        "direct-integration/payment-processing/withdrawals",
+        "direct-integration/integration/webhooks",
+        "direct-integration/integration/error-handling",
+        "direct-integration/regional-reference/mexico",
+        "direct-integration/resources/production-readiness",
+        "direct-integration/resources/rate-limits",
+        "direct-integration/resources/support"
       ]
     },
     {

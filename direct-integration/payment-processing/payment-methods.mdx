@@ -1,0 +1,509 @@
+---
+title: "Payment Methods"
+sidebarTitle: "Payment Methods"
+'og:description': ""
+---
+
+Tonder supports a comprehensive range of payment methods across Latin America, designed to meet the diverse preferences of customers in different regions. All payment methods are processed through the unified `/process/` endpoint with `operation_type: "payment"`.
+
+Here are the payment methods supported by Tonder:
+
+| Method                                                                 | Type Value    | Description                  | Processing Time |
+| ---------------------------------------------------------------------- | ------------- | ---------------------------- | --------------- |
+| [**Cards**](#process-card-payments)                                    | `CARD`        | Credit and debit cards       | Instant         |
+| [**SPEI**](#spei-bank-transfers)                                       | `SPEI`        | Mexican bank transfers       | Real-time       |
+| [**OXXO**](#oxxo-cash-payments)                                        | `OXXO`        | Cash payments at OXXO stores | 24-48 hours     |
+| [**Mercado Pago**](#mercado-pago-digital-wallet)                                      | `MERCADOPAGO` | Digital wallet               | Instant         |
+| [**SafetyPay**](#safetypay-cash-payments)                                            | `SAFETYPAY`   | Alternative cash payment     | 24-48 hours     |
+
+## Process Card Payments
+
+Card payments support major credit and debit cards including Visa, Mastercard, and American Express. Cards can be processed using either raw card data or tokenized card information.
+
+<AccordionGroup>
+
+<Accordion title="Send Card Payment Request">
+
+Here's an example of a card payment request using a tokenized card (recommended):
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 150.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Ana María Rodríguez",
+    "email": "ana.rodriguez@email.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+  },
+  "client_reference": "order-789",
+  "return_url": "https://mystore.com/payment/return"
+}
+```
+
+Where:
+
+<ParamField path="payment_method.type" type="string" required>
+Must be `"CARD"`
+</ParamField>
+
+<ParamField path="payment_method.card_number" type="string" required>
+Card number (raw or tokenized)
+</ParamField>
+
+<ParamField path="payment_method.cardholder_name" type="string" required>
+Cardholder name (raw or tokenized)
+</ParamField>
+
+<ParamField path="payment_method.cvv" type="string" required>
+Security code (raw or tokenized)
+</ParamField>
+
+<ParamField path="payment_method.expiration_month" type="string" required>
+Expiration month (raw or tokenized)
+</ParamField>
+
+<ParamField path="payment_method.expiration_year" type="string" required>
+Expiration year (raw or tokenized)
+</ParamField>
+
+<ParamField path="return_url" type="string">
+URL for 3DS redirects
+</ParamField>
+
+</Accordion>
+
+<Accordion title="3D Secure Handling">
+
+Some card transactions may require 3D Secure authentication. When this occurs, the response will include a `next_action` object:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "pending",
+  "next_action": {
+    "redirect_to_url": {
+      "url": "https://secure.payment-provider.com/3ds/abc123",
+      "return_url": "https://yoursite.com/payment/return",
+      "verify_transaction_status_url": "/api/v1/stripe/business/123/payments/456/transactions/789"
+    }
+  }
+}
+```
+
+</Accordion>
+
+<Accordion title="3D Secure Flow">
+
+This is the usual flow of 3D Secure payments:
+
+1. Redirect customer to the provided URL
+2. Complete 3DS authentication
+3. Redirect customer back to your `return_url`
+4. Check transaction status using the `verify_transaction_status_url` or the main status endpoint
+
+</Accordion>
+
+<Accordion title="Status Flow">
+
+| Status       | Description                      |
+|--------------|----------------------------------|
+| `pending`    | Processing                        |
+| `authorized` | Payment authorised (capturable)   |
+| `success`    | Payment completed                 |
+
+</Accordion>
+
+</AccordionGroup>
+
+## SPEI Bank Transfers
+
+SPEI (Sistema de Pagos Electrónicos Interbancarios) enables real-time bank transfers within Mexico. SPEI payments are processed immediately during business hours.
+
+<Accordion title="SPEI Payment Request">
+
+Here's an example of a SPEI payment request:
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 500.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Carlos Eduardo López",
+    "email": "carlos.lopez@empresa.mx"
+  },
+  "payment_method": {
+    "type": "SPEI"
+  },
+  "client_reference": "invoice-456"
+}
+```
+
+Where:
+
+<ParamField path="payment_method.type" type="string" required>
+Must be `"SPEI"`
+</ParamField>
+
+<ParamField path="currency" type="string" required>
+Must be `"MXN"`
+</ParamField>
+
+</Accordion>
+
+### SPEI Operating Hours
+
+There are two operating hours for SPEI:
+
+#### General Availability
+
+- 24 hours a day, 7 days a week, 365 days a year
+- Includes weekends and official bank holidays
+- All times in Mexico City time (CT)
+
+#### Same-Day Processing
+
+- Most transfers are processed in real-time, regardless of time or date
+- No cut-off time applies for same-day settlement
+
+<Note>
+### Bank and Platform Considerations
+
+Some banks or payment providers may apply their own internal processing schedules or restrictions
+Possible delays may occur due to:
+  - Scheduled maintenance windows
+  - Anti-fraud validations
+  - Institutional batch processing policies
+
+Please verify specific hours or limitations with your financial institution or provider.
+
+</Note>
+
+### Status Flow
+
+These are the statuses that can be returned by the SPEI payment method:
+
+| Status        | Description                   |
+|---------------|-------------------------------|
+| `pending`     | Awaiting bank processing      |
+| `processing`  | Bank transfer in progress     |
+| `success`     | Transfer completed            |
+
+## OXXO Cash Payments
+
+OXXO is Mexico's largest convenience store chain. Customers receive a payment voucher that can be paid at any OXXO location with cash.
+
+<AccordionGroup>
+
+<Accordion title="OXXO Payment Request">
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 250.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "María Isabel Fernández",
+    "email": "maria.fernandez@email.com"
+  },
+  "payment_method": {
+    "type": "OXXO"
+  },
+  "client_reference": "cash-payment-789"
+}
+```
+
+Where:
+
+<ParamField path="payment_method.type" type="string" required>
+Must be `"OXXO"`
+</ParamField>
+
+<ParamField path="currency" type="string" required>
+Must be `"MXN"`
+</ParamField>
+
+</Accordion>
+
+<Accordion title="OXXO Payment Response">
+
+The response includes payment instructions for the customer:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "pending",
+  "amount": 250.00,
+  "currency": "MXN",
+  "payment_instructions": {
+    "reference_code": "99900012345678",
+    "barcode": "||99900012345678||",
+    "store_name": "OXXO",
+    "expiration_date": "2024-07-29T23:59:59Z",
+    "instructions": [
+      "Acude a cualquier tienda OXXO",
+      "Presenta este código de barras en caja",
+      "Paga exactamente $250.00 MXN en efectivo"
+    ]
+  },
+  "voucher_pdf": "https://api.tonder.io/vouchers/abc123.pdf",
+  "created_at": "2024-07-26T10:30:00Z",
+  "status_code": 201
+}
+```
+
+</Accordion>
+
+</AccordionGroup>
+
+### OXXO Payment Process
+
+The process for OXXO cash payments is the following:
+
+1. Customer gets the payment voucher (with barcode and reference code).
+2. Customer pops into any OXXO shop.
+3. They show the barcode at the till and pay the exact amount in cash.
+4. OXXO processes the payment and issues a receipt.
+5. Tonder sends a webhook to confirm the payment status.
+
+Here are the statuses that can be returned by the OXXO payment method:
+
+| Status     | Description                         |
+|------------|-------------------------------------|
+| `pending`  | Awaiting customer payment           |
+| `success`  | Cash payment received and confirmed |
+
+## Mercado Pago Digital Wallet
+
+Mercado Pago is a popular digital wallet across Latin America, offering instant payment processing with broad customer adoption.
+
+<Accordion title="Mercado Pago Payment Request">
+
+Here's an example of a Mercado Pago payment request:
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 350.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "José Antonio Ramírez",
+    "email": "jose.ramirez@email.com"
+  },
+  "payment_method": {
+    "type": "MERCADOPAGO"
+  },
+  "client_reference": "wallet-payment-456",
+  "return_url": "https://mystore.com/payment/return"
+}
+```
+
+Where:
+
+<ParamField path="payment_method.type" type="string" required>
+Must be `"MERCADOPAGO"`
+</ParamField>
+
+<ParamField path="return_url" type="string">
+URL for redirect after payment
+</ParamField>
+
+</Accordion>
+
+## SafetyPay Cash Payments
+
+SafetyPay provides alternative cash payment methods across Latin America, supporting various local payment options.
+
+<Accordion title="SafetyPay Payment Request">
+
+Here's an example of a SafetyPay payment request:
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 180.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Patricia Morales Vega",
+    "email": "patricia.morales@email.com"
+  },
+  "payment_method": {
+    "type": "SAFETYPAY"
+  },
+  "client_reference": "safetypay-001"
+}
+```
+Where:
+
+<ParamField path="payment_method.type" type="string" required>
+Must be `"SAFETYPAY"`
+</ParamField>
+
+</Accordion>
+
+Here are the statuses that can be returned by the SafetyPay payment method:
+
+| Status     | Description                         |
+|------------|-------------------------------------|
+| `pending`  | Awaiting customer payment           |
+| `success`  | Cash payment received and confirmed |
+
+## Payment Method Selection Guidelines
+
+Here are some guidelines for selecting the best payment method for your use case:
+
+<AccordionGroup>
+
+<Accordion title="For E-commerce">
+
+- **Cards**: Best for immediate payment confirmation
+- **SPEI**: Good for higher-value transactions
+- **Digital Wallets**: Popular among younger demographics
+
+</Accordion>
+
+<Accordion title="For Cash Payments">
+
+- **OXXO**: Ideal for customers without bank accounts
+- **SafetyPay**: Alternative for regions without OXXO coverage
+
+</Accordion>
+
+<Accordion title="For B2B Transactions">
+
+- **SPEI**: Preferred for business-to-business payments
+- **Cards**: Good for smaller business purchases
+
+</Accordion>
+
+</AccordionGroup>
+
+## Implementation Examples
+
+Here are some examples of how to implement payment methods in your application:
+
+<CodeGroup>
+
+```python Multi-Method Payment Flow
+def process_payment_with_fallback(customer_data, amount, preferred_method):
+    """Process payment with fallback methods"""
+    
+    payment_methods = [
+        preferred_method,
+        "CARD",  # Fallback to card
+        "SPEI",  # Fallback to bank transfer
+        "OXXO"   # Final fallback to cash
+    ]
+    
+    for method in payment_methods:
+        try:
+            payment_data = {
+                "operation_type": "payment",
+                "amount": amount,
+                "currency": "MXN",
+                "customer": customer_data,
+                "payment_method": {"type": method},
+                "client_reference": f"order-{uuid.uuid4()}"
+            }
+            
+            result = tonder_api.process_payment(payment_data)
+            
+            if result["status"] in ["authorized", "pending"]:
+                return result
+                
+        except Exception as e:
+            print(f"Payment method {method} failed: {e}")
+            continue
+    
+    raise Exception("All payment methods failed")
+```
+
+```python Payment Method Availability Check
+def get_available_payment_methods(country="MX", currency="MXN"):
+    """Get available payment methods for a region"""
+    
+    methods = {
+        "MX": {
+            "MXN": ["CARD", "SPEI", "OXXO", "MERCADOPAGO", "SAFETYPAY"],
+            "USD": ["CARD"]
+        }
+    }
+    
+    return methods.get(country, {}).get(currency, ["CARD"])
+```
+
+</CodeGroup>
+
+## Error Scenarios
+
+The following tables show the common payment errors and method-specific errors.
+
+### Common Payment Errors
+
+| Error Code           | Description                | Solution                     |
+| -------------------- | -------------------------- | ---------------------------- |
+| `card_declined`      | Card declined by issuer    | Try different card           |
+| `insufficient_funds` | Not enough funds           | Try different payment method |
+| `expired_card`       | Card has expired           | Use valid card               |
+| `invalid_card`       | Card number invalid        | Check card details           |
+| `processing_error`   | Temporary processing error | Retry request                |
+
+### Method-Specific Errors
+
+| Payment Method | Error Code         | Description                          |
+| -------------- | ----------------- | ------------------------------------ |
+| SPEI           | `spei_unavailable`| Outside operating hours              |
+| SPEI           | `invalid_amount`  | Amount exceeds SPEI limits           |
+| OXXO           | `amount_too_high` | Exceeds OXXO payment limits          |
+| OXXO           | `amount_too_low`  | Below minimum payment amount         |
+
+## Best Practices
+
+Following are the best practices for implementing payment methods.
+
+<AccordionGroup>
+
+<Accordion title="Payment Method Selection">
+
+- Offer multiple payment options so customers can choose their preferred method.
+- Consider demographic differences, as younger users often want digital and older users may prefer cash.
+- Research regional payment preferences for each market you serve.
+- Use bank transfers for higher transaction amounts.
+
+</Accordion>
+
+<Accordion title="Implementation">
+
+- Handle async payments by using webhooks for status updates.
+- Implement retry logic to recover from temporary network issues.
+- Validate all input data before sending requests.
+- Test thoroughly in the sandbox environment before going live.
+
+</Accordion>
+
+<Accordion title="Customer Experience">
+
+- Provide clear instructions for cash payment methods.
+- Send status updates to keep customers informed about their payment.
+- Offer fallback options if a customer's first choice fails.
+- Optimise the payment flow for mobile devices.
+
+</Accordion>
+
+</AccordionGroup>
+
+## Next Steps
+
+- [Learn about Withdrawals for payout processing](../payment-processing/withdrawals)
+- [Review Response Format for handling payment responses](../api-reference/response-format)
+- [Set up Webhooks for real-time payment notifications](../integration/webhooks)
+- [Check Error Handling for payment error management](../integration/error-handling)

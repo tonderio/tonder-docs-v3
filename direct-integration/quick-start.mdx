@@ -1,0 +1,409 @@
+---
+title: "Quick Start Guide"
+sidebarTitle: "Quick Start"
+'og:description': ""
+---
+
+## Your First Transaction
+
+This guide will walk you through making your first payment using Tonder's Direct API in the sandbox (also referred as **stage**) environment.
+
+## Prerequisites
+
+Before you begin, make sure you have the following:
+
+1. Tonder account credentials to sign in at [app.tonder.io](https://app.tonder.io)
+2. API key and secret from your developer dashboard
+3. Basic understanding of REST APIs and HTTP requests
+
+## Step 1: Set Up Your Environment
+
+Use the sandbox environment for testing all features without processing real transactions. Use the base URL below when making requests.
+
+```http Base URL
+https://stage.tonder.io/api/v1/
+```
+
+### Required Headers
+
+When making requests, you must include these headers:
+
+```http
+Authorization: Token <YOUR_SANDBOX_API_KEY>
+X-Signature-Transaction: <CALCULATED_HMAC_SIGNATURE>
+Content-Type: application/json
+```
+
+## Step 2: Implement HMAC Signature
+
+For secure API access, you must generate an HMAC signature for each request. The signature is a hash of the request payload, calculated using your secret key.
+
+<Accordion title="Python Implementation">
+
+Here is a full example of a Python implementation for generating the signature.
+
+```python
+import json
+import hmac
+import hashlib
+import base64
+
+def create_signature(secret_key, filtered_data):
+    """Create HMAC signature for API request using filtered data"""
+    # Serialize filtered data to JSON with sorted keys and no whitespace
+    json_payload = json.dumps(filtered_data, separators=(',', ':'), sort_keys=True)
+    
+    # Calculate HMAC-SHA256
+    signature_bytes = hmac.new(
+        secret_key.encode('utf-8'),
+        json_payload.encode('utf-8'),
+        hashlib.sha256
+    ).digest()
+    
+    # Convert to Base64 string (not hexadecimal)
+    return base64.b64encode(signature_bytes).decode('utf-8')
+
+def build_filtered_data(request_data, field_mappings):
+    """Build structured data based on business configuration"""
+    structured_data = {
+        "customer": {
+            "firstName": request_data.get("name", ""),
+            "lastName": request_data.get("last_name", ""),
+            "email": request_data.get("email", ""),
+            "phone": request_data.get("phone", ""),
+        },
+        "currency": request_data.get("currency", "mxn"),
+        "metadata": request_data.get("metadata", None),
+        "amount": request_data.get("amount", 0),
+        "client_reference": request_data.get("client_reference", "")
+    }
+    
+    # Filter data based on field mappings configuration
+    return filter_by_mappings(structured_data, field_mappings)
+
+# Example signature creation
+request_data = {
+    "amount": 1000, 
+    "currency": "MXN",
+    "customer": {
+        "name": "John Doe",
+        "email": "john@example.com"
+    }
+}
+
+field_mappings = ["customer.email", "currency", "amount"]
+filtered_data = build_filtered_data(request_data, field_mappings)
+signature = create_signature("your_secret_key", filtered_data)
+
+headers = {
+    'Content-Type': 'application/json',
+    'X-Signature-Transaction': signature
+}
+```
+
+</Accordion>
+
+## Step 3: Make Your First Payment
+
+Make your first payment by sending a POST request to the process endpoint. You can use the following request body to test a card payment.
+
+<AccordionGroup>
+
+<Accordion title="Basic Card Payment Request">
+
+This is an example request to the process endpoint.
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 100.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Test Customer",
+    "email": "test@example.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+  },
+  "client_reference": "test-payment-001"
+}
+```
+
+</Accordion>
+
+<Accordion title="Expected Response">
+
+A successful request returns a `201` Created status code and a transaction object.
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "authorized",
+  "amount": 100.00,
+  "currency": "MXN",
+  "merchant_reference": "test-payment-001",
+  "payment_id": 12345,
+  "transaction_id": "txn_abc123",
+  "provider": "stripe",
+  "created_at": "2024-07-26T10:30:00Z",
+  "status_code": 201
+}
+```
+
+</Accordion>
+
+<Accordion title="Status Check Request">
+
+After a payment is initiated, you can check its status by making a GET request.
+
+```http
+GET /transactions/{transaction_id}/
+```
+
+The expected response is as follows:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "success",
+  "amount": 150.00,
+  "currency": "MXN",
+  "merchant_reference": "test-payment-001",
+  "created_at": "2024-07-26T10:30:00Z",
+  "updated_at": "2024-07-26T10:32:15Z",
+  "completion_details": {
+    "completed_at": "2024-07-26T10:32:15Z",
+    "authorization_code": "AUTH123456"
+  }
+}
+```
+
+</Accordion>
+
+</AccordionGroup>
+
+## Test Different Payment Methods
+
+After successfully completing the card payment, you can experiment with other payment methods. Below are the example request bodies for SPEI and OXXO cash payments.
+
+<CodeGroup>
+
+```json SPEI Bank Transfer
+{
+  "operation_type": "payment",
+  "amount": 500.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Carlos Eduardo López",
+    "email": "carlos.lopez@empresa.mx"
+  },
+  "payment_method": {
+    "type": "SPEI"
+  },
+  "client_reference": "spei-test-001"
+}
+```
+
+```json OXXO Cash Payment
+{
+  "operation_type": "payment",
+  "amount": 250.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "María Isabel Fernández",
+    "email": "maria.fernandez@email.com"
+  },
+  "payment_method": {
+    "type": "oxxopay"
+  },
+  "client_reference": "oxxo-test-001"
+}
+```
+
+</CodeGroup>
+
+## Test Data for Different Scenarios
+
+The following tables provide test data for various scenarios and expected outcomes.
+
+### Test Cards
+
+| Card Number      | Scenario           | Expected Result         |
+| ---------------- | ------------------ | ----------------------- |
+| 4242424242424242 | Successful payment | `authorized` status     |
+| 4000000000000002 | Card declined      | `declined` status       |
+| 4000000000009995 | Insufficient funds | `declined` status       |
+| 4000000000000119 | 3D Secure required | `pending` with redirect |
+| 4000000000000341 | Processing error   | `failed` status         |
+
+### Test Bank Accounts
+
+| CLABE              | Scenario            | Expected Result               |
+| ------------------ | ------------------- | ----------------------------- |
+| 646180157000000004 | Successful transfer | `processing` status           |
+| 012345678901234567 | Invalid checksum    | Validation error              |
+| 999999999999999999 | Non-existent bank   | `institution_not_found` error |
+
+
+## Complete Test Flow Example
+
+This is a complete test flow example of an implementation in Python.
+
+```python
+import requests
+import json
+
+# Sandbox configuration
+SANDBOX_URL = "https://stage.tonder.io/api/v1/"
+API_KEY = "your_sandbox_api_key"
+
+def test_successful_payment():
+    """Test a successful card payment"""
+    
+    # Payment request
+    payment_data = {
+        "operation_type": "payment",
+        "amount": 100.00,
+        "currency": "MXN",
+        "customer": {
+            "name": "Test Customer",
+            "email": "test@example.com"
+        },
+        "payment_method": {
+            "type": "CARD",
+            "card_number": "9230-0892-4469-1474",
+            "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+            "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+            "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+            "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+        },
+        "client_reference": "test-payment-001"
+    }
+    
+    headers = {
+        'Authorization': f'Token {API_KEY}',
+        'Content-Type': 'application/json'
+    }
+    
+    # Make payment request
+    response = requests.post(
+        f"{SANDBOX_URL}process/",
+        headers=headers,
+        json=payment_data
+    )
+    
+    if response.status_code == 201:
+        result = response.json()
+        print(f"Payment successful! Transaction ID: {result['id']}")
+        return result['id']
+    else:
+        print(f"Payment failed: {response.status_code}")
+        return None
+
+def check_transaction_status(transaction_id):
+    """Check the status of a transaction"""
+    
+    headers = {
+        'Authorization': f'Token {API_KEY}',
+        'Content-Type': 'application/json'
+    }
+    
+    response = requests.get(
+        f"{SANDBOX_URL}transactions/{transaction_id}/",
+        headers=headers
+    )
+    
+    if response.status_code == 200:
+        result = response.json()
+        print(f"Transaction status: {result['status']}")
+        return result
+    else:
+        print(f"Status check failed: {response.status_code}")
+        return None
+
+# Run the test
+if __name__ == "__main__":
+    # Test payment
+    transaction_id = test_successful_payment()
+    
+    if transaction_id:
+        # Check status
+        check_transaction_status(transaction_id)
+```
+
+## Common Testing Scenarios
+
+Before going live, it's a good idea to run through these typical test cases to make sure your integration is working as expected:
+
+<AccordionGroup>
+
+<Accordion title="Successful Payment">
+
+To verify that your integration can process a standard payment, use the following test scenario:
+
+- Test card number: `4242424242424242`
+- How to test: Submit a payment request using the above card details.
+- What should happen: The API should return a response with a status of either `authorized` or `success`.
+- What to look for: Make sure the response includes a valid transaction ID, confirming that the payment was processed successfully.
+
+</Accordion>
+
+<Accordion title="Declined Payment">
+
+This scenario checks how your integration handles declined transactions:
+
+- Test card number: `4000000000000002`
+- How to test: Attempt a payment using this card number.
+- What should happen: The API should respond with a status of `declined`.
+- What to look for: The response should contain an error message explaining why the payment was declined. Confirm that your application displays or logs this error appropriately.
+
+</Accordion>
+
+<Accordion title="3D Secure Challenge">
+
+Test your handling of payments that require additional authentication (3D Secure):
+
+- Test card number: `4000000000000119`
+- How to test: Initiate a payment with this card number.
+- What should happen: The API will return a status of `pending` and include a `next_action.redirect_to_url` field in the response.
+- What to do: Simulate the customer being redirected to the provided URL and completing the authentication process. Ensure your integration can handle the redirect and update the transaction status accordingly.
+
+</Accordion>
+
+<Accordion title="OXXO Cash Payment">
+
+Validate your support for cash payments via OXXO:
+
+- Payment method: Select OXXO as the payment method in your request.
+- How to test: Submit a payment request using OXXO.
+- What should happen: The API should respond with a status of `pending` and provide a `payment_instructions` object.
+- What to look for: Check that the response includes both a barcode and a reference code. These details are needed for the customer to complete the payment at an OXXO location. Make sure your application displays these instructions clearly to the user.
+
+</Accordion>
+
+</AccordionGroup>
+
+## Troubleshooting
+
+If you run into issues during testing, here are some common problems and how to resolve them:
+
+| Issue                    | What to Do                                                      |
+|--------------------------|-----------------------------------------------------------------|
+| 401 Authentication Error | Double-check your API key – is it correct and in the right format? |
+| 422 Validation Error     | Make sure all required fields are present and data formats are valid |
+| 500 Server Error         | Try again, and if it keeps happening, contact support           |
+| Rate limit exceeded      | Add a delay and implement exponential backoff before retrying   |
+
+## What’s Next?
+
+- [Review Payment Methods](../payment-processing/payment-methods) – Explore all the payment options you can offer
+- [Set Up Webhooks](../integration/webhooks) – Get real-time updates on transaction events
+- [Implement Error Handling](../integration/error-handling) – Make sure your app handles failures smoothly
+- [Go Live](../resources/production-readiness) – Follow the Production Readiness checklist to launch safely

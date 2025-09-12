@@ -141,6 +141,56 @@
             ]
           },
           {
+            "tab": "Direct Integration",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "direct-integration/overview",
+                  "direct-integration/quick-start"
+                ]
+              },
+              {
+                "group": "API Reference",
+                "pages": [
+                  "direct-integration/api-reference/card-tokenization",
+                  "direct-integration/api-reference/core-endpoints",
+                  "direct-integration/api-reference/request-structure",
+                  "direct-integration/api-reference/response-format",
+                  "direct-integration/api-reference/transation-status-check"
+                ]
+              },
+              {
+                "group": "Payment Processing",
+                "pages": [
+                  "direct-integration/payment-processing/payment-methods",
+                  "direct-integration/payment-processing/withdrawals"
+                ]
+              },
+              {
+                "group": "Integration",
+                "pages": [
+                  "direct-integration/integration/webhooks",
+                  "direct-integration/integration/error-handling"
+                ]
+              },
+              {
+                "group": "Regional Reference",
+                "pages": [
+                  "direct-integration/regional-reference/mexico"
+                ]
+              },
+              {
+                "group": "Resources",
+                "pages": [
+                  "direct-integration/resources/production-readiness",
+                  "direct-integration/resources/rate-limits",
+                  "direct-integration/resources/support"
+                ]
+              }
+            ]
+          },
+          {
             "tab": "Dashboard",
             "groups": [
               {
