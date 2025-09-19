@@ -1,0 +1,142 @@
+---
+title: "Create a Withdrawal"
+sidebarTitle: "Create a Withdrawal"
+'og:description': "How to send payouts using Tonder's API"
+---
+
+This guide explains how to send payouts, or withdrawals, to beneficiaries in Mexico using the Tonder API. Withdrawals are processed through the same unified `/process/` endpoint as payments, by setting the `operation_type` to `"withdrawal"`.
+
+You can send funds via two primary methods:
+
+  * **SPEI**: A standard bank transfer to a CLABE account.
+  * **Debit Card**: An instant deposit directly to a beneficiary's debit card.
+
+## 1. The Withdrawal Request
+
+To initiate a withdrawal, send a `POST` request to the `/process/` endpoint with `operation_type` set to `"withdrawal"`. You must also specify the `transfer_method` and provide the beneficiary's details in the `beneficiary` object.
+
+**Endpoint**: `POST /process/`
+
+The common request structure is as follows:
+
+```json
+{
+  "operation_type": "withdrawal",
+  "amount": 750.00,
+  "currency": "MXN",
+  "reference": "your-internal-payout-id-001",
+  "description": "Commission payment for July",
+  "transfer_method": "SPEI", // or "DEBIT_CARD"
+  "beneficiary": {
+    "account": "012345678901234567", // CLABE for SPEI, Card Number for DEBIT_CARD
+    "name": "Roberto Martínez García",
+    "rfc": "MAGR850920XY1",
+    "institution": "40012",
+    "email": "roberto.martinez@email.com"
+  }
+}
+```
+
+## 2. Sending Withdrawals by Method
+
+You can send withdrawals via two methods:
+
+<AccordionGroup>
+<Accordion title="SPEI Withdrawal to a Bank Account">
+Use this method for standard bank transfers. Processing is typically completed the same business day.
+
+  * `transfer_method`: `"SPEI"`
+  * `beneficiary.account`: The 18-digit CLABE of the beneficiary's bank account.
+
+**Example Request:**
+
+```json
+{
+  "operation_type": "withdrawal",
+  "amount": 750.00,
+  "currency": "MXN",
+  "reference": "payout-001",
+  "transfer_method": "SPEI",
+  "description": "Commission payment",
+  "beneficiary": {
+    "account": "012345678901234567",
+    "name": "Roberto Martínez García",
+    "rfc": "MAGR850920XY1",
+    "institution": "40012",
+    "email": "roberto.martinez@email.com"
+  }
+}
+```
+
+</Accordion>
+
+<Accordion title="Debit Card Withdrawal (Instant)">
+Use this method for instant payouts directly to a debit card.
+
+  * `transfer_method`: `"DEBIT_CARD"`
+  * `beneficiary.account`: The 16-digit number of the beneficiary's debit card.
+
+**Example Request:**
+
+```json
+{
+  "operation_type": "withdrawal",
+  "amount": 500.00,
+  "currency": "MXN",
+  "reference": "card-payout-002",
+  "transfer_method": "DEBIT_CARD",
+  "description": "Instant payout to debit card",
+  "beneficiary": {
+    "account": "4111111111111111", // Test debit card number
+    "name": "Ana María González",
+    "rfc": "GOAN850315AB2",
+    "institution": "40012",
+    "email": "ana.gonzalez@email.com"
+  }
+}
+```
+
+</Accordion>
+</AccordionGroup>
+
+## 3. Handling the Response and Status Flow
+
+Withdrawals are asynchronous. The initial API response will indicate that the request has been accepted for processing, typically with a `status` of `processing`.
+
+**Example Initial Response:**
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440001",
+  "operation_type": "withdrawal",
+  "status": "processing",
+  "amount": 750.00,
+  "currency": "MXN",
+  "merchant_reference": "payout-001",
+  "created_at": "2024-07-26T10:30:00Z",
+  "status_code": 201
+}
+```
+
+You must monitor the transaction to confirm its final status (`success` or `failed`).
+
+### Withdrawal Status Flow
+
+| Status       | Description                                              | Next Steps                                           |
+| ------------ | -------------------------------------------------------- | ---------------------------------------------------- |
+| `pending`    | The withdrawal request has been received and is queued.  | Monitor for status change.                           |
+| `processing` | The transfer is currently being processed by the bank.   | Wait for completion.                                 |
+| `success`    | The transfer was completed successfully.                 | The transaction is complete.                         |
+| `failed`     | The transfer failed due to a processing or system error. | Check the error details and retry if appropriate.    |
+| `declined`   | The transfer was declined by the bank (e.g., invalid account). | Correct beneficiary data and create a new withdrawal. |
+
+To get the final status, you should either:
+
+- Configure a webhook to receive real-time notifications when the status changes (recommended).
+- Periodically make a `GET` request to `/transactions/{withdrawal_id}/` until you receive a final status.
+
+## What's Next?
+
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when withdrawal statuses change.
+- Learn about [HTTP response codes](/direct-integration/http-response-codes) to understand how to handle different API responses and error scenarios.
+- Explore [rate limits](/direct-integration/rate-limits) to ensure your withdrawal processing doesn't exceed API usage limits.

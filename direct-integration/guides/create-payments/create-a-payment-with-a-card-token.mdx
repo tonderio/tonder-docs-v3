@@ -1,0 +1,140 @@
+---
+title: "Create a Payment with a card token"
+sidebarTitle: "Card Tokenization"
+'og:description': "How to use card tokenization for secure payments"
+---
+
+To enhance security and simplify your PCI compliance, Tonder provides a card tokenization service. This service converts sensitive card data (like the card number and CVV) into secure, non-sensitive tokens. You can then use these tokens to process payments without ever handling raw card data on your servers.
+
+The process involves two main steps:
+
+1.  **Tokenize the Card**: Securely exchange raw card details for tokens.
+2.  **Create the Payment**: Use the tokens in place of the card details in your payment request.
+
+## 1. Authenticate and Get an Access Token
+
+Before you can use the tokenization service, you must get a short-lived access token. You do this by making a `GET` request to the Tonder authentication endpoint, using your standard Tonder API key.
+
+**Endpoint**: `GET /tokenization/auth/`
+
+<AccordionGroup>
+<Accordion title="Headers">
+```http
+Authorization: Token <YOUR_TONDER_API_KEY>
+```
+</Accordion>
+
+<Accordion title="cURL Request">
+```bash
+curl -X GET https://app.tonder.io/api/v1/tokenization/auth/ \
+-H "Authorization: Token <YOUR_TONDER_API_KEY>"
+```
+</Accordion>
+
+<Accordion title="Response">
+The server will respond with a JWT access token.
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+</Accordion>
+</AccordionGroup>
+
+You will use the `access_token` from the response to authorize your request to the tokenization service in the next step.
+
+## 2. Tokenize the Card Data
+
+Now, send the raw card details to the secure tokenization endpoint. This request must be authorized with the access token you just obtained.
+
+**Endpoint**
+
+```POST https://token.tonder.io/v1/gateway/inboundRoutes/f6eb7af640b041b590a0b2f095a83fa4/token```
+
+<AccordionGroup>
+<Accordion title="Headers">
+```http
+X-Skyflow-Authorization: <YOUR_ACCESS_TOKEN_FROM_STEP_1>
+Content-Type: application/json
+```
+</Accordion>
+
+<Accordion title="Request Body">
+```json
+{
+  "card_number": "4242424242424242",
+  "cardholder_name": "Ozzy Osbourne",
+  "cvv": "123",
+  "expiration_month": "07",
+  "expiration_year": "2025"
+}
+```
+</Accordion>
+
+<Accordion title="Response">
+The service will respond with a JSON object where each sensitive field has been replaced with a unique token.
+
+```json
+{
+  "card_number": "9230-0892-4469-1474",
+  "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+  "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+  "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+  "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+}
+```
+</Accordion>
+</AccordionGroup>
+
+The values returned are the tokens you will use to make a payment.
+
+<Note>
+Due to PCI DSS requirements, your company must share relevant attestation documents with Tonder before we can activate production access to the tokenization endpoint.
+</Note>
+
+## 3. Create the Payment Using Tokens
+
+Finally, make a standard payment request to the `/process/` endpoint. In the `payment_method` object, use the token values you received from the tokenization service instead of the raw card details.
+
+**Endpoint**
+
+```POST /process/```
+
+**Request Body:**
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 150.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "John Doe",
+    "email": "john.doe@email.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",        // Token
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b", // Token
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",             // Token
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e", // Token
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"  // Token
+  },
+  "client_reference": "order-789"
+}
+```
+
+This request is authenticated with your standard Tonder API key and HMAC signature, just like any other payment request. The API will securely detokenize the values on the server-side to process the payment.
+
+### Security Benefits of Tokenization
+
+  * **Reduced PCI Scope**: Since raw card data never touches your servers, your PCI DSS compliance burden is significantly reduced.
+  * **Enhanced Security**: Tokens are useless to attackers if intercepted, as they can only be used through Tonder's secure environment.
+  * **Reusable Payments**: You can safely store these tokens in your database to use for recurring payments or to provide a "saved card" feature for your customers.
+
+## What's Next?
+
+- Learn how to [create payments with 3D Secure](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for enhanced card security when using tokens.
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when payment statuses change.
+
+

@@ -1,0 +1,134 @@
+---
+title: "Create a Payment with 3DS"
+sidebarTitle: "3D Secure Payment"
+'og:description': "How to handle 3D Secure authentication for card payments"
+---
+
+3D Secure (3DS) is an authentication protocol that adds an extra layer of security to online card payments. It helps prevent fraud by verifying the cardholder's identity, often through a code sent to their phone or a prompt in their banking app.
+
+When a card-issuing bank requires this extra verification, the Tonder API will respond with a special `next_action` object, telling you how to proceed.
+
+## The 3DS Payment Flow
+
+Here is the typical flow for a payment that requires 3D Secure authentication:
+
+<Steps>
+<Step title="Initiate a standard card payment to the `/process/` endpoint" />
+<Step title="Tonder detects that the customer's bank requires 3DS" />
+<Step title="API responds with a `pending` status and `next_action` redirect URL">
+Instead of a final status, the API returns a `202 Accepted` response with a `next_action` object containing a redirect URL.
+</Step>
+<Step title="Redirect the customer to the URL provided in the `next_action` object" />
+<Step title="Customer completes authentication on their bank's page">
+The customer completes the authentication challenge (e.g., enters a one-time password).
+</Step>
+<Step title="Bank redirects customer back to your specified `return_url`" />
+<Step title="Check the transaction status to get the final outcome (`success` or `failed`)" />
+</Steps>
+
+To create a payment with 3DS, you need to follow the steps described in the next sections.
+
+## 1. Initiating the Payment
+
+The initial request is the same as a standard card payment. It is crucial to include a `return_url` so the customer can be redirected back to your site after completing the 3DS challenge.
+
+```json Initial Request
+{
+  "operation_type": "payment",
+  "amount": 150.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Test Customer",
+    "email": "test@example.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "4000000000000119" // Test card that triggers 3DS
+  },
+  "client_reference": "order-3ds-test-001",
+  "return_url": "https://your-store.com/payment/complete"
+}
+```
+
+## 2. Handling the `next_action` Response
+
+If 3DS is required, the API will respond with a `status` of `pending` and a `next_action` object.
+
+```json Next Action Response
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "pending",
+  "amount": 150.00,
+  "currency": "MXN",
+  "next_action": {
+    "redirect_to_url": {
+      "url": "https://secure.payment-provider.com/3ds/abc123",
+      "return_url": "https://your-store.com/payment/complete",
+      "verify_transaction_status_url": "/api/v1/stripe/business/123/payments/456/transactions/789"
+    }
+  },
+  "created_at": "2024-07-26T10:30:00Z",
+  "status_code": 202
+}
+```
+
+Follow the steps below to handle the `next_action` response:
+
+1.  Check if the `next_action` object exists in the response.
+2.  Extract the URL from `next_action.redirect_to_url.url`.
+3.  Redirect the customer's browser to this URL.
+
+Here is an example of how to handle the `next_action` response in JavaScript:
+
+```javascript
+// Example client-side JavaScript to handle the redirect
+const responseData = { /* The JSON response from the API */ };
+
+if (responseData.next_action && responseData.next_action.redirect_to_url) {
+  // Redirect the user to their bank's 3DS page
+  window.location.href = responseData.next_action.redirect_to_url.url;
+} else {
+  // Handle final status (e.g., authorized, declined)
+  console.log('Payment status:', responseData.status);
+}
+```
+
+## 3. Verifying the Final Status
+
+Once the customer completes the 3DS challenge, their bank will redirect them back to the `return_url` you provided.
+
+At this point, the transaction has been processed, but you still need to get its final status. Use the transaction `id` from the initial response to make a `GET` request to the transaction status endpoint:
+
+```GET /transactions/{transaction_id}/```
+
+The response will now show the final status, such as `success` or `failed`.
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "success",
+  "amount": 150.00,
+  "currency": "MXN",
+  "merchant_reference": "order-3ds-test-001",
+  "created_at": "2024-07-26T10:30:00Z",
+  "updated_at": "2024-07-26T10:32:15Z",
+  "completion_details": {
+    "completed_at": "2024-07-26T10:32:15Z",
+    "authorization_code": "AUTH123456"
+  }
+}
+```
+
+You can now confidently update the order status in your system and show the customer a confirmation page.
+
+<Tip>
+While polling the status endpoint after the redirect works, the best practice is to use **[Webhooks](/direct-integration/webhooks/how-webhooks-works)**. A webhook will proactively notify your server as soon as the final status is available, providing a more efficient and reliable update mechanism.
+</Tip>
+
+## What's Next?
+
+- Learn how to [create payments with card tokens](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token) to securely store and reuse customer payment methods.
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when payment statuses change.
+- Explore [HTTP response codes](/direct-integration/http-response-codes) to understand how to handle different API responses and error scenarios.

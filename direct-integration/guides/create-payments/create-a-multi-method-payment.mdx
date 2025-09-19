@@ -1,0 +1,112 @@
+---
+title: "Create a multi method payment"
+sidebarTitle: "Multi-Method Payment"
+'og:description': "How to implement fallback payment methods"
+---
+
+In some use cases, you may want to offer customers a fallback payment option if their preferred method fails. For example, if a customer's credit card is declined, you could automatically offer them the option to pay via a SPEI bank transfer.
+
+This guide demonstrates a strategy for implementing a multi-method payment flow on your server.
+
+## The Concept: A Fallback Flow
+
+The core idea is to create a prioritized list of payment methods and attempt to create a payment with each one sequentially until a transaction is successfully initiated.
+
+A typical fallback order might be:
+
+1.  **Card**: The most common and immediate method.
+2.  **SPEI**: A reliable alternative, especially for larger amounts.
+3.  **OXXO**: A final fallback for users who may not have a bank account or card.
+
+Your server-side logic would control this flow. The Tonder API itself processes each request as a standalone transaction.
+
+## Implementation Example
+
+This Python example shows how you could structure a function to process a payment with a fallback mechanism.
+
+```python
+import uuid
+
+# Assume 'tonder_api' is an initialized client for making API calls
+# class TonderAPI:
+#     def process_payment(self, payment_data):
+#         # ... logic to make a POST request to /process/
+#         # ... returns the JSON response as a dict
+
+def process_payment_with_fallback(customer_data, amount, preferred_method="CARD"):
+    """
+    Attempts to process a payment using a preferred method, with fallbacks.
+    
+    Args:
+        customer_data (dict): The customer's details (name, email).
+        amount (float): The payment amount.
+        preferred_method (str): The initial payment method to try.
+    
+    Returns:
+        dict: The successful transaction response from the Tonder API.
+    
+    Raises:
+        Exception: If all payment methods fail.
+    """
+    
+    # Define the prioritized list of payment methods
+    payment_methods_priority = [
+        preferred_method,
+        "CARD",  # Fallback to card if it wasn't the preferred method
+        "SPEI",  # Next, try a bank transfer
+        "OXXO"   # Final fallback is a cash payment
+    ]
+    
+    # Use a set to avoid duplicate attempts (e.g., if preferred_method is 'CARD')
+    unique_methods = list(dict.fromkeys(payment_methods_priority))
+    
+    for method in unique_methods:
+        print(f"Attempting payment with method: {method}")
+        try:
+            # Construct the payment request body
+            payment_data = {
+                "operation_type": "payment",
+                "amount": amount,
+                "currency": "MXN",
+                "customer": customer_data,
+                "payment_method": {"type": method},
+                "client_reference": f"order-{uuid.uuid4()}"
+            }
+            
+            # Make the API call
+            result = tonder_api.process_payment(payment_data)
+            
+            # A successful initiation will have a status of 'authorized' or 'pending'.
+            # A 'declined' status is a failure for this attempt.
+            if result.get("status") in ["authorized", "pending"]:
+                print(f"Payment successfully initiated with {method}. Transaction ID: {result['id']}")
+                return result
+            else:
+                # Handle declines or other failures before trying the next method
+                print(f"Payment with {method} failed with status: {result.get('status')}")
+                # In a real application, you might log the specific error message
+                
+        except Exception as e:
+            # This handles API call failures (e.g., network errors, 500s)
+            print(f"API call for payment method {method} failed: {e}")
+            continue
+    
+    # If the loop completes without returning, all methods have failed.
+    raise Exception("All payment methods failed for this transaction.")
+
+# --- Example Usage ---
+# customer = {"name": "Test Fallback", "email": "fallback@example.com"}
+# try:
+#     successful_transaction = process_payment_with_fallback(customer, 250.00, "CARD")
+#     # Now handle the successful transaction (e.g., redirect for 3DS, show OXXO voucher)
+# except Exception as e:
+#     print(e)
+```
+
+## User Experience Considerations
+
+While this logic can be powerful, it's important to consider the user experience:
+
+  * **Transparency**: Let the user know what's happening. If their card is declined, explicitly ask them if they'd like to try another way, rather than automatically creating an OXXO voucher they didn't ask for.
+  * **Client-Side Control**: A better approach is often to let the user choose their fallback method. Your server can provide a list of available methods, and the client-side application can present these options to the user if the initial payment fails.
+  * **Asynchronous Methods**: Be mindful that fallbacks like SPEI and OXXO are asynchronous. Your application flow must be able to handle a `pending` status and guide the user on the next steps (e.g., displaying the payment voucher).
