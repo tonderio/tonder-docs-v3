@@ -110,3 +110,10 @@ While this logic can be powerful, it's important to consider the user experience
   * **Transparency**: Let the user know what's happening. If their card is declined, explicitly ask them if they'd like to try another way, rather than automatically creating an OXXO voucher they didn't ask for.
   * **Client-Side Control**: A better approach is often to let the user choose their fallback method. Your server can provide a list of available methods, and the client-side application can present these options to the user if the initial payment fails.
   * **Asynchronous Methods**: Be mindful that fallbacks like SPEI and OXXO are asynchronous. Your application flow must be able to handle a `pending` status and guide the user on the next steps (e.g., displaying the payment voucher).
+
+## Next Steps
+
+- Review individual [payment method guides](/direct-integration/payment-methods/payment-methods-overview) to understand each method's specific requirements
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to handle asynchronous payment status updates
+- Implement [error handling](/direct-integration/http-response-codes) to gracefully manage payment failures
+- Test different scenarios using [testing data](/direct-integration/testing-data) to validate your fallback logic
