@@ -1,0 +1,84 @@
+---
+title: "Direct Integration Process Overview"
+sidebarTitle: "Process Overview"
+'og:description': "Complete process for integrating with Tonder Direct"
+---
+
+This guide outlines the complete process for integrating with Tonder Direct, from initial setup in the sandbox to launching your application in the production environment.
+
+## Integration Lifecycle
+
+The integration process follows four main stages. Following these steps ensures your integration is secure, well-tested, and ready for live transactions.
+
+<Steps>
+<Step title="1. Sign In and Get Credentials">
+Your journey begins by getting access to the Tonder platform. Sign in to the [Tonder Dashboard](https://app.tonder.io) or request an account from your Tonder Customer Success Manager (CSM). Once you're in, navigate to the developer section to retrieve your API key and secret. These credentials are used to authenticate your API requests.
+</Step>
+<Step title="2. Test in Sandbox">
+The sandbox (or stage) environment is where you'll build and validate your integration. Use the sandbox API keys and the stage base URL (`https://stage.tonder.io/api/v1/`) to test your entire payment and withdrawal flow end-to-end. Use our provided [test data](/direct-integration/testing-data) to simulate various scenarios like successful payments, declines, and errors.
+</Step>
+<Step title="3. Complete Production Go-Live Checks">
+Before you can process live transactions, you must ensure your integration is robust and secure. This involves completing a pre-production checklist that covers API configuration, security best practices, and comprehensive testing.
+</Step>
+<Step title="4. Go Live">
+Once all checks are complete and your Tonder CSM has activated your production access, you can switch to the production base URL (`https://app.tonder.io/api/v1/`) and use your production API keys. At this point, you are ready to process real payments and withdrawals.
+</Step>
+</Steps>
+
+## Pre-Production Checklist
+
+Use this checklist to ensure your integration is ready for production deployment.
+
+### API Configuration
+
+  - [ ] You have configured your production API credentials securely.
+  - [ ] Your application has a clear separation between staging and production environments/configurations.
+  - [ ] Your code is set up to use the production base URL.
+  - [ ] You have a process for rotating API keys if needed.
+
+### Security
+
+  - [ ] You are using HTTPS for all API communications.
+  - [ ] API keys and secrets are stored securely (e.g., as environment variables or using a secrets management service), not in your codebase.
+  - [ ] Your integration validates and sanitizes all user input before sending it to the API.
+  - [ ] Your error handling logic does not expose sensitive data in logs or to the end-user.
+
+### Integration Testing
+
+  - [ ] You have successfully tested payments with Cards, SPEI, and OXXO.
+  - [ ] You have successfully tested withdrawals with SPEI and debit cards.
+  - [ ] You have tested common error scenarios, including declined payments, validation errors (`422`), and authentication failures (`401`).
+  - [ ] You have tested the 3D Secure flow for card payments.
+  - [ ] You have set up and tested a webhook endpoint to receive real-time notifications.
+
+## Final Deployment Checklist
+
+Before your final deployment, complete these last checks.
+
+  - [ ] A security audit has been completed.
+  - [ ] Performance and load testing have been conducted at expected traffic volumes.
+  - [ ] Monitoring and alerting systems are active for tracking success rates and errors.
+  - [ ] Your team has been trained on operational procedures for handling payment issues.
+  - [ ] You have a clear rollback plan in case of critical issues post-deployment.
+  - [ ] You have verified compliance with all regulatory requirements (e.g., PCI DSS if applicable).
+
+### Post-Deployment Monitoring
+
+After going live, it's critical to monitor your integration closely.
+
+<AccordionGroup>
+<Accordion title="First 24 Hours">
+
+  - Continuously monitor all payment flows.
+  - Check error rates every 15 minutes and investigate any spikes immediately.
+  - Ensure webhook deliveries are succeeding.
+  - Track key system performance metrics (CPU, memory, API latency).
+  - Have an on-call team member ready to respond to alerts.
+</Accordion>
+<Accordion title="First Week">
+  - Review daily metrics and logs for any anomalies or patterns.
+  - Collect customer feedback related to the payment experience.
+  - Analyze error patterns to identify and fix recurring issues.
+  - Begin optimizing your system based on real traffic data.
+</Accordion>
+    </AccordionGroup>

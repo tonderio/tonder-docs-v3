@@ -1,0 +1,88 @@
+---
+title: "Tonder Direct"
+sidebarTitle: "Tonder Direct"
+'og:description': "Unified payment processing API for Latin America"
+---
+
+Tonder Direct provides a unified payment processing API that enables your business to accept payments and send withdrawals across Latin America. Our **Direct Connect** approach simplifies integration, allowing you to process a wide range of transactions through a single, streamlined endpoint.
+
+Instead of managing complex integrations for each payment method or country, you can handle everything with a single API call to our `/process/` endpoint.
+
+## Key Features
+
+<CardGroup cols={2}>
+<Card title="Single Endpoint Processing">
+Handle all payments and withdrawals through one unified `/process/` endpoint.
+</Card>
+<Card title="Regional Payment Methods">
+Natively support essential Latin American payment methods like SPEI, OXXO, and Mercado Pago.
+</Card>
+<Card title="Instant Response">
+Get real-time processing with immediate status updates for your transactions.
+</Card>
+<Card title="Simplified Integration">
+Reduce your development and integration time from weeks to just a few days.
+</Card>
+<Card title="Comprehensive Coverage">
+Accept payments from cards, bank transfers, cash vouchers, and popular digital wallets.
+</Card>
+<Card title="Secure by Design">
+Utilize our secure tokenization service to handle sensitive card data, minimizing your PCI compliance scope.
+</Card>
+</CardGroup>
+
+## How It Works
+
+The API is built around a single `/process/` endpoint that intelligently routes transactions based on the `operation_type` field in your request.
+
+  * `operation_type: "payment"`: Initiates a payment from a customer to your business. You can specify the `payment_method`, such as `CARD`, `SPEI`, or `OXXO`.
+  * `operation_type: "withdrawal"`: Initiates a payout from your business to a beneficiary. You can specify the `transfer_method`, such as `SPEI` or `DEBIT_CARD`.
+
+This unified architecture means you only need to build one core integration to unlock a full suite of payment and withdrawal capabilities.
+
+## Next Steps
+
+<CardGroup>
+<Card
+title="Start Using Tonder Direct"
+href="/direct-integration/quickstart"
+>
+Follow our quick start guide to make your first transaction in minutes.
+</Card>
+<Card
+title="Integration Process"
+href="/direct-integration/process-overview"
+>
+Understand the complete integration process from setup to production.
+</Card>
+<Card
+title="API Reference"
+href="/reference/process-transaction"
+>
+Explore the complete API documentation with detailed endpoint references.
+</Card>
+<Card
+title="Environment Setup"
+href="/direct-integration/environment"
+>
+Learn about Stage and Production environments and how to configure them.
+</Card>
+<Card
+title="Authentication"
+href="/direct-integration/authentication"
+>
+Learn how to authenticate your API requests using API keys and HMAC signatures.
+</Card>
+<Card
+title="Create a Payment"
+href="/direct-integration/guides/create-payments/create-a-payment"
+>
+See the step-by-step guide for processing your first payment.
+</Card>
+<Card
+title="Testing Data"
+href="/direct-integration/testing-data"
+>
+Use our test cards and bank accounts to validate your integration.
+</Card>
+</CardGroup>

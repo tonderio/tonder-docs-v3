@@ -1,0 +1,221 @@
+---
+title: "Start using Tonder Direct Integration"
+sidebarTitle: "Quick Start"
+'og:description': "Make your first test payment using Tonder's Direct API"
+---
+
+This guide will walk you through making your first test payment using Tonder's Direct API in the sandbox environment.
+
+## Prerequisites
+
+Before you begin, make sure you have the following:
+
+1.  **Tonder Account**: You have credentials to sign in at the [Tonder Dashboard](https://app.tonder.io).
+2.  **API Credentials**: You have retrieved your API Key and Secret from the developer section of the dashboard.
+3.  **Technical Basics**: You have a basic understanding of REST APIs and how to make HTTP requests.
+
+## Step 1: Set Up Your Environment
+
+You'll use the sandbox environment for all testing. This allows you to validate your integration end-to-end without processing real money.
+
+Use the following base URL for all your test requests:
+
+```bash
+https://stage.tonder.io/api/v1/
+```
+
+### Required Headers
+
+Every request to the Tonder API must include the following headers:
+
+```http
+Authorization: Token <YOUR_SANDBOX_API_KEY>
+X-Signature-Transaction: <CALCULATED_HMAC_SIGNATURE>
+Content-Type: application/json
+```
+
+| Header                     | Description                                                                                   |
+|----------------------------|-----------------------------------------------------------------------------------------------|
+| **Authorization**          | Contains your unique API key.                                                                |
+| **X-Signature-Transaction**| Includes the HMAC signature to verify the integrity of the request. Authentication will fail if this is missing or incorrect. |
+| **Content-Type**           | Specifies that the request body is in JSON format.                                           |
+
+## Step 2: Implement the HMAC Signature
+
+To secure your requests, you must generate an HMAC-SHA256 signature for each request that includes a body. The signature is a hash of the request payload, calculated using your secret key.
+
+<Accordion title="Python Example: HMAC Signature Generation">
+
+```python
+import json
+import hmac
+import hashlib
+import base64
+
+def create_signature(secret_key, request_body):
+"""Create an HMAC-SHA256 signature for an API request."""
+
+# Serialize the JSON payload with sorted keys and no whitespace.
+
+# This ensures a consistent string for hashing.
+
+json_payload = json.dumps(request_body, separators=(',', ':'), sort_keys=True)
+
+# Calculate the HMAC-SHA256 digest.
+
+signature_bytes = hmac.new(
+secret_key.encode('utf-8'),
+json_payload.encode('utf-8'),
+hashlib.sha256
+).digest()
+
+# Encode the resulting signature in Base64.
+
+return base64.b64encode(signature_bytes).decode('utf-8')
+
+secret_key = "your_secret_key"
+request_data = {
+"operation_type": "payment",
+"amount": 100.00,
+"currency": "MXN",
+"customer": {
+"name": "Test Customer",
+"email": "test@example.com"
+},
+"payment_method": {
+"type": "CARD",
+"card_number": "9230-0892-4469-1474",
+"cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+"cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+"expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+"expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+},
+"client_reference": "test-payment-001"
+}
+
+# Generate the signature
+
+signature = create_signature(secret_key, request_data)
+
+print(f"Calculated Signature: {signature}")
+
+```
+</Accordion>
+
+<Note>
+HMAC validation is configurable for your business. The Direct API `/process/` endpoint uses HMAC authentication by default. The specific fields used to generate the signature can also be configured. This example assumes the entire request body is used.
+</Note>
+
+## Step 3: Make Your First Payment
+
+Now you're ready to make your first payment. Send a `POST` request to the `/process/` endpoint with the correct headers and a request body.
+
+<CodeGroup>
+```bash cURL Example
+curl -X POST https://stage.tonder.io/api/v1/process/ \
+-H "Authorization: Token <YOUR_SANDBOX_API_KEY>" \
+-H "X-Signature-Transaction: <CALCULATED_HMAC_SIGNATURE>" \
+-H "Content-Type: application/json" \
+-d '{
+  "operation_type": "payment",
+  "amount": 100.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Test Customer",
+    "email": "test@example.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+  },
+  "client_reference": "test-payment-001"
+}'
+````
+
+```python Python Example
+import requests
+import json
+# Assuming the create_signature function from Step 2 is defined
+
+# Configuration
+SANDBOX_URL = "https://stage.tonder.io/api/v1/process/"
+API_KEY = "your_sandbox_api_key"
+SECRET_KEY = "your_secret_key"
+
+# Payment request body
+payment_data = {
+  "operation_type": "payment",
+  "amount": 100.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Test Customer",
+    "email": "test@example.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+  },
+  "client_reference": "test-payment-001"
+}
+
+# Generate signature
+signature = create_signature(SECRET_KEY, payment_data)
+
+# Set headers
+headers = {
+    'Authorization': f'Token {API_KEY}',
+    'X-Signature-Transaction': signature,
+    'Content-Type': 'application/json'
+}
+
+# Make the request
+response = requests.post(
+    SANDBOX_URL,
+    headers=headers,
+    json=payment_data
+)
+
+# Print the result
+if response.status_code == 201:
+    result = response.json()
+    print(f"Payment successful! Transaction ID: {result['id']}")
+else:
+    print(f"Payment failed: {response.status_code}")
+    print(response.text)
+```
+
+</CodeGroup>
+
+If your request is successful, you'll receive a `201 Created` status code and a transaction object in the response body.
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "authorized",
+  "amount": 100.00,
+  "currency": "MXN",
+  "merchant_reference": "test-payment-001",
+  "payment_id": 12345,
+  "transaction_id": "txn_abc123",
+  "provider": "stripe",
+  "created_at": "2024-07-26T10:30:00Z",
+  "status_code": 201
+}
+```
+
+Congratulations! You've successfully processed your first payment.
+
+## What's Next?
+
+- Use our [test cards and bank accounts](/direct-integration/testing-data) to simulate different scenarios.
+- Check out how to [process payments](/direct-integration/guides/create-payments/create-a-payment) with other methods like SPEI and OXXO.
+- Get to know the [full process for going live](/direct-integration/process-overview) with your integration.

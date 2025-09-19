@@ -1,0 +1,79 @@
+---
+title: "HTTP Response Codes"
+sidebarTitle: "HTTP Response Codes"
+'og:description': "Standard HTTP response codes used by the Tonder API"
+---
+
+The Tonder API uses standard HTTP response codes to indicate the success or failure of an API request. Your integration should be prepared to handle these codes gracefully.
+
+## Success Codes
+
+Success codes indicate that your request was received and processed successfully.
+
+| Code | Status     | Description                                                                  |
+| ---- | ---------- | ---------------------------------------------------------------------------- |
+| 200  | OK         | The request was successful. Typically used for `GET` requests.               |
+| 201  | Created    | The resource was successfully created. Typically for `POST` requests.        |
+| 202  | Accepted   | The request has been accepted for processing, but is not yet complete (e.g., a payment requiring 3DS). |
+| 204  | No Content | The request was successful, but there is no content to return (e.g., on a `DELETE` request). |
+
+## Client Error Codes
+
+Client error codes indicate a problem with your request, such as invalid data or authentication failure. You should correct the issue in your request before retrying.
+
+| Code | Status                 | Description                                                  | Action Required                                  |
+| ---- | ---------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
+| 400  | Bad Request            | The request was improperly formatted or missing required parameters. | Check the request body and parameters.           |
+| 401  | Unauthorized           | Authentication failed. Your API key or HMAC signature is invalid. | Verify your API key and signature calculation.   |
+| 402  | Payment Required       | The payment was declined by the processor or issuing bank.   | Advise the user to try a different payment method.|
+| 404  | Not Found              | The requested resource could not be found.                   | Check the transaction ID or endpoint URL.        |
+| 422  | Unprocessable Entity   | The request was well-formed, but contained semantic errors (e.g., invalid email format, amount out of range). | Fix the data in the specified fields.            |
+| 429  | Too Many Requests      | You have exceeded the API rate limit.                        | Retry the request after a delay (exponential backoff). |
+
+## Server Error Codes
+
+Server error codes indicate a problem with Tonder's servers. These errors are typically temporary.
+
+| Code | Status                | Description                                         | Action Required                                      |
+| ---- | --------------------- | --------------------------------------------------- | ---------------------------------------------------- |
+| 500  | Internal Server Error | An unexpected error occurred on Tonder's servers.   | Retry the request after a short delay.               |
+| 502  | Bad Gateway           | A dependent service is temporarily down.            | Retry the request after a short delay.               |
+| 503  | Service Unavailable   | The Tonder API is temporarily unavailable (e.g., for maintenance). | Retry the request later. Check the status page.      |
+
+## Error Response Format
+
+When the API returns a client or server error (4xx or 5xx), the response body will contain a JSON object with a consistent format to help you debug the issue.
+
+```json
+{
+  "error": {
+    "code": "validation_error",
+    "message": "Amount must be greater than 0",
+    "type": "request_error",
+    "details": {
+      "field": "amount",
+      "received_value": -10.00
+    }
+  },
+  "request_id": "req_abc123"
+}
+```
+
+### Error Object Fields
+
+The `error` object contains the following fields:
+
+| Field           | Type   | Description                                           |
+| --------------- | ------ | ----------------------------------------------------- |
+| `error.code`    | string | A specific, machine-readable code for the error.      |
+| `error.message` | string | A human-readable message explaining the error.        |
+| `error.type`    | string | The category of the error (e.g., `request_error`, `auth_error`). |
+| `error.details` | object | Additional context about the error, such as which field failed validation. |
+| `request_id`    | string | A unique identifier for the request. Include this ID when contacting support. |
+
+## What's Next?
+
+- Test error scenarios using our [testing data](/direct-integration/testing-data) to make sure your integration handles unexpected responses.
+- Learn about [authentication and security](/direct-integration/authentication) to avoid common authorisation errors.
+- Check the [environment guide](/direct-integration/environment) to ensure you're using the correct URLs and credentials at each stage of development.
+
