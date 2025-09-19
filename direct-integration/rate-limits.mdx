@@ -35,8 +35,6 @@ By monitoring these headers, your application can proactively manage its request
 
 When you exceed the rate limit, the API will return an `HTTP 429` status code and a JSON body containing information on when you can retry.
 
-**Error Response Body:**
-
 ```json
 {
   "error": {
@@ -65,26 +63,17 @@ import requests
 import time
 
 def make_request_with_retry(url, headers, data):
-response = requests.post(url, headers=headers, json=data)
+    response = requests.post(url, headers=headers, json=data)
 
-```
+    if response.status_code == 429:
+        error_data = response.json()
+        retry_after = error_data.get('error', {}).get('retry_after', 60) # Default to 60s
+        print(f"Rate limited. Retrying after {retry_after} seconds...")
+        time.sleep(retry_after)
+        # Retry the request once after waiting
+        return requests.post(url, headers=headers, json=data)
 
-if response.status_code == 429:
-error_data = response.json()
-retry_after = error_data.get('error', {}).get('retry_after', 60) # Default to 60s
-print(f"Rate limited. Retrying after {retry_after} seconds...")
-time.sleep(retry_after)
-# Retry the request once after waiting
-return requests.post(url, headers=headers, json=data)
-
-return response
-
-```
-
-# Usage
-
-# response = make_request_with_retry(api_url, request_headers, request_body)
-
+    return response
 ```
 
 </Accordion>

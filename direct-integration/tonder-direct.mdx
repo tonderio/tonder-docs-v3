@@ -11,22 +11,22 @@ Instead of managing complex integrations for each payment method or country, you
 ## Key Features
 
 <CardGroup cols={2}>
-<Card title="Single Endpoint Processing">
+<Card title="Single Endpoint Processing" icon="link">
 Handle all payments and withdrawals through one unified `/process/` endpoint.
 </Card>
-<Card title="Regional Payment Methods">
+<Card title="Regional Payment Methods" icon="earth-americas">
 Natively support essential Latin American payment methods like SPEI, OXXO, and Mercado Pago.
 </Card>
-<Card title="Instant Response">
+<Card title="Instant Response" icon="bolt">
 Get real-time processing with immediate status updates for your transactions.
 </Card>
-<Card title="Simplified Integration">
+<Card title="Simplified Integration" icon="code">
 Reduce your development and integration time from weeks to just a few days.
 </Card>
-<Card title="Comprehensive Coverage">
+<Card title="Comprehensive Coverage" icon="credit-card">
 Accept payments from cards, bank transfers, cash vouchers, and popular digital wallets.
 </Card>
-<Card title="Secure by Design">
+<Card title="Secure by Design" icon="shield-check">
 Utilize our secure tokenization service to handle sensitive card data, minimizing your PCI compliance scope.
 </Card>
 </CardGroup>
@@ -35,10 +35,10 @@ Utilize our secure tokenization service to handle sensitive card data, minimizin
 
 The API is built around a single `/process/` endpoint that intelligently routes transactions based on the `operation_type` field in your request.
 
-  * `operation_type: "payment"`: Initiates a payment from a customer to your business. You can specify the `payment_method`, such as `CARD`, `SPEI`, or `OXXO`.
-  * `operation_type: "withdrawal"`: Initiates a payout from your business to a beneficiary. You can specify the `transfer_method`, such as `SPEI` or `DEBIT_CARD`.
+  * `operation_type: "payment"`: Initiates a [payment from a customer](/direct-integration/guides/create-payments/create-a-payment) to your business. You can specify the `payment_method`, such as [`CARD`](/direct-integration/payment-methods/card-payments), [`SPEI`](/direct-integration/payment-methods/spei-bank-transfers), or [`OXXO`](/direct-integration/payment-methods/oxxo-cash-payments).
+  * `operation_type: "withdrawal"`: Initiates a [payout from your business](/direct-integration/guides/create-a-withdrawal) to a beneficiary. You can specify the `transfer_method`, such as `SPEI` or `DEBIT_CARD`.
 
-This unified architecture means you only need to build one core integration to unlock a full suite of payment and withdrawal capabilities.
+This unified architecture means you only need to build one core integration to unlock a [full suite of payment and withdrawal capabilities](/direct-integration/payment-methods/payment-methods-overview).
 
 ## Next Steps
 
@@ -56,12 +56,6 @@ href="/direct-integration/process-overview"
 Understand the complete integration process from setup to production.
 </Card>
 <Card
-title="API Reference"
-href="/reference/process-transaction"
->
-Explore the complete API documentation with detailed endpoint references.
-</Card>
-<Card
 title="Environment Setup"
 href="/direct-integration/environment"
 >
@@ -72,6 +66,12 @@ title="Authentication"
 href="/direct-integration/authentication"
 >
 Learn how to authenticate your API requests using API keys and HMAC signatures.
+</Card>
+<Card
+title="API Reference"
+href="/reference/process-transaction"
+>
+Explore the complete API documentation with detailed endpoint references.
 </Card>
 <Card
 title="Create a Payment"

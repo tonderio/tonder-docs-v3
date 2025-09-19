@@ -10,9 +10,8 @@ This guide will walk you through making your first test payment using Tonder's D
 
 Before you begin, make sure you have the following:
 
-1.  **Tonder Account**: You have credentials to sign in at the [Tonder Dashboard](https://app.tonder.io).
-2.  **API Credentials**: You have retrieved your API Key and Secret from the developer section of the dashboard.
-3.  **Technical Basics**: You have a basic understanding of REST APIs and how to make HTTP requests.
+1.  Sign in at the [Tonder Dashboard](https://app.tonder.io) with your credentials.
+2.  Retrieve your API Key and Secret from the [developer section](/dashboard/dev-api-keys) of the dashboard.
 
 ## Step 1: Set Up Your Environment
 
@@ -28,23 +27,27 @@ https://stage.tonder.io/api/v1/
 
 Every request to the Tonder API must include the following headers:
 
-```http
-Authorization: Token <YOUR_SANDBOX_API_KEY>
-X-Signature-Transaction: <CALCULATED_HMAC_SIGNATURE>
-Content-Type: application/json
-```
-
 | Header                     | Description                                                                                   |
 |----------------------------|-----------------------------------------------------------------------------------------------|
 | **Authorization**          | Contains your unique API key.                                                                |
 | **X-Signature-Transaction**| Includes the HMAC signature to verify the integrity of the request. Authentication will fail if this is missing or incorrect. |
 | **Content-Type**           | Specifies that the request body is in JSON format.                                           |
 
+Here's an example of how to include these headers in your request:
+
+```http
+Authorization: Token <YOUR_SANDBOX_API_KEY>
+X-Signature-Transaction: <CALCULATED_HMAC_SIGNATURE>
+Content-Type: application/json
+```
+
 ## Step 2: Implement the HMAC Signature
 
-To secure your requests, you must generate an HMAC-SHA256 signature for each request that includes a body. The signature is a hash of the request payload, calculated using your secret key.
+To secure your API requests, Tonder uses HMAC-SHA256 signatures to verify that requests are authentic and haven't been tampered with. For every request that includes a body (like POST or PUT requests), you must generate a unique signature by creating a hash of the request payload using your secret key. This signature proves that the request comes from you and that the data hasn't been modified in transit.
 
 <Accordion title="Python Example: HMAC Signature Generation">
+
+This example shows how to create an HMAC-SHA256 signature for a payment request and generate the authentication header needed for API calls. The code follows three key steps: serialize the JSON payload with sorted keys for consistency, calculate the HMAC-SHA256 digest using your secret key, and encode the resulting signature in Base64 format.
 
 ```python
 import json
@@ -109,6 +112,19 @@ HMAC validation is configurable for your business. The Direct API `/process/` en
 ## Step 3: Make Your First Payment
 
 Now you're ready to make your first payment. Send a `POST` request to the `/process/` endpoint with the correct headers and a request body.
+
+### Required Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| **operation_type** | string | Must be `"payment"` to process a payment |
+| **amount** | number | Payment amount (e.g., `100.00`) |
+| **currency** | string | Currency code (e.g., `"MXN"` for Mexican Peso) |
+| **customer** | object | Customer information containing `name` and `email` |
+| **payment_method** | object | Payment method details including `type` and card information |
+| **client_reference** | string | Your unique reference for this transaction |
+
+The following example demonstrates a complete payment request using test card data:
 
 <CodeGroup>
 ```bash cURL Example
@@ -212,7 +228,17 @@ If your request is successful, you'll receive a `201 Created` status code and a 
 }
 ```
 
-Congratulations! You've successfully processed your first payment.
+The response contains key information for managing your payment:
+
+| Field | Description |
+|-------|-------------|
+| **transaction_id** | Unique identifier for this payment in Tonder's system |
+| **status** | Current payment status (e.g., "approved", "pending", "declined") |
+| **payment_id** | Internal payment ID for tracking and reference |
+| **merchant_reference** | Your original client reference for this transaction |
+| **provider** | Payment processor used (e.g., "stripe", "conekta") |
+
+Use the `transaction_id` to [check payment status](/reference/get-transaction-status) later, set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time updates, or view transaction details in your [dashboard](/dashboard/transactions).
 
 ## Next Steps
 

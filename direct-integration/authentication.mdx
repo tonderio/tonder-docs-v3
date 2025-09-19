@@ -19,27 +19,25 @@ There are two key components to authenticating your requests:
 
 You must include these headers in every API request:
 
+| Header                    | Description                                                                                              |
+| ------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `Authorization`           | Your API key, prefixed with ` Token  `.                                                                     |
+| `X-Signature-Transaction` | The Base64-encoded HMAC-SHA256 signature calculated from the request body. Required for `POST` requests. |
+| `Content-Type`            | Must be `application/json` for requests with a body.                                                     |
+
+Here's an example of how to include these headers in your request:
+
 ```http
 Authorization: Token <YOUR_API_KEY>
 X-Signature-Transaction: <CALCULATED_HMAC_SIGNATURE>
 Content-Type: application/json
 ```
 
-<AccordionGroup>
-<Accordion title="Header Descriptions">
-| Header                    | Description                                                                                              |
-| ------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `Authorization`           | Your API key, prefixed with ` Token  `.                                                                     |
-| `X-Signature-Transaction` | The Base64-encoded HMAC-SHA256 signature calculated from the request body. Required for `POST` requests. |
-| `Content-Type`            | Must be `application/json` for requests with a body.                                                     |
-</Accordion>
-</AccordionGroup>
-
 ## How to Generate the HMAC Signature
 
 The HMAC signature ensures that the request body has not been tampered with in transit. It is calculated using the `HMAC-SHA256` algorithm.
 
-### Steps for Signature Calculation
+The HMAC signature is calculated using the following steps:
 
 1. Get the raw JSON payload of your POST request.
 2. Serialise the JSON object as a string, sorting keys alphabetically and removing all whitespace between separators (for example, use `{"a":1,"b":2}` not `{"b": 2, "a": 1}`).
@@ -47,9 +45,7 @@ The HMAC signature ensures that the request body has not been tampered with in t
 4. Use the HMAC-SHA256 algorithm with your secret key to hash the serialised JSON string. The output should be in binary format.
 5. Encode the binary digest as a Base64 string. This is your final signature.
 
-### Implementation Example
-
-This Python example demonstrates the full process for generating a valid signature.
+This Python example demonstrates the full process for generating a valid signature by serializing the JSON payload with sorted keys, calculating the HMAC-SHA256 digest using your secret key, and encoding the result as a Base64 string.
 
 ```python
 import json
@@ -105,11 +101,9 @@ signature = create_signature(my_secret_key, my_request_body)
 print(f"Generated Signature: {signature}")
 ```
 
-<Warning>
-**HMAC Configuration is Important**
-HMAC validation can be enabled or disabled on a per-business basis. Furthermore, the specific fields from the request body used to generate the signature are also configurable. The example above assumes the entire body is used. If you encounter authentication issues, please verify your HMAC configuration with your Tonder CSM.
+<Warning title="HMAC Configuration">
+HMAC validation can be enabled or disabled on a per-business basis. The specific fields from the request body used to generate the signature are also configurable. The example above assumes the entire request body is used. If you encounter authentication issues, verify your HMAC configuration with your Tonder Customer Success Manager or check your dashboard settings.
 </Warning>
-
 
 ## Next Steps
 
