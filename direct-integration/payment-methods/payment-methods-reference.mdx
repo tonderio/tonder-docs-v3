@@ -1,0 +1,118 @@
+---
+title: "Payment Methods Reference"
+sidebarTitle: "Payment Methods Reference"
+'og:description': "Quick reference for all supported payment methods, parameters, and specifications"
+---
+
+This page provides quick reference information for all payment methods supported by Tonder's Direct Integration.
+
+## Supported Payment Methods Overview
+
+| Method | Type Value | Processing Time | Description |
+|--------|------------|-----------------|-------------|
+| **Card Payments** | `CARD` | Instant | Credit and debit cards (Visa, Mastercard, American Express) |
+| **SPEI Bank Transfers** | `SPEI` | Real-time | Mexican bank transfers (24/7 availability) |
+| **OXXO Cash Payments** | `OXXO` | 24-48 hours | Cash payments at OXXO convenience stores |
+| **Mercado Pago Digital Wallet** | `MERCADOPAGO` | Instant | Digital wallet popular in Latin America |
+| **SafetyPay Cash Payments** | `SAFETYPAY` | 24-48 hours | Alternative cash payment method |
+
+## Common Parameters
+
+All payment methods share these common parameters:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `operation_type` | string | Yes | Must be `"payment"` |
+| `amount` | decimal | Yes | Transaction amount in MXN |
+| `currency` | string | Yes | Must be `"MXN"` for Mexico |
+| `customer` | object | Yes | Customer information (name, email) |
+| `payment_method` | object | Yes | Payment method details |
+| `client_reference` | string | Yes | Unique order identifier |
+
+## Method-Specific Parameters
+
+<AccordionGroup>
+<Accordion title="Card Payments (CARD)">
+**Required Parameters:**
+- `payment_method.type` = `"CARD"`
+- `payment_method.card_number` (tokenized or raw)
+- `payment_method.cardholder_name` (tokenized or raw)
+- `payment_method.cvv` (tokenized or raw)
+- `payment_method.expiration_month` (tokenized or raw)
+- `payment_method.expiration_year` (tokenized or raw)
+
+**Optional Parameters:**
+- `return_url` (required for 3DS authentication)
+</Accordion>
+
+<Accordion title="SPEI Bank Transfers (SPEI)">
+**Required Parameters:**
+- `payment_method.type` = `"SPEI"`
+
+**Operating Hours:** 24/7, 365 days a year
+</Accordion>
+
+<Accordion title="OXXO Cash Payments (OXXO)">
+**Required Parameters:**
+- `payment_method.type` = `"OXXO"`
+
+**Response Includes:**
+- `payment_instructions.reference_code`
+- `payment_instructions.barcode`
+- `payment_instructions.expiration_date`
+- `voucher_pdf` (downloadable voucher)
+</Accordion>
+
+<Accordion title="Mercado Pago (MERCADOPAGO)">
+**Required Parameters:**
+- `payment_method.type` = `"MERCADOPAGO"`
+
+**Optional Parameters:**
+- `return_url` (for redirect flow)
+</Accordion>
+
+<Accordion title="SafetyPay (SAFETYPAY)">
+**Required Parameters:**
+- `payment_method.type` = `"SAFETYPAY"`
+</Accordion>
+</AccordionGroup>
+
+## Status Flow Reference
+
+Here you can find the status flow reference for each payment method:
+
+<AccordionGroup>
+<Accordion title="Synchronous Payment Methods">
+- **Card Payments**: `pending` → `authorized`/`declined`
+- **Mercado Pago**: `pending` → `success`/`failed`
+</Accordion>
+
+<Accordion title="Asynchronous Payment Methods">
+- **SPEI**: `pending` → `processing` → `success`
+- **OXXO**: `pending` → `success`
+- **SafetyPay**: `pending` → `success`
+</Accordion>
+</AccordionGroup>
+
+## Error Codes by Payment Method
+
+Here you can find the error codes reference for each payment method:
+
+<AccordionGroup>
+<Accordion title="Card Payment Errors">
+- `card_declined` - Card declined by issuer
+- `insufficient_funds` - Not enough funds
+- `expired_card` - Card has expired
+- `invalid_card` - Card number invalid
+</Accordion>
+
+<Accordion title="SPEI Errors">
+- `spei_unavailable` - Outside operating hours
+- `invalid_amount` - Amount exceeds SPEI limits
+</Accordion>
+
+<Accordion title="OXXO/SafetyPay Errors">
+- `amount_too_high` - Exceeds payment limits
+- `amount_too_low` - Below minimum payment amount
+</Accordion>
+</AccordionGroup>

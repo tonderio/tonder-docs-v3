@@ -1,0 +1,23 @@
+---
+title: "Process Transaction"
+openapi: "POST /process/"
+---
+
+<Warning>
+  The Authorization needs to be in the following format:
+
+  `Authorization: Token <YOUR_API_KEY>`
+</Warning>
+
+Process both payments and withdrawals through a single API call. This unified endpoint handles all transaction types based on the `operation_type` field.
+
+## Additional Information
+
+This endpoint supports multiple payment methods including:
+- **Card Payments**: Credit and debit cards with optional 3D Secure
+- **SPEI**: Mexican bank transfers (24/7 availability)
+- **OXXO**: Cash payments at OXXO convenience stores
+- **Mercado Pago**: Digital wallet payments
+- **SafetyPay**: Cash payments at participating locations
+
+For detailed information about each payment method, see the [Payment Methods Overview](/direct-integration/payment-methods/payment-methods-overview).

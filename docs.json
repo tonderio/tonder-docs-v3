@@ -144,51 +144,67 @@
             "tab": "Direct Integration",
             "groups": [
               {
-                "group": "Getting Started",
+                "group": "Introduction",
                 "pages": [
-                  "direct-integration/overview",
-                  "direct-integration/quick-start"
+                  "direct-integration/tonder-direct",
+                  "direct-integration/quickstart",
+                  "direct-integration/process-overview",
+                  "direct-integration/environment",
+                  "direct-integration/authentication",
+                  "direct-integration/http-response-codes",
+                  "direct-integration/testing-data",
+                  "direct-integration/rate-limits"
                 ]
               },
               {
-                "group": "API Reference",
+                "group": "Direct Integration Guides",
                 "pages": [
-                  "direct-integration/api-reference/card-tokenization",
-                  "direct-integration/api-reference/core-endpoints",
-                  "direct-integration/api-reference/raw-card-processing",
-                  "direct-integration/api-reference/request-structure",
-                  "direct-integration/api-reference/response-format",
-                  "direct-integration/api-reference/transation-status-check"
+                  {
+                    "group": "Create Payments",
+                    "pages": [
+                      "direct-integration/guides/create-payments/create-a-payment",
+                      "direct-integration/guides/create-payments/create-a-payment-with-3ds",
+                      "direct-integration/guides/create-payments/create-a-payment-with-a-card-token",
+                      "direct-integration/guides/create-payments/create-a-multi-method-payment"
+                    ]
+                  },
+                  "direct-integration/guides/create-a-withdrawal",
+                  "direct-integration/guides/refund-a-payment",
+                  "direct-integration/guides/cancel-a-payment",
+                  "direct-integration/guides/capture-a-payment",
+                  "direct-integration/guides/enroll-a-payment-method"
                 ]
               },
               {
-                "group": "Payment Processing",
+                "group": "Webhooks",
                 "pages": [
-                  "direct-integration/payment-processing/payment-methods",
-                  "direct-integration/payment-processing/withdrawals"
+                  "direct-integration/webhooks/how-webhooks-works"
                 ]
               },
               {
-                "group": "Integration",
+                "group": "Reference Pages",
                 "pages": [
-                  "direct-integration/integration/webhooks",
-                  "direct-integration/integration/error-handling"
+                  "direct-integration/reference/mexican-banking-reference"
                 ]
               },
               {
-                "group": "Regional Reference",
+                "group": "Payment Methods",
                 "pages": [
-                  "direct-integration/regional-reference/mexico"
-                ]
-              },
-              {
-                "group": "Resources",
-                "pages": [
-                  "direct-integration/resources/production-readiness",
-                  "direct-integration/resources/rate-limits",
-                  "direct-integration/resources/support"
+                  "direct-integration/payment-methods/payment-methods-overview",
+                  {
+                    "group": "Payment Method Guides",
+                    "pages": [
+                      "direct-integration/payment-methods/card-payments",
+                      "direct-integration/payment-methods/spei-bank-transfers",
+                      "direct-integration/payment-methods/oxxo-cash-payments",
+                      "direct-integration/payment-methods/mercado-pago-digital-wallet",
+                      "direct-integration/payment-methods/safetypay-cash-payments"
+                    ]
+                  },
+                  "direct-integration/payment-methods/payment-methods-reference"
                 ]
               }
+              
             ]
           },
           {
@@ -263,6 +279,14 @@
                   "reference/create-checkout-router",
                   "reference/create-secure-token",
                   "reference/refund-payment"
+                ]
+              },
+              {
+                "group": "Direct Integration API",
+                "pages": [
+                  "reference/process-transaction",
+                  "reference/get-transaction-status",
+                  "reference/get-tokenization-token"
                 ]
               }
             ]

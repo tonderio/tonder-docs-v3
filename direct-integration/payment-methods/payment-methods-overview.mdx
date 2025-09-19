@@ -1,0 +1,245 @@
+---
+title: "Payment Methods Guide"
+sidebarTitle: "Overview"
+'og:description': "How to choose and implement the right payment methods for your business"
+---
+
+This guide helps you choose and implement the best payment methods for your business using Tonder's unified API. Learn when to use each payment method and how to create a comprehensive payment strategy for your customers.
+
+## How Payment Methods Work
+
+All payment methods in Tonder work through the same unified `/process/` endpoint. You simply change the `payment_method.type` and provide any method-specific parameters. This makes it easy to offer multiple payment options without managing different integrations.
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 100.00,
+  "currency": "MXN",
+  "customer": { /* customer data */ },
+  "payment_method": {
+    "type": "CARD" // or "SPEI", "OXXO", "MERCADOPAGO", "SAFETYPAY"
+  },
+  "client_reference": "order-123"
+}
+```
+
+## Available Payment Methods
+
+### Instant Payment Methods
+
+| Method | Best For | Processing Time |
+|--------|----------|-----------------|
+| [**Card Payments**](/direct-integration/payment-methods/card-payments) | E-commerce, instant confirmation | Immediate |
+| [**Mercado Pago**](/direct-integration/payment-methods/mercado-pago-digital-wallet) | Digital-savvy customers | Immediate |
+
+### Bank Transfer Methods
+
+| Method | Best For | Processing Time |
+|--------|----------|-----------------|
+| [**SPEI Bank Transfers**](/direct-integration/payment-methods/spei-bank-transfers) | Higher-value transactions, B2B | Real-time |
+
+### Cash Payment Methods
+
+| Method | Best For | Processing Time |
+|--------|----------|-----------------|
+| [**OXXO Cash Payments**](/direct-integration/payment-methods/oxxo-cash-payments) | Customers without bank accounts | 24-48 hours |
+| [**SafetyPay Cash Payments**](/direct-integration/payment-methods/safetypay-cash-payments) | Alternative cash payment regions | 24-48 hours |
+
+## Choosing the Right Payment Methods
+
+### For E-commerce Stores
+
+**Primary recommendation:**
+1. **Card Payments** - For immediate payment confirmation
+2. **OXXO** - For cash-preferred customers
+3. **SPEI** - For higher-value purchases
+
+```javascript
+// E-commerce payment method selection
+const getRecommendedMethods = (orderAmount, customerProfile) => {
+  const methods = ['CARD']; // Always include cards
+  
+  if (orderAmount > 500) {
+    methods.push('SPEI'); // SPEI for higher amounts
+  }
+  
+  if (customerProfile.prefersCash) {
+    methods.push('OXXO'); // Cash option
+  }
+  
+  if (customerProfile.age < 35) {
+    methods.push('MERCADOPAGO'); // Digital wallet for younger users
+  }
+  
+  return methods;
+};
+```
+
+### For B2B Platforms
+
+**Primary recommendation:**
+1. **SPEI Bank Transfers** - Preferred for business transactions
+2. **Card Payments** - For smaller purchases and international cards
+
+### For Cash-Heavy Markets
+
+**Primary recommendation:**
+1. **OXXO Cash Payments** - Widest store coverage in Mexico
+2. **SafetyPay** - Alternative for regions without OXXO
+3. **Card Payments** - For customers with cards
+
+## Implementation Strategy
+
+### 1. Start with Core Methods
+
+Begin with the most essential payment methods for your market:
+
+<Steps>
+<Step title="Implement card payments first">
+Cards provide immediate confirmation and work for most customers.
+</Step>
+<Step title="Add OXXO for cash payments">
+Essential for the Mexican market where cash is still popular.
+</Step>
+<Step title="Consider SPEI for higher amounts">
+Bank transfers are trusted for larger transactions.
+</Step>
+<Step title="Expand based on customer feedback">
+Add digital wallets and alternative methods based on demand.
+</Step>
+</Steps>
+
+### 2. Design Your Payment Flow
+
+```javascript
+// Example: Multi-method payment selector
+class PaymentMethodSelector {
+  constructor(orderAmount, customerLocation) {
+    this.amount = orderAmount;
+    this.location = customerLocation;
+  }
+  
+  getAvailableMethods() {
+    const methods = [
+      {
+        type: 'CARD',
+        name: 'Tarjeta de crédito/débito',
+        processingTime: 'Inmediato',
+        icon: 'credit-card',
+        recommended: true
+      },
+      {
+        type: 'OXXO', 
+        name: 'Pago en OXXO',
+        processingTime: '24-48 horas',
+        icon: 'store',
+        description: 'Paga en efectivo en cualquier OXXO'
+      }
+    ];
+    
+    if (this.amount >= 500) {
+      methods.push({
+        type: 'SPEI',
+        name: 'Transferencia bancaria',
+        processingTime: 'Inmediato',
+        icon: 'bank',
+        description: 'Transfiere desde tu banca en línea'
+      });
+    }
+    
+    return methods;
+  }
+}
+```
+
+### 3. Handle Different Response Types
+
+Different payment methods have different response patterns:
+
+```javascript
+// Handle various payment method responses
+const handlePaymentResponse = (response, paymentType) => {
+  switch (paymentType) {
+    case 'CARD':
+      if (response.status === 'authorized') {
+        showSuccessPage(response);
+      } else if (response.next_action) {
+        // Handle 3DS redirect
+        redirectTo3DS(response.next_action.redirect_to_url.url);
+      }
+      break;
+      
+    case 'OXXO':
+    case 'SAFETYPAY':
+      // Show payment voucher
+      displayCashVoucher(response.payment_instructions);
+      break;
+      
+    case 'SPEI':
+      // Show bank transfer instructions
+      displayBankInstructions(response.payment_instructions);
+      break;
+      
+    case 'MERCADOPAGO':
+      // Redirect to Mercado Pago
+      redirectToWallet(response.next_action.redirect_to_url.url);
+      break;
+  }
+};
+```
+
+## Best Practices for Multiple Payment Methods
+
+<AccordionGroup>
+<Accordion title="User Experience">
+- Show processing times clearly for each method
+- Recommend payment methods based on order amount and customer profile
+- Provide fallbacks when preferred methods fail
+- Maintain consistent UI across all payment methods
+</Accordion>
+
+<Accordion title="Technical Implementation">
+- Use the same endpoint for all payment methods (`/process/`)
+- Implement proper error handling for each method type
+- Set up webhooks to track asynchronous payments (OXXO, SPEI, SafetyPay)
+- Store payment method preferences for returning customers
+</Accordion>
+
+<Accordion title="Business Strategy">
+- Analyze payment method performance (success rates, customer preference)
+- Optimize for your customer base (age, location, transaction size)
+- Monitor abandonment rates by payment method
+- Test different payment method orders in your checkout flow
+</Accordion>
+</AccordionGroup>
+
+## Monitoring and Analytics
+
+Track these metrics for each payment method:
+
+```javascript
+const trackPaymentMethod = (method, action, metadata = {}) => {
+  analytics.track('payment_method_interaction', {
+    method: method,
+    action: action, // 'selected', 'completed', 'failed'
+    amount: metadata.amount,
+    customer_segment: metadata.segment,
+    timestamp: new Date().toISOString()
+  });
+};
+
+// Usage examples
+trackPaymentMethod('CARD', 'selected', { amount: 150, segment: 'returning' });
+trackPaymentMethod('OXXO', 'completed', { amount: 250, segment: 'new' });
+```
+
+## Quick Reference
+
+For detailed technical specifications, see the [Payment Methods Reference](/direct-integration/payment-methods/payment-methods-reference).
+
+## What's Next?
+
+- Start with [card payments](/direct-integration/payment-methods/card-payments) for immediate implementation
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) for real-time payment notifications
+- Learn about [HTTP response codes](/direct-integration/http-response-codes) for proper error handling
+- Explore [rate limits](/direct-integration/rate-limits) to ensure optimal API usage

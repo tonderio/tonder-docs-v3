@@ -1,0 +1,201 @@
+---
+title: "How to Accept SPEI Bank Transfers"
+sidebarTitle: "SPEI Bank Transfers"
+'og:description': "Step-by-step guide to process SPEI bank transfers in Mexico with Tonder"
+---
+
+This guide shows you how to accept SPEI (Sistema de Pagos Electrónicos Interbancarios) bank transfers in Mexico. SPEI enables real-time bank-to-bank transfers and is perfect for higher-value transactions where customers prefer bank payments.
+
+## Before You Start
+
+Make sure you have:
+- A Tonder account configured for Mexico
+- Your API credentials set up
+- Understanding that SPEI payments are asynchronous (require customer action)
+
+## When to Use SPEI
+
+SPEI is ideal for:
+- Higher-value transactions (B2B payments)
+- Customers who prefer bank transfers over cards
+- Transactions requiring immediate processing during business hours
+- Reducing card processing fees for large amounts
+
+## 1. Create a SPEI Payment Request
+
+SPEI payments are simple to set up - you only need to specify the payment type. The API will generate payment instructions for your customer.
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 500.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Carlos Eduardo López",
+    "email": "carlos.lopez@empresa.mx"
+  },
+  "payment_method": {
+    "type": "SPEI"
+  },
+  "client_reference": "invoice-456"
+}
+```
+
+## 2. Send the Payment Request
+
+Make a POST request to create the SPEI payment:
+
+```bash
+curl -X POST https://stage.tonder.io/api/v1/process/ \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "operation_type": "payment",
+    "amount": 500.00,
+    "currency": "MXN",
+    "customer": {
+      "name": "Carlos Eduardo López",
+      "email": "carlos.lopez@empresa.mx"
+    },
+    "payment_method": {
+      "type": "SPEI"
+    },
+    "client_reference": "invoice-456"
+  }'
+```
+
+## 3. Handle the Response
+
+SPEI payments always start with a `pending` status since they require the customer to complete the bank transfer.
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "pending",
+  "amount": 500.00,
+  "currency": "MXN",
+  "payment_instructions": {
+    "bank_account": "123456789012345678",
+    "bank_name": "Banco Receptor",
+    "reference": "SPEI789456123",
+    "instructions": [
+      "Realiza una transferencia SPEI a la cuenta indicada",
+      "Usa la referencia proporcionada",
+      "El pago será procesado inmediatamente"
+    ]
+  },
+  "created_at": "2024-07-26T10:30:00Z"
+}
+```
+
+## 4. Provide Instructions to Your Customer
+
+After receiving the response, display clear instructions to your customer:
+
+<Steps>
+<Step title="Share the bank account details">
+Provide the `bank_account` number and `bank_name` from the response.
+</Step>
+<Step title="Provide the payment reference">
+Give the customer the `reference` number - this is crucial for payment identification.
+</Step>
+<Step title="Set expectations">
+Explain that SPEI transfers are processed in real-time during operating hours.
+</Step>
+<Step title="Monitor payment status">
+Use webhooks or polling to track when the payment is completed.
+</Step>
+</Steps>
+
+### Customer Instructions Template
+
+```
+Para completar tu pago de $500.00 MXN:
+
+1. Ingresa a tu banca en línea o app bancaria
+2. Realiza una transferencia SPEI a:
+   - Cuenta: 123456789012345678
+   - Banco: Banco Receptor
+   - Referencia: SPEI789456123
+3. Tu pago será procesado inmediatamente
+
+Conserva tu comprobante de transferencia.
+```
+
+## 5. Track Payment Status
+
+SPEI payments follow this status flow:
+
+1. **`pending`** - Waiting for customer to make transfer
+2. **`processing`** - Bank transfer in progress  
+3. **`success`** - Payment completed successfully
+
+### Using Webhooks (Recommended)
+
+Set up a webhook to receive status updates automatically:
+
+```json
+{
+  "event": "payment.status_changed",
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "success",
+    "amount": 500.00,
+    "completed_at": "2024-07-26T10:45:00Z"
+  }
+}
+```
+
+### Using Status Polling
+
+Alternatively, poll the transaction status:
+
+```bash
+curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-446655440000/ \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## 6. Handle SPEI-Specific Scenarios
+
+There are some specificities to consider when using SPEI payments:
+
+### Operating Hours
+
+SPEI operates 24/7, but some banks may have their own restrictions:
+
+- Most transfers process immediately
+- Some banks may batch transfers during off-hours
+- Transfers between participating banks are typically instant
+
+### Amount Limits
+
+Regarding the amount limits, SPEI has the following restrictions:
+- Minimum: Usually $1 MXN
+- Maximum: Varies by bank (commonly $8,000,000 MXN per day)
+- No Tonder-imposed limits on SPEI amounts
+
+### Common Errors
+
+Some common errors that may occur when using SPEI payments are:
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `invalid_amount` | Amount exceeds bank limits | Use smaller amount or split transaction |
+| `spei_unavailable` | Temporary service issue | Retry later or offer alternative payment |
+
+## Implementation Tips
+
+Follow the best practices below to integrate SPEI payments:
+
+- Make bank transfer steps obvious to customers
+- Set up webhooks instead of relying on polling for status updates
+- Consider payments abandoned after 24-48 hours
+- Allow customers to upload transfer receipts
+- Provide backup payment methods for failed transfers
+
+## What's Next?
+
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when SPEI status changes
+- Learn about [HTTP response codes](/direct-integration/http-response-codes) to handle different API responses
+- Explore other [payment methods](/direct-integration/payment-methods/payment-methods-overview) for customers without bank accounts

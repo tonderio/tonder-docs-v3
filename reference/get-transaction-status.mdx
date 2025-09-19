@@ -1,0 +1,12 @@
+---
+title: "Get Transaction Status"
+openapi: "GET /transactions/{transaction_id}/"
+---
+
+<Warning>
+  The Authorization needs to be in the following format:
+
+  `Authorization: Token <YOUR_API_KEY>`
+</Warning>
+
+Retrieve the current status and details of any transaction (payment or withdrawal). This is essential for monitoring transaction progress, especially for asynchronous payment methods like SPEI transfers and cash payments.

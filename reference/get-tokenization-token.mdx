@@ -1,0 +1,52 @@
+---
+title: "Get Tokenization Access Token"
+openapi: "GET /tokenization/auth/"
+---
+
+<Warning>
+Due to PCI DSS requirements, your company must share relevant attestation documents before Tonder activates production endpoint access. Contact your Tonder representative for compliance requirements.
+</Warning>
+
+<Warning>
+  The Authorization needs to be in the following format:
+
+  `Authorization: Token <YOUR_API_KEY>`
+</Warning>
+
+Obtain an access token required for card tokenization requests. This token should be used immediately for tokenizing card data through Tonder's secure tokenization service.
+
+## Tokenization Flow
+
+The complete tokenization process follows these steps:
+
+1. **Get access token** using this endpoint
+2. **Tokenize card data** using the access token with Tonder's vault service
+3. **Use tokens** in payment requests instead of raw card data
+
+### Token Properties
+
+- **Format**: JWT (JSON Web Token)
+- **Validity**: Short-lived (typically 15-30 minutes)
+- **Usage**: Single-use recommended for security
+- **Scope**: Card tokenization operations only
+
+## Security Requirements
+
+### PCI Compliance
+
+Before using tokenization in production:
+- Submit PCI DSS compliance documentation
+- Complete security questionnaire
+- Undergo security review process
+- Receive production endpoint access approval
+
+### Best Practices
+
+- **Use immediately**: Don't store access tokens
+- **Single use**: Request new tokens for each tokenization session
+- **Secure transmission**: Always use HTTPS
+- **Client-side**: Only use access tokens in secure, PCI-compliant environments
+
+## Next Steps
+
+For a complete step-by-step guide on using this access token to tokenize card data and process payments, see [Create a Payment with Card Tokenization](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token).
