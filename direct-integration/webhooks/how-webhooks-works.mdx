@@ -1,0 +1,142 @@
+---
+title: "How Webhooks works"
+sidebarTitle: "Webhooks"
+'og:description': "Real-time notifications for transaction events"
+---
+
+Webhooks are automated messages sent from an app when something happens. They have a message (payload) which is sent to a unique URL—your app's webhook endpoint. In Tonder, webhooks provide real-time notifications about events, such as a change in a transaction's status.
+
+Using webhooks is more efficient than polling the API for status changes. Instead of you repeatedly asking for updates, Tonder tells your system the moment an event occurs.
+
+## Key Events
+
+Tonder sends webhook notifications for various transaction events, including:
+
+  * **Payment Status Changes**: `pending` → `authorized` → `success`
+  * **Payment Failures**: `declined` or `failed`
+  * **3DS Authentication Completions**: When a user finishes a 3DS challenge.
+  * **Cash Payment Confirmations**: When a customer pays an OXXO voucher.
+  * **Withdrawal Updates**: When a payout is completed or fails.
+
+## Webhook Payload Structure
+
+All webhook notifications follow a consistent payload structure.
+
+```json
+{
+  "event_type": "transaction.status_changed",
+  "event_id": "evt_123456789",
+  "created_at": "2024-07-26T10:32:15Z",
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "operation_type": "payment",
+    "status": "success",
+    "previous_status": "authorized",
+    "amount": 150.00,
+    "currency": "MXN",
+    "merchant_reference": "order-789",
+    "payment_method": "CARD",
+    "customer": {
+      "name": "Ana María Rodríguez",
+      "email": "ana.rodriguez@email.com"
+    },
+    "completed_at": "2024-07-26T10:32:15Z",
+    "authorization_code": "AUTH123456"
+  }
+}
+```
+
+Where:
+
+| Field                  | Type   | Description                                           |
+| ---------------------- | ------ | ----------------------------------------------------- |
+| `event_type`           | string | The type of event that occurred (e.g., `transaction.status_changed`). |
+| `event_id`             | string | A unique identifier for this specific webhook event.  |
+| `created_at`           | string | An ISO 8601 timestamp of when the event occurred.     |
+| `data`                 | object | The full transaction object related to the event.     |
+| `data.status`          | string | The new, current status of the transaction.           |
+| `data.previous_status` | string | The status of the transaction before this change.     |
+
+## Delivery and Retry Logic
+
+Tonder's webhook system is designed for reliability. If your endpoint is temporarily unavailable, we will automatically retry the delivery.
+
+| Setting                   | Value                                  | Description                                                      |
+| ------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
+| **Max Retry Attempts** | 3                                      | We will try to deliver a webhook up to 3 times.                  |
+| **Processing Timeout** | 30 seconds per attempt                 | Your endpoint must respond within 30 seconds.                    |
+| **Retry Interval** | 60 seconds                             | We wait 60 seconds before retrying a failed attempt.             |
+| **Total Retry Window** | ~3 minutes                             | The maximum time spent retrying a single event.                  |
+
+A delivery is considered **successful** if your endpoint responds with a `2xx` HTTP status code within 30 seconds. Any other response (e.g., `4xx`, `5xx`, or a timeout) is considered a **failure**, and a retry will be scheduled. After 3 failed attempts, the message is moved to a Dead Letter Queue (DLQ) for manual inspection.
+
+## Setting Up and Managing Webhooks
+
+You can manage your webhook endpoints through the API.
+
+<AccordionGroup>
+<Accordion title="Create a Webhook">
+`POST /webhooks/`
+
+Registers a new URL to receive webhook notifications. You can configure authentication to secure your endpoint.
+
+<CodeGroup>
+```json Request
+{
+  "url": "https://your-site.com/webhook-handler",
+  "auth_method": "BEARER",
+  "credentials": {
+    "token": "a-secure-bearer-token-you-generate"
+  }
+}
+```
+
+```json Response
+{
+  "id": 123,
+  "url": "https://your-site.com/webhook-handler",
+  "status": "active",
+  "auth_method": "BEARER",
+  "credentials": {
+    "token": "a-secure-bearer-token-you-generate"
+  }
+}
+```
+</CodeGroup>
+
+</Accordion>
+<Accordion title="List Webhooks">
+`GET /webhooks/`
+
+Retrieves all webhook endpoints configured for your business.
+</Accordion>
+<Accordion title="Update a Webhook">
+`PUT /webhooks/{webhook_id}/`
+
+Updates the configuration of an existing webhook endpoint.
+</Accordion>
+<Accordion title="Delete a Webhook">
+`DELETE /webhooks/{webhook_id}/`
+
+Removes a webhook endpoint. It will no longer receive notifications.
+</Accordion>
+</AccordionGroup>
+
+## Best Practices for Your Webhook Endpoint
+
+Follow the best practices below to ensure your webhook endpoint is secure and reliable.
+
+<Expandable title="Security Best Practices">
+
+1.  Always use a secure (`https://`) URL for your webhook endpoint.
+2.  Use an authentication method (`BEARER`, `API_TOKEN`, or `BASIC_AUTH`) to verify that incoming requests are genuinely from Tonder.
+3.  Validate the event structure and content before processing to ensure it's valid.
+</Expandable>
+
+<Expandable title="Implementation Best Practices">
+
+1.  Acknowledge receipt of the webhook immediately with a `200 OK` status. Perform any complex business logic asynchronously in a background job to prevent timeouts.
+2.  Use the `event_id` to deduplicate events and prevent processing the same one twice, as retry logic may cause duplicate events.
+3.  Keep detailed logs of all incoming webhook events for debugging purposes.
+4.  Ensure that a malformed payload or processing error doesn't crash your entire system.
+</Expandable>
