@@ -1,26 +1,39 @@
 ---
-title: "How Webhooks works"
-sidebarTitle: "Webhooks"
+title: "How Webhooks work"
+sidebarTitle: "How Webhooks work"
 'og:description': "Real-time notifications for transaction events"
 ---
 
-Webhooks are automated messages sent from an app when something happens. They have a message (payload) which is sent to a unique URL—your app's webhook endpoint. In Tonder, webhooks provide real-time notifications about events, such as a change in a transaction's status.
+Webhooks are automated messages sent from Tonder when transaction events occur. Instead of repeatedly polling our API for status changes, webhooks provide real-time notifications the moment something happens—like a payment completing, failing, or requiring additional authentication.
 
-Using webhooks is more efficient than polling the API for status changes. Instead of you repeatedly asking for updates, Tonder tells your system the moment an event occurs.
+Using webhooks makes your integration more efficient and responsive, ensuring your system stays synchronized with transaction updates in real-time.
 
 ## Key Events
 
-Tonder sends webhook notifications for various transaction events, including:
+Tonder sends webhook notifications for various transaction events:
 
-  * **Payment Status Changes**: `pending` → `authorized` → `success`
-  * **Payment Failures**: `declined` or `failed`
-  * **3DS Authentication Completions**: When a user finishes a 3DS challenge.
-  * **Cash Payment Confirmations**: When a customer pays an OXXO voucher.
-  * **Withdrawal Updates**: When a payout is completed or fails.
+| Event Type | Description | Example Status Flow |
+|------------|-------------|-------------------|
+| **Payment Status Changes** | Real-time updates as payments progress through different states | `pending` → `authorized` → `success` |
+| **Payment Failures** | Notifications when payments are declined or fail | `pending` → `declined` or `failed` |
+| **3DS Authentication** | Updates when users complete 3D Secure challenges | `pending_3ds` → `success` or `failed` |
+| **Cash Payment Confirmations** | Notifications when customers pay OXXO vouchers | `pending` → `success` (when paid at store) |
+| **Withdrawal Updates** | Status changes for payout transactions | `processing` → `success` or `failed` |
 
 ## Webhook Payload Structure
 
-All webhook notifications follow a consistent payload structure.
+All webhook notifications follow a consistent payload structure with these key fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `event_type` | string | The type of event that occurred (e.g., `transaction.status_changed`) |
+| `event_id` | string | A unique identifier for this specific webhook event |
+| `created_at` | string | An ISO 8601 timestamp of when the event occurred |
+| `data` | object | The full transaction object related to the event |
+| `data.status` | string | The new, current status of the transaction |
+| `data.previous_status` | string | The status of the transaction before this change |
+
+Here's what a typical webhook payload looks like when a payment status changes:
 
 ```json
 {
@@ -46,104 +59,109 @@ All webhook notifications follow a consistent payload structure.
 }
 ```
 
-Where:
+## Getting Started with Webhooks
 
-| Field                  | Type   | Description                                           |
-| ---------------------- | ------ | ----------------------------------------------------- |
-| `event_type`           | string | The type of event that occurred (e.g., `transaction.status_changed`). |
-| `event_id`             | string | A unique identifier for this specific webhook event.  |
-| `created_at`           | string | An ISO 8601 timestamp of when the event occurred.     |
-| `data`                 | object | The full transaction object related to the event.     |
-| `data.status`          | string | The new, current status of the transaction.           |
-| `data.previous_status` | string | The status of the transaction before this change.     |
+To start receiving webhook notifications, you need to:
 
-## Delivery and Retry Logic
+1. Create a publicly accessible HTTPS URL that can receive POST requests
+2. Secure your endpoint to verify requests come from Tonder
+3. Register your endpoint using our API
+4. Process incoming webhook notifications in your application
 
-Tonder's webhook system is designed for reliability. If your endpoint is temporarily unavailable, we will automatically retry the delivery.
+<Note>
+Prerequisites for webhook endpoints:
+- Must use HTTPS (not HTTP) for security
+- Should respond within 30 seconds to avoid timeouts
+- Must return a 2xx status code to acknowledge receipt
+- Should implement authentication to verify request source
+</Note>
 
-| Setting                   | Value                                  | Description                                                      |
-| ------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
-| **Max Retry Attempts** | 3                                      | We will try to deliver a webhook up to 3 times.                  |
-| **Processing Timeout** | 30 seconds per attempt                 | Your endpoint must respond within 30 seconds.                    |
-| **Retry Interval** | 60 seconds                             | We wait 60 seconds before retrying a failed attempt.             |
-| **Total Retry Window** | ~3 minutes                             | The maximum time spent retrying a single event.                  |
+## Reliability and Delivery
 
-A delivery is considered **successful** if your endpoint responds with a `2xx` HTTP status code within 30 seconds. Any other response (e.g., `4xx`, `5xx`, or a timeout) is considered a **failure**, and a retry will be scheduled. After 3 failed attempts, the message is moved to a Dead Letter Queue (DLQ) for manual inspection.
+Tonder ensures reliable webhook delivery through built-in resilience mechanisms:
 
-## Setting Up and Managing Webhooks
+| Feature | Details | Benefit |
+|---------|---------|---------|
+| **Automatic Retries** | Up to 3 delivery attempts with 60-second intervals between retries | Handles temporary outages and network issues |
+| **Response Timeout** | 30-second timeout per delivery attempt | Prevents hanging requests and ensures timely retries |
+| **Dead Letter Queue** | Failed events stored for 30 days with manual reprocessing | No events lost, manual recovery for persistent issues |
+| **Success Criteria** | Any 2xx HTTP status code within timeout window | Simple and flexible acknowledgment requirements |
 
-You can manage your webhook endpoints through the API.
+For complete details on delivery mechanisms and retry policies, see [Delivery and Retry Logic](/direct-integration/webhooks/delivery-and-retry).
+
+## Common Use Cases
+
+Here are practical examples showing how to implement webhook handlers for the most common scenarios you'll encounter in production applications:
 
 <AccordionGroup>
-<Accordion title="Create a Webhook">
-`POST /webhooks/`
 
-Registers a new URL to receive webhook notifications. You can configure authentication to secure your endpoint.
+<Accordion title="Real-time Payment Status Updates">
 
-<CodeGroup>
-```json Request
-{
-  "url": "https://your-site.com/webhook-handler",
-  "auth_method": "BEARER",
-  "credentials": {
-    "token": "a-secure-bearer-token-you-generate"
-  }
-}
+Handle payment status changes to automatically fulfill orders and notify customers when payments complete or fail.
+
+```python
+@app.route('/webhook', methods=['POST'])
+def handle_payment_webhook():
+    payload = request.get_json()
+    
+    if payload['event_type'] == 'transaction.status_changed':
+        transaction = payload['data']
+        
+        if transaction['status'] == 'success':
+            # Payment completed successfully
+            fulfill_order(transaction['merchant_reference'])
+            send_confirmation_email(transaction['customer']['email'])
+            
+        elif transaction['status'] == 'failed':
+            # Payment failed
+            notify_customer_of_failure(transaction['customer']['email'])
+    
+    return jsonify({'status': 'received'}), 200
 ```
 
-```json Response
-{
-  "id": 123,
-  "url": "https://your-site.com/webhook-handler",
-  "status": "active",
-  "auth_method": "BEARER",
-  "credentials": {
-    "token": "a-secure-bearer-token-you-generate"
-  }
-}
+</Accordion>
+
+<Accordion title="3DS Authentication Handling">
+
+Process 3D Secure authentication completions to finalize payments that required additional customer verification.
+
+```python
+def handle_3ds_webhook(payload):
+    transaction = payload['data']
+    
+    if payload['event_type'] == 'transaction.3ds_completed':
+        if transaction['status'] == 'success':
+            # 3DS authentication successful, payment completed
+            complete_order(transaction['id'])
+        else:
+            # 3DS authentication failed
+            cancel_order(transaction['merchant_reference'])
 ```
-</CodeGroup>
 
 </Accordion>
-<Accordion title="List Webhooks">
-`GET /webhooks/`
 
-Retrieves all webhook endpoints configured for your business.
-</Accordion>
-<Accordion title="Update a Webhook">
-`PUT /webhooks/{webhook_id}/`
-
-Updates the configuration of an existing webhook endpoint.
-</Accordion>
-<Accordion title="Delete a Webhook">
-`DELETE /webhooks/{webhook_id}/`
-
-Removes a webhook endpoint. It will no longer receive notifications.
-</Accordion>
 </AccordionGroup>
 
-## Best Practices for Your Webhook Endpoint
+## Webhook Management
 
-Follow the best practices below to ensure your webhook endpoint is secure and reliable.
+Now that you understand how webhooks work and have seen practical examples, explore these focused guides to implement webhooks in your application:
 
-<Expandable title="Security Best Practices">
+<CardGroup cols={3}>
+  <Card title="Setup & Management" icon="gear" href="/direct-integration/webhooks/setup-and-managing">
+    Learn how to create, configure, and manage webhook endpoints through the API
+  </Card>
+  
+  <Card title="Delivery & Retry" icon="refresh" href="/direct-integration/webhooks/delivery-and-retry">
+    Understand how webhooks are delivered, retry policies, and handling failures
+  </Card>
+  
+  <Card title="Best Practices" icon="shield-check" href="/direct-integration/webhooks/best-practices">
+    Security recommendations and implementation patterns for reliable webhooks
+  </Card>
+</CardGroup>
 
-1.  Always use a secure (`https://`) URL for your webhook endpoint.
-2.  Use an authentication method (`BEARER`, `API_TOKEN`, or `BASIC_AUTH`) to verify that incoming requests are genuinely from Tonder.
-3.  Validate the event structure and content before processing to ensure it's valid.
-</Expandable>
+## See also
 
-<Expandable title="Implementation Best Practices">
-
-1.  Acknowledge receipt of the webhook immediately with a `200 OK` status. Perform any complex business logic asynchronously in a background job to prevent timeouts.
-2.  Use the `event_id` to deduplicate events and prevent processing the same one twice, as retry logic may cause duplicate events.
-3.  Keep detailed logs of all incoming webhook events for debugging purposes.
-4.  Ensure that a malformed payload or processing error doesn't crash your entire system.
-</Expandable>
-
-## Next Steps
-
-- Create your [first payment](/direct-integration/guides/create-payments/create-a-payment) to test webhook notifications
-- Review [HTTP response codes](/direct-integration/http-response-codes) for proper webhook response handling
-- Check [rate limits](/direct-integration/rate-limits) to understand webhook delivery patterns
-- Implement [error handling strategies](/direct-integration/http-response-codes) for webhook failures
+- [Create a Payment](/direct-integration/guides/create-payments/create-a-payment) - Learn about events that trigger webhooks
+- [HTTP Response Codes](/direct-integration/http-response-codes) - Proper status codes for webhook responses
+- [Testing Data](/direct-integration/testing-data) - Sample data for testing webhook implementations

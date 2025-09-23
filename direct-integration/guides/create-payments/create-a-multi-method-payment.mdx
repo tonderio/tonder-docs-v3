@@ -1,5 +1,5 @@
 ---
-title: "Create a multi method payment"
+title: "Create a Multi-Method Payment"
 sidebarTitle: "Multi-Method Payment"
 'og:description': "How to implement fallback payment methods"
 ---
@@ -7,6 +7,14 @@ sidebarTitle: "Multi-Method Payment"
 In some use cases, you may want to offer customers a fallback payment option if their preferred method fails. For example, if a customer's credit card is declined, you could automatically offer them the option to pay via a SPEI bank transfer.
 
 This guide demonstrates a strategy for implementing a multi-method payment flow on your server.
+
+## User Experience Considerations
+
+While this logic can be powerful, it's important to consider the user experience:
+
+  * Always inform users what's happening during the payment process. If their card is declined, explicitly ask them if they'd like to try another way, rather than automatically creating an OXXO voucher they didn't ask for.
+  * User choice often works better than automatic fallbacks. Your server can provide a list of available methods, and the client-side application can present these options to the user if the initial payment fails.
+  * Asynchronous payments require special handling since fallbacks like SPEI and OXXO have `pending` status. Your application flow must be able to guide the user on the next steps (e.g., displaying the payment voucher).
 
 ## The Concept: A Fallback Flow
 
@@ -20,9 +28,53 @@ A typical fallback order might be:
 
 Your server-side logic would control this flow. The Tonder API itself processes each request as a standalone transaction.
 
+<Info>
+**Implementation Flexibility**
+
+The fallback logic shown in this guide is just one example approach. You're free to implement your own custom strategy based on your business needs, such as:
+
+- Different priority orders for different customer segments
+- Conditional fallbacks based on transaction amount
+- Geographic or regulatory considerations
+- User preference-driven fallback selection
+</Info>
+
 ## Implementation Example
 
-This Python example shows how you could structure a function to process a payment with a fallback mechanism.
+This section demonstrates how to implement a fallback payment mechanism. We'll start with a visual overview of the logic, then break down each step, and finally show the complete Python implementation.
+
+### Fallback Flow Logic
+
+The following Mermaid diagram illustrates the decision flow for the fallback payment logic:
+
+```mermaid
+flowchart TD
+    A[Start Payment Process] --> B[Get Prioritized Payment Methods]
+    B --> C[Try Next Payment Method]
+    C --> D[Call Tonder API]
+    D --> E{Response Status?}
+    E -->|authorized/pending| F[✅ Payment Successful]
+    E -->|declined/failed| G{More Methods?}
+    G -->|Yes| C
+    G -->|No| H[❌ All Methods Failed]
+    F --> I[Return Success Response]
+    H --> J[Throw Exception]
+```
+
+### Step-by-Step Logic
+
+Here's how the fallback logic works in detail:
+
+1. Define payment methods in order of preference starting with the user's preferred method
+2. Remove duplicate methods to ensure each is only tried once
+3. Iterate through each payment method, making API calls sequentially
+4. Check the response status to determine if the payment was successful or failed
+5. Return the transaction details when a payment succeeds with `authorized` or `pending` status
+6. Continue to the next method if the payment fails, or throw an exception if all methods are exhausted
+
+### Python Implementation
+
+The following Python code demonstrates how to implement the fallback logic described above:
 
 ```python
 import uuid
@@ -102,14 +154,6 @@ def process_payment_with_fallback(customer_data, amount, preferred_method="CARD"
 # except Exception as e:
 #     print(e)
 ```
-
-## User Experience Considerations
-
-While this logic can be powerful, it's important to consider the user experience:
-
-  * **Transparency**: Let the user know what's happening. If their card is declined, explicitly ask them if they'd like to try another way, rather than automatically creating an OXXO voucher they didn't ask for.
-  * **Client-Side Control**: A better approach is often to let the user choose their fallback method. Your server can provide a list of available methods, and the client-side application can present these options to the user if the initial payment fails.
-  * **Asynchronous Methods**: Be mindful that fallbacks like SPEI and OXXO are asynchronous. Your application flow must be able to handle a `pending` status and guide the user on the next steps (e.g., displaying the payment voucher).
 
 ## Next Steps
 

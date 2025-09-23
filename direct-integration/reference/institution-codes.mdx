@@ -1,0 +1,95 @@
+---
+title: "Institution Codes"
+sidebarTitle: "Institution Codes"
+'og:description': "Mexican financial institution codes for SPEI transactions"
+---
+
+This reference provides the codes for major Mexican financial institutions used in SPEI transactions and withdrawals.
+
+## Institution Codes
+
+Major Mexican financial institutions and their corresponding codes for SPEI transactions:
+
+| Code  | Bank Name        | CLABE Prefix | Type                |
+| ----- | ---------------- | ------------ | ------------------- |
+| 40012 | BBVA México      | 012          | Commercial Bank     |
+| 40014 | Santander        | 014          | Commercial Bank     |
+| 40021 | HSBC             | 021          | Commercial Bank     |
+| 40072 | Banorte          | 072          | Commercial Bank     |
+| 40646 | STP              | 646          | Payment Institution |
+| 40137 | Banregio         | 137          | Commercial Bank     |
+| 40058 | Banco Azteca     | 058          | Commercial Bank     |
+| 40030 | Bajío            | 030          | Commercial Bank     |
+| 40036 | Inbursa          | 036          | Commercial Bank     |
+| 40042 | Mifel            | 042          | Commercial Bank     |
+| 40060 | Bansi            | 060          | Commercial Bank     |
+| 40102 | The Royal Bank   | 102          | Foreign Bank        |
+| 40103 | American Express | 103          | Credit Card Company |
+| 40106 | Bank of America  | 106          | Foreign Bank        |
+| 40108 | JP Morgan        | 108          | Foreign Bank        |
+| 40110 | Credit Suisse    | 110          | Foreign Bank        |
+| 40124 | Deutsche Bank    | 124          | Foreign Bank        |
+| 40126 | Credit Agricole  | 126          | Foreign Bank        |
+| 40127 | Azteca           | 127          | Commercial Bank     |
+| 40128 | Autofin          | 128          | Development Bank    |
+| 40129 | Barclays         | 129          | Foreign Bank        |
+| 40130 | Compartamos      | 130          | Development Bank    |
+| 40131 | Banco Famsa      | 131          | Commercial Bank     |
+| 40132 | BMULTIVA         | 132          | Brokerage           |
+| 40133 | ACTINVER         | 133          | Brokerage           |
+| 40135 | NAF              | 135          | Development Bank    |
+| 40136 | Intercam Banco   | 136          | Commercial Bank     |
+| 40138 | Intercam         | 138          | Brokerage           |
+| 40139 | Bancoppel        | 139          | Commercial Bank     |
+| 40140 | ABC Capital      | 140          | Brokerage           |
+| 40141 | UBS Bank         | 141          | Foreign Bank        |
+| 40143 | CIBanco          | 143          | Commercial Bank     |
+| 40145 | Bbase            | 145          | Commercial Bank     |
+| 40147 | Bankaool         | 147          | Commercial Bank     |
+| 40148 | Pagatodo         | 148          | Payment Institution |
+| 40150 | Inmobiliario     | 150          | Development Bank    |
+| 40151 | Donde            | 151          | Payment Institution |
+| 40152 | Bancrea          | 152          | Commercial Bank     |
+
+## Bank Account Types
+
+Different account types used in Mexican banking:
+
+| Code | Type               | Description             |
+| ---- | ------------------ | ----------------------- |
+| 1    | Checking Account   | Cuenta de cheques       |
+| 2    | Savings Account    | Cuenta de ahorros       |
+| 3    | Credit Account     | Cuenta de crédito       |
+| 40   | CLABE Account      | Cuenta CLABE (for SPEI) |
+| 10   | Investment Account | Cuenta de inversión     |
+
+For SPEI withdrawals, the account type is usually picked up automatically from the CLABE format. However, for some operations, you might need to specify it yourself.
+
+This example shows a complete beneficiary object for a SPEI withdrawal request:
+
+```json
+{
+  "beneficiary": {
+    "account": "012345678901234567",    // 18-digit CLABE number
+    "account_type": "40",               // CLABE account type for SPEI
+    "name": "Roberto Martínez García",  // Account holder's full name
+    "rfc": "MAGR850920XY1",            // Individual RFC (13 characters)
+    "institution": "40012"             // BBVA México institution code
+  }
+}
+```
+
+Each field serves a specific purpose:
+- `account`: The CLABE number identifying the recipient's bank account
+- `account_type`: Code "40" indicates this is a CLABE account suitable for SPEI transfers
+- `name`: Legal name of the account holder, must match bank records
+- `rfc`: Mexican tax ID for the account holder (individual or business)
+- `institution`: Bank code corresponding to the first 3 digits of the CLABE (with "40" prefix)
+
+## See also
+
+You can find more information about the Mexican banking system in the following guides:
+
+- [CLABE Validation](/direct-integration/reference/clabe-validation) - Validate and parse CLABE numbers
+- [CLABE Component Extraction](/direct-integration/reference/clabe-component-extraction) - Extract components from CLABE numbers
+- [Mexican Banking Reference](/direct-integration/reference/mexican-banking-reference) - Complete banking reference guide

@@ -161,8 +161,81 @@ Follow the best practices below to handle card payments:
 </Accordion>
 </AccordionGroup>
 
+## PCI Compliant Raw Card Processing
+
+For merchants with full PCI DSS Level 1 compliance, Tonder offers direct raw card processing that bypasses tokenization. This section covers the security requirements and considerations for this approach.
+
+### Status Handling
+
+<Info>
+**Payment Status Values**
+
+- **`Pending`**: Transaction awaiting completion (may require 3DS authentication)
+- **`Success`**: Payment completed successfully
+- **`Failed`**: Payment failed or declined
+- **`Cancelled`**: Transaction was cancelled
+
+Always validate both the `id` and `status` fields in the response for proper payment validation.
+</Info>
+
+### PCI Compliance Requirements
+
+When processing raw card data, you must maintain full PCI DSS Level 1 compliance. This section provides the essential requirements and best practices to ensure secure card data handling.
+
+#### Critical Security Requirements
+
+These are the core security requirements for PCI compliant processing:
+
+- Protect stored, processed, and transmitted card data at all times
+- Use TLS 1.2+ for all card data transmissions  
+- Restrict access to card data on need-to-know basis only
+- Log and monitor all access to cardholder data environments
+- Continuously test security systems and processes
+- Maintain ongoing compliance validation and documentation
+
+#### Data Handling Requirements
+
+**Prohibited Actions**
+
+These are the prohibited actions with card data:
+
+- Do not store CVV data after authorization
+- Do not store card data without encryption or tokenization
+- Do not log card numbers, CVV, or expiration dates
+- Do not use HTTP without TLS 1.2+ encryption
+
+**Required Actions**
+
+Always make sure to perform these actions when processing card data:
+
+- Check card data format before processing
+- Confirm HTTPS before transmission
+- Log all access to payment processing systems
+- Apply security patches regularly
+
+### PCI Compliant vs Tokenized Processing
+
+The following table compares PCI compliant raw card processing with tokenized processing to help you choose the right approach:
+
+| Aspect | PCI Compliant Processing | Tokenized Processing |
+|--------|-------------------------|---------------------|
+| **API Calls** | 1 step (direct process) | 3 steps (auth → tokenize → process) |
+| **PCI Compliance** | Full PCI DSS Level 1 required | Not required for merchant |
+| **Integration Complexity** | Lower (single endpoint) | Higher (multiple endpoints) |
+| **Latency** | Lower (direct processing) | Higher (additional API calls) |
+| **Security Responsibility** | Merchant responsibility | Handled by Tonder/Skyflow |
+| **Maintenance Cost** | Higher (compliance audits) | Lower |
+| **Card Data Storage** | Prohibited without encryption | Tokens can be safely stored |
+| **Infrastructure Requirements** | Dedicated secure servers | Standard infrastructure |
+| **Audit Requirements** | Annual PCI DSS audits | Minimal compliance requirements |
+
+<Note>
+Choose PCI compliant processing only if you already have full PCI DSS Level 1 certification and dedicated infrastructure. For most merchants, [tokenized processing](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token) is the recommended approach.
+</Note>
+
 ## Next Steps
 
 - Learn how to [create payments with card tokens](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token) for enhanced security
 - Explore [3D Secure payments](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for additional authentication details
+- See the [PCI Compliant Raw Card Processing guide](/direct-integration/guides/create-payments/raw-card-processing) for step-by-step implementation
 - Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time payment notifications

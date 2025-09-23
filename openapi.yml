@@ -2104,6 +2104,65 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DirectErrorResponse'
+  "/tokenization/":
+    post:
+      summary: Tokenize Card Data
+      description: |
+        Securely tokenize card data using Tonder's vault service. This endpoint converts sensitive 
+        card information into individual field tokens that can be safely stored and used for payments.
+        
+        **Authentication**: Requires access token from `/tokenization/auth/` endpoint.
+      operationId: tokenizeCardData
+      tags:
+        - Direct Integration
+      servers:
+        - url: https://token.tonder.io/v1/gateway/inboundRoutes/f6eb7af640b041b590a0b2f095a83fa4
+          description: Tokenization service
+      security:
+        - TokenizationAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenizationRequest'
+            example:
+              card_number: "4242424242424242"
+              cardholder_name: "John Doe"
+              cvv: "123"
+              expiration_month: "07"
+              expiration_year: "2025"
+      responses:
+        '200':
+          description: Card data tokenized successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenizationResponse'
+              example:
+                card_number: "9230-0892-4469-1474"
+                cardholder_name: "c05d89b2-299c-4f93-b49a-42be00d3b64b"
+                cvv: "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7"
+                expiration_month: "e401a32e-4174-424f-9688-727005f6a80e"
+                expiration_year: "bd9ccc23-3d00-4109-9626-fc6581389063"
+        '400':
+          description: Bad Request - Invalid card data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or expired access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectErrorResponse'
+        '422':
+          description: Validation Error - Card data validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectErrorResponse'
 components:
   schemas:
     GeneralError:
@@ -2417,6 +2476,67 @@ components:
         request_id:
           type: string
           description: A unique identifier for the request
+
+    # Tokenization Schemas
+    TokenizationRequest:
+      type: object
+      required:
+        - card_number
+        - cardholder_name
+        - cvv
+        - expiration_month
+        - expiration_year
+      properties:
+        card_number:
+          type: string
+          pattern: '^[0-9]{13,19}$'
+          description: The full card number (13-19 digits)
+          example: "4242424242424242"
+        cardholder_name:
+          type: string
+          maxLength: 255
+          description: The name as it appears on the card
+          example: "John Doe"
+        cvv:
+          type: string
+          pattern: '^[0-9]{3,4}$'
+          description: Card security code (3-4 digits)
+          example: "123"
+        expiration_month:
+          type: string
+          pattern: '^(0[1-9]|1[0-2])$'
+          description: Card expiration month (MM format)
+          example: "07"
+        expiration_year:
+          type: string
+          pattern: '^[0-9]{4}$'
+          description: Card expiration year (YYYY format)
+          example: "2025"
+
+    TokenizationResponse:
+      type: object
+      properties:
+        card_number:
+          type: string
+          description: Token representing the card number
+          example: "9230-0892-4469-1474"
+        cardholder_name:
+          type: string
+          description: Token representing the cardholder name
+          example: "c05d89b2-299c-4f93-b49a-42be00d3b64b"
+        cvv:
+          type: string
+          description: Token representing the CVV
+          example: "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7"
+        expiration_month:
+          type: string
+          description: Token representing the expiration month
+          example: "e401a32e-4174-424f-9688-727005f6a80e"
+        expiration_year:
+          type: string
+          description: Token representing the expiration year
+          example: "bd9ccc23-3d00-4109-9626-fc6581389063"
+
   parameters:
     skipParam:
       name: skip
@@ -2438,3 +2558,8 @@ components:
       type: apiKey
       name: Authorization
       in: header
+    TokenizationAuth:
+      type: apiKey
+      name: X-Skyflow-Authorization
+      in: header
+      description: Access token from /tokenization/auth/ endpoint

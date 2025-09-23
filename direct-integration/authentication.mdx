@@ -101,7 +101,9 @@ signature = create_signature(my_secret_key, my_request_body)
 print(f"Generated Signature: {signature}")
 ```
 
-<Warning title="HMAC Configuration">
+<Warning>
+**HMAC Configuration**
+
 HMAC validation can be enabled or disabled on a per-business basis. The specific fields from the request body used to generate the signature are also configurable. The example above assumes the entire request body is used. If you encounter authentication issues, verify your HMAC configuration with your Tonder Customer Success Manager or check your dashboard settings.
 </Warning>
 

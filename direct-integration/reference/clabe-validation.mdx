@@ -1,0 +1,327 @@
+---
+title: "CLABE Validation"
+sidebarTitle: "CLABE Validation"
+'og:description': "CLABE validation algorithm and implementation examples"
+---
+
+CLABE (Clave Bancaria Estandarizada) is Mexico's standardized bank account number format used for SPEI transfers. This guide explains the validation algorithm and provides implementation examples.
+
+CLABE numbers contain four distinct components that can be extracted for processing:
+
+- Total length: 18 digits
+- Bank code: 3 digits (positions 1-3)
+- Branch code: 3 digits (positions 4-6)
+- Account number: 11 digits (positions 7-17)
+- Check digit: 1 digit (position 18)
+
+Here is an example of a CLABE number and a breakdown of its components:
+
+```
+CLABE: 012345678901234567
+│││└─────────────────── Account number (11 digits)
+││└─────────────────────── Branch code (3 digits)
+│└──────────────────────── Bank code (3 digits)
+└───────────────────────── Check digit (1 digit)
+```
+
+Where:
+
+- 012: BBVA México bank code
+- 345: Branch code (specific branch)
+- 67890123456: Account number (11 digits)
+- 7: Check digit (calculated using algorithm)
+
+## CLABE Validation Algorithm
+
+The CLABE validation algorithm uses a weighted sum calculation to verify account number integrity. Each of the first 17 digits is multiplied by a specific weight (following the pattern 3, 7, 1 repeatedly), then all products are summed. The check digit is calculated as `(10 - (sum % 10)) % 10` and must match the 18th digit for the CLABE to be valid:
+
+<CodeGroup>
+
+```python Python Implementation
+def validate_clabe(clabe):
+    """Validate CLABE number using check digit algorithm"""
+    
+    if len(clabe) != 18 or not clabe.isdigit():
+        return False
+    
+    # Weights for positions 1-17
+    weights = [3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7]
+    
+    # Calculate weighted sum
+    weighted_sum = sum(int(clabe[i]) * weights[i] for i in range(17))
+    
+    # Calculate check digit
+    remainder = weighted_sum % 10
+    calculated_check_digit = (10 - remainder) % 10
+    
+    # Compare with actual check digit
+    actual_check_digit = int(clabe[17])
+    
+    return calculated_check_digit == actual_check_digit
+
+# Example usage
+clabe = "012345678901234567"
+is_valid = validate_clabe(clabe)
+print(f"CLABE {clabe} is {'valid' if is_valid else 'invalid'}")
+```
+
+```java Java Implementation
+public class CLABEValidator {
+    
+    private static final int[] WEIGHTS = {3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7};
+    
+    public static boolean validateCLABE(String clabe) {
+        // Check length and format
+        if (clabe.length() != 18 || !clabe.matches("\\d{18}")) {
+            return false;
+        }
+        
+        // Calculate weighted sum
+        int weightedSum = 0;
+        for (int i = 0; i < 17; i++) {
+            int digit = Character.getNumericValue(clabe.charAt(i));
+            weightedSum += digit * WEIGHTS[i];
+        }
+        
+        // Calculate check digit
+        int remainder = weightedSum % 10;
+        int calculatedCheckDigit = (10 - remainder) % 10;
+        
+        // Compare with actual check digit
+        int actualCheckDigit = Character.getNumericValue(clabe.charAt(17));
+        
+        return calculatedCheckDigit == actualCheckDigit;
+    }
+    
+    public static void main(String[] args) {
+        String clabe = "012345678901234567";
+        boolean isValid = validateCLABE(clabe);
+        System.out.println("CLABE " + clabe + " is " + (isValid ? "valid" : "invalid"));
+    }
+}
+```
+
+</CodeGroup>
+
+## RFC (Tax ID) Validation
+
+RFC (Registro Federal de Contribuyentes) is Mexico's tax identification system used alongside CLABE numbers.
+
+RFC identifiers come in two distinct formats depending on whether they're for individuals or businesses:
+
+| Type          | Length | Structure                                                                 | Pattern                        | Example            |
+|---------------|--------|---------------------------------------------------------------------------|--------------------------------|--------------------|
+| **Individual**| 13     | 4 letters + 6 digits + 3 alphanumeric characters                         | `^[A-Z&Ñ]{4}\\d{6}[A-Z\\d]{3}$` | `MAGR850920XY1`    |
+| **Business**  | 12     | 3 letters + 6 digits + 3 alphanumeric characters                         | `^[A-Z&Ñ]{3}\\d{6}[A-Z\\d]{3}$` | `ABC850920123`     |
+
+Each RFC format contains specific components that encode different types of information:
+
+| Type          | Letters Part | Digits Part | Verification Part | Description                    |
+|---------------|--------------|-------------|-------------------|--------------------------------|
+| **Individual**| MAGR         | 850920      | XY1               | Name-derived letters + birth date + verification code |
+| **Business**  | ABC          | 850920      | 123               | Business name-derived letters + registration date + verification code |
+
+The following functions provide RFC validation and type detection capabilities:
+
+<AccordionGroup>
+  <Accordion title="RFC Validation">
+    This function validates RFC format using regex patterns to ensure proper structure for both individual and business formats:
+    
+    ```python
+    import re
+
+    def validate_rfc(rfc):
+        """Validate Mexican RFC format"""
+        
+        if not rfc or len(rfc) < 12 or len(rfc) > 13:
+            return False
+        
+        # Remove spaces and convert to uppercase
+        rfc = rfc.replace(' ', '').upper()
+        
+        # Patterns for validation
+        individual_pattern = r'^[A-Z&Ñ]{4}\d{6}[A-Z\d]{3}$'
+        business_pattern = r'^[A-Z&Ñ]{3}\d{6}[A-Z\d]{3}$'
+        
+        # Check if it matches either pattern
+        if len(rfc) == 13:
+            return re.match(individual_pattern, rfc) is not None
+        elif len(rfc) == 12:
+            return re.match(business_pattern, rfc) is not None
+        
+        return False
+
+    # Examples
+    individual_rfc = "MAGR850920XY1"
+    business_rfc = "ABC850920123"
+
+    print(f"Individual RFC {individual_rfc}: {'Valid' if validate_rfc(individual_rfc) else 'Invalid'}")
+    print(f"Business RFC {business_rfc}: {'Valid' if validate_rfc(business_rfc) else 'Invalid'}")
+    ```
+  </Accordion>
+
+  <Accordion title="RFC Type Detection">
+    This function determines whether an RFC belongs to an individual or business based on its length:
+    
+    ```python
+    def get_rfc_type(rfc):
+        """Determine if RFC is for individual or business"""
+        
+        if not validate_rfc(rfc):
+            return None
+        
+        rfc = rfc.replace(' ', '').upper()
+        
+        if len(rfc) == 13:
+            return 'individual'
+        elif len(rfc) == 12:
+            return 'business'
+        else:
+            return None
+
+    # Example usage
+    rfc = "MAGR850920XY1"
+    rfc_type = get_rfc_type(rfc)
+    print(f"RFC {rfc} is for: {rfc_type}")
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Common Validation Patterns
+
+Common validation patterns involve checking the combined length of CLABE and RFC, ensuring they match the expected formats, and validating the check digits for each component. The following functions provide comprehensive validation for Mexican banking data:
+
+<AccordionGroup>
+  <Accordion title="Complete Banking Data Validation">
+    ```python
+    def validate_mexican_banking_data(data):
+        """Validate all Mexican banking data fields"""
+        
+        errors = []
+        
+        # Validate CLABE
+        clabe = data.get('clabe', '').replace(' ', '')
+        if not validate_clabe(clabe):
+            errors.append("Invalid CLABE format")
+        
+        # Validate RFC
+        rfc = data.get('rfc', '')
+        if not validate_rfc(rfc):
+            errors.append("Invalid RFC format")
+        
+        # Validate institution code
+        institution = data.get('institution', '')
+        valid_institutions = ['40012', '40014', '40021', '40072', '40646', '40137', '40058']
+        if institution not in valid_institutions:
+            errors.append("Invalid institution code")
+        
+        # Cross-validate CLABE and institution
+        if clabe and institution:
+            clabe_bank_code = clabe[:3]
+            institution_suffix = institution[2:] if len(institution) == 5 else institution
+            if clabe_bank_code != institution_suffix:
+                errors.append("CLABE bank code doesn't match institution code")
+        
+        return {
+            'valid': len(errors) == 0,
+            'errors': errors
+        }
+
+    # Example usage
+    banking_data = {
+        'clabe': '012345678901234567',
+        'rfc': 'MAGR850920XY1',
+        'institution': '40012'
+    }
+
+    validation_result = validate_mexican_banking_data(banking_data)
+    if validation_result['valid']:
+        print("All banking data is valid")
+    else:
+        print("Validation errors:", validation_result['errors'])
+    ```
+  </Accordion>
+
+  <Accordion title="CLABE Formatting for Display">
+    ```python
+    def format_clabe_for_display(clabe):
+        """Format CLABE for user-friendly display"""
+        
+        if len(clabe) != 18:
+            return clabe
+        
+        # Format as: 012 345 67890123456 7
+        return f"{clabe[:3]} {clabe[3:6]} {clabe[6:17]} {clabe[17]}"
+
+    # Example
+    clabe = "012345678901234567"
+    formatted = format_clabe_for_display(clabe)
+    print(f"Formatted CLABE: {formatted}")
+    ```
+  </Accordion>
+
+  <Accordion title="Account Masking for Security">
+    ```python
+    def mask_account_number(clabe):
+        """Mask CLABE for security display"""
+        
+        if len(clabe) != 18:
+            return clabe
+        
+        # Show first 3 and last 4 digits
+        return f"{clabe[:3]}***********{clabe[-4:]}"
+
+    # Example
+    clabe = "012345678901234567"
+    masked = mask_account_number(clabe)
+    print(f"Masked CLABE: {masked}")
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Error Messages
+
+When validation fails, your application should handle these standardized error codes to provide clear feedback to users. Each error code corresponds to a specific validation failure with localized message support:
+
+| Error Code                   | English Message                                                      |
+|------------------------------|---------------------------------------------------------------------|
+| `invalid_clabe`              | CLABE must be exactly 18 digits with valid checksum                 |
+| `invalid_clabe_checksum`     | CLABE checksum is invalid                                           |
+| `invalid_rfc`                | RFC format is invalid (must be 12-13 alphanumeric characters)       |
+| `invalid_institution`        | Institution code not found in Mexican banking system                |
+| `clabe_institution_mismatch` | CLABE bank code does not match institution code                     |
+| `invalid_account_type`       | Account type must be valid for SPEI transfers                       |
+
+The following code provides a centralized error handling system with support for both English and Spanish messages. Use the `get_error_message()` function to retrieve localized error messages based on error codes returned by validation functions:
+
+```python
+MEXICAN_BANKING_ERRORS = {
+    'invalid_clabe': 'CLABE must be exactly 18 digits with valid checksum',
+    'invalid_clabe_checksum': 'CLABE checksum is invalid',
+    'invalid_rfc': 'RFC format is invalid (must be 12-13 alphanumeric characters)',
+    'invalid_institution': 'Institution code not found in Mexican banking system',
+    'clabe_institution_mismatch': 'CLABE bank code does not match institution code',
+    'invalid_account_type': 'Account type must be valid for SPEI transfers'
+}
+
+def get_error_message(error_code, lang='en'):
+    """Get localized error message"""
+    
+    spanish_messages = {
+        'invalid_clabe': 'CLABE debe tener exactamente 18 dígitos con suma de verificación válida',
+        'invalid_rfc': 'Formato de RFC inválido (debe tener 12-13 caracteres alfanuméricos)'
+    }
+    
+    if lang == 'es' and error_code in spanish_messages:
+        return spanish_messages[error_code]
+    
+    return MEXICAN_BANKING_ERRORS.get(error_code, 'Unknown banking validation error')
+```
+
+## See also
+
+You can find more information about the Mexican banking system in the following guides:
+
+- [Institution Codes](/direct-integration/reference/institution-codes) - Mexican bank codes and account types
+- [CLABE Component Extraction](/direct-integration/reference/clabe-component-extraction) - Extract components from CLABE numbers
+- [Mexican Banking Reference](/direct-integration/reference/mexican-banking-reference) - Complete banking reference guide

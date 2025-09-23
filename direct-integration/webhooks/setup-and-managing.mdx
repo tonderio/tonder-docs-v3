@@ -1,0 +1,148 @@
+---
+title: "Setting up and Managing Webhooks"
+sidebarTitle: "Setup and Management"
+'og:description': "How to configure and manage webhook endpoints"
+---
+
+This guide explains how to manage your webhook endpoints through the Tonder API. You'll learn to create, update, and manage webhook endpoints to receive real-time notifications.
+
+## Prerequisites
+
+- Tonder API credentials from your [Dashboard → Developers → API Keys](https://app.tonder.io/accounts/login/)
+- A publicly accessible HTTPS endpoint to receive webhook notifications
+
+<Note>
+**Security Requirements**
+
+Follow these essential security practices when setting up webhook endpoints:
+
+- Always use a secure (HTTPS) URL for your webhook endpoint
+- Use an authentication method (BEARER, API_TOKEN, or BASIC_AUTH) to verify requests come from Tonder
+- Validate the event structure and content before processing
+</Note>
+
+## Steps
+
+The webhook management process involves creating and configuring your endpoints through the API.
+
+### 1. Create a webhook endpoint
+
+Register a new URL to receive webhook notifications using the [`/webhooks/`](/reference/webhooks) endpoint. You can configure authentication to secure your endpoint:
+
+```bash
+curl -X POST https://stage.tonder.io/api/v1/webhooks/ \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://your-site.com/webhook-handler",
+    "auth_method": "BEARER",
+    "credentials": {
+      "token": "a-secure-bearer-token-you-generate"
+    }
+  }'
+```
+
+You should receive a response confirming the webhook endpoint was created:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Unique identifier for this webhook endpoint |
+| `url` | string | The webhook URL you registered |
+| `status` | string | Current status of the webhook (`active`, `inactive`) |
+| `auth_method` | string | Authentication method configured (`BEARER`, `API_TOKEN`, `BASIC_AUTH`) |
+| `credentials` | object | Authentication credentials associated with this webhook |
+
+Example response:
+
+```json
+{
+  "id": 123,
+  "url": "https://your-site.com/webhook-handler",
+  "status": "active",
+  "auth_method": "BEARER",
+  "credentials": {
+    "token": "a-secure-bearer-token-you-generate"
+  }
+}
+```
+
+<Note>
+Make sure to save the webhook `id` for future management operations.
+</Note>
+
+### 2. Manage existing webhooks
+
+Once you have created webhooks, you can manage them using these [`/webhooks/`](/reference/webhooks) API endpoints:
+
+| Operation | Method | Endpoint | Purpose |
+|-----------|---------|----------|---------|
+| **List Webhooks** | `GET` | `/webhooks/` | Retrieves all webhook endpoints configured for your business |
+| **Update Webhook** | `PUT` | `/webhooks/{webhook_id}/` | Updates the configuration of an existing webhook endpoint |
+| **Delete Webhook** | `DELETE` | `/webhooks/{webhook_id}/` | Removes a webhook endpoint (it will no longer receive notifications) |
+
+Here are examples of each management operation:
+
+<CodeGroup>
+
+```bash List Webhooks
+curl -X GET https://stage.tonder.io/api/v1/webhooks/ \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+```bash Update Webhook
+curl -X PUT https://stage.tonder.io/api/v1/webhooks/123/ \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://your-updated-site.com/webhook-handler"
+  }'
+```
+
+```bash Delete Webhook
+curl -X DELETE https://stage.tonder.io/api/v1/webhooks/123/ \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+</CodeGroup>
+
+## Troubleshooting
+
+Here are some common setup issues and how to resolve them:
+
+<AccordionGroup>
+
+<Accordion title="Authentication errors when creating webhooks">
+
+When webhook creation fails due to authentication problems:
+
+- Check: Verify your API credentials are correct and have proper permissions
+- Solution: Ensure your endpoint validates the configured authentication method properly
+- Prevention: Test authentication locally before setting up the webhook
+
+</Accordion>
+
+<Accordion title="Webhook endpoint not receiving events after setup">
+
+When your webhook endpoint is created successfully but doesn't receive events:
+
+- Check: Verify your endpoint is publicly accessible via HTTPS and responds quickly
+- Solution: Ensure your endpoint returns a 2xx status code within 30 seconds
+- Prevention: Test your endpoint URL with tools like curl before registering it
+
+</Accordion>
+
+</AccordionGroup>
+
+## See also
+
+- [Delivery and Retry Logic](/direct-integration/webhooks/delivery-and-retry) - Understanding webhook delivery mechanisms
+- [Best Practices](/direct-integration/webhooks/best-practices) - Security and implementation recommendations
+- [HTTP Response Codes](/direct-integration/http-response-codes) - Proper status codes for webhook responses
+
+## Next Steps
+
+After setting up webhooks:
+
+- Review [webhook best practices](/direct-integration/webhooks/best-practices) for security and implementation recommendations
+- Understand [delivery and retry logic](/direct-integration/webhooks/delivery-and-retry) for reliable webhook handling
+- Test your webhook endpoints with real transaction events

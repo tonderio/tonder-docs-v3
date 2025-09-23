@@ -176,13 +176,24 @@
               {
                 "group": "Webhooks",
                 "pages": [
-                  "direct-integration/webhooks/how-webhooks-works"
+                  "direct-integration/webhooks/how-webhooks-works",
+                  "direct-integration/webhooks/setup-and-managing",
+                  "direct-integration/webhooks/delivery-and-retry",
+                  "direct-integration/webhooks/best-practices"
                 ]
               },
               {
                 "group": "Reference Pages",
                 "pages": [
-                  "direct-integration/reference/mexican-banking-reference"
+                  {
+                    "group": "Mexican Banking Reference",
+                    "pages": [
+                      "direct-integration/reference/mexican-banking-reference",
+                      "direct-integration/reference/institution-codes",
+                      "direct-integration/reference/clabe-validation",
+                      "direct-integration/reference/clabe-component-extraction"
+                    ]
+                  }
                 ]
               },
               {
@@ -289,7 +300,8 @@
                 "pages": [
                   "reference/process-transaction",
                   "reference/get-transaction-status",
-                  "reference/get-tokenization-token"
+                  "reference/get-tokenization-token",
+                  "reference/tokenize-card-data"
                 ]
               }
             ]

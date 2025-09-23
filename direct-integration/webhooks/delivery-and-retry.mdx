@@ -1,0 +1,82 @@
+---
+title: "Delivery and Retry Logic"
+sidebarTitle: "Delivery & Retry"
+'og:description': "Understanding webhook delivery mechanisms and retry policies"
+---
+
+Tonder's webhook system is designed for reliability. If your endpoint is temporarily unavailable, we will automatically retry the delivery.
+
+## How Webhook Delivery Works
+
+The webhook delivery follows these sequential steps from event creation to final resolution:
+
+<Steps>
+<Step title="Event Triggered">
+A transaction status change or event occurs
+</Step>
+<Step title="Immediate Delivery">
+Tonder sends a POST request to your webhook endpoint
+</Step>
+<Step title="Response Evaluation">
+Your endpoint's response determines next steps
+</Step>
+<Step title="Success or Retry">
+Based on the response, the event is marked complete or scheduled for retry
+</Step>
+</Steps>
+
+## Retry Policy and Configuration
+
+When a webhook delivery fails, Tonder automatically retries according to a predefined policy:
+
+| Setting | Value | Description |
+|---------|-------|-------------|
+| **Max Retry Attempts** | 3 | We will try to deliver a webhook up to 3 times |
+| **Processing Timeout** | 30 seconds per attempt | Your endpoint must respond within 30 seconds |
+| **Retry Interval** | 60 seconds | We wait 60 seconds before retrying a failed attempt |
+| **Total Retry Window** | ~3 minutes | The maximum time spent retrying a single event |
+
+## Success and Failure Criteria
+
+A delivery is considered **successful** if your endpoint responds with a `2xx` HTTP status code within 30 seconds. Any other response is considered a **failure**, and a retry will be scheduled.
+
+## Common Failure Scenarios
+
+Based on the original webhook system, these are the failure scenarios that trigger retries:
+
+- `4xx` errors (400, 401, 404, etc.) - Client errors indicating request problems
+- `5xx` errors (500, 502, 503, etc.) - Server errors indicating endpoint issues  
+- Timeouts when no response is received after 30 seconds
+
+After 3 failed attempts, the message is moved to a Dead Letter Queue (DLQ) for manual inspection.
+
+## Dead Letter Queue (DLQ)
+
+The Dead Letter Queue stores failed webhook events that couldn't be delivered after all retry attempts:
+
+- Failed events are stored for manual inspection and potential reprocessing
+- Access is available through the Tonder dashboard or support team
+- Events can be manually retried after fixing endpoint issues
+
+## Implementation Considerations
+
+Key practices mentioned in the original webhook documentation:
+
+- Acknowledge receipt immediately with a `200 OK` status to prevent timeouts
+- Use the `event_id` to deduplicate events and prevent processing the same event twice
+- Keep detailed logs of all incoming webhook events for debugging purposes
+- Ensure that malformed payloads or processing errors don't crash your system
+
+## See also
+
+- [Setting up and Managing Webhooks](/direct-integration/webhooks/setup-and-managing) - How to configure webhook endpoints
+- [Best Practices](/direct-integration/webhooks/best-practices) - Security and implementation recommendations
+- [HTTP Response Codes](/direct-integration/http-response-codes) - Proper status codes for webhook responses
+
+## Next Steps
+
+After understanding delivery and retry logic:
+
+- Review [webhook best practices](/direct-integration/webhooks/best-practices) for optimal implementation patterns
+- Set up comprehensive monitoring and alerting for your webhook endpoints
+- Consider implementing multiple webhook endpoints for redundancy
