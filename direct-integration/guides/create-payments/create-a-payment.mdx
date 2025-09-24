@@ -6,7 +6,7 @@ sidebarTitle: "Create a Payment"
 
 This guide shows you how to create a payment using Tonder's unified `/process/` endpoint. You can process various payment methods, from credit cards to local options like SPEI and OXXO, through a single, consistent API call.
 
-## 1. The Core Request
+## Step 1: The Core Request
 
 All payments are created by sending a `POST` request to the [Process Transaction](/reference/process-transaction) endpoint. The request body must contain required fields that are common to all payment methods, plus a `payment_method` object with specific fields for your chosen payment method.
 
@@ -47,7 +47,7 @@ These fields are required for all payment requests:
 Depending on the payment method you choose, additional fields may be required inside the `payment_method` object (for example: card details, SPEI, OXXO, etc.). For detailed information about each payment method and their specific requirements, see the section below or the [Payment Methods Overview](/direct-integration/payment-methods/payment-methods-overview).
 </Note>
 
-## 2. Processing Different Payment Methods
+## Step 2: Processing Different Payment Methods
 
 To process a specific payment method, you change the `type` inside the `payment_method` object and provide any required additional fields. The examples below show how to process different payment methods.
 
@@ -189,7 +189,7 @@ A successful OXXO response will have a status of `pending` and includes payment 
 
 For detailed information about each payment method and their specific requirements, see the [Payment Methods Overview](/direct-integration/payment-methods/payment-methods-overview).
 
-## 3. Handling the Response
+## Step 3: Handling the Response
 
 After you send the request, the API will respond immediately with the initial status of the transaction.
 
@@ -226,7 +226,7 @@ Bear in mind that different payment methods have different response flows.
   * **Card Payments** are typically synchronous. You will get a final status (`authorized` or `declined`) in the initial API response.
   * **SPEI and OXXO Payments** are asynchronous. The initial status will be `pending` because they require the customer to take further action. You must use [Webhooks](/direct-integration/webhooks/how-webhooks-works) or poll the transaction status endpoint to know when the payment is completed.
 
-## 4. Check the Transaction Status
+## Step 4: Check the Transaction Status
 
 For asynchronous payments, or if you need to confirm the final status of any transaction, you can query the transaction status using the [Get Transaction Status](/reference/get-transaction-status) endpoint with the `id` from the payment response:
 

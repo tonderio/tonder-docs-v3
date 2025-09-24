@@ -21,7 +21,7 @@ Mercado Pago is ideal for:
 - Repeat customers who value quick checkout
 - Markets where Mercado Pago has strong adoption
 
-## 1. Create a Mercado Pago Payment Request
+## Step 1: Create a Mercado Pago Payment Request
 
 Mercado Pago payments use a redirect flow where customers authenticate on Mercado Pago's platform:
 
@@ -46,7 +46,7 @@ Mercado Pago payments use a redirect flow where customers authenticate on Mercad
 Always include a `return_url` for Mercado Pago payments. This is where customers will be redirected after completing their payment.
 </Note>
 
-## 2. Send the Payment Request
+## Step 2: Send the Payment Request
 
 Make a POST request to create the Mercado Pago payment:
 
@@ -70,7 +70,7 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
   }'
 ```
 
-## 3. Handle the Response and Redirect
+## Step 3: Handle the Response and Redirect
 
 Mercado Pago payments require a redirect flow. The initial response will include a redirect URL:
 
@@ -91,7 +91,7 @@ Mercado Pago payments require a redirect flow. The initial response will include
 }
 ```
 
-## 4. Redirect Customer to Mercado Pago
+## Step 4: Redirect Customer to Mercado Pago
 
 Guide your customer through the payment flow:
 
@@ -139,7 +139,7 @@ function redirectToMercadoPago(response) {
 }
 ```
 
-## 5. Handle Customer Return
+## Step 5: Handle Customer Return
 
 When customers return to your site, check the payment status:
 
@@ -177,7 +177,7 @@ async function checkPaymentStatus(transactionId) {
 }
 ```
 
-## 6. Track Payment Status
+## Step 6: Track Payment Status
 
 Mercado Pago payments follow this status flow:
 
@@ -211,7 +211,7 @@ curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-
   -H "Authorization: Token YOUR_API_KEY"
 ```
 
-## 7. Handle Different Payment Outcomes
+## Step 7: Handle Different Payment Outcomes
 
 Different payment outcomes can occur:
 

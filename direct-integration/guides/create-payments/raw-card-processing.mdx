@@ -33,7 +33,7 @@ It is not recommended for:
 - Cost-conscious merchants (compliance maintenance is expensive)
 </Info>
 
-## 1. Configure API Authentication
+## Step 1: Configure API Authentication
 
 Set up authentication headers for the PCI compliant processing endpoints.
 
@@ -46,7 +46,7 @@ Content-Type: application/json
 
 The API key is the same one from your Dashboard → Developers → API Keys → Public API Key.
 
-## 2. Choose the Appropriate Endpoint
+## Step 2: Choose the Appropriate Endpoint
 
 Select the correct endpoint based on your environment:
 
@@ -55,7 +55,7 @@ Select the correct endpoint based on your environment:
 | **Testing** | `https://process-sandbox.tonder.io/` | PCI compliant testing |
 | **Production** | `https://process.tonder.io/` | PCI compliant live transactions |
 
-## 3. Process the Payment
+## Step 3: Process the Payment
 
 Send a POST request with raw card data directly to the PCI compliant endpoint.
 
@@ -239,7 +239,7 @@ async function processPCIPayment() {
 
 </CodeGroup>
 
-## 4. Handle the Response
+## Step 4: Handle the Response
 
 Process the payment response according to the status received. The API returns a JSON object with the following structure:
 

@@ -21,7 +21,7 @@ SafetyPay is ideal for:
 - Markets where SafetyPay has established payment networks
 - Customers who prefer alternative payment locations
 
-## 1. Create a SafetyPay Payment Request
+## Step 1: Create a SafetyPay Payment Request
 
 SafetyPay payments are straightforward - just specify the payment type and the API will generate payment instructions:
 
@@ -41,7 +41,7 @@ SafetyPay payments are straightforward - just specify the payment type and the A
 }
 ```
 
-## 2. Send the Payment Request
+## Step 2: Send the Payment Request
 
 Make a POST request to create the SafetyPay payment:
 
@@ -64,7 +64,7 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
   }'
 ```
 
-## 3. Handle the Response
+## Step 3: Handle the Response
 
 SafetyPay payments start with a `pending` status and include payment instructions:
 
@@ -95,7 +95,7 @@ SafetyPay payments start with a `pending` status and include payment instruction
 }
 ```
 
-## 4. Provide Payment Instructions to Your Customer
+## Step 4: Provide Payment Instructions to Your Customer
 
 Create clear instructions for SafetyPay payments:
 
@@ -165,7 +165,7 @@ Here is an example of how to provide payment instructions to your customer:
 </div>
 ```
 
-## 5. Track Payment Status
+## Step 5: Track Payment Status
 
 SafetyPay payments follow this status flow:
 
@@ -198,7 +198,7 @@ curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-
   -H "Authorization: Token YOUR_API_KEY"
 ```
 
-## 6. Handle SafetyPay-Specific Scenarios
+## Step 6: Handle SafetyPay-Specific Scenarios
 
 There are some specificities to consider when using SafetyPay payments:
 

@@ -44,7 +44,7 @@ sequenceDiagram
 
 This asynchronous flow requires you to handle redirects and check the final transaction status after the customer completes authentication.
 
-## 1. Initiating the Payment
+## Step 1: Initiating the Payment
 
 The initial request follows the same structure as a standard card payment, but it's crucial to include a `return_url` so the customer can be redirected back to your site after completing the 3DS challenge.
 
@@ -68,7 +68,7 @@ This request initiates the payment and triggers the 3DS check if required by the
 }
 ```
 
-## 2. Handling the `next_action` Response
+## Step 2: Handling the `next_action` Response
 
 If 3DS authentication is required, the API will respond with a `status` of `pending` and a `next_action` object containing the redirect URL for the customer's authentication.
 
@@ -124,7 +124,7 @@ if (responseData.next_action && responseData.next_action.redirect_to_url) {
 }
 ```
 
-## 3. Verifying the Final Status
+## Step 3: Verifying the Final Status
 
 Once the customer completes the 3DS challenge, their bank will redirect them back to the `return_url` you provided.
 

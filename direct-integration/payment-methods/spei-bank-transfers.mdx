@@ -21,7 +21,7 @@ SPEI is ideal for:
 - Transactions requiring immediate processing during business hours
 - Reducing card processing fees for large amounts
 
-## 1. Create a SPEI Payment Request
+## Step 1: Create a SPEI Payment Request
 
 SPEI payments are simple to set up - you only need to specify the payment type. The API will generate payment instructions for your customer.
 
@@ -41,7 +41,7 @@ SPEI payments are simple to set up - you only need to specify the payment type. 
 }
 ```
 
-## 2. Send the Payment Request
+## Step 2: Send the Payment Request
 
 Make a POST request to create the SPEI payment:
 
@@ -64,7 +64,7 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
   }'
 ```
 
-## 3. Handle the Response
+## Step 3: Handle the Response
 
 SPEI payments always start with a `pending` status since they require the customer to complete the bank transfer.
 
@@ -89,7 +89,7 @@ SPEI payments always start with a `pending` status since they require the custom
 }
 ```
 
-## 4. Provide Instructions to Your Customer
+## Step 4: Provide Instructions to Your Customer
 
 After receiving the response, display clear instructions to your customer:
 
@@ -123,7 +123,7 @@ Para completar tu pago de $500.00 MXN:
 Conserva tu comprobante de transferencia.
 ```
 
-## 5. Track Payment Status
+## Step 5: Track Payment Status
 
 SPEI payments follow this status flow:
 
@@ -156,7 +156,7 @@ curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-
   -H "Authorization: Token YOUR_API_KEY"
 ```
 
-## 6. Handle SPEI-Specific Scenarios
+## Step 6: Handle SPEI-Specific Scenarios
 
 There are some specificities to consider when using SPEI payments:
 

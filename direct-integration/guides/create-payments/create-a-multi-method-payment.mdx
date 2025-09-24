@@ -4,29 +4,50 @@ sidebarTitle: "Multi-Method Payment"
 'og:description': "How to implement fallback payment methods"
 ---
 
-In some use cases, you may want to offer customers a fallback payment option if their preferred method fails. For example, if a customer's credit card is declined, you could automatically offer them the option to pay via a SPEI bank transfer.
+Multi-method payments allow you to offer customers alternative payment options when their preferred method fails. For example, if a customer's credit card is declined, you can automatically offer them a SPEI bank transfer or OXXO voucher as backup options.
 
-This guide demonstrates a strategy for implementing a multi-method payment flow on your server.
+This guide shows you how to implement a fallback payment system that tries multiple payment methods sequentially until one succeeds.
 
-## User Experience Considerations
+## Prerequisites
 
-While this logic can be powerful, it's important to consider the user experience:
+Before implementing multi-method payments, ensure you have:
 
-  * Always inform users what's happening during the payment process. If their card is declined, explicitly ask them if they'd like to try another way, rather than automatically creating an OXXO voucher they didn't ask for.
-  * User choice often works better than automatic fallbacks. Your server can provide a list of available methods, and the client-side application can present these options to the user if the initial payment fails.
-  * Asynchronous payments require special handling since fallbacks like SPEI and OXXO have `pending` status. Your application flow must be able to guide the user on the next steps (e.g., displaying the payment voucher).
+- Valid Tonder API credentials with access to desired payment methods
+- [Webhook setup](/direct-integration/webhooks/how-webhooks-works) for asynchronous payment status updates
 
-## The Concept: A Fallback Flow
+## Understanding Multi-Method Flow
 
-The core idea is to create a prioritized list of payment methods and attempt to create a payment with each one sequentially until a transaction is successfully initiated.
+The fallback logic works by creating a prioritized list of payment methods and attempting each one until a transaction succeeds:
 
-A typical fallback order might be:
+```mermaid
+flowchart TD
+    A[Start Payment Process] --> B[Try Primary Method]
+    B --> C[Call Tonder API]
+    C --> D{Payment Status?}
+    D -->|Success/Pending| E[✅ Payment Initiated]
+    D -->|Failed/Declined| F{More Methods?}
+    F -->|Yes| G[Try Next Method]
+    F -->|No| H[❌ All Methods Failed]
+    G --> C
+    E --> I[Handle Success Response]
+    H --> J[Show Error to User]
+```
 
-1.  **Card**: The most common and immediate method.
-2.  **SPEI**: A reliable alternative, especially for larger amounts.
-3.  **OXXO**: A final fallback for users who may not have a bank account or card.
+<Warning>
+**User Experience First**
 
-Your server-side logic would control this flow. The Tonder API itself processes each request as a standalone transaction.
+Always inform users about fallback attempts. Ask for permission before switching to alternative methods rather than automatically redirecting to methods they didn't choose.
+</Warning>
+
+## Step 1: Define Your Fallback Strategy
+
+Plan your payment method priority order. A typical fallback sequence might be:
+
+1. Card: The most common and immediate method
+2. SPEI: A reliable alternative, especially for larger amounts  
+3. OXXO: A final fallback for users who may not have a bank account or card
+
+Your server-side logic controls this flow. The Tonder API processes each request as a standalone transaction.
 
 <Info>
 **Implementation Flexibility**
@@ -39,42 +60,9 @@ The fallback logic shown in this guide is just one example approach. You're free
 - User preference-driven fallback selection
 </Info>
 
-## Implementation Example
+## Step 2: Implement the Fallback Loop
 
-This section demonstrates how to implement a fallback payment mechanism. We'll start with a visual overview of the logic, then break down each step, and finally show the complete Python implementation.
-
-### Fallback Flow Logic
-
-The following Mermaid diagram illustrates the decision flow for the fallback payment logic:
-
-```mermaid
-flowchart TD
-    A[Start Payment Process] --> B[Get Prioritized Payment Methods]
-    B --> C[Try Next Payment Method]
-    C --> D[Call Tonder API]
-    D --> E{Response Status?}
-    E -->|authorized/pending| F[✅ Payment Successful]
-    E -->|declined/failed| G{More Methods?}
-    G -->|Yes| C
-    G -->|No| H[❌ All Methods Failed]
-    F --> I[Return Success Response]
-    H --> J[Throw Exception]
-```
-
-### Step-by-Step Logic
-
-Here's how the fallback logic works in detail:
-
-1. Define payment methods in order of preference starting with the user's preferred method
-2. Remove duplicate methods to ensure each is only tried once
-3. Iterate through each payment method, making API calls sequentially
-4. Check the response status to determine if the payment was successful or failed
-5. Return the transaction details when a payment succeeds with `authorized` or `pending` status
-6. Continue to the next method if the payment fails, or throw an exception if all methods are exhausted
-
-### Python Implementation
-
-The following Python code demonstrates how to implement the fallback logic described above:
+Create a function that tries each payment method sequentially until one succeeds:
 
 ```python
 import uuid
@@ -145,19 +133,25 @@ def process_payment_with_fallback(customer_data, amount, preferred_method="CARD"
     
     # If the loop completes without returning, all methods have failed.
     raise Exception("All payment methods failed for this transaction.")
+```
 
+## Example Usage
+
+Here's how to use the fallback function in your application:
+
+```python
 # --- Example Usage ---
-# customer = {"name": "Test Fallback", "email": "fallback@example.com"}
-# try:
-#     successful_transaction = process_payment_with_fallback(customer, 250.00, "CARD")
-#     # Now handle the successful transaction (e.g., redirect for 3DS, show OXXO voucher)
-# except Exception as e:
-#     print(e)
+customer = {"name": "Test Fallback", "email": "fallback@example.com"}
+try:
+    successful_transaction = process_payment_with_fallback(customer, 250.00, "CARD")
+    # Now handle the successful transaction (e.g., redirect for 3DS, show OXXO voucher)
+except Exception as e:
+    print(e)
 ```
 
 ## Next Steps
 
 - Review individual [payment method guides](/direct-integration/payment-methods/payment-methods-overview) to understand each method's specific requirements
-- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to handle asynchronous payment status updates
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to handle asynchronous payment status updates  
 - Implement [error handling](/direct-integration/http-response-codes) to gracefully manage payment failures
 - Test different scenarios using [testing data](/direct-integration/testing-data) to validate your fallback logic

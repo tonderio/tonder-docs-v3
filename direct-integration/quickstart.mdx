@@ -29,9 +29,9 @@ Every request to the Tonder API must include the following headers:
 
 | Header                     | Description                                                                                   |
 |----------------------------|-----------------------------------------------------------------------------------------------|
-| **Authorization**          | Contains your unique API key.                                                                |
-| **X-Signature-Transaction**| Includes the HMAC signature to verify the integrity of the request. Authentication will fail if this is missing or incorrect. |
-| **Content-Type**           | Specifies that the request body is in JSON format.                                           |
+| Authorization          | Contains your unique API key.                                                                |
+| X-Signature-Transaction| Includes the HMAC signature to verify the integrity of the request. Authentication will fail if this is missing or incorrect. |
+| Content-Type           | Specifies that the request body is in JSON format.                                           |
 
 Here's an example of how to include these headers in your request:
 
@@ -117,12 +117,12 @@ Now you're ready to make your first payment. Send a `POST` request to the `/proc
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| **operation_type** | string | Must be `"payment"` to process a payment |
-| **amount** | number | Payment amount (e.g., `100.00`) |
-| **currency** | string | Currency code (e.g., `"MXN"` for Mexican Peso) |
-| **customer** | object | Customer information containing `name` and `email` |
-| **payment_method** | object | Payment method details including `type` and card information |
-| **client_reference** | string | Your unique reference for this transaction |
+| operation_type | string | Must be `"payment"` to process a payment |
+| amount | number | Payment amount (e.g., `100.00`) |
+| currency | string | Currency code (e.g., `"MXN"` for Mexican Peso) |
+| customer | object | Customer information containing `name` and `email` |
+| payment_method | object | Payment method details including `type` and card information |
+| client_reference | string | Your unique reference for this transaction |
 
 The following example demonstrates a complete payment request using test card data:
 
@@ -232,11 +232,11 @@ The response contains key information for managing your payment:
 
 | Field | Description |
 |-------|-------------|
-| **transaction_id** | Unique identifier for this payment in Tonder's system |
-| **status** | Current payment status (e.g., "approved", "pending", "declined") |
-| **payment_id** | Internal payment ID for tracking and reference |
-| **merchant_reference** | Your original client reference for this transaction |
-| **provider** | Payment processor used (e.g., "stripe", "conekta") |
+| transaction_id | Unique identifier for this payment in Tonder's system |
+| status | Current payment status (e.g., "approved", "pending", "declined") |
+| payment_id | Internal payment ID for tracking and reference |
+| merchant_reference | Your original client reference for this transaction |
+| provider | Payment processor used (e.g., "stripe", "conekta") |
 
 Use the `transaction_id` to [check payment status](/reference/get-transaction-status) later, set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time updates, or view transaction details in your [dashboard](/dashboard/transactions).
 

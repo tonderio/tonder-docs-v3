@@ -25,7 +25,7 @@ There are two transfer methods available:
 - Debit Card: Instant deposits available within 5-15 minutes, 24/7
 </Info>
 
-## 1. Prepare Your Withdrawal Request
+## Step 1: Prepare Your Withdrawal Request
 
 Create your withdrawal request using the [`/process/`](/reference/process-transaction) endpoint with `operation_type` set to `"withdrawal"`.
 
@@ -69,7 +69,7 @@ The `beneficiary` object in the request is made up of the following fields:
 | `institution` | Bank institution code (you can find codes in our [Mexican Banking Reference](/direct-integration/reference/mexican-banking-reference)) |
 | `email` | Beneficiary's email address for notifications and record-keeping |
 
-## 2. Choose Your Transfer Method
+## Step 2: Choose Your Transfer Method
 
 Select the transfer method that fits your payout needs. Here you can find a quick comparison between the two methods:
 
@@ -160,7 +160,7 @@ Here's an example of a request to withdraw funds using debit card:
 }
 ```
 
-## 3. Send the Withdrawal Request
+## Step 3: Send the Withdrawal Request
 
 Make a POST request to the [`/process/`](/reference/process-transaction) endpoint with your withdrawal data:
 
@@ -185,7 +185,7 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
   }'
 ```
 
-## 4. Handle the Response
+## Step 4: Handle the Response
 
 Upon successful request, the API will return an immediate acknowledgment. Here you find a description of the fields in the response:
 
@@ -227,7 +227,7 @@ As your withdrawal progresses, it will move through different statuses. Here's w
 | `failed` | The transfer failed due to a processing or system error | Check the error details and retry if appropriate |
 | `declined` | The transfer was declined by the bank (e.g., invalid account) | Correct beneficiary data and create a new withdrawal |
 
-## 5. Monitor Withdrawal Progress
+## Step 5: Monitor Withdrawal Progress
 
 Since withdrawals are asynchronous operations, you need to monitor the transaction to check the final status (`success`, `failed`, or `declined`). For this, you must use the transaction `id`from the repsponse. Set up status monitoring using one of these methods:
 

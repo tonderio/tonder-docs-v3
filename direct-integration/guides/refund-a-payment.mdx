@@ -22,11 +22,11 @@ Refunds are only available for card payments. SPEI, OXXO, and Mercado Pago trans
 - **120-Day Window**: Refunds must be processed within 120 days after payment confirmation
 </Warning>
 
-## Steps
+## Processing a Refund
 
 The refund process involves preparing your request data, sending it to the API, and handling the response appropriately.
 
-### 1. Prepare your refund data
+### Step 1: Prepare your refund data
 
 Gather the required information for your refund request. You'll need four essential fields:
 
@@ -48,7 +48,7 @@ For example, to refund $50.00 from a $100.00 original payment, your data structu
 }
 ```
 
-### 2. Send the refund request
+### Step 2: Send the refund request
 
 Make a POST request to the [`/process/`](/reference/process-transaction) endpoint with your refund data. Here's how to do it using cURL:
 
@@ -66,7 +66,7 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
 
 Replace `YOUR_API_KEY` with your actual API key from the Tonder dashboard. You should receive a response with a 201 status code indicating the refund was accepted for processing.
 
-### 3. Handle the API response
+### Step 3: Handle the API response
 
 A successful refund returns immediately with status information. Here's what a typical success response looks like:
 
@@ -101,7 +101,7 @@ Key fields to pay attention to:
 Check that the `status` field shows `"Success"` and the `amount` matches your intended refund amount.
 </Note>
 
-### 4. Implement error handling
+### Step 4: Implement error handling
 
 Handle common refund errors by checking the response status and error messages. Here's a Python example that demonstrates proper error handling:
 

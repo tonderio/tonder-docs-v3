@@ -13,7 +13,7 @@ Make sure you have:
 - Your API key and authentication set up
 - Card tokenization configured (recommended for security)
 
-## 1. Prepare Your Card Payment Request
+## Step 1: Prepare Your Card Payment Request
 
 Create your payment request with the card payment method. Always use tokenized card data when possible for enhanced security.
 
@@ -43,7 +43,7 @@ Create your payment request with the card payment method. Always use tokenized c
 Always include a `return_url` when processing card payments. This is required for 3D Secure authentication flows.
 </Note>
 
-## 2. Send the Payment Request
+## Step 2: Send the Payment Request
 
 Make a POST request to the unified payment endpoint:
 
@@ -72,7 +72,7 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
   }'
 ```
 
-## 3. Handle the Response
+## Step 3: Handle the Response
 
 Card payments can have different response flows depending on whether 3D Secure authentication is required.
 
@@ -106,7 +106,7 @@ Card payments can have different response flows depending on whether 3D Secure a
 }
 ```
 
-## 4. Handle 3D Secure Authentication
+## Step 4: Handle 3D Secure Authentication
 
 When 3D Secure is required, follow these steps:
 
@@ -130,7 +130,7 @@ curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-
   -H "Authorization: Token YOUR_API_KEY"
 ```
 
-## 5. Handle Payment Errors
+## Step 5: Handle Payment Errors
 
 Common card payment errors and how to handle them:
 
