@@ -9,268 +9,268 @@
   },
   "favicon": "/favicon.png",
   "navigation": {
-    "anchors": [
+    "dropdowns": [
       {
-        "anchor": "Documentation",
+        "dropdown": "Documentation",
         "icon": "book-open",
         "tabs": [
+      {
+        "tab": "Getting Started",
+        "groups": [
           {
-            "tab": "Getting Started",
-            "groups": [
-              {
-                "group": "Introduction",
-                "pages": [
-                  "home",
-                  "introduction/getting-started",
-                  "introduction/security"
-                ]
-              },
-              {
-                "group": "Core Concepts",
-                "pages": [
-                  "core-concepts/payment-lifecycle",
-                  "core-concepts/3ds-lifecycle",
-                  "core-concepts/environments"
-                ]
-              }
+            "group": "Introduction",
+            "pages": [
+              "home",
+              "introduction/getting-started",
+              "introduction/security"
             ]
           },
           {
-            "tab": "Online Payments",
-            "groups": [
-              {
-                "group": "Online Payments",
-                "pages": [
-                  "online-payments/overview",
-                  "online-payments/3ds2",
-                  "online-payments/finances",
-                  "online-payments/disputes"
-                ]
-              },
-              {
-                "group": "Reference",
-                "pages": [
-                  "online-payments/payment-methods",
-                  {
-                    "group": "Coverage",
-                    "pages": [
-                      "online-payments/coverage/coverage",
-                      "online-payments/coverage/brazil",
-                      "online-payments/coverage/colombia",
-                      "online-payments/coverage/costa-rica",
-                      "online-payments/coverage/ecuador",
-                      "online-payments/coverage/guatemala",
-                      "online-payments/coverage/mexico",
-                      "online-payments/coverage/panama",
-                      "online-payments/coverage/peru"
-                    ]
-                  },
-                  "online-payments/test-cards"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Integrate Tonder",
-            "groups": [
-              {
-                "group": "Integrations",
-                "pages": [
-                  "integration/intro",
-                  "integration/choose-integration"
-                ]
-              },
-              {
-                "group": "SDKs",
-                "pages": [
-                  "integration/sdks/sdk-overview",
-                  {
-                    "group": "JS SDK",
-                    "pages": [
-                      "integration/sdks/web/js-sdk",
-                      {
-                        "group": "JS Inline Checkout",
-                        "pages": [
-                          "integration/sdks/web/js-inline-checkout",
-                          "integration/sdks/web/js-sdk-styles"
-                        ]
-                      },
-                      "integration/sdks/web/js-lite-checkout",
-                      "integration/sdks/web/code-examples"
-                    ]
-                  },
-                  {
-                    "group": "Mobile SDKs",
-                    "pages": [
-                      {
-                        "group": "Ionic",
-                        "pages": [
-                          "integration/sdks/mobile/ionic/ionic-sdk-lite",
-                          "integration/sdks/mobile/ionic/ionic-sdk-full"
-                        ]
-                      },
-                      {
-                        "group": "Flutter",
-                        "pages": [
-                          "integration/sdks/mobile/flutter/flutter-sdk-lite",
-                          "integration/sdks/mobile/flutter/flutter-sdk-full"
-                        ]
-                      },
-                      {
-                        "group": "React Native",
-                        "pages": [
-                          "integration/sdks/mobile/react-native/rn-sdk",
-                          "integration/sdks/mobile/react-native/inline",
-                          "integration/sdks/mobile/react-native/lite",
-                          "integration/sdks/mobile/react-native/enrollment"
-                        ]
-                      }
-                    ]
-                  },
-                  "integration/sdks/secure-token"
-                ]
-              },
-              {
-                "group": "Plugins",
-                "pages": [
-                  "integration/plugins/plugins-overview",
-                  "integration/plugins/magento",
-                  "integration/plugins/woo-commerce"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Direct Integration",
-            "groups": [
-              {
-                "group": "Introduction",
-                "pages": [
-                  "direct-integration/tonder-direct",
-                  "direct-integration/quickstart",
-                  "direct-integration/process-overview",
-                  "direct-integration/environment",
-                  "direct-integration/authentication",
-                  "direct-integration/http-response-codes",
-                  "direct-integration/testing-data",
-                  "direct-integration/rate-limits"
-                ]
-              },
-              {
-                "group": "Direct Integration Guides",
-                "pages": [
-                  {
-                    "group": "Create Payments",
-                    "pages": [
-                      "direct-integration/guides/create-payments/create-a-payment",
-                      "direct-integration/guides/create-payments/create-a-payment-with-3ds",
-                      "direct-integration/guides/create-payments/create-a-payment-with-a-card-token",
-                      "direct-integration/guides/create-payments/create-a-multi-method-payment",
-                      "direct-integration/guides/create-payments/raw-card-processing"
-                    ]
-                  },
-                  "direct-integration/guides/create-a-withdrawal",
-                  "direct-integration/guides/refund-a-payment"
-                ]
-              },
-              {
-                "group": "Webhooks",
-                "pages": [
-                  "direct-integration/webhooks/how-webhooks-works",
-                  "direct-integration/webhooks/setup-and-managing",
-                  "direct-integration/webhooks/delivery-and-retry",
-                  "direct-integration/webhooks/best-practices"
-                ]
-              },
-              {
-                "group": "Reference Pages",
-                "pages": [
-                  {
-                    "group": "Mexican Banking Reference",
-                    "pages": [
-                      "direct-integration/reference/mexican-banking-reference",
-                      "direct-integration/reference/institution-codes",
-                      "direct-integration/reference/clabe-validation",
-                      "direct-integration/reference/clabe-component-extraction"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Payment Methods",
-                "pages": [
-                  "direct-integration/payment-methods/payment-methods-overview",
-                  {
-                    "group": "Payment Method Guides",
-                    "pages": [
-                      "direct-integration/payment-methods/card-payments",
-                      "direct-integration/payment-methods/spei-bank-transfers",
-                      "direct-integration/payment-methods/oxxo-cash-payments",
-                      "direct-integration/payment-methods/mercado-pago-digital-wallet",
-                      "direct-integration/payment-methods/safetypay-cash-payments"
-                    ]
-                  },
-                  "direct-integration/payment-methods/payment-methods-reference"
-                ]
-              },
-              {
-                "group": "Resources",
-                "pages": [
-                  "direct-integration/resources/support"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Dashboard",
-            "groups": [
-              {
-                "group": "Dashboard",
-                "pages": [
-                  "dashboard/dashboard-overview",
-                  "dashboard/home",
-                  {
-                    "group": "Transactions",
-                    "pages": [
-                      "dashboard/transactions",
-                      "dashboard/transaction-details"
-                    ]
-                  },
-                  "dashboard/payment-links",
-                  {
-                    "group": "Developers",
-                    "pages": [
-                      "dashboard/dev-api-keys",
-                      "dashboard/dev-webhooks"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Online Payments",
-                "pages": [
-                  {
-                    "group": "Disputes",
-                    "pages": [
-                      "dashboard/online-payments/disputes",
-                      "dashboard/online-payments/dispute-details"
-                    ]
-                  },
-                  {
-                    "group": "Finances",
-                    "pages": [
-                      "dashboard/online-payments/finances",
-                      "dashboard/online-payments/settlement-details"
-                    ]
-                  }
-                ]
-              }
+            "group": "Core Concepts",
+            "pages": [
+              "core-concepts/payment-lifecycle",
+              "core-concepts/3ds-lifecycle",
+              "core-concepts/environments"
             ]
           }
         ]
       },
       {
-        "anchor": "API Reference",
+        "tab": "Online Payments",
+        "groups": [
+          {
+            "group": "Online Payments",
+            "pages": [
+              "online-payments/overview",
+              "online-payments/3ds2",
+              "online-payments/finances",
+              "online-payments/disputes"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "online-payments/payment-methods",
+              {
+                "group": "Coverage",
+                "pages": [
+                  "online-payments/coverage/coverage",
+                  "online-payments/coverage/brazil",
+                  "online-payments/coverage/colombia",
+                  "online-payments/coverage/costa-rica",
+                  "online-payments/coverage/ecuador",
+                  "online-payments/coverage/guatemala",
+                  "online-payments/coverage/mexico",
+                  "online-payments/coverage/panama",
+                  "online-payments/coverage/peru"
+                ]
+              },
+              "online-payments/test-cards"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Integrate Tonder",
+        "groups": [
+          {
+            "group": "Integrations",
+            "pages": [
+              "integration/intro",
+              "integration/choose-integration"
+            ]
+          },
+          {
+            "group": "SDKs",
+            "pages": [
+              "integration/sdks/sdk-overview",
+              {
+                "group": "JS SDK",
+                "pages": [
+                  "integration/sdks/web/js-sdk",
+                  {
+                    "group": "JS Inline Checkout",
+                    "pages": [
+                      "integration/sdks/web/js-inline-checkout",
+                      "integration/sdks/web/js-sdk-styles"
+                    ]
+                  },
+                  "integration/sdks/web/js-lite-checkout",
+                  "integration/sdks/web/code-examples"
+                ]
+              },
+              {
+                "group": "Mobile SDKs",
+                "pages": [
+                  {
+                    "group": "Ionic",
+                    "pages": [
+                      "integration/sdks/mobile/ionic/ionic-sdk-lite",
+                      "integration/sdks/mobile/ionic/ionic-sdk-full"
+                    ]
+                  },
+                  {
+                    "group": "Flutter",
+                    "pages": [
+                      "integration/sdks/mobile/flutter/flutter-sdk-lite",
+                      "integration/sdks/mobile/flutter/flutter-sdk-full"
+                    ]
+                  },
+                  {
+                    "group": "React Native",
+                    "pages": [
+                      "integration/sdks/mobile/react-native/rn-sdk",
+                      "integration/sdks/mobile/react-native/inline",
+                      "integration/sdks/mobile/react-native/lite",
+                      "integration/sdks/mobile/react-native/enrollment"
+                    ]
+                  }
+                ]
+              },
+              "integration/sdks/secure-token"
+            ]
+          },
+          {
+            "group": "Plugins",
+            "pages": [
+              "integration/plugins/plugins-overview",
+              "integration/plugins/magento",
+              "integration/plugins/woo-commerce"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Direct Integration",
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": [
+              "direct-integration/tonder-direct",
+              "direct-integration/quickstart",
+              "direct-integration/process-overview",
+              "direct-integration/environment",
+              "direct-integration/authentication",
+              "direct-integration/http-response-codes",
+              "direct-integration/testing-data",
+              "direct-integration/rate-limits"
+            ]
+          },
+          {
+            "group": "Direct Integration Guides",
+            "pages": [
+              {
+                "group": "Create Payments",
+                "pages": [
+                  "direct-integration/guides/create-payments/create-a-payment",
+                  "direct-integration/guides/create-payments/create-a-payment-with-3ds",
+                  "direct-integration/guides/create-payments/create-a-payment-with-a-card-token",
+                  "direct-integration/guides/create-payments/create-a-multi-method-payment",
+                  "direct-integration/guides/create-payments/raw-card-processing"
+                ]
+              },
+              "direct-integration/guides/create-a-withdrawal",
+              "direct-integration/guides/refund-a-payment"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "direct-integration/webhooks/how-webhooks-works",
+              "direct-integration/webhooks/setup-and-managing",
+              "direct-integration/webhooks/delivery-and-retry",
+              "direct-integration/webhooks/best-practices"
+            ]
+          },
+          {
+            "group": "Reference Pages",
+            "pages": [
+              {
+                "group": "Mexican Banking Reference",
+                "pages": [
+                  "direct-integration/reference/mexican-banking-reference",
+                  "direct-integration/reference/institution-codes",
+                  "direct-integration/reference/clabe-validation",
+                  "direct-integration/reference/clabe-component-extraction"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Payment Methods",
+            "pages": [
+              "direct-integration/payment-methods/payment-methods-overview",
+              {
+                "group": "Payment Method Guides",
+                "pages": [
+                  "direct-integration/payment-methods/card-payments",
+                  "direct-integration/payment-methods/spei-bank-transfers",
+                  "direct-integration/payment-methods/oxxo-cash-payments",
+                  "direct-integration/payment-methods/mercado-pago-digital-wallet",
+                  "direct-integration/payment-methods/safetypay-cash-payments"
+                ]
+              },
+              "direct-integration/payment-methods/payment-methods-reference"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "direct-integration/resources/support"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Dashboard",
+        "groups": [
+          {
+            "group": "Dashboard",
+            "pages": [
+              "dashboard/dashboard-overview",
+              "dashboard/home",
+              {
+                "group": "Transactions",
+                "pages": [
+                  "dashboard/transactions",
+                  "dashboard/transaction-details"
+                ]
+              },
+              "dashboard/payment-links",
+              {
+                "group": "Developers",
+                "pages": [
+                  "dashboard/dev-api-keys",
+                  "dashboard/dev-webhooks"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Online Payments",
+            "pages": [
+              {
+                "group": "Disputes",
+                "pages": [
+                  "dashboard/online-payments/disputes",
+                  "dashboard/online-payments/dispute-details"
+                ]
+              },
+              {
+                "group": "Finances",
+                "pages": [
+                  "dashboard/online-payments/finances",
+                  "dashboard/online-payments/settlement-details"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+        ]
+      },
+      {
+        "dropdown": "API Reference",
         "icon": "square-terminal",
         "tabs": [
           {
@@ -307,16 +307,6 @@
             ]
           }
         ]
-      },
-      {
-        "anchor": "Support",
-        "href": "https://intercom.help/tonder-io/es/",
-        "icon": "headset"
-      },
-      {
-        "anchor": "Contact Us",
-        "href": "mailto:hello@tonder.io",
-        "icon": "envelope"
       }
     ]
   },
@@ -348,6 +338,14 @@
       {
         "label": "System Status",
         "href": "https://tonderio.statuspage.io/"
+      },
+      {
+        "label": "Support",
+        "href": "https://intercom.help/tonder-io/es/"
+      },
+      {
+        "label": "Contact Us",
+        "href": "mailto:hello@tonder.io"
       }
     ],
     "primary": {
