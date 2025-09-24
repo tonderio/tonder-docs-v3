@@ -147,8 +147,8 @@
             "group": "Introduction",
             "pages": [
               "direct-integration/tonder-direct",
-              "direct-integration/quickstart",
               "direct-integration/process-overview",
+              "direct-integration/quickstart",
               "direct-integration/environment",
               "direct-integration/authentication",
               "direct-integration/http-response-codes",
