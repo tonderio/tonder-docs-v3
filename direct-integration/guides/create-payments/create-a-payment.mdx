@@ -4,7 +4,7 @@ sidebarTitle: "Create a Payment"
 'og:description': "How to create a payment using Tonder's unified endpoint"
 ---
 
-This guide shows you how to create a payment using Tonder's unified `/process/` endpoint. You can process various payment methods, from credit cards to local options like SPEI and OXXO, through a single, consistent API call.
+This guide shows you how to create a payment using Tonder's unified [Process Transaction](/reference/process-transaction) endpoint. You can process various payment methods, from credit cards to local options like SPEI and OXXO, through a single, consistent API call.
 
 ## Step 1: The Core Request
 
@@ -193,12 +193,31 @@ For detailed information about each payment method and their specific requiremen
 
 After you send the request, the API will respond immediately with the initial status of the transaction.
 
+The `status` field can have one of the following values:
+
+| Status | Description |
+|--------|-------------|
+| `pending` | Transaction is being processed (common for asynchronous payments) |
+| `on_hold` | Transaction is temporarily held for review |
+| `processing` | Transaction is being processed by the payment provider |
+| `sent_to_provider` | Transaction has been sent to the payment provider |
+| `success` | Transaction completed successfully |
+| `paid_full` | Payment has been fully processed and settled |
+| `in_transit` | Funds are in transit to your account |
+| `authorized` | Payment has been authorized (common for card payments) |
+| `canceled` | Transaction was canceled before completion |
+| `declined` | Payment was declined by the provider |
+| `rejected` | Transaction was rejected |
+| `failed` | Transaction failed to process |
+| `expired` | Transaction expired before completion |
+| `Unknown` | Status is unknown or unclear |
+
 <Warning>
-**Critical: Always validate both `id` and `status` fields**
+**Validation of `id` and `status` fields**
 
 For proper payment validation, you must check:
-- **`id`**: The unique transaction identifier - store this for future reference
-- **`status`**: The current payment state - determines next actions
+- `id` is the unique transaction identifier - store this for future reference.
+- `status` is the current payment state - determines next actions.
 
 Never rely on HTTP status codes alone for payment validation.
 </Warning>
@@ -219,12 +238,31 @@ Never rely on HTTP status codes alone for payment validation.
 }
 ```
 
+In this example, the payment has been authorized, but not yet completed. Always check the `status` field in your response and implement appropriate logic based on the status value received.
+
+The table below details the fields that are returned in the response:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique transaction identifier |
+| `operation_type` | string | Always `"payment"` |
+| `status` | string | Transaction status |
+| `amount` | decimal | Transaction amount |
+| `currency` | string | Currency code |
+| `client_reference` | string | Your reference identifier |
+| `payment_id` | integer | Internal payment ID |
+| `transaction_id` | string | Provider transaction ID |
+| `provider` | string | Payment provider used |
+| `created_at` | string | ISO 8601 timestamp |
+| `status_code` | integer | HTTP status code |
+| `next_action` | object | Required actions (3DS, redirects) |
+
 ### Synchronous vs. Asynchronous Payments
 
 Bear in mind that different payment methods have different response flows.
 
-  * **Card Payments** are typically synchronous. You will get a final status (`authorized` or `declined`) in the initial API response.
-  * **SPEI and OXXO Payments** are asynchronous. The initial status will be `pending` because they require the customer to take further action. You must use [Webhooks](/direct-integration/webhooks/how-webhooks-works) or poll the transaction status endpoint to know when the payment is completed.
+  * Card Payments are typically synchronous. You will get a final status (`authorized` or `declined`) in the initial API response.
+  * SPEI and OXXO Payments are asynchronous. The initial status will be `pending` because they require the customer to take further action. You must use [Webhooks](/direct-integration/webhooks/how-webhooks-works) or poll the transaction status endpoint to know when the payment is completed.
 
 ## Step 4: Check the Transaction Status
 

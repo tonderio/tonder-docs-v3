@@ -34,46 +34,46 @@ All payment methods share these common parameters:
 <AccordionGroup>
 <Accordion title="Card Payments (CARD)">
 **Required Parameters:**
-- `payment_method.type` = `"CARD"`
-- `payment_method.card_number` (tokenized or raw)
-- `payment_method.cardholder_name` (tokenized or raw)
-- `payment_method.cvv` (tokenized or raw)
-- `payment_method.expiration_month` (tokenized or raw)
-- `payment_method.expiration_year` (tokenized or raw)
+- `payment_method.type` = `"CARD"`.
+- `payment_method.card_number` (tokenized or raw).
+- `payment_method.cardholder_name` (tokenized or raw).
+- `payment_method.cvv` (tokenized or raw).
+- `payment_method.expiration_month` (tokenized or raw).
+- `payment_method.expiration_year` (tokenized or raw).
 
 **Optional Parameters:**
-- `return_url` (required for 3DS authentication)
+- `return_url` (required for 3DS authentication).
 </Accordion>
 
 <Accordion title="SPEI Bank Transfers (SPEI)">
 **Required Parameters:**
-- `payment_method.type` = `"SPEI"`
+- `payment_method.type` = `"SPEI"`.
 
 **Operating Hours:** 24/7, 365 days a year
 </Accordion>
 
 <Accordion title="OXXO Cash Payments (OXXO)">
 **Required Parameters:**
-- `payment_method.type` = `"OXXO"`
+- `payment_method.type` = `"OXXO"`.
 
 **Response Includes:**
-- `payment_instructions.reference_code`
-- `payment_instructions.barcode`
-- `payment_instructions.expiration_date`
-- `voucher_pdf` (downloadable voucher)
+- `payment_instructions.reference_code`.
+- `payment_instructions.barcode`.
+- `payment_instructions.expiration_date`.
+- `voucher_pdf` (downloadable voucher).
 </Accordion>
 
 <Accordion title="Mercado Pago (MERCADOPAGO)">
 **Required Parameters:**
-- `payment_method.type` = `"MERCADOPAGO"`
+- `payment_method.type` = `"MERCADOPAGO"`.
 
 **Optional Parameters:**
-- `return_url` (for redirect flow)
+- `return_url` (for redirect flow).
 </Accordion>
 
 <Accordion title="SafetyPay (SAFETYPAY)">
 **Required Parameters:**
-- `payment_method.type` = `"SAFETYPAY"`
+- `payment_method.type` = `"SAFETYPAY"`.
 </Accordion>
 </AccordionGroup>
 
@@ -100,26 +100,26 @@ Here you can find the error codes reference for each payment method:
 
 <AccordionGroup>
 <Accordion title="Card Payment Errors">
-- `card_declined` - Card declined by issuer
-- `insufficient_funds` - Not enough funds
-- `expired_card` - Card has expired
-- `invalid_card` - Card number invalid
+- `card_declined` - Card declined by issuer.
+- `insufficient_funds` - Not enough funds.
+- `expired_card` - Card has expired.
+- `invalid_card` - Card number invalid.
 </Accordion>
 
 <Accordion title="SPEI Errors">
-- `spei_unavailable` - Outside operating hours
-- `invalid_amount` - Amount exceeds SPEI limits
+- `spei_unavailable` - Outside operating hours.
+- `invalid_amount` - Amount exceeds SPEI limits.
 </Accordion>
 
 <Accordion title="OXXO/SafetyPay Errors">
-- `amount_too_high` - Exceeds payment limits
-- `amount_too_low` - Below minimum payment amount
+- `amount_too_high` - Exceeds payment limits.
+- `amount_too_low` - Below minimum payment amount.
 </Accordion>
 </AccordionGroup>
 
 ## Next Steps
 
-- Implement [card payments](/direct-integration/payment-methods/card-payments) to start processing transactions
-- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) for real-time payment status notifications
-- Review [HTTP response codes](/direct-integration/http-response-codes) for proper error handling
-- Check the [quickstart guide](/direct-integration/quickstart) to begin your integration
+- Implement [card payments](/direct-integration/payment-methods/card-payments) to start processing transactions.
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) for real-time payment status notifications.
+- Review [HTTP response codes](/direct-integration/http-response-codes) for proper error handling.
+- Check the [quickstart guide](/direct-integration/quickstart) to begin your integration.

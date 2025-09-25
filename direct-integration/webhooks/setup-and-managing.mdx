@@ -6,19 +6,14 @@ sidebarTitle: "Setup and Management"
 
 This guide explains how to manage your webhook endpoints through the Tonder API. You'll learn to create, update, and manage webhook endpoints to receive real-time notifications.
 
-## Prerequisites
-
-- Tonder API credentials from your [Dashboard → Developers → API Keys](https://app.tonder.io/accounts/login/)
-- A publicly accessible HTTPS endpoint to receive webhook notifications
-
 <Note>
 **Security Requirements**
 
 Follow these essential security practices when setting up webhook endpoints:
 
-- Always use a secure (HTTPS) URL for your webhook endpoint
-- Use an authentication method (BEARER, API_TOKEN, or BASIC_AUTH) to verify requests come from Tonder
-- Validate the event structure and content before processing
+- Always use a secure (HTTPS) URL for your webhook endpoint.
+- Use an authentication method (BEARER, API_TOKEN, or BASIC_AUTH) to verify requests come from Tonder.
+- Validate the event structure and content before processing.
 </Note>
 
 ## Setting up Webhook Endpoints
@@ -52,7 +47,7 @@ You should receive a response confirming the webhook endpoint was created:
 | `auth_method` | string | Authentication method configured (`BEARER`, `API_TOKEN`, `BASIC_AUTH`) |
 | `credentials` | object | Authentication credentials associated with this webhook |
 
-Example response:
+The response is as follows:
 
 ```json
 {
@@ -76,9 +71,9 @@ Once you have created webhooks, you can manage them using these [`/webhooks/`](/
 
 | Operation | Method | Endpoint | Purpose |
 |-----------|---------|----------|---------|
-| **List Webhooks** | `GET` | `/webhooks/` | Retrieves all webhook endpoints configured for your business |
-| **Update Webhook** | `PUT` | `/webhooks/{webhook_id}/` | Updates the configuration of an existing webhook endpoint |
-| **Delete Webhook** | `DELETE` | `/webhooks/{webhook_id}/` | Removes a webhook endpoint (it will no longer receive notifications) |
+| List Webhooks | `GET` | `/webhooks/` | Retrieves all webhook endpoints configured for your business |
+| Update Webhook | `PUT` | `/webhooks/{webhook_id}/` | Updates the configuration of an existing webhook endpoint |
+| Delete Webhook | `DELETE` | `/webhooks/{webhook_id}/` | Removes a webhook endpoint (it will no longer receive notifications) |
 
 Here are examples of each management operation:
 
@@ -115,9 +110,9 @@ Here are some common setup issues and how to resolve them:
 
 When webhook creation fails due to authentication problems:
 
-- Check: Verify your API credentials are correct and have proper permissions
-- Solution: Ensure your endpoint validates the configured authentication method properly
-- Prevention: Test authentication locally before setting up the webhook
+- Check: Verify your API credentials are correct and have proper permissions.
+- Solution: Ensure your endpoint validates the configured authentication method properly.
+- Prevention: Test authentication locally before setting up the webhook.
 
 </Accordion>
 
@@ -125,24 +120,17 @@ When webhook creation fails due to authentication problems:
 
 When your webhook endpoint is created successfully but doesn't receive events:
 
-- Check: Verify your endpoint is publicly accessible via HTTPS and responds quickly
-- Solution: Ensure your endpoint returns a 2xx status code within 30 seconds
-- Prevention: Test your endpoint URL with tools like curl before registering it
+- Check: Verify your endpoint is publicly accessible via HTTPS and responds quickly.
+- Solution: Ensure your endpoint returns a 2xx status code within 30 seconds.
+- Prevention: Test your endpoint URL with tools like curl before registering it.
 
 </Accordion>
 
 </AccordionGroup>
 
-## See also
-
-- [Delivery and Retry Logic](/direct-integration/webhooks/delivery-and-retry) - Understanding webhook delivery mechanisms
-- [Best Practices](/direct-integration/webhooks/best-practices) - Security and implementation recommendations
-- [HTTP Response Codes](/direct-integration/http-response-codes) - Proper status codes for webhook responses
-
 ## Next Steps
 
 After setting up webhooks:
 
-- Review [webhook best practices](/direct-integration/webhooks/best-practices) for security and implementation recommendations
-- Understand [delivery and retry logic](/direct-integration/webhooks/delivery-and-retry) for reliable webhook handling
-- Test your webhook endpoints with real transaction events
+- Review [webhook best practices](/direct-integration/webhooks/best-practices) for security and implementation recommendations.
+- Understand [delivery and retry logic](/direct-integration/webhooks/delivery-and-retry) for reliable webhook handling.

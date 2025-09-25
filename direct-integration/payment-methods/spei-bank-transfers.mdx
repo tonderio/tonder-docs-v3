@@ -9,17 +9,17 @@ This guide shows you how to accept SPEI (Sistema de Pagos Electrónicos Interban
 ## Before You Start
 
 Make sure you have:
-- A Tonder account configured for Mexico
-- Your API credentials set up
-- Understanding that SPEI payments are asynchronous (require customer action)
+- A Tonder account configured for Mexico.
+- Your API credentials set up.
+- Understanding that SPEI payments are asynchronous (require customer action).
 
 ## When to Use SPEI
 
 SPEI is ideal for:
-- Higher-value transactions (B2B payments)
-- Customers who prefer bank transfers over cards
-- Transactions requiring immediate processing during business hours
-- Reducing card processing fees for large amounts
+- Higher-value transactions (B2B payments).
+- Customers who prefer bank transfers over cards.
+- Transactions requiring immediate processing during business hours.
+- Reducing card processing fees for large amounts.
 
 ## Step 1: Create a SPEI Payment Request
 
@@ -113,12 +113,12 @@ Use webhooks or polling to track when the payment is completed.
 ```
 Para completar tu pago de $500.00 MXN:
 
-1. Ingresa a tu banca en línea o app bancaria
+1. Ingresa a tu banca en línea o app bancaria.
 2. Realiza una transferencia SPEI a:
    - Cuenta: 123456789012345678
    - Banco: Banco Receptor
    - Referencia: SPEI789456123
-3. Tu pago será procesado inmediatamente
+3. Tu pago será procesado inmediatamente.
 
 Conserva tu comprobante de transferencia.
 ```
@@ -164,16 +164,16 @@ There are some specificities to consider when using SPEI payments:
 
 SPEI operates 24/7, but some banks may have their own restrictions:
 
-- Most transfers process immediately
-- Some banks may batch transfers during off-hours
-- Transfers between participating banks are typically instant
+- Most transfers process immediately.
+- Some banks may batch transfers during off-hours.
+- Transfers between participating banks are typically instant.
 
 ### Amount Limits
 
 Regarding the amount limits, SPEI has the following restrictions:
-- Minimum: Usually $1 MXN
-- Maximum: Varies by bank (commonly $8,000,000 MXN per day)
-- No Tonder-imposed limits on SPEI amounts
+- Minimum: Usually $1 MXN.
+- Maximum: Varies by bank (commonly $8,000,000 MXN per day).
+- No Tonder-imposed limits on SPEI amounts.
 
 ### Common Errors
 
@@ -188,14 +188,14 @@ Some common errors that may occur when using SPEI payments are:
 
 Follow the best practices below to integrate SPEI payments:
 
-- Make bank transfer steps obvious to customers
-- Set up webhooks instead of relying on polling for status updates
-- Consider payments abandoned after 24-48 hours
-- Allow customers to upload transfer receipts
-- Provide backup payment methods for failed transfers
+- Make bank transfer steps obvious to customers.
+- Set up webhooks instead of relying on polling for status updates.
+- Consider payments abandoned after 24-48 hours.
+- Allow customers to upload transfer receipts.
+- Provide backup payment methods for failed transfers.
 
 ## Next Steps
 
-- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when SPEI status changes
-- Learn about [HTTP response codes](/direct-integration/http-response-codes) to handle different API responses
-- Explore other [payment methods](/direct-integration/payment-methods/payment-methods-overview) for customers without bank accounts
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when SPEI status changes.
+- Learn about [HTTP response codes](/direct-integration/http-response-codes) to handle different API responses.
+- Explore other [payment methods](/direct-integration/payment-methods/payment-methods-overview) for customers without bank accounts.

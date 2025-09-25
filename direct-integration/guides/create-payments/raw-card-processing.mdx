@@ -6,66 +6,64 @@ sidebarTitle: "PCI Compliant Raw Card Processing"
 This guide shows you how to process payments directly with raw card data without tokenization. This approach is designed for merchants who already have full PCI DSS Level 1 compliance and want to eliminate the multi-step tokenization process.
 
 <Warning>
-## Availability Restriction
+**Availability Restriction**
 
 This process is only available for clients who are fully PCI DSS compliant. You must maintain enterprise-grade security and handle raw card data according to all PCI DSS requirements.
 </Warning>
 
 ## Prerequisites
 
-Before you begin, ensure you have:
-
-- Full PCI DSS Level 1 certification - This is mandatory for handling raw card data
-- Valid Tonder API key from your [Dashboard → Developers → API Keys](https://app.tonder.io/accounts/login/)
+Before you begin, ensure you have full PCI DSS Level 1 certification, which is mandatory for handling raw card data.
 
 <Info>
-## When to Use This Approach
+**When to Use This Approach**
 
 Raw card processing is recommended for:
-- Large enterprise merchants already PCI Level 1 certified
-- Payment processors operating under existing PCI compliance
-- High-volume businesses with existing PCI infrastructure
-- Systems where reduced latency is critical
+- Large enterprise merchants already PCI Level 1 certified.
+- Payment processors operating under existing PCI compliance.
+- High-volume businesses with existing PCI infrastructure.
+- Systems where reduced latency is critical.
 
 It is not recommended for:
-- Small to medium businesses without PCI compliance
-- New payment integrations
-- Cost-conscious merchants (compliance maintenance is expensive)
+- Small to medium businesses without PCI compliance.
+- New payment integrations.
+- Cost-conscious merchants (compliance maintenance is expensive).
 </Info>
 
 ## Step 1: Configure API Authentication
 
-Set up authentication headers for the PCI compliant processing endpoints.
+Configure your authentication headers to access the PCI-compliant processing endpoints.
 
-Use these headers for all requests:
+Include these headers in every request:
 
 ```http
 Authorization: Token <YOUR_API_KEY>
 Content-Type: application/json
 ```
 
-The API key is the same one from your Dashboard → Developers → API Keys → Public API Key.
-
-## Step 2: Choose the Appropriate Endpoint
-
-Select the correct endpoint based on your environment:
-
-| Environment | Endpoint | Purpose |
-|-------------|----------|---------|
-| **Testing** | `https://process-sandbox.tonder.io/` | PCI compliant testing |
-| **Production** | `https://process.tonder.io/` | PCI compliant live transactions |
-
-## Step 3: Process the Payment
+## Step 2: Process the Payment
 
 Send a POST request with raw card data directly to the PCI compliant endpoint.
 
-The request structure is identical to the standard process endpoint, but with raw card data.
+The request structure is identical to the [standard process endpoint](/direct-integration/guides/create-payments/create-a-payment), but with raw card data.
 
 <Info>
 For testing, use the card numbers and test data available in our [Testing Data guide](/direct-integration/testing-data) to ensure your integration works correctly before going live.
 </Info>
 
-<CodeGroup>
+Send a `POST` request to the [Process Transaction](/reference/process-transaction) endpoint with the required parameters below:
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| operation_type | string | Must be `"payment"` to process a payment |
+| amount | number | Payment amount (e.g., `150.00`) |
+| currency | string | Currency code (e.g., `"MXN"` for Mexican Peso) |
+| customer | object | Customer information containing `name` and `email` |
+| payment_method | object | Payment method details including `type` and raw card information |
+| client_reference | string | Your unique reference for this transaction |
+| return_url | string | URL where customer returns after 3DS authentication |
+
+Here's an example of a request with raw card data:
 
 ```bash cURL Example
 curl -X POST https://process-sandbox.tonder.io/ \
@@ -91,153 +89,6 @@ curl -X POST https://process-sandbox.tonder.io/ \
     "return_url": "https://mystore.com/payment/return"
   }'
 ```
-
-```python Python Example
-import requests
-import json
-
-def process_pci_payment():
-    """Process PCI compliant card payment"""
-    
-    # API configuration
-    api_key = '04fbdd63113c009b6ac14c7d230b13909ae11221'
-    sandbox_url = 'https://process-sandbox.tonder.io/'
-    
-    # Headers
-    headers = {
-        'Authorization': f'Token {api_key}',
-        'Content-Type': 'application/json'
-    }
-    
-    # Payment data
-    payment_data = {
-        'operation_type': 'payment',
-        'amount': 150.00,
-        'currency': 'MXN',
-        'customer': {
-            'name': 'Ana María Rodríguez',
-            'email': 'ana.rodriguez@email.com'
-        },
-        'payment_method': {
-            'type': 'CARD',
-            'card_number': '4444444444444455',
-            'cardholder_name': 'Ana María Rodríguez',
-            'cvv': '123',
-            'expiration_year': '26',
-            'expiration_month': '07'
-        },
-        'client_reference': 'order-789',
-        'return_url': 'https://mystore.com/payment/return'
-    }
-    
-    try:
-        # Make request
-        response = requests.post(
-            sandbox_url,
-            headers=headers,
-            json=payment_data,
-            timeout=30
-        )
-        
-        if response.status_code == 201:
-            result = response.json()
-            print(f"Payment successful: {result['id']}")
-            return result
-        else:
-            error = response.json()
-            print(f"Payment failed: {error}")
-            return None
-            
-    except requests.exceptions.RequestException as e:
-        print(f"Network error: {e}")
-        return None
-
-# Example usage
-if __name__ == "__main__":
-    payment_result = process_pci_payment()
-    
-    if payment_result:
-        print(f"Transaction ID: {payment_result['id']}")
-        print(f"Status: {payment_result['status']}")
-        
-        # Handle 3DS redirect if needed
-        if 'next_action' in payment_result:
-            next_action = payment_result['next_action']
-            if 'redirect_to_url' in next_action:
-                print(f"3DS Authentication required:")
-                print(f"Redirect URL: {next_action['redirect_to_url']['url']}")
-```
-
-```javascript JavaScript Example
-async function processPCIPayment() {
-    // API configuration
-    const apiKey = '04fbdd63113c009b6ac14c7d230b13909ae11221';
-    const sandboxUrl = 'https://process-sandbox.tonder.io/';
-    
-    // Headers
-    const headers = {
-        'Authorization': `Token ${apiKey}`,
-        'Content-Type': 'application/json'
-    };
-    
-    // Payment data
-    const paymentData = {
-        operation_type: 'payment',
-        amount: 150.00,
-        currency: 'MXN',
-        customer: {
-            name: 'Ana María Rodríguez',
-            email: 'ana.rodriguez@email.com'
-        },
-        payment_method: {
-            type: 'CARD',
-            card_number: '4444444444444455',
-            cardholder_name: 'Ana María Rodríguez',
-            cvv: '123',
-            expiration_year: '26',
-            expiration_month: '07'
-        },
-        client_reference: 'order-789',
-        return_url: 'https://mystore.com/payment/return'
-    };
-    
-    try {
-        // Make request
-        const response = await fetch(sandboxUrl, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(paymentData)
-        });
-        
-        const result = await response.json();
-        
-        if (response.status === 201) {
-            console.log(`Payment successful: ${result.id}`);
-            
-            // Handle 3DS redirect if needed
-            if (result.next_action && result.next_action.redirect_to_url) {
-                console.log('3DS Authentication required');
-                console.log(`Redirect URL: ${result.next_action.redirect_to_url.url}`);
-                
-                // Redirect user to 3DS authentication
-                window.location.href = result.next_action.redirect_to_url.url;
-            }
-            
-            return result;
-            
-        } else {
-            console.error('Payment failed:', result);
-            return null;
-        }
-        
-    } catch (error) {
-        console.error('Network error:', error);
-        return null;
-    }
-}
-```
-
-</CodeGroup>
 
 ## Step 4: Handle the Response
 
@@ -266,6 +117,8 @@ Process the payment response according to the status received. The API returns a
 }
 ```
 
+In this example, the payment is **pending** and requires 3DS authentication. Always check the `status` field in your response and implement appropriate logic based on the status value received.
+
 The table below details the fields that are returned in the response:
 
 | Field | Type | Description |
@@ -283,20 +136,21 @@ The table below details the fields that are returned in the response:
 | `status_code` | integer | HTTP status code |
 | `next_action` | object | Required actions (3DS, redirects) |
 
-Always validate both the `id` and `status` fields in the response for proper payment validation.
+<Warning>
+**Validation of `id` and `status` fields**
 
-## See Also
+For proper payment validation, you must check:
+- `id` is the unique transaction identifier - store this for future reference
+- `status` is the current payment state - determines next actions
 
-- [Process Transaction API Reference](/reference/process-transaction) - Complete API documentation
-- [Card Tokenization Guide](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token) - Alternative for non-PCI compliant merchants
-- [Card Payments Overview](/direct-integration/payment-methods/card-payments) - General card payment information and PCI compliance requirements
-- [Webhooks](/direct-integration/webhooks/how-webhooks-works) - Real-time payment notifications
+Never rely on HTTP status codes alone for payment validation.
+</Warning>
 
-## What's Next
+## Next Steps
 
 After implementing PCI compliant raw card processing:
 
-- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) for real-time payment status updates
-- Implement [3D Secure authentication](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for enhanced security
-- Review [HTTP response codes](/direct-integration/http-response-codes) for comprehensive error handling
-- Test your implementation using [testing data](/direct-integration/testing-data)
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) for real-time payment status updates.
+- Implement [3D Secure authentication](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for enhanced security.
+- Review [HTTP response codes](/direct-integration/http-response-codes) for comprehensive error handling.
+- Test your implementation using [testing data](/direct-integration/testing-data).

@@ -17,20 +17,18 @@ It is crucial to use the correct base URL and API keys for each environment. Usi
 
 ## Base URLs
 
-The base URL is the root for all API requests. Append the specific endpoint paths (e.g., `/process/`) to the appropriate base URL.
+The base URL is the root for all API requests. Append the specific endpoint paths (e.g., [Process Transaction](/reference/process-transaction)) to the appropriate base URL.
 
 | Environment    | Base URL                          | Purpose                               |
 | -------------- | --------------------------------- | ------------------------------------- |
-| **Stage** | `https://stage.tonder.io/api/v1/` | For all development and testing.      |
-| **Production** | `https://app.tonder.io/api/v1/`   | For processing live transactions.     |
+| Stage | `https://stage.tonder.io/api/v1/` | For all development and testing.      |
+| Production | `https://app.tonder.io/api/v1/`   | For processing live transactions.     |
 
-### Example Usage
-
-A request to the process endpoint in the **Stage** environment would be:
+For example, a request to the process endpoint in the Stage environment would use the following URL:
 
 ```POST https://stage.tonder.io/api/v1/process/```
 
-The same request in the **Production** environment would be:
+The same request in the Production environment would use the following URL:
 
 ```POST https://app.tonder.io/api/v1/process/```
 
@@ -47,7 +45,7 @@ Never use your production API keys in your testing environment or expose them in
 
 ## Next Steps
 
-- Get your API credentials and follow the [quickstart guide](/direct-integration/quickstart) to make your first transaction
-- Learn about [authentication methods](/direct-integration/authentication) to secure your API requests
-- Use [testing data](/direct-integration/testing-data) to simulate different payment scenarios
-- Review the [process overview](/direct-integration/process-overview) for going live with your integration
+- Learn about [authentication methods](/direct-integration/authentication) to secure your API requests.
+- Follow the [create a payment](/direct-integration/guides/create-payments/create-a-payment) guide to make your first transaction.
+- Use [testing data](/direct-integration/testing-data) to simulate different payment scenarios.
+

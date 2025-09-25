@@ -44,9 +44,9 @@ A delivery is considered **successful** if your endpoint responds with a `2xx` H
 
 Based on the original webhook system, these are the failure scenarios that trigger retries:
 
-- `4xx` errors (400, 401, 404, etc.) - Client errors indicating request problems
-- `5xx` errors (500, 502, 503, etc.) - Server errors indicating endpoint issues  
-- Timeouts when no response is received after 30 seconds
+- `4xx` errors (400, 401, 404, etc.) - Client errors indicating request problems.
+- `5xx` errors (500, 502, 503, etc.) - Server errors indicating endpoint issues.
+- Timeouts when no response is received after 30 seconds.
 
 After 3 failed attempts, the message is moved to a Dead Letter Queue (DLQ) for manual inspection.
 
@@ -54,29 +54,23 @@ After 3 failed attempts, the message is moved to a Dead Letter Queue (DLQ) for m
 
 The Dead Letter Queue stores failed webhook events that couldn't be delivered after all retry attempts:
 
-- Failed events are stored for manual inspection and potential reprocessing
-- Access is available through the Tonder dashboard or support team
-- Events can be manually retried after fixing endpoint issues
+- Failed events are stored for manual inspection and potential reprocessing.
+- Access is available through the Tonder dashboard or support team.
+- Events can be manually retried after fixing endpoint issues.
 
 ## Implementation Considerations
 
 Key practices mentioned in the original webhook documentation:
 
-- Acknowledge receipt immediately with a `200 OK` status to prevent timeouts
-- Use the `event_id` to deduplicate events and prevent processing the same event twice
-- Keep detailed logs of all incoming webhook events for debugging purposes
-- Ensure that malformed payloads or processing errors don't crash your system
-
-## See also
-
-- [Setting up and Managing Webhooks](/direct-integration/webhooks/setup-and-managing) - How to configure webhook endpoints
-- [Best Practices](/direct-integration/webhooks/best-practices) - Security and implementation recommendations
-- [HTTP Response Codes](/direct-integration/http-response-codes) - Proper status codes for webhook responses
+- Acknowledge receipt immediately with a `200 OK` status to prevent timeouts.
+- Use the `event_id` to deduplicate events and prevent processing the same event twice.
+- Keep detailed logs of all incoming webhook events for debugging purposes.
+- Ensure that malformed payloads or processing errors don't crash your system.
 
 ## Next Steps
 
 After understanding delivery and retry logic:
 
-- Review [webhook best practices](/direct-integration/webhooks/best-practices) for optimal implementation patterns
-- Set up comprehensive monitoring and alerting for your webhook endpoints
-- Consider implementing multiple webhook endpoints for redundancy
+- Review [webhook best practices](/direct-integration/webhooks/best-practices) for optimal implementation patterns.
+- Set up comprehensive monitoring and alerting for your webhook endpoints.
+- Consider implementing multiple webhook endpoints for redundancy.

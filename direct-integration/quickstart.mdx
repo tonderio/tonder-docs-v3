@@ -106,14 +106,12 @@ print(f"Calculated Signature: {signature}")
 </Accordion>
 
 <Note>
-HMAC validation is configurable for your business. The Direct API `/process/` endpoint uses HMAC authentication by default. The specific fields used to generate the signature can also be configured. This example assumes the entire request body is used.
+HMAC validation is configurable for your business. The Direct API [Process Transaction](/reference/process-transaction) endpoint uses HMAC authentication by default. The specific fields used to generate the signature can also be configured. This example assumes the entire request body is used.
 </Note>
 
 ## Step 3: Make Your First Payment
 
-Now you're ready to make your first payment. Send a `POST` request to the `/process/` endpoint with the correct headers and a request body.
-
-### Required Parameters
+Now you're ready to make your first payment. Send a `POST` request to the [Process Transaction](/reference/process-transaction) endpoint with a request body including the required parameters below:
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
@@ -242,6 +240,6 @@ Use the `transaction_id` to [check payment status](/reference/get-transaction-st
 
 ## Next Steps
 
-- Use our [test cards and bank accounts](/direct-integration/testing-data) to simulate different scenarios.
-- Check out how to [process payments](/direct-integration/guides/create-payments/create-a-payment) with other methods like SPEI and OXXO.
+- Learn about [environments](/direct-integration/environment) to understand sandbox vs production setup.
+- Set up proper [authentication](/direct-integration/authentication) for secure API access.
 - Get to know the [full process for going live](/direct-integration/process-overview) with your integration.

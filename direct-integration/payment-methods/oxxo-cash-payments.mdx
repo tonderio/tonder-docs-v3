@@ -9,17 +9,17 @@ This guide shows you how to accept cash payments at OXXO convenience stores in M
 ## Before You Start
 
 Make sure you have:
-- A Tonder account configured for Mexico
-- Your API credentials set up
-- Understanding that OXXO payments are asynchronous (customers pay later at stores)
+- A Tonder account configured for Mexico.
+- Your API credentials set up.
+- Understanding that OXXO payments are asynchronous (customers pay later at stores).
 
 ## When to Use OXXO
 
 OXXO payments are perfect for:
-- Customers without bank accounts or credit cards
-- E-commerce customers who prefer cash payments
-- Areas with high OXXO store density
-- Building trust with cash-preferred demographics
+- Customers without bank accounts or credit cards.
+- E-commerce customers who prefer cash payments.
+- Areas with high OXXO store density.
+- Building trust with cash-preferred demographics.
 
 ## Step 1: Create an OXXO Payment Request
 
@@ -216,24 +216,24 @@ Follow the best practices below to integrate OXXO payments:
 
 <AccordionGroup>
 <Accordion title="Customer Communication">
-- Send payment instructions via email and SMS
-- Include store locator links to help customers find nearby OXXO stores
-- Provide clear expiration date warnings
-- Offer customer support for payment questions
+- Send payment instructions via email and SMS.
+- Include store locator links to help customers find nearby OXXO stores.
+- Provide clear expiration date warnings.
+- Offer customer support for payment questions.
 </Accordion>
 
 <Accordion title="Order Management">
-- Keep orders in "pending payment" status until confirmed
-- Send reminder emails before voucher expiration
-- Have a process for handling expired payments
-- Consider offering payment extensions for loyal customers
+- Keep orders in "pending payment" status until confirmed.
+- Send reminder emails before voucher expiration.
+- Have a process for handling expired payments.
+- Consider offering payment extensions for loyal customers.
 </Accordion>
 
 <Accordion title="Technical Implementation">
-- Generate barcode images for better user experience
-- Make vouchers mobile-friendly for easy display at stores
-- Cache PDF vouchers for faster loading
-- Implement retry logic for voucher generation
+- Generate barcode images for better user experience.
+- Make vouchers mobile-friendly for easy display at stores.
+- Cache PDF vouchers for faster loading.
+- Implement retry logic for voucher generation.
 </Accordion>
 </AccordionGroup>
 
@@ -265,6 +265,6 @@ function displayOXXOVoucher(response) {
 
 ## Next Steps
 
-- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive notifications when OXXO payments are completed
-- Learn about [HTTP response codes](/direct-integration/http-response-codes) to handle different API responses
-- Explore [SPEI bank transfers](/direct-integration/payment-methods/spei-bank-transfers) for customers who prefer bank payments
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive notifications when OXXO payments are completed.
+- Learn about [HTTP response codes](/direct-integration/http-response-codes) to handle different API responses.
+- Explore [SPEI bank transfers](/direct-integration/payment-methods/spei-bank-transfers) for customers who prefer bank payments.

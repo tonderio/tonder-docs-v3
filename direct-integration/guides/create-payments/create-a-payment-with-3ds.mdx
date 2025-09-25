@@ -20,7 +20,7 @@ sequenceDiagram
     participant Bank as Customer's Bank
     
     User->>App: Initiates payment
-    App->>Tonder: POST /process/ (card payment)
+    App->>Tonder: POST Process Transaction (card payment)
     
     Note over Tonder: Detects 3DS requirement
     
@@ -42,11 +42,33 @@ sequenceDiagram
     App->>User: Show payment confirmation
 ```
 
+The 3D Secure flow follows these key steps:
+
+1. The customer initiates a payment and your app [sends a POST request to the Tonder API](#step-1-initiating-the-payment) with card payment details.
+2. Tonder detects that 3DS authentication is required and [returns a 202 status with a redirect URL](#step-2-handling-the-next_action-response) in the next_action field.
+3. Your app saves the transaction ID and redirects the customer to the 3DS authentication URL.
+4. The customer completes the bank's authentication challenge (OTP, biometric, etc.) and the bank redirects them back to your return URL.
+5. Your app [queries the transaction status](#step-3-checking-the-final-status) using the saved transaction ID and displays the final result to the customer.
+
 This asynchronous flow requires you to handle redirects and check the final transaction status after the customer completes authentication.
 
 ## Step 1: Initiating the Payment
 
 The initial request follows the same structure as a standard card payment, but it's crucial to include a `return_url` so the customer can be redirected back to your site after completing the 3DS challenge.
+
+Send a `POST` request to the [Process Transaction](/reference/process-transaction) endpoint with the required parameters below:
+
+### Required Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| operation_type | string | Must be `"payment"` to process a payment |
+| amount | number | Payment amount (e.g., `150.00`) |
+| currency | string | Currency code (e.g., `"MXN"` for Mexican Peso) |
+| customer | object | Customer information containing `name` and `email` |
+| payment_method | object | Payment method details including `type` and card information |
+| client_reference | string | Your unique reference for this transaction |
+| return_url | string | URL where customer returns after 3DS authentication |
 
 This request initiates the payment and triggers the 3DS check if required by the customer's bank:
 
@@ -101,9 +123,9 @@ Here's an example of the response when 3DS is required:
 
 When you receive a response with `next_action`, you need to:
 
-1. Store the `responseData.id` for later status verification
-2. Check for the redirect URL in `next_action.redirect_to_url.url` 
-3. Redirect the customer to complete the 3DS challenge
+1. Store the `responseData.id` for later status verification.
+2. Check for the redirect URL in `next_action.redirect_to_url.url`.
+3. Redirect the customer to complete the 3DS challenge.
 
 The following JavaScript code demonstrates how to handle the API response, determine if 3DS authentication is required, save the transaction ID for later use, and redirect the customer to their bank's authentication page when necessary:
 

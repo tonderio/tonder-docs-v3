@@ -63,17 +63,17 @@ Here's what a typical webhook payload looks like when a payment status changes:
 
 To start receiving webhook notifications, you need to:
 
-1. Create a publicly accessible HTTPS URL that can receive POST requests
-2. Secure your endpoint to verify requests come from Tonder
-3. Register your endpoint using our API
-4. Process incoming webhook notifications in your application
+1. Create a publicly accessible HTTPS URL that can receive POST requests.
+2. Secure your endpoint to verify requests come from Tonder.
+3. Register your endpoint using our [API](/reference/webhooks).
+4. Process incoming webhook notifications in your application.
 
 <Note>
 Prerequisites for webhook endpoints:
-- Must use HTTPS (not HTTP) for security
-- Should respond within 30 seconds to avoid timeouts
-- Must return a 2xx status code to acknowledge receipt
-- Should implement authentication to verify request source
+- Must use HTTPS (not HTTP) for security.
+- Should respond within 30 seconds to avoid timeouts.
+- Must return a 2xx status code to acknowledge receipt.
+- Should implement authentication to verify request source.
 </Note>
 
 ## Reliability and Delivery
@@ -159,9 +159,3 @@ Now that you understand how webhooks work and have seen practical examples, expl
     Security recommendations and implementation patterns for reliable webhooks
   </Card>
 </CardGroup>
-
-## See also
-
-- [Create a Payment](/direct-integration/guides/create-payments/create-a-payment) - Learn about events that trigger webhooks
-- [HTTP Response Codes](/direct-integration/http-response-codes) - Proper status codes for webhook responses
-- [Testing Data](/direct-integration/testing-data) - Sample data for testing webhook implementations

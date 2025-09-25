@@ -33,10 +33,11 @@ Utilize our secure tokenization service to handle sensitive card data, minimizin
 
 ## How It Works
 
-The API is built around a single `/process/` endpoint that intelligently routes transactions based on the `operation_type` field in your request.
+The API is designed around simplicity, using a single [/process/](/reference/process-transaction) endpoint that handles all your transaction needs. When you send a request, you simply specify what type of operation you want to perform, and our system automatically routes it to the right processor.
 
-  * `operation_type: "payment"`: Initiates a [payment from a customer](/direct-integration/guides/create-payments/create-a-payment) to your business. You can specify the `payment_method`, such as [`CARD`](/direct-integration/payment-methods/card-payments), [`SPEI`](/direct-integration/payment-methods/spei-bank-transfers), or [`OXXO`](/direct-integration/payment-methods/oxxo-cash-payments).
-  * `operation_type: "withdrawal"`: Initiates a [payout from your business](/direct-integration/guides/create-a-withdrawal) to a beneficiary. You can specify the `transfer_method`, such as `SPEI` or `DEBIT_CARD`.
+For payments, you can accept money from your customers using various methods. Whether they want to pay with a [credit or debit card](/direct-integration/payment-methods/card-payments), make a [bank transfer through SPEI](/direct-integration/payment-methods/spei-bank-transfers), or pay cash at [OXXO convenience stores](/direct-integration/payment-methods/oxxo-cash-payments), the same endpoint handles it all.
+
+When you need to send money out - like paying suppliers, refunding customers, or making payouts - you can [initiate withdrawals](/direct-integration/guides/create-a-withdrawal) using bank transfers or directly to debit cards. The process is just as straightforward, using the same unified approach.
 
 This unified architecture means you only need to build one core integration to unlock a [full suite of payment and withdrawal capabilities](/direct-integration/payment-methods/payment-methods-overview).
 

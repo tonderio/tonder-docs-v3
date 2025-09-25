@@ -9,9 +9,9 @@ This guide shows you how to accept credit and debit card payments using Tonder's
 ## Before You Start
 
 Make sure you have:
-- A Tonder account with API credentials
-- Your API key and authentication set up
-- Card tokenization configured (recommended for security)
+- A Tonder account with API credentials.
+- Your API key and authentication set up.
+- Card tokenization configured (recommended for security).
 
 ## Step 1: Prepare Your Card Payment Request
 
@@ -147,17 +147,17 @@ Follow the best practices below to handle card payments:
 
 <AccordionGroup>
 <Accordion title="General Tips">
-- Always use tokenized card data to reduce PCI compliance scope
-- Ensure your UI can handle redirect flows smoothly for 3D Secure authentication
-- Save the transaction ID for future reference and reconciliation
-- Use test cards to verify both successful and failed scenarios
+- Always use tokenized card data to reduce PCI compliance scope.
+- Ensure your UI can handle redirect flows smoothly for 3D Secure authentication.
+- Save the transaction ID for future reference and reconciliation.
+- Use test cards to verify both successful and failed scenarios.
 </Accordion>
 
 <Accordion title="Security Best Practices">
-- Never store raw card data on your servers
-- Always use HTTPS for all API communications
-- Implement proper error handling to avoid exposing sensitive information
-- Use webhooks to track payment status changes asynchronously
+- Never store raw card data on your servers.
+- Always use HTTPS for all API communications.
+- Implement proper error handling to avoid exposing sensitive information.
+- Use webhooks to track payment status changes asynchronously.
 </Accordion>
 </AccordionGroup>
 
@@ -170,10 +170,10 @@ For merchants with full PCI DSS Level 1 compliance, Tonder offers direct raw car
 <Info>
 **Payment Status Values**
 
-- **`Pending`**: Transaction awaiting completion (may require 3DS authentication)
-- **`Success`**: Payment completed successfully
-- **`Failed`**: Payment failed or declined
-- **`Cancelled`**: Transaction was cancelled
+- Transaction awaiting completion (may require 3DS authentication).
+- Payment completed successfully.
+- Payment failed or declined.
+- Transaction was cancelled.
 
 Always validate both the `id` and `status` fields in the response for proper payment validation.
 </Info>
@@ -186,12 +186,12 @@ When processing raw card data, you must maintain full PCI DSS Level 1 compliance
 
 These are the core security requirements for PCI compliant processing:
 
-- Protect stored, processed, and transmitted card data at all times
-- Use TLS 1.2+ for all card data transmissions  
-- Restrict access to card data on need-to-know basis only
-- Log and monitor all access to cardholder data environments
-- Continuously test security systems and processes
-- Maintain ongoing compliance validation and documentation
+- Protect stored, processed, and transmitted card data at all times.
+- Use TLS 1.2+ for all card data transmissions.
+- Restrict access to card data on need-to-know basis only.
+- Log and monitor all access to cardholder data environments.
+- Continuously test security systems and processes.
+- Maintain ongoing compliance validation and documentation.
 
 #### Data Handling Requirements
 
@@ -199,19 +199,19 @@ These are the core security requirements for PCI compliant processing:
 
 These are the prohibited actions with card data:
 
-- Do not store CVV data after authorization
-- Do not store card data without encryption or tokenization
-- Do not log card numbers, CVV, or expiration dates
-- Do not use HTTP without TLS 1.2+ encryption
+- Do not store CVV data after authorization.
+- Do not store card data without encryption or tokenization.
+- Do not log card numbers, CVV, or expiration dates.
+- Do not use HTTP without TLS 1.2+ encryption.
 
 **Required Actions**
 
 Always make sure to perform these actions when processing card data:
 
-- Check card data format before processing
-- Confirm HTTPS before transmission
-- Log all access to payment processing systems
-- Apply security patches regularly
+- Check card data format before processing.
+- Confirm HTTPS before transmission.
+- Log all access to payment processing systems.
+- Apply security patches regularly.
 
 ### PCI Compliant vs Tokenized Processing
 
@@ -235,7 +235,7 @@ Choose PCI compliant processing only if you already have full PCI DSS Level 1 ce
 
 ## Next Steps
 
-- Learn how to [create payments with card tokens](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token) for enhanced security
-- Explore [3D Secure payments](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for additional authentication details
-- See the [PCI Compliant Raw Card Processing guide](/direct-integration/guides/create-payments/raw-card-processing) for step-by-step implementation
-- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time payment notifications
+- Learn how to [create payments with card tokens](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token) for enhanced security.
+- Explore [3D Secure payments](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for additional authentication details.
+- See the [PCI Compliant Raw Card Processing guide](/direct-integration/guides/create-payments/raw-card-processing) for step-by-step implementation.
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time payment notifications.
