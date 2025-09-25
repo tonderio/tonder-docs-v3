@@ -98,11 +98,15 @@ Understanding payment status flows is crucial for proper integration. Each payme
 
 <AccordionGroup>
 <Accordion title="Synchronous Payment Methods">
+Synchronous payment methods provide immediate results, allowing you to know the payment outcome instantly. These methods process transactions in real-time and return final status immediately:
+
 - Card Payments: `pending` → `authorized`/`declined`.
 - Mercado Pago: `pending` → `success`/`failed`.
 </Accordion>
 
 <Accordion title="Asynchronous Payment Methods">
+Asynchronous payment methods require additional processing time and may involve external verification steps. These methods return an initial status and update to final status once processing is complete:
+
 - SPEI: `pending` → `processing` → `success`.
 - OXXO: `pending` → `success`.
 - SafetyPay: `pending` → `success`.
@@ -115,6 +119,8 @@ Proper error handling is essential for a robust integration. Each payment method
 
 <AccordionGroup>
 <Accordion title="Card Payment Errors">
+Card payments can fail for various reasons related to the card itself or the issuing bank. These are the most common error codes you'll encounter when processing card transactions:
+
 - `card_declined` - Card declined by issuer.
 - `insufficient_funds` - Not enough funds.
 - `expired_card` - Card has expired.
@@ -122,11 +128,15 @@ Proper error handling is essential for a robust integration. Each payment method
 </Accordion>
 
 <Accordion title="SPEI Errors">
+SPEI bank transfers have specific operational constraints and amount limitations that can cause transaction failures. These errors typically occur due to timing or amount restrictions:
+
 - `spei_unavailable` - Outside operating hours.
 - `invalid_amount` - Amount exceeds SPEI limits.
 </Accordion>
 
 <Accordion title="OXXO/SafetyPay Errors">
+Cash payment methods like OXXO and SafetyPay have specific amount limits to ensure transaction security and compliance. These errors occur when the transaction amount falls outside the allowed range:
+
 - `amount_too_high` - Exceeds payment limits.
 - `amount_too_low` - Below minimum payment amount.
 </Accordion>

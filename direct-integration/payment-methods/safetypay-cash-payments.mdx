@@ -6,16 +6,10 @@ sidebarTitle: "SafetyPay"
 
 This guide shows you how to accept cash payments using SafetyPay, an alternative cash payment network that operates across Latin America. SafetyPay is ideal for regions without OXXO coverage or when you want to offer additional cash payment options to your customers.
 
-## Before You Start
-
-Make sure you have:
-- A Tonder account with SafetyPay integration enabled.
-- Your API credentials set up.
-- Understanding that SafetyPay payments are asynchronous (customers pay at participating locations).
-
 ## When to Use SafetyPay
 
 SafetyPay is ideal for:
+
 - Customers in regions without OXXO coverage.
 - Expanding cash payment options beyond convenience stores.
 - Markets where SafetyPay has established payment networks.
@@ -43,7 +37,7 @@ SafetyPay payments are straightforward - just specify the payment type and the A
 
 ## Step 2: Send the Payment Request
 
-Make a POST request to create the SafetyPay payment:
+Create and send a POST request to the [Process Transaction](/reference/process-transaction) endpoint to initiate a SafetyPay payment. This request creates a payment voucher that your customer can use at authorized SafetyPay locations:
 
 ```bash
 curl -X POST https://stage.tonder.io/api/v1/process/ \
@@ -66,7 +60,7 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
 
 ## Step 3: Handle the Response
 
-SafetyPay payments start with a `pending` status and include payment instructions:
+After sending the payment request, you'll receive a response containing the payment voucher details and instructions. SafetyPay payments start with a `pending` status and include comprehensive payment information for your customer:
 
 ```json
 {
@@ -97,7 +91,7 @@ SafetyPay payments start with a `pending` status and include payment instruction
 
 ## Step 4: Provide Payment Instructions to Your Customer
 
-Create clear instructions for SafetyPay payments:
+Present the payment voucher clearly to help customers complete their SafetyPay payment successfully. Create a user-friendly page that displays all necessary information for the customer to pay at any SafetyPay location:
 
 <Steps>
 <Step title="Show the reference code prominently">
@@ -119,7 +113,7 @@ Clearly show when the payment voucher expires.
 
 ### Customer Instructions Template
 
-Provide clear instructions to help customers complete their SafetyPay payment. Here is an example of how to present the payment instructions to your customer:
+Create a comprehensive payment page that includes all the information customers need to complete their SafetyPay payment. This HTML template demonstrates how to structure and present the payment voucher information effectively:
 
 ```html
 <div class="safetypay-voucher">
@@ -165,6 +159,16 @@ Provide clear instructions to help customers complete their SafetyPay payment. H
 </div>
 ```
 
+This HTML template creates a complete payment voucher interface that:
+
+- **Displays the reference code prominently** for easy customer reference
+- **Shows the exact amount** to prevent payment errors
+- **Lists all payment locations** where customers can complete their payment
+- **Provides a store locator link** to help customers find nearby locations
+- **Includes step-by-step instructions** for the payment process
+- **Shows the expiration date** to create urgency and prevent expired payments
+- **Offers a voucher link** for customers who want to see the complete payment details
+
 ## Step 5: Track Payment Status
 
 SafetyPay payments follow this status flow:
@@ -172,9 +176,7 @@ SafetyPay payments follow this status flow:
 1. **`pending`** - Waiting for customer to pay at authorized location
 2. **`success`** - Cash payment received and confirmed by SafetyPay network
 
-### Using Webhooks (Recommended)
-
-Webhooks provide real-time notifications when payment status changes. Set up webhooks to receive payment confirmations:
+[Webhooks](/direct-integration/webhooks/how-webhooks-works) provide real-time notifications when payment status changes. Set up webhooks to receive payment confirmations:
 
 ```json
 {
@@ -189,8 +191,6 @@ Webhooks provide real-time notifications when payment status changes. Set up web
 }
 ```
 
-### Using Status Polling
-
 If you prefer not to use webhooks, you can check payment status periodically by polling the API:
 
 ```bash
@@ -202,30 +202,32 @@ curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-
 
 There are some specificities to consider when using SafetyPay payments:
 
-### Payment Locations
-
-SafetyPay partners with various types of businesses:
+<AccordionGroup>
+<Accordion title="Payment Locations">
+SafetyPay partners with various types of businesses to provide convenient payment options for customers:
 
 - Regional chains and independent stores.
 - Major pharmacy chains.
 - Selected supermarket locations.
 - Some bank branches (varies by region).
+</Accordion>
 
-### Processing Timeline
-
+<Accordion title="Processing Timeline">
 The processing time for SafetyPay payments follows these rules:
 
 - Payment window is usually 3-7 days from voucher generation.
 - Confirmation time is 24-48 hours after customer pays at location.
 - Business hours vary by payment location (many 24/7 options available).
+</Accordion>
 
-### Amount Limits
-
+<Accordion title="Amount Limits">
 Regarding the amount limits, SafetyPay has the following restrictions:
 
 - Minimum amount is typically $10 MXN (varies by location).
 - Maximum amount is usually $5,000-10,000 MXN per transaction.
 - Daily limits may apply depending on payment location.
+</Accordion>
+</AccordionGroup>
 
 ## Common Scenarios and Solutions
 
@@ -305,7 +307,7 @@ Follow these best practices to integrate SafetyPay payments:
 
 ## Integration Example
 
-Here is an example of how to implement SafetyPay integration:
+This complete JavaScript implementation demonstrates how to integrate SafetyPay payments into your application. The example includes payment creation, voucher display, and status checking functionality:
 
 ```javascript
 class SafetyPayHandler {
