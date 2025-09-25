@@ -191,8 +191,8 @@ This will return the full transaction object with its current status (e.g., `suc
 **Critical: Always validate both `id` and `status` fields**
 
 For proper payment validation, you must check:
-- `id` is the unique transaction identifier - store this for future reference
-- `status` is the current payment state - determines next actions
+- `id` is the unique transaction identifier - store this for future reference.
+- `status` is the current payment state - determines next actions.
 
 Never rely on HTTP status codes alone for payment validation.
 </Warning>
@@ -201,7 +201,7 @@ Never rely on HTTP status codes alone for payment validation.
 
 After successfully tokenizing card data and processing payments:
 
-- Learn how to [create payments with 3D Secure](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for enhanced card security when using tokens.
+- Try [creating payments with 3D Secure](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for enhanced card security when using tokens.
 - Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when payment statuses change.
 - Explore [recurring payments](/direct-integration/guides/create-payments/create-a-multi-method-payment) using stored tokens.
 

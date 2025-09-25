@@ -17,8 +17,8 @@ Withdrawals are currently only available for beneficiaries in Mexico. Support fo
 
 There are two transfer methods available:
 
-- SPEI: Bank transfers processed same business day during banking hours
-- Debit Card: Instant deposits available within 5-15 minutes, 24/7
+- SPEI: Bank transfers processed same business day during banking hours.
+- Debit Card: Instant deposits available within 5-15 minutes, 24/7.
 </Info>
 
 ## Step 1: Choose Your Transfer Method
@@ -37,18 +37,18 @@ Select the transfer method that fits your payout needs. Here you can find a quic
 SPEI (Sistema de Pagos Electrónicos Interbancarios) is Mexico's standard electronic payment system for bank-to-bank transfers.
 
 You should use SPEI when:
-- Making regular business payments like commissions or vendor payments
-- Processing payroll and salary transfers
-- Sending larger amounts where cost-effectiveness is important
-- Same-day processing during business hours is acceptable
+- Making regular business payments like commissions or vendor payments.
+- Processing payroll and salary transfers.
+- Sending larger amounts where cost-effectiveness is important.
+- Same-day processing during business hours is acceptable.
 
 <Info>
 **Key requirements**
 
 Pay attention to the following specifics for SPEI withdrawals:
-- The `transfer_method` value must be `"SPEI"`
-- The `beneficiary.account` must be a valid 18-digit CLABE (Clave Bancaria Estandarizada)
-- Processing occurs during banking hours (typically 9 AM - 5 PM MXT, Monday-Friday)
+- The `transfer_method` value must be `"SPEI"`.
+- The `beneficiary.account` must be a valid 18-digit CLABE (Clave Bancaria Estandarizada).
+- Processing occurs during banking hours (typically 9 AM - 5 PM MXT, Monday-Friday).
 </Info>
 
 ### Debit Card Instant Transfer
@@ -56,20 +56,20 @@ Pay attention to the following specifics for SPEI withdrawals:
 Debit card withdrawals provide near-instant fund delivery directly to the beneficiary's debit card.
 
 You should use Debit Card withdrawals when:
-- Making urgent or emergency payments that can't wait for business hours
-- Paying gig economy workers who need immediate access to funds
-- Providing instant cashouts or on-demand withdrawals
-- Processing customer refunds that require immediate availability
+- Making urgent or emergency payments that can't wait for business hours.
+- Paying gig economy workers who need immediate access to funds.
+- Providing instant cashouts or on-demand withdrawals.
+- Processing customer refunds that require immediate availability.
 
 <Info>
 **Key requirements**
 
 Pay attention to the following specifics for debit card withdrawals:
 
-- The `transfer_method` value must be `"DEBIT_CARD"`
-- The `beneficiary.account` must be a valid 16-digit debit card number
-- Processing occurs 24/7, including weekends and holidays
-- Funds are typically available within 5-15 minutes
+- The `transfer_method` value must be `"DEBIT_CARD"`.
+- The `beneficiary.account` must be a valid 16-digit debit card number.
+- Processing occurs 24/7, including weekends and holidays.
+- Funds are typically available within 5-15 minutes.
 </Info>
 
 ## Step 2: Make the Withdrawal Request
@@ -219,10 +219,10 @@ You can monitor withdrawal status using one of these methods:
 
 - Webhooks (Recommended): configure [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time status updates automatically.
 
-- Status Polling: check transaction status periodically using the [Get Transaction Status](/reference/get-transaction-status) endpoint:
+- Status Polling: check transaction status periodically using the [Get Transaction Status](/reference/get-transaction-status) endpoint.
 
 ## Next Steps
 
 - Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when withdrawal statuses change.
-- Learn about [HTTP response codes](/direct-integration/http-response-codes) to understand how to handle different API responses and error scenarios.
+- Check out [HTTP response codes](/direct-integration/http-response-codes) to understand how to handle different API responses and error scenarios.
 - Explore [rate limits](/direct-integration/rate-limits) to ensure your withdrawal processing doesn't exceed API usage limits.
