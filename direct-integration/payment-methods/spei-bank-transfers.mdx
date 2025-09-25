@@ -6,6 +6,10 @@ sidebarTitle: "SPEI Bank Transfers"
 
 This guide shows you how to accept SPEI (Sistema de Pagos Electrónicos Interbancarios) bank transfers in Mexico. SPEI enables real-time bank-to-bank transfers and is perfect for higher-value transactions where customers prefer bank payments.
 
+<Info>
+For detailed operational information about SPEI including operating hours, processing times, and holiday calendar, see the [Payment Methods Reference](/direct-integration/payment-methods/payment-methods-reference#spei-operational-information) page.
+</Info>
+
 ## When to Use SPEI
 
 SPEI (Sistema de Pagos Electrónicos Interbancarios) is Mexico's real-time bank transfer system, perfect for:
@@ -105,9 +109,9 @@ Use [webhooks](/direct-integration/webhooks/how-webhooks-works) or polling to tr
 
 Monitor the payment status to know when the transfer is completed. SPEI payments follow this status flow:
 
-1. **`pending`** - Waiting for customer to make transfer
-2. **`processing`** - Bank transfer in progress  
-3. **`success`** - Payment completed successfully
+1. `pending` - Waiting for customer to make transfer
+2. `processing` - Bank transfer in progress  
+3. `success` - Payment completed successfully
 
 [Webhooks](/direct-integration/webhooks/how-webhooks-works) provide real-time notifications when payment status changes. Set up webhooks to receive status updates automatically:
 
@@ -163,7 +167,6 @@ Understanding common SPEI errors will help you handle issues effectively:
 
 These recommendations will help you create a smooth SPEI payment experience for your customers:
 
-- Make bank transfer steps obvious to customers.
 - Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) instead of relying on polling for status updates.
 - Consider payments abandoned after 24-48 hours.
 - Allow customers to upload transfer receipts.

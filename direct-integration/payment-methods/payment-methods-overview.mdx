@@ -6,6 +6,10 @@ sidebarTitle: "Overview"
 
 This guide helps you choose and implement the best payment methods for your business using Tonder's unified API. Learn when to use each payment method and how to create a comprehensive payment strategy for your customers.
 
+<Info>
+For detailed technical specifications, see the [Payment Methods Reference](/direct-integration/payment-methods/payment-methods-reference).
+</Info>
+
 ## How Payment Methods Work
 
 All payment methods in Tonder work through the same unified [Process Transaction](/reference/process-transaction) endpoint. You simply change the `payment_method.type` and provide any method-specific parameters. This makes it easy to offer multiple payment options without managing different integrations.
@@ -25,80 +29,68 @@ All payment methods in Tonder work through the same unified [Process Transaction
 
 ## Available Payment Methods
 
-### Instant Payment Methods
+Tonder supports multiple payment methods to accommodate different customer preferences and business needs. Each method has unique characteristics that make it suitable for specific use cases and customer segments.
 
+<AccordionGroup>
+<Accordion title="Instant Payment Methods">
 These methods provide immediate payment confirmation and are ideal for digital transactions:
 
 | Method | Best For | Processing Time |
 |--------|----------|-----------------|
 | [**Card Payments**](/direct-integration/payment-methods/card-payments) | E-commerce, instant confirmation | Immediate |
 | [**Mercado Pago**](/direct-integration/payment-methods/mercado-pago-digital-wallet) | Digital-savvy customers | Immediate |
+</Accordion>
 
-### Bank Transfer Methods
-
+<Accordion title="Bank Transfer Methods">
 These methods use the banking network for secure, high-value transactions:
 
 | Method | Best For | Processing Time |
 |--------|----------|-----------------|
 | [**SPEI Bank Transfers**](/direct-integration/payment-methods/spei-bank-transfers) | Higher-value transactions, B2B | Real-time |
+</Accordion>
 
-### Cash Payment Methods
-
+<Accordion title="Cash Payment Methods">
 These methods allow customers to pay with cash at physical locations:
 
 | Method | Best For | Processing Time |
 |--------|----------|-----------------|
 | [**OXXO Cash Payments**](/direct-integration/payment-methods/oxxo-cash-payments) | Customers without bank accounts | 24-48 hours |
 | [**SafetyPay Cash Payments**](/direct-integration/payment-methods/safetypay-cash-payments) | Alternative cash payment regions | 24-48 hours |
+</Accordion>
+</AccordionGroup>
 
 ## Choosing the Right Payment Methods
 
-### For E-commerce Stores
+Selecting the appropriate payment methods for your business depends on your target audience, transaction patterns, and market characteristics. Here are recommendations for different business types and market conditions:
 
-**Primary recommendation:**
-1. **Card Payments** - For immediate payment confirmation
-2. **OXXO** - For cash-preferred customers
-3. **SPEI** - For higher-value purchases
+<AccordionGroup>
+<Accordion title="For E-commerce Stores">
+E-commerce platforms need to accommodate diverse customer preferences and transaction sizes. Some primary recommendations are:
 
-```javascript
-// E-commerce payment method selection
-const getRecommendedMethods = (orderAmount, customerProfile) => {
-  const methods = ['CARD']; // Always include cards
-  
-  if (orderAmount > 500) {
-    methods.push('SPEI'); // SPEI for higher amounts
-  }
-  
-  if (customerProfile.prefersCash) {
-    methods.push('OXXO'); // Cash option
-  }
-  
-  if (customerProfile.age < 35) {
-    methods.push('MERCADOPAGO'); // Digital wallet for younger users
-  }
-  
-  return methods;
-};
-```
+- Use card payments for immediate confirmation.
+- Use OXXO for cash-preferred customers.
+- Use SPEI for higher-value purchases.
+</Accordion>
 
-### For B2B Platforms
+<Accordion title="For B2B Platforms">
+B2B platforms typically handle higher transaction values and need reliable payment methods. Some primary recommendations are:
 
-B2B platforms typically handle higher transaction values and need reliable payment methods:
+- Use SPEI bank transfers for business transactions.
+- Use card payments for smaller purchases and international cards.
+</Accordion>
 
-**Primary recommendation:**
-1. **SPEI Bank Transfers** - Preferred for business transactions
-2. **Card Payments** - For smaller purchases and international cards
+<Accordion title="For Cash-Heavy Markets">
+In regions where cash payments are common, offer multiple cash payment options. Some primary recommendations are:
 
-### For Cash-Heavy Markets
-
-In regions where cash payments are common, offer multiple cash payment options:
-
-**Primary recommendation:**
-1. **OXXO Cash Payments** - Widest store coverage in Mexico
-2. **SafetyPay** - Alternative for regions without OXXO
-3. **Card Payments** - For customers with cards
+- Use OXXO for the widest store coverage in Mexico.
+- Use SafetyPay as an alternative for regions without OXXO.
+- Use card payments for customers with cards.
+</Accordion>
+</AccordionGroup>
 
 ## Implementation Strategy
+
+Follow this step-by-step approach to successfully integrate multiple payment methods into your application. This strategy helps you build a robust payment system that adapts to different customer needs and market conditions.
 
 ### Step 1: Start with Core Methods
 
@@ -121,7 +113,7 @@ Add digital wallets and alternative methods based on demand.
 
 ### Step 2: Design Your Payment Flow
 
-Create a payment flow that handles different payment methods appropriately:
+Create a payment flow that handles different payment methods appropriately. This code example shows how to build a dynamic payment method selector that presents relevant options based on order amount and customer location:
 
 ```javascript
 // Example: Multi-method payment selector
@@ -166,9 +158,7 @@ class PaymentMethodSelector {
 
 ### Step 3: Handle Different Response Types
 
-Each payment method returns different response patterns that you need to handle appropriately:
-
-Different payment methods have different response patterns:
+Each payment method returns different response patterns that you need to handle appropriately. This code example demonstrates how to process responses from different payment methods and route customers to the appropriate next step:
 
 ```javascript
 // Handle various payment method responses
@@ -204,6 +194,8 @@ const handlePaymentResponse = (response, paymentType) => {
 
 ## Best Practices for Multiple Payment Methods
 
+Implementing multiple payment methods successfully requires careful planning and attention to user experience. Follow these best practices to create a seamless payment experience that maximizes conversion rates and customer satisfaction.
+
 <AccordionGroup>
 <Accordion title="User Experience">
 - Show processing times clearly for each method.
@@ -229,7 +221,7 @@ const handlePaymentResponse = (response, paymentType) => {
 
 ## Monitoring and Analytics
 
-Track these metrics for each payment method:
+Track these metrics for each payment method. This code example shows how to track payment method interactions and store them in an analytics system:
 
 ```javascript
 const trackPaymentMethod = (method, action, metadata = {}) => {
@@ -246,10 +238,6 @@ const trackPaymentMethod = (method, action, metadata = {}) => {
 trackPaymentMethod('CARD', 'selected', { amount: 150, segment: 'returning' });
 trackPaymentMethod('OXXO', 'completed', { amount: 250, segment: 'new' });
 ```
-
-## Quick Reference
-
-For detailed technical specifications, see the [Payment Methods Reference](/direct-integration/payment-methods/payment-methods-reference).
 
 ## Next Steps
 

@@ -6,6 +6,10 @@ sidebarTitle: "CLABE Component Extraction"
 
 This reference provides functions and utilities for parsing CLABE numbers into their individual components, along with SPEI operational timing constraints and validation patterns.
 
+<Info>
+For detailed operational information about SPEI including operating hours, processing times, and holiday calendar, see the [Payment Methods Reference](/direct-integration/payment-methods/payment-methods-reference#spei-operational-information) page.
+</Info>
+
 ## CLABE Component Structure
 
 CLABE numbers contain four distinct components that can be extracted for processing. For detailed information about CLABE structure and validation algorithms, see [CLABE Validation](/direct-integration/reference/clabe-validation).
@@ -16,82 +20,6 @@ A quick overview of the CLABE components:
 - Branch Code (positions 4-6): Identifies the specific branch.
 - Account Number (positions 7-17): The actual account identifier.
 - Check Digit (position 18): Validation digit calculated using algorithm.
-
-## SPEI Timing and Operational Constraints
-
-SPEI operates with specific timing considerations that affect when transfers can be processed and completed.
-
-<AccordionGroup>
-  <Accordion title="Operating Hours">
-    SPEI transfer processing varies by day and time, with different schedules for weekdays, weekends, and holidays:
-   
-    | Day/Period                | Processing Hours                | Notes                        |
-    |---------------------------|---------------------------------|------------------------------|
-    | Monday to Friday          | 6:00 AM – 6:00 PM (CDMX time)   | Same-day processing if before 5:00 PM |
-    | Saturday                  | 9:00 AM – 2:00 PM               | Limited processing           |
-    | Sunday                    | No processing                   |                              |
-    | Bank holidays             | No processing                   |                              |
-
-    <Note>
-    **Processing Times for SPEI**
-
-    SPEI generally operates 24/7, but individual institutions may apply maintenance windows or additional validations that can introduce delays. Some banks or payment providers may apply their own internal processing schedules or restrictions.
-
-    Possible delays may occur due to:
-    - Scheduled maintenance windows
-    - Anti-fraud validations
-    - Institutional batch processing policies
-
-    Please verify specific hours or limitations with your financial institution or provider.
-    </Note>
-  </Accordion>
-
-  <Accordion title="Processing Time Examples">
-  
-    These examples show typical processing times for SPEI transfers submitted at different times and days:
-
-    | Submission Time | Day       | Expected Processing Time  |
-    | --------------- | --------- | ------------------------- |
-    | 10:00 AM        | Monday    | Same day (within minutes) |
-    | 4:30 PM         | Tuesday   | Same day (within minutes) |
-    | 5:30 PM         | Wednesday | Same day (within minutes) |
-    | 11:00 AM        | Saturday  | Same day (within minutes) |
-    | 2:30 PM         | Saturday  | Same day (within minutes) |
-    | 10:00 AM        | Sunday    | Same day (within minutes) |
-
-    <Note>
-    - All times are shown in local Mexico City time.
-    - Actual processing times can vary depending on:
-      - Your bank or fintech provider's policies
-      - Internal fraud or compliance checks
-      - Scheduled maintenance windows
-
-    SPEI itself doesn't enforce business day cut-off times anymore, so in theory, transfers can go through at any hour. However, your provider or bank might still have their own restrictions or delays—so it's always worth double-checking if you need funds to arrive urgently.
-    </Note>
-  </Accordion>
-
-  <Accordion title="Holiday Calendar">
-    The following Mexican holidays may affect SPEI processing times and availability:
-
-    - New Year's Day (January 1)
-    - Constitution Day (February 5)
-    - Benito Juárez's Birthday (March 21)
-    - Easter (varies)
-    - Labor Day (May 1)
-    - Independence Day (September 16)
-    - Revolution Day (November 20)
-    - Christmas Day (December 25)
-  </Accordion>
-
-  <Accordion title="Time Zone Considerations">
-    SPEI operates on Mexico City Time (Central Time) with the following characteristics:
-
-    - UTC Offset: UTC-6 (Standard Time)
-    - UTC Offset: UTC-5 (Daylight Time)
-    - Daylight Saving: First Sunday in April to last Sunday in October
-  </Accordion>
-
-</AccordionGroup>
 
 ## Implementation Examples
 

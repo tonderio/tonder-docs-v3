@@ -9,34 +9,15 @@ This guide shows you how to accept cash payments at OXXO convenience stores in M
 ## When to Use OXXO
 
 OXXO payments are perfect for:
+
 - Customers without bank accounts or credit cards.
 - E-commerce customers who prefer cash payments.
 - Areas with high OXXO store density.
 - Building trust with cash-preferred demographics.
 
-## Step 1: Create an OXXO Payment Request
+## Step 1: Create and Send the Payment Request
 
-OXXO payments are simple to set up - just specify the payment type and amount. The API will generate a payment voucher for your customer.
-
-```json
-{
-  "operation_type": "payment",
-  "amount": 250.00,
-  "currency": "MXN",
-  "customer": {
-    "name": "María Isabel Fernández",
-    "email": "maria.fernandez@email.com"
-  },
-  "payment_method": {
-    "type": "OXXO"
-  },
-  "client_reference": "order-123"
-}
-```
-
-## Step 2: Send the Payment Request
-
-Make a POST request to create the OXXO payment:
+OXXO payments are simple to set up - just specify the payment type and amount. Send your payment request to the [Process Transaction](/reference/process-transaction) endpoint and the API will generate a payment voucher for your customer:
 
 ```bash
 curl -X POST https://stage.tonder.io/api/v1/process/ \
@@ -57,7 +38,11 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
   }'
 ```
 
-## Step 3: Handle the Response
+<Info>
+For detailed information about all available request fields and their requirements, see the [Create a Payment](/direct-integration/guides/create-payments/create-a-payment) guide.
+</Info>
+
+## Step 2: Handle the Response
 
 OXXO payments start with a `pending` status and include payment instructions for the customer:
 
@@ -84,9 +69,26 @@ OXXO payments start with a `pending` status and include payment instructions for
 }
 ```
 
-## Step 4: Display Payment Instructions to Your Customer
+The response contains key fields you need to handle the OXXO payment flow:
 
-Create a clear payment voucher page for your customer:
+| Field | Description |
+|-------|-------------|
+| `id` | Unique transaction identifier - store this for status checking |
+| `status` | Current payment status - will be `pending` initially |
+| `payment_instructions.reference_code` | OXXO reference code for payment |
+| `payment_instructions.barcode` | Barcode to display to customer |
+| `payment_instructions.expiration_date` | When the payment voucher expires |
+| `voucher_pdf` | URL to download the payment voucher PDF |
+
+<Warning>
+**`Id` and `Status` Fields Validation**
+
+Check that you received a valid `id` and `status` before proceeding. If either is missing or invalid, do not display payment instructions and handle the error appropriately.
+</Warning>
+
+## Step 3: Display Payment Instructions to Your Customer
+
+Present the payment voucher clearly to help customers complete their OXXO payment successfully. Create a user-friendly page that displays all necessary information for the customer to pay at any OXXO store:
 
 <Steps>
 <Step title="Show the barcode prominently">
@@ -140,16 +142,14 @@ Here's an example of a customer voucher template:
 </div>
 ```
 
-## Step 5: Track Payment Status
+## Step 4: Track Payment Status
 
 OXXO payments follow this status flow:
 
 1. `pending` - Waiting for customer to pay at store.
 2. `success` - Cash payment received and confirmed.
 
-### Using Webhooks (Recommended)
-
-Set up a webhook to receive payment confirmations:
+[Webhooks](/direct-integration/webhooks/how-webhooks-works) provide real-time notifications when payment status changes. Set up webhooks to receive payment confirmations automatically:
 
 ```json
 {
@@ -164,16 +164,14 @@ Set up a webhook to receive payment confirmations:
 }
 ```
 
-### Using Status Polling
-
-Check payment status periodically:
+If you prefer not to use webhooks, you can check payment status via API:
 
 ```bash
 curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-446655440000/ \
   -H "Authorization: Token YOUR_API_KEY"
 ```
 
-## Step 6: Handle OXXO-Specific Scenarios
+## Step 5: Handle OXXO-Specific Scenarios
 
 There are some specificities to consider when using OXXO payments:
 
@@ -234,7 +232,7 @@ Follow the best practices below to integrate OXXO payments:
 
 ## Implementation Example
 
-Here is an example of how to implement OXXO payments:
+Here is an example of how to implement OXXO payments. This code displays the payment voucher information on the frontend:
 
 ```javascript
 // Frontend: Display OXXO voucher

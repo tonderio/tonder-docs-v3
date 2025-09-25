@@ -8,6 +8,8 @@ This page provides quick reference information for all payment methods supported
 
 ## Supported Payment Methods Overview
 
+Tonder supports five main payment methods, each designed for different customer preferences and use cases. This table provides a quick reference for all available methods:
+
 | Method | Type Value | Processing Time | Description |
 |--------|------------|-----------------|-------------|
 | **Card Payments** | `CARD` | Instant | Credit and debit cards (Visa, Mastercard, American Express) |
@@ -35,47 +37,58 @@ Each payment method has unique parameters and requirements. Expand the sections 
 
 <AccordionGroup>
 <Accordion title="Card Payments (CARD)">
-**Required Parameters:**
-- `payment_method.type` = `"CARD"`.
-- `payment_method.card_number` (tokenized or raw).
-- `payment_method.cardholder_name` (tokenized or raw).
-- `payment_method.cvv` (tokenized or raw).
-- `payment_method.expiration_month` (tokenized or raw).
-- `payment_method.expiration_year` (tokenized or raw).
+Card payments require specific card details and support both tokenized and raw card data. The following parameters are needed for card transactions:
 
-**Optional Parameters:**
-- `return_url` (required for 3DS authentication).
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `payment_method.type` | string | Yes | Must be `"CARD"` |
+| `payment_method.card_number` | string | Yes | Card number (tokenized or raw) |
+| `payment_method.cardholder_name` | string | Yes | Cardholder name (tokenized or raw) |
+| `payment_method.cvv` | string | Yes | CVV code (tokenized or raw) |
+| `payment_method.expiration_month` | string | Yes | Expiration month (tokenized or raw) |
+| `payment_method.expiration_year` | string | Yes | Expiration year (tokenized or raw) |
+| `return_url` | string | No | Required for 3DS authentication |
 </Accordion>
 
 <Accordion title="SPEI Bank Transfers (SPEI)">
-**Required Parameters:**
-- `payment_method.type` = `"SPEI"`.
+SPEI bank transfers are the simplest payment method with minimal parameter requirements. SPEI operates 24/7, 365 days a year for maximum convenience:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `payment_method.type` | string | Yes | Must be `"SPEI"` |
 
 **Operating Hours:** 24/7, 365 days a year
 </Accordion>
 
 <Accordion title="OXXO Cash Payments (OXXO)">
-**Required Parameters:**
-- `payment_method.type` = `"OXXO"`.
+OXXO cash payments require minimal setup and generate payment instructions for customers to pay at any OXXO store. The response includes all necessary payment details:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `payment_method.type` | string | Yes | Must be `"OXXO"` |
 
 **Response Includes:**
-- `payment_instructions.reference_code`.
-- `payment_instructions.barcode`.
-- `payment_instructions.expiration_date`.
-- `voucher_pdf` (downloadable voucher).
+- `payment_instructions.reference_code` - Payment reference for OXXO store
+- `payment_instructions.barcode` - Barcode for payment scanning
+- `payment_instructions.expiration_date` - Payment expiration date
+- `voucher_pdf` - Downloadable payment voucher
 </Accordion>
 
 <Accordion title="Mercado Pago (MERCADOPAGO)">
-**Required Parameters:**
-- `payment_method.type` = `"MERCADOPAGO"`.
+Mercado Pago digital wallet integration provides a seamless payment experience for Latin American customers. The integration supports both direct and redirect flows:
 
-**Optional Parameters:**
-- `return_url` (for redirect flow).
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `payment_method.type` | string | Yes | Must be `"MERCADOPAGO"` |
+| `return_url` | string | No | Required for redirect flow |
 </Accordion>
 
 <Accordion title="SafetyPay (SAFETYPAY)">
-**Required Parameters:**
-- `payment_method.type` = `"SAFETYPAY"`.
+SafetyPay provides an alternative cash payment method for customers who prefer not to use traditional banking. The integration requires minimal configuration:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `payment_method.type` | string | Yes | Must be `"SAFETYPAY"` |
 </Accordion>
 </AccordionGroup>
 
@@ -118,6 +131,61 @@ Proper error handling is essential for a robust integration. Each payment method
 - `amount_too_low` - Below minimum payment amount.
 </Accordion>
 </AccordionGroup>
+
+## SPEI Operational Information
+
+SPEI operates with specific timing considerations that affect when transfers can be processed and completed.
+
+### Operating Hours
+
+SPEI transfer processing varies by day and time, with different schedules for weekdays, weekends, and holidays:
+
+| Day/Period                | Processing Hours                | Notes                        |
+|---------------------------|---------------------------------|------------------------------|
+| Monday to Friday          | 6:00 AM – 6:00 PM (CDMX time)   | Same-day processing if before 5:00 PM |
+| Saturday                  | 9:00 AM – 2:00 PM               | Limited processing           |
+| Sunday                    | No processing                   |                              |
+| Bank holidays             | No processing                   |                              |
+
+<Note>
+**Processing Times for SPEI**
+
+SPEI generally operates 24/7, but individual institutions may apply maintenance windows or additional validations that can introduce delays. Some banks or payment providers may apply their own internal processing schedules or restrictions.
+
+Possible delays may occur due to scheduled maintenance windows, anti-fraud validations, and institutional batch processing policies. Please verify specific hours or limitations with your financial institution or provider.
+</Note>
+
+### Processing Time Examples
+
+These examples show typical processing times for SPEI transfers submitted at different times and days:
+
+| Submission Time | Day       | Expected Processing Time  |
+| --------------- | --------- | ------------------------- |
+| 10:00 AM        | Monday    | Same day (within minutes) |
+| 4:30 PM         | Tuesday   | Same day (within minutes) |
+| 5:30 PM         | Wednesday | Same day (within minutes) |
+| 11:00 AM        | Saturday  | Same day (within minutes) |
+| 2:30 PM         | Saturday  | Same day (within minutes) |
+| 10:00 AM        | Sunday    | Same day (within minutes) |
+
+<Note>
+All times are shown in local Mexico City time. Actual processing times can vary depending on your bank or fintech provider's policies, internal fraud or compliance checks, and scheduled maintenance windows.
+
+SPEI itself doesn't enforce business day cut-off times anymore, so in theory, transfers can go through at any hour. However, your provider or bank might still have their own restrictions or delays—so it's always worth double-checking if you need funds to arrive urgently.
+</Note>
+
+### Holiday Calendar
+
+The following Mexican holidays may affect SPEI processing times and availability:
+
+- New Year's Day (January 1)
+- Constitution Day (February 5)
+- Benito Juárez's Birthday (March 21)
+- Easter (varies)
+- Labor Day (May 1)
+- Independence Day (September 16)
+- Revolution Day (November 20)
+- Christmas Day (December 25)
 
 ## Next Steps
 

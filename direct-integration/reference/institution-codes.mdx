@@ -8,7 +8,7 @@ This reference provides the codes for major Mexican financial institutions used 
 
 ## Institution Codes
 
-Major Mexican financial institutions and their corresponding codes for SPEI transactions:
+The following are the major Mexican financial institutions and their corresponding codes for SPEI transactions:
 
 | Code  | Bank Name        | CLABE Prefix | Type                |
 | ----- | ---------------- | ------------ | ------------------- |
@@ -53,7 +53,7 @@ Major Mexican financial institutions and their corresponding codes for SPEI tran
 
 ## Bank Account Types
 
-Different account types used in Mexican banking:
+There are different account types used in Mexican banking:
 
 | Code | Type               | Description             |
 | ---- | ------------------ | ----------------------- |
@@ -80,11 +80,14 @@ This example shows a complete beneficiary object for a SPEI withdrawal request:
 ```
 
 Each field serves a specific purpose:
-- `account`: The CLABE number identifying the recipient's bank account.
-- `account_type`: Code "40" indicates this is a CLABE account suitable for SPEI transfers.
-- `name`: Legal name of the account holder, must match bank records.
-- `rfc`: Mexican tax ID for the account holder (individual or business).
-- `institution`: Bank code corresponding to the first 3 digits of the CLABE (with "40" prefix).
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `account` | string | The CLABE number identifying the recipient's bank account. |
+| `account_type` | string | Code "40" indicates this is a CLABE account suitable for SPEI transfers. |
+| `name` | string | Legal name of the account holder, must match bank records. |
+| `rfc` | string | Mexican tax ID for the account holder (individual or business). |
+| `institution` | string | Bank code corresponding to the first 3 digits of the CLABE (with "40" prefix). |
 
 ## See also
 
