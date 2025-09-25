@@ -138,39 +138,31 @@ curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-
 
 Understanding SPEI's unique characteristics will help you provide a better customer experience:
 
-
-### Operating Hours
-
+<AccordionGroup>
+<Accordion title="Operating Hours">
 SPEI operates 24/7, but some banks may have their own restrictions that affect processing times:
 
 - Most transfers process immediately.
 - Some banks may batch transfers during off-hours.
 - Transfers between participating banks are typically instant.
+</Accordion>
 
-### Amount Limits
-
+<Accordion title="Amount Limits">
 SPEI has flexible limits that make it suitable for various transaction sizes:
 - Minimum: Usually $1 MXN.
 - Maximum: Varies by bank (commonly $8,000,000 MXN per day).
 - No Tonder-imposed limits on SPEI amounts.
+</Accordion>
 
-### Common Errors
-
+<Accordion title="Common Errors">
 Understanding common SPEI errors will help you handle issues effectively:
 
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `invalid_amount` | Amount exceeds bank limits | Use smaller amount or split transaction |
 | `spei_unavailable` | Temporary service issue | Retry later or offer alternative payment |
-
-## Implementation Tips
-
-These recommendations will help you create a smooth SPEI payment experience for your customers:
-
-- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) instead of relying on polling for status updates.
-- Consider payments abandoned after 24-48 hours.
-- Allow customers to upload transfer receipts.
-- Provide backup payment methods for failed transfers.
+</Accordion>
+</AccordionGroup>
 
 ## Next Steps
 
