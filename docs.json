@@ -9,11 +9,7 @@
   },
   "favicon": "/favicon.png",
   "navigation": {
-    "dropdowns": [
-      {
-        "dropdown": "Documentation",
-        "icon": "book-open",
-        "tabs": [
+    "tabs": [
       {
         "tab": "Getting Started",
         "groups": [
@@ -165,7 +161,6 @@
                   "direct-integration/guides/create-payments/create-a-payment",
                   "direct-integration/guides/create-payments/create-a-payment-with-3ds",
                   "direct-integration/guides/create-payments/create-a-payment-with-a-card-token",
-                  "direct-integration/guides/create-payments/create-a-multi-method-payment",
                   "direct-integration/guides/create-payments/raw-card-processing"
                 ]
               },
@@ -266,44 +261,36 @@
             ]
           }
         ]
-      }
-        ]
       },
       {
-        "dropdown": "API Reference",
-        "icon": "square-terminal",
-        "tabs": [
+        "tab": "API Reference",
+        "groups": [
           {
-            "tab": "API Reference",
-            "groups": [
-              {
-                "group": "Tonder API",
-                "pages": [
-                  "reference/overview",
-                  "reference/currencies"
-                ]
-              },
-              {
-                "group": "API Reference",
-                "pages": [
-                  "reference/retrieve-business",
-                  "reference/create-client",
-                  "reference/create-order",
-                  "reference/create-payment",
-                  "reference/create-checkout-router",
-                  "reference/create-secure-token",
-                  "reference/refund-payment"
-                ]
-              },
-              {
-                "group": "Direct Integration API",
-                "pages": [
-                  "reference/process-transaction",
-                  "reference/get-transaction-status",
-                  "reference/get-tokenization-token",
-                  "reference/tokenize-card-data"
-                ]
-              }
+            "group": "Tonder API",
+            "pages": [
+              "reference/overview",
+              "reference/currencies"
+            ]
+          },
+          {
+            "group": "API Reference",
+            "pages": [
+              "reference/retrieve-business",
+              "reference/create-client",
+              "reference/create-order",
+              "reference/create-payment",
+              "reference/create-checkout-router",
+              "reference/create-secure-token",
+              "reference/refund-payment"
+            ]
+          },
+          {
+            "group": "Direct Integration API",
+            "pages": [
+              "reference/process-transaction",
+              "reference/get-transaction-status",
+              "reference/get-tokenization-token",
+              "reference/tokenize-card-data"
             ]
           }
         ]

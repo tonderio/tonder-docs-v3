@@ -6,13 +6,6 @@ sidebarTitle: "OXXO Cash Payments"
 
 This guide shows you how to accept cash payments at OXXO convenience stores in Mexico. OXXO is Mexico's largest convenience store chain, making it ideal for customers who prefer to pay with cash or don't have bank accounts.
 
-## Before You Start
-
-Make sure you have:
-- A Tonder account configured for Mexico.
-- Your API credentials set up.
-- Understanding that OXXO payments are asynchronous (customers pay later at stores).
-
 ## When to Use OXXO
 
 OXXO payments are perfect for:
@@ -113,7 +106,7 @@ Provide a link to download the `voucher_pdf` for printing.
 </Step>
 </Steps>
 
-### Customer Voucher Template
+Here's an example of a customer voucher template:
 
 ```html
 <div class="oxxo-voucher">
@@ -151,8 +144,8 @@ Provide a link to download the `voucher_pdf` for printing.
 
 OXXO payments follow this status flow:
 
-1. **`pending`** - Waiting for customer to pay at store
-2. **`success`** - Cash payment received and confirmed
+1. `pending` - Waiting for customer to pay at store.
+2. `success` - Cash payment received and confirmed.
 
 ### Using Webhooks (Recommended)
 
@@ -184,24 +177,24 @@ curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-
 
 There are some specificities to consider when using OXXO payments:
 
-### Payment Timing
-
+<AccordionGroup>
+<Accordion title="Payment Timing">
 The processing time for OXXO payments follows these rules:
 
-- **Processing time**: 24-48 hours after customer pays at store
-- **Store hours**: OXXO stores typically open 24/7
-- **Payment window**: Vouchers usually expire after 3-7 days
+- Payments are processed 24-48 hours after customer pays at store.
+- OXXO stores typically open 24/7.
+- Vouchers usually expire after 3-7 days.
+</Accordion>
 
-### Amount Limits
-
+<Accordion title="Amount Limits">
 Regarding the amount limits, OXXO has the following restrictions:
 
-- **Minimum**: $20 MXN (varies by configuration)
-- **Maximum**: $10,000 MXN per transaction
-- **Daily limits**: May apply per customer
+- Minimum amount is $20 MXN (varies by configuration).
+- Maximum amount is $10,000 MXN per transaction.
+- Daily limits may apply per customer.
+</Accordion>
 
-### Common Issues
-
+<Accordion title="Common Issues">
 Some common issues that may occur when using OXXO payments are:
 
 | Issue | Cause | Solution |
@@ -209,6 +202,8 @@ Some common issues that may occur when using OXXO payments are:
 | `amount_too_high` | Exceeds OXXO limits | Split into multiple payments |
 | `amount_too_low` | Below minimum threshold | Increase amount or use different method |
 | `expired_voucher` | Customer paid after expiration | Create new payment request |
+</Accordion>
+</AccordionGroup>
 
 ## Best Practices for OXXO Payments
 

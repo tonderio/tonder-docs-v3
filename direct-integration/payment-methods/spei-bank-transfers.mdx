@@ -6,16 +6,9 @@ sidebarTitle: "SPEI Bank Transfers"
 
 This guide shows you how to accept SPEI (Sistema de Pagos Electrónicos Interbancarios) bank transfers in Mexico. SPEI enables real-time bank-to-bank transfers and is perfect for higher-value transactions where customers prefer bank payments.
 
-## Before You Start
-
-Make sure you have:
-- A Tonder account configured for Mexico.
-- Your API credentials set up.
-- Understanding that SPEI payments are asynchronous (require customer action).
-
 ## When to Use SPEI
 
-SPEI is ideal for:
+SPEI (Sistema de Pagos Electrónicos Interbancarios) is Mexico's real-time bank transfer system, perfect for:
 - Higher-value transactions (B2B payments).
 - Customers who prefer bank transfers over cards.
 - Transactions requiring immediate processing during business hours.
@@ -23,7 +16,7 @@ SPEI is ideal for:
 
 ## Step 1: Create a SPEI Payment Request
 
-SPEI payments are simple to set up - you only need to specify the payment type. The API will generate payment instructions for your customer.
+Creating a SPEI payment request is straightforward since SPEI doesn't require additional customer data beyond basic information. The [API](/reference/overview) will generate payment instructions for your customer.
 
 ```json
 {
@@ -43,7 +36,7 @@ SPEI payments are simple to set up - you only need to specify the payment type. 
 
 ## Step 2: Send the Payment Request
 
-Make a POST request to create the SPEI payment:
+Send your payment request to the [Process Transaction](/reference/process-transaction) endpoint to initiate the SPEI transfer:
 
 ```bash
 curl -X POST https://stage.tonder.io/api/v1/process/ \
@@ -66,7 +59,7 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
 
 ## Step 3: Handle the Response
 
-SPEI payments always start with a `pending` status since they require the customer to complete the bank transfer.
+The [API](/reference/overview) response will include payment instructions and status information. SPEI payments always start with a `pending` status since they require the customer to complete the bank transfer.
 
 ```json
 {
@@ -91,7 +84,7 @@ SPEI payments always start with a `pending` status since they require the custom
 
 ## Step 4: Provide Instructions to Your Customer
 
-After receiving the response, display clear instructions to your customer:
+Present the payment instructions clearly to help customers complete their bank transfer successfully:
 
 <Steps>
 <Step title="Share the bank account details">
@@ -104,36 +97,19 @@ Give the customer the `reference` number - this is crucial for payment identific
 Explain that SPEI transfers are processed in real-time during operating hours.
 </Step>
 <Step title="Monitor payment status">
-Use webhooks or polling to track when the payment is completed.
+Use [webhooks](/direct-integration/webhooks/how-webhooks-works) or polling to track when the payment is completed.
 </Step>
 </Steps>
 
-### Customer Instructions Template
-
-```
-Para completar tu pago de $500.00 MXN:
-
-1. Ingresa a tu banca en línea o app bancaria.
-2. Realiza una transferencia SPEI a:
-   - Cuenta: 123456789012345678
-   - Banco: Banco Receptor
-   - Referencia: SPEI789456123
-3. Tu pago será procesado inmediatamente.
-
-Conserva tu comprobante de transferencia.
-```
-
 ## Step 5: Track Payment Status
 
-SPEI payments follow this status flow:
+Monitor the payment status to know when the transfer is completed. SPEI payments follow this status flow:
 
 1. **`pending`** - Waiting for customer to make transfer
 2. **`processing`** - Bank transfer in progress  
 3. **`success`** - Payment completed successfully
 
-### Using Webhooks (Recommended)
-
-Set up a webhook to receive status updates automatically:
+[Webhooks](/direct-integration/webhooks/how-webhooks-works) provide real-time notifications when payment status changes. Set up webhooks to receive status updates automatically:
 
 ```json
 {
@@ -147,9 +123,7 @@ Set up a webhook to receive status updates automatically:
 }
 ```
 
-### Using Status Polling
-
-Alternatively, poll the transaction status:
+Alternatively, poll the transaction status using the [Get Transaction Status](/reference/get-transaction-status) endpoint:
 
 ```bash
 curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-446655440000/ \
@@ -158,11 +132,12 @@ curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-
 
 ## Step 6: Handle SPEI-Specific Scenarios
 
-There are some specificities to consider when using SPEI payments:
+Understanding SPEI's unique characteristics will help you provide a better customer experience:
+
 
 ### Operating Hours
 
-SPEI operates 24/7, but some banks may have their own restrictions:
+SPEI operates 24/7, but some banks may have their own restrictions that affect processing times:
 
 - Most transfers process immediately.
 - Some banks may batch transfers during off-hours.
@@ -170,14 +145,14 @@ SPEI operates 24/7, but some banks may have their own restrictions:
 
 ### Amount Limits
 
-Regarding the amount limits, SPEI has the following restrictions:
+SPEI has flexible limits that make it suitable for various transaction sizes:
 - Minimum: Usually $1 MXN.
 - Maximum: Varies by bank (commonly $8,000,000 MXN per day).
 - No Tonder-imposed limits on SPEI amounts.
 
 ### Common Errors
 
-Some common errors that may occur when using SPEI payments are:
+Understanding common SPEI errors will help you handle issues effectively:
 
 | Error | Cause | Solution |
 |-------|-------|----------|
@@ -186,10 +161,10 @@ Some common errors that may occur when using SPEI payments are:
 
 ## Implementation Tips
 
-Follow the best practices below to integrate SPEI payments:
+These recommendations will help you create a smooth SPEI payment experience for your customers:
 
 - Make bank transfer steps obvious to customers.
-- Set up webhooks instead of relying on polling for status updates.
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) instead of relying on polling for status updates.
 - Consider payments abandoned after 24-48 hours.
 - Allow customers to upload transfer receipts.
 - Provide backup payment methods for failed transfers.

@@ -6,13 +6,6 @@ sidebarTitle: "Mercado Pago"
 
 This guide shows you how to accept payments using Mercado Pago, Latin America's most popular digital wallet. Mercado Pago offers instant payment processing and is especially popular among younger demographics and frequent online shoppers.
 
-## Before You Start
-
-Make sure you have:
-- A Tonder account with Mercado Pago integration enabled.
-- Your API credentials set up.
-- A return URL configured for redirect flows.
-
 ## When to Use Mercado Pago
 
 Mercado Pago is ideal for:
@@ -110,7 +103,7 @@ After payment, customer is redirected back to your `return_url`.
 </Step>
 </Steps>
 
-### Frontend Implementation
+Here's an example of how to redirect the customer to Mercado Pago:
 
 ```javascript
 // Redirect customer to Mercado Pago
@@ -142,8 +135,6 @@ function redirectToMercadoPago(response) {
 ## Step 5: Handle Customer Return
 
 When customers return to your site, check the payment status:
-
-### Extract Payment Information
 
 ```javascript
 // Handle return from Mercado Pago
@@ -181,13 +172,11 @@ async function checkPaymentStatus(transactionId) {
 
 Mercado Pago payments follow this status flow:
 
-1. **`pending`** - Customer being redirected to Mercado Pago
-2. **`success`** - Payment completed successfully  
-3. **`failed`** - Payment failed or was cancelled
+1. `pending` - Customer being redirected to Mercado Pago
+2. `success` - Payment completed successfully  
+3. `failed` - Payment failed or was cancelled
 
-### Using Webhooks (Recommended)
-
-Set up webhooks to receive real-time updates:
+It's recommended to use webhooks to receive real-time updates. Here's an example of a webhook payload:
 
 ```json
 {
@@ -204,7 +193,7 @@ Set up webhooks to receive real-time updates:
 
 ### Using Status Polling
 
-Check payment status via API:
+If you prefer not to use webhooks, you can check payment status via API:
 
 ```bash
 curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-446655440000/ \
@@ -250,17 +239,17 @@ Follow the best practices below to integrate Mercado Pago:
 
 <AccordionGroup>
 <Accordion title="User Experience">
-- **Clear branding**: Display Mercado Pago logo to build customer confidence
-- **Loading states**: Show progress indicators during redirects
-- **Mobile optimization**: Ensure redirect flow works well on mobile devices
-- **Popup vs redirect**: Consider using popups for better user experience
+- Display Mercado Pago logo to build customer confidence.
+- Show progress indicators during redirects.
+- Ensure redirect flow works well on mobile devices.
+- Consider using popups for better user experience.
 </Accordion>
 
 <Accordion title="Technical Implementation">
-- **Store transaction ID**: Save the transaction ID before redirecting
-- **Timeout handling**: Set reasonable timeouts for payment completion
-- **Error handling**: Gracefully handle network issues and API errors
-- **Security**: Always verify payment status server-side, not just client-side
+- Save the transaction ID before redirecting.
+- Set reasonable timeouts for payment completion.
+- Gracefully handle network issues and API errors.
+- Always verify payment status server-side, not just client-side.
 </Accordion>
 
 <Accordion title="Customer Communication">

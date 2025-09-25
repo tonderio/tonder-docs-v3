@@ -22,6 +22,8 @@ The webhook management process involves creating and configuring your endpoints 
 
 ### Step 1: Create a webhook endpoint
 
+First, you need to register your webhook endpoint with Tonder.
+
 Register a new URL to receive webhook notifications using the [`/webhooks/`](/reference/webhooks) endpoint. You can configure authentication to secure your endpoint:
 
 ```bash
@@ -66,6 +68,8 @@ Make sure to save the webhook `id` for future management operations.
 </Note>
 
 ### Step 2: Manage existing webhooks
+
+After creating webhooks, you can update, delete, or list them as needed.
 
 Once you have created webhooks, you can manage them using these [`/webhooks/`](/reference/webhooks) API endpoints:
 

@@ -6,13 +6,6 @@ sidebarTitle: "Card Payments"
 
 This guide shows you how to accept credit and debit card payments using Tonder's unified API. You'll learn to process both regular card payments and handle 3D Secure authentication when required.
 
-## Before You Start
-
-Make sure you have:
-- A Tonder account with API credentials.
-- Your API key and authentication set up.
-- Card tokenization configured (recommended for security).
-
 ## Step 1: Prepare Your Card Payment Request
 
 Create your payment request with the card payment method. Always use tokenized card data when possible for enhanced security.
@@ -74,11 +67,12 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
 
 ## Step 3: Handle the Response
 
-Card payments can have different response flows depending on whether 3D Secure authentication is required.
+### Payment Response Scenarios
 
-### Successful Payment (No 3DS Required)
+Card payments can have different response flows depending on whether 3D Secure authentication is required. When no additional authentication is needed, the payment is processed immediately and returns an `authorized` status. When additional authentication is required, the customer will be redirected to their bank and the response includes redirect information.
 
-```json
+<CodeGroup>
+```json Successful Payment (No 3DS)
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "operation_type": "payment",
@@ -91,9 +85,7 @@ Card payments can have different response flows depending on whether 3D Secure a
 }
 ```
 
-### 3D Secure Authentication Required
-
-```json
+```json 3D Secure Authentication Required
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "status": "pending",
@@ -105,6 +97,7 @@ Card payments can have different response flows depending on whether 3D Secure a
   }
 }
 ```
+</CodeGroup>
 
 ## Step 4: Handle 3D Secure Authentication
 
@@ -130,17 +123,6 @@ curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-
   -H "Authorization: Token YOUR_API_KEY"
 ```
 
-## Step 5: Handle Payment Errors
-
-Common card payment errors and how to handle them:
-
-| Error Code | Meaning | Action |
-|------------|---------|---------|
-| `card_declined` | Card declined by issuer | Ask customer to try a different card |
-| `insufficient_funds` | Not enough funds | Suggest a different payment method |
-| `expired_card` | Card has expired | Ask customer to use a valid card |
-| `invalid_card` | Invalid card number | Verify card details are correct |
-
 ## Implementation Tips
 
 Follow the best practices below to handle card payments:
@@ -165,25 +147,10 @@ Follow the best practices below to handle card payments:
 
 For merchants with full PCI DSS Level 1 compliance, Tonder offers direct raw card processing that bypasses tokenization. This section covers the security requirements and considerations for this approach.
 
-### Status Handling
-
-<Info>
-**Payment Status Values**
-
-- Transaction awaiting completion (may require 3DS authentication).
-- Payment completed successfully.
-- Payment failed or declined.
-- Transaction was cancelled.
-
-Always validate both the `id` and `status` fields in the response for proper payment validation.
-</Info>
-
-### PCI Compliance Requirements
-
 When processing raw card data, you must maintain full PCI DSS Level 1 compliance. This section provides the essential requirements and best practices to ensure secure card data handling.
 
-#### Critical Security Requirements
-
+<AccordionGroup>
+<Accordion title="Critical Security Requirements">
 These are the core security requirements for PCI compliant processing:
 
 - Protect stored, processed, and transmitted card data at all times.
@@ -192,9 +159,9 @@ These are the core security requirements for PCI compliant processing:
 - Log and monitor all access to cardholder data environments.
 - Continuously test security systems and processes.
 - Maintain ongoing compliance validation and documentation.
+</Accordion>
 
-#### Data Handling Requirements
-
+<Accordion title="Data Handling Requirements">
 **Prohibited Actions**
 
 These are the prohibited actions with card data:
@@ -212,6 +179,8 @@ Always make sure to perform these actions when processing card data:
 - Confirm HTTPS before transmission.
 - Log all access to payment processing systems.
 - Apply security patches regularly.
+</Accordion>
+</AccordionGroup>
 
 ### PCI Compliant vs Tokenized Processing
 

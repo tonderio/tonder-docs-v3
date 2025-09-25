@@ -27,6 +27,8 @@ All payment methods in Tonder work through the same unified [Process Transaction
 
 ### Instant Payment Methods
 
+These methods provide immediate payment confirmation and are ideal for digital transactions:
+
 | Method | Best For | Processing Time |
 |--------|----------|-----------------|
 | [**Card Payments**](/direct-integration/payment-methods/card-payments) | E-commerce, instant confirmation | Immediate |
@@ -34,11 +36,15 @@ All payment methods in Tonder work through the same unified [Process Transaction
 
 ### Bank Transfer Methods
 
+These methods use the banking network for secure, high-value transactions:
+
 | Method | Best For | Processing Time |
 |--------|----------|-----------------|
 | [**SPEI Bank Transfers**](/direct-integration/payment-methods/spei-bank-transfers) | Higher-value transactions, B2B | Real-time |
 
 ### Cash Payment Methods
+
+These methods allow customers to pay with cash at physical locations:
 
 | Method | Best For | Processing Time |
 |--------|----------|-----------------|
@@ -77,11 +83,15 @@ const getRecommendedMethods = (orderAmount, customerProfile) => {
 
 ### For B2B Platforms
 
+B2B platforms typically handle higher transaction values and need reliable payment methods:
+
 **Primary recommendation:**
 1. **SPEI Bank Transfers** - Preferred for business transactions
 2. **Card Payments** - For smaller purchases and international cards
 
 ### For Cash-Heavy Markets
+
+In regions where cash payments are common, offer multiple cash payment options:
 
 **Primary recommendation:**
 1. **OXXO Cash Payments** - Widest store coverage in Mexico
@@ -110,6 +120,8 @@ Add digital wallets and alternative methods based on demand.
 </Steps>
 
 ### Step 2: Design Your Payment Flow
+
+Create a payment flow that handles different payment methods appropriately:
 
 ```javascript
 // Example: Multi-method payment selector
@@ -153,6 +165,8 @@ class PaymentMethodSelector {
 ```
 
 ### Step 3: Handle Different Response Types
+
+Each payment method returns different response patterns that you need to handle appropriately:
 
 Different payment methods have different response patterns:
 

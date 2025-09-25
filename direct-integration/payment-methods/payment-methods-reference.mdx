@@ -18,7 +18,7 @@ This page provides quick reference information for all payment methods supported
 
 ## Common Parameters
 
-All payment methods share these common parameters:
+All payment methods share these common parameters that must be included in every payment request:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -30,6 +30,8 @@ All payment methods share these common parameters:
 | `client_reference` | string | Yes | Unique order identifier |
 
 ## Method-Specific Parameters
+
+Each payment method has unique parameters and requirements. Expand the sections below to see the specific parameters for each method:
 
 <AccordionGroup>
 <Accordion title="Card Payments (CARD)">
@@ -79,24 +81,24 @@ All payment methods share these common parameters:
 
 ## Status Flow Reference
 
-Here you can find the status flow reference for each payment method:
+Understanding payment status flows is crucial for proper integration. Each payment method follows a specific status progression:
 
 <AccordionGroup>
 <Accordion title="Synchronous Payment Methods">
-- **Card Payments**: `pending` → `authorized`/`declined`
-- **Mercado Pago**: `pending` → `success`/`failed`
+- Card Payments: `pending` → `authorized`/`declined`.
+- Mercado Pago: `pending` → `success`/`failed`.
 </Accordion>
 
 <Accordion title="Asynchronous Payment Methods">
-- **SPEI**: `pending` → `processing` → `success`
-- **OXXO**: `pending` → `success`
-- **SafetyPay**: `pending` → `success`
+- SPEI: `pending` → `processing` → `success`.
+- OXXO: `pending` → `success`.
+- SafetyPay: `pending` → `success`.
 </Accordion>
 </AccordionGroup>
 
 ## Error Codes by Payment Method
 
-Here you can find the error codes reference for each payment method:
+Proper error handling is essential for a robust integration. Each payment method can return specific error codes that you should handle appropriately:
 
 <AccordionGroup>
 <Accordion title="Card Payment Errors">
@@ -118,6 +120,8 @@ Here you can find the error codes reference for each payment method:
 </AccordionGroup>
 
 ## Next Steps
+
+Now that you understand the payment methods and their parameters, you can proceed with your integration:
 
 - Implement [card payments](/direct-integration/payment-methods/card-payments) to start processing transactions.
 - Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) for real-time payment status notifications.
