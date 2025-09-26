@@ -1,0 +1,283 @@
+---
+title: "Create a Payment"
+sidebarTitle: "Create a Payment"
+'og:description': "How to create a payment using Tonder's unified endpoint"
+---
+
+This guide shows you how to create a payment using Tonder's unified [Process Transaction](/reference/process-transaction) endpoint. You can process various payment methods, from credit cards to local options like SPEI and OXXO, through a single, consistent API call.
+
+## Step 1: The Core Request
+
+All payments are created by sending a `POST` request to the [Process Transaction](/reference/process-transaction) endpoint. The request body must contain required fields that are common to all payment methods, plus a `payment_method` object with specific fields for your chosen payment method.
+
+### Basic Request Structure
+
+Every payment request to the [Process Transaction](/reference/process-transaction) endpoint follows this structure:
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 100.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Test Customer",
+    "email": "test@example.com"
+  },
+  "payment_method": {
+    "type": "CARD"
+    // ... additional fields based on the type
+  },
+  "client_reference": "your-internal-order-id-123"
+}
+```
+
+
+These fields are required for all payment requests:
+
+| Field               | Type      | Description                                                                                 |
+|---------------------|-----------|---------------------------------------------------------------------------------------------|
+| `operation_type`    | string    | Must be `"payment"` to process a payment transaction.                              |
+| `amount`            | decimal   | Transaction amount using a dot as decimal separator (e.g., `100.00`).             |
+| `currency`          | string    | Transaction currency. Currently only `"MXN"` (Mexican Peso) is supported.                                             |
+| `customer`          | object    | Customer information containing at minimum `name` (string) and `email` (string).                      |
+| `payment_method`    | object    | Payment method configuration with a `type` field and method-specific parameters.   |
+| `client_reference`  | string    | Your unique transaction identifier for reconciliation and tracking purposes.         |
+
+<Note>
+Depending on the payment method you choose, additional fields may be required inside the `payment_method` object (for example: card details, SPEI, OXXO, etc.). For detailed information about each payment method and their specific requirements, see the section below or the [Payment Methods Overview](/direct-integration/payment-methods/payment-methods-overview).
+</Note>
+
+## Step 2: Processing Different Payment Methods
+
+To process a specific payment method, you change the `type` inside the `payment_method` object and provide any required additional fields. The examples below show how to process different payment methods.
+
+<AccordionGroup>
+<Accordion title="Credit/Debit Card Payment">
+To process a card payment, set the `type` to `CARD` and provide the tokenized card details. Here's an example request:
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 150.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Ana María Rodríguez",
+    "email": "ana.rodriguez@email.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+  },
+  "client_reference": "order-789",
+  "return_url": "https://mystore.com/payment/return"
+}
+```
+
+A successful card payment response will have a status of `authorized` and includes the transaction details:
+
+```json Card Payment Response
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "authorized",
+  "amount": 150.00,
+  "currency": "MXN",
+  "merchant_reference": "order-789",
+  "payment_id": 12345,
+  "transaction_id": "txn_abc123",
+  "provider": "stripe",
+  "created_at": "2024-07-26T10:30:00Z",
+  "status_code": 201
+}
+```
+
+For cards that require extra security, see the guide for [creating a payment with 3DS](/direct-integration/guides/create-payments/create-a-payment-with-3ds).
+</Accordion>
+
+<Accordion title="SPEI Bank Transfer">
+To let a customer pay via a SPEI transfer, set the `type` to `SPEI`. The API will generate payment instructions for the customer. Here's an example request:
+
+```json SPEI Bank Transfer
+{
+  "operation_type": "payment",
+  "amount": 500.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Carlos Eduardo López",
+    "email": "carlos.lopez@empresa.mx"
+  },
+  "payment_method": {
+    "type": "SPEI"
+  },
+  "client_reference": "spei-test-001"
+}
+```
+
+A successful SPEI response will have a status of `pending` and includes payment instructions for the customer:
+
+```json SPEI Payment Response
+{
+  "id": "550e8400-e29b-41d4-a716-446655440001",
+  "operation_type": "payment",
+  "status": "pending",
+  "amount": 500.00,
+  "currency": "MXN",
+  "merchant_reference": "spei-test-001",
+  "payment_id": 12346,
+  "transaction_id": "txn_spei456",
+  "provider": "spei_provider",
+  "created_at": "2024-07-26T10:35:00Z",
+  "status_code": 201,
+  "payment_instructions": {
+    "clabe": "646180157000000004",
+    "reference": "7812345678",
+    "expires_at": "2024-07-27T10:35:00Z",
+    "bank_name": "STP"
+  }
+}
+```
+</Accordion>
+
+<Accordion title="OXXO Cash Payment">
+To generate a voucher for a cash payment at an OXXO store, set the `type` to `oxxopay`. Here's an example request:
+
+```json OXXO Cash Payment
+{
+  "operation_type": "payment",
+  "amount": 250.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "María Isabel Fernández",
+    "email": "maria.fernandez@email.com"
+  },
+  "payment_method": {
+    "type": "oxxopay"
+  },
+  "client_reference": "oxxo-test-001"
+}
+```
+
+A successful OXXO response will have a status of `pending` and includes payment instructions with a barcode and reference for the customer:
+
+```json OXXO Payment Response
+{
+  "id": "550e8400-e29b-41d4-a716-446655440002",
+  "operation_type": "payment",
+  "status": "pending",
+  "amount": 250.00,
+  "currency": "MXN",
+  "merchant_reference": "oxxo-test-001",
+  "payment_id": 12347,
+  "transaction_id": "txn_oxxo789",
+  "provider": "oxxo_provider",
+  "created_at": "2024-07-26T10:40:00Z",
+  "status_code": 201,
+  "payment_instructions": {
+    "reference": "98765432109876543210",
+    "barcode": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
+    "expires_at": "2024-08-02T10:40:00Z",
+    "store_name": "OXXO"
+  }
+}
+```
+</Accordion>
+</AccordionGroup>
+
+For detailed information about each payment method and their specific requirements, see the [Payment Methods Overview](/direct-integration/payment-methods/payment-methods-overview).
+
+## Step 3: Handling the Response
+
+After you send the request, the API will respond immediately with the initial status of the transaction.
+
+The `status` field can have one of the following values:
+
+| Status | Description |
+|--------|-------------|
+| `pending` | Transaction is being processed (common for asynchronous payments) |
+| `on_hold` | Transaction is temporarily held for review |
+| `processing` | Transaction is being processed by the payment provider |
+| `sent_to_provider` | Transaction has been sent to the payment provider |
+| `success` | Transaction completed successfully |
+| `paid_full` | Payment has been fully processed and settled |
+| `in_transit` | Funds are in transit to your account |
+| `authorized` | Payment has been authorized (common for card payments) |
+| `canceled` | Transaction was canceled before completion |
+| `declined` | Payment was declined by the provider |
+| `rejected` | Transaction was rejected |
+| `failed` | Transaction failed to process |
+| `expired` | Transaction expired before completion |
+| `Unknown` | Status is unknown or unclear |
+
+<Warning>
+**Validation of `id` and `status` fields**
+
+For proper payment validation, you must check:
+- `id` is the unique transaction identifier - store this for future reference.
+- `status` is the current payment state - determines next actions.
+
+Never rely on HTTP status codes alone for payment validation.
+</Warning>
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "authorized",
+  "amount": 150.00,
+  "currency": "MXN",
+  "merchant_reference": "order-789",
+  "payment_id": 12345,
+  "transaction_id": "txn_abc123",
+  "provider": "stripe",
+  "created_at": "2024-07-26T10:30:00Z",
+  "status_code": 201
+}
+```
+
+In this example, the payment has been authorized, but not yet completed. Always check the `status` field in your response and implement appropriate logic based on the status value received.
+
+The table below details the fields that are returned in the response:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique transaction identifier |
+| `operation_type` | string | Always `"payment"` |
+| `status` | string | Transaction status |
+| `amount` | decimal | Transaction amount |
+| `currency` | string | Currency code |
+| `client_reference` | string | Your reference identifier |
+| `payment_id` | integer | Internal payment ID |
+| `transaction_id` | string | Provider transaction ID |
+| `provider` | string | Payment provider used |
+| `created_at` | string | ISO 8601 timestamp |
+| `status_code` | integer | HTTP status code |
+| `next_action` | object | Required actions (3DS, redirects) |
+
+### Synchronous vs. Asynchronous Payments
+
+Bear in mind that different payment methods have different response flows.
+
+  * Card Payments are typically synchronous. You will get a final status (`authorized` or `declined`) in the initial API response.
+  * SPEI and OXXO Payments are asynchronous. The initial status will be `pending` because they require the customer to take further action. You must use [Webhooks](/direct-integration/webhooks/how-webhooks-works) or poll the transaction status endpoint to know when the payment is completed.
+
+## Step 4: Check the Transaction Status
+
+For asynchronous payments, or if you need to confirm the final status of any transaction, you can query the transaction status using the [Get Transaction Status](/reference/get-transaction-status) endpoint with the `id` from the payment response:
+
+```bash cURL
+curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-446655440000/ \
+-H "Authorization: Token <YOUR_SANDBOX_API_KEY>"
+```
+
+This will return the full transaction object with its current status (e.g., `success`, `failed`, `expired`). Always validate both the `id` and `status` fields in the response.
+
+## Next Steps
+
+- Try [creating a payment with 3D Secure](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for enhanced card security.
+- Explore [creating payments with card tokens](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token) to securely store and reuse customer payment methods.
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when payment statuses change.
+

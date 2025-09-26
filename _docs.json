@@ -9,139 +9,139 @@
   },
   "favicon": "/favicon.png",
   "navigation": {
-    "tabs": [
+    "dropdowns": [
       {
-        "tab": "Getting Started",
-        "groups": [
+        "dropdown": "Documentation",
+        "icon": "book-open",
+        "tabs": [
           {
-            "group": "Introduction",
-            "pages": [
-              "home",
-              "introduction/getting-started",
-              "introduction/security"
-            ]
-          },
-          {
-            "group": "Core Concepts",
-            "pages": [
-              "core-concepts/payment-lifecycle",
-              "core-concepts/3ds-lifecycle",
-              "core-concepts/environments"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Online Payments",
-        "groups": [
-          {
-            "group": "Online Payments",
-            "pages": [
-              "online-payments/overview",
-              "online-payments/3ds2",
-              "online-payments/finances",
-              "online-payments/disputes"
-            ]
-          },
-          {
-            "group": "Reference",
-            "pages": [
-              "online-payments/payment-methods",
+            "tab": "Getting Started",
+            "groups": [
               {
-                "group": "Coverage",
+                "group": "Introduction",
                 "pages": [
-                  "online-payments/coverage/coverage",
-                  "online-payments/coverage/brazil",
-                  "online-payments/coverage/colombia",
-                  "online-payments/coverage/costa-rica",
-                  "online-payments/coverage/ecuador",
-                  "online-payments/coverage/guatemala",
-                  "online-payments/coverage/mexico",
-                  "online-payments/coverage/panama",
-                  "online-payments/coverage/peru"
-                ]
-              },
-              "online-payments/test-cards"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Integrate Tonder",
-        "groups": [
-          {
-            "group": "Integrations",
-            "pages": [
-              "integration/intro",
-              "integration/choose-integration"
-            ]
-          },
-          {
-            "group": "SDKs",
-            "pages": [
-              "integration/sdks/sdk-overview",
-              {
-                "group": "JS SDK",
-                "pages": [
-                  "integration/sdks/web/js-sdk",
-                  {
-                    "group": "JS Inline Checkout",
-                    "pages": [
-                      "integration/sdks/web/js-inline-checkout",
-                      "integration/sdks/web/js-sdk-styles"
-                    ]
-                  },
-                  "integration/sdks/web/js-lite-checkout",
-                  "integration/sdks/web/code-examples"
+                  "home",
+                  "introduction/getting-started",
+                  "introduction/security"
                 ]
               },
               {
-                "group": "Mobile SDKs",
+                "group": "Core Concepts",
                 "pages": [
-                  {
-                    "group": "Ionic",
-                    "pages": [
-                      "integration/sdks/mobile/ionic/ionic-sdk-lite",
-                      "integration/sdks/mobile/ionic/ionic-sdk-full"
-                    ]
-                  },
-                  {
-                    "group": "Flutter",
-                    "pages": [
-                      "integration/sdks/mobile/flutter/flutter-sdk-lite",
-                      "integration/sdks/mobile/flutter/flutter-sdk-full"
-                    ]
-                  },
-                  {
-                    "group": "React Native",
-                    "pages": [
-                      "integration/sdks/mobile/react-native/rn-sdk",
-                      "integration/sdks/mobile/react-native/inline",
-                      "integration/sdks/mobile/react-native/lite",
-                      "integration/sdks/mobile/react-native/enrollment"
-                    ]
-                  }
+                  "core-concepts/payment-lifecycle",
+                  "core-concepts/3ds-lifecycle",
+                  "core-concepts/environments"
                 ]
-              },
-              "integration/sdks/secure-token"
+              }
             ]
           },
           {
-            "group": "Plugins",
-            "pages": [
-              "integration/plugins/plugins-overview",
-              "integration/plugins/magento",
-              "integration/plugins/woo-commerce"
+            "tab": "Online Payments",
+            "groups": [
+              {
+                "group": "Online Payments",
+                "pages": [
+                  "online-payments/overview",
+                  "online-payments/3ds2",
+                  "online-payments/finances",
+                  "online-payments/disputes"
+                ]
+              },
+              {
+                "group": "Reference",
+                "pages": [
+                  "online-payments/payment-methods",
+                  {
+                    "group": "Coverage",
+                    "pages": [
+                      "online-payments/coverage/coverage",
+                      "online-payments/coverage/brazil",
+                      "online-payments/coverage/colombia",
+                      "online-payments/coverage/costa-rica",
+                      "online-payments/coverage/ecuador",
+                      "online-payments/coverage/guatemala",
+                      "online-payments/coverage/mexico",
+                      "online-payments/coverage/panama",
+                      "online-payments/coverage/peru"
+                    ]
+                  },
+                  "online-payments/test-cards"
+                ]
+              }
             ]
-          }
-        ]
-      },
-      {
-        "tab": "Direct Integration",
-        "dropdowns": [
+          },
           {
-            "dropdown": "Documentation",
-            "icon": "book-open",
+            "tab": "Integrate Tonder",
+            "groups": [
+              {
+                "group": "Integrations",
+                "pages": [
+                  "integration/intro",
+                  "integration/choose-integration"
+                ]
+              },
+              {
+                "group": "SDKs",
+                "pages": [
+                  "integration/sdks/sdk-overview",
+                  {
+                    "group": "JS SDK",
+                    "pages": [
+                      "integration/sdks/web/js-sdk",
+                      {
+                        "group": "JS Inline Checkout",
+                        "pages": [
+                          "integration/sdks/web/js-inline-checkout",
+                          "integration/sdks/web/js-sdk-styles"
+                        ]
+                      },
+                      "integration/sdks/web/js-lite-checkout",
+                      "integration/sdks/web/code-examples"
+                    ]
+                  },
+                  {
+                    "group": "Mobile SDKs",
+                    "pages": [
+                      {
+                        "group": "Ionic",
+                        "pages": [
+                          "integration/sdks/mobile/ionic/ionic-sdk-lite",
+                          "integration/sdks/mobile/ionic/ionic-sdk-full"
+                        ]
+                      },
+                      {
+                        "group": "Flutter",
+                        "pages": [
+                          "integration/sdks/mobile/flutter/flutter-sdk-lite",
+                          "integration/sdks/mobile/flutter/flutter-sdk-full"
+                        ]
+                      },
+                      {
+                        "group": "React Native",
+                        "pages": [
+                          "integration/sdks/mobile/react-native/rn-sdk",
+                          "integration/sdks/mobile/react-native/inline",
+                          "integration/sdks/mobile/react-native/lite",
+                          "integration/sdks/mobile/react-native/enrollment"
+                        ]
+                      }
+                    ]
+                  },
+                  "integration/sdks/secure-token"
+                ]
+              },
+              {
+                "group": "Plugins",
+                "pages": [
+                  "integration/plugins/plugins-overview",
+                  "integration/plugins/magento",
+                  "integration/plugins/woo-commerce"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Direct Integration",
             "groups": [
               {
                 "group": "Introduction",
@@ -221,8 +221,59 @@
             ]
           },
           {
-            "dropdown": "API Reference",
-            "icon": "square-terminal",
+            "tab": "Dashboard",
+            "groups": [
+              {
+                "group": "Dashboard",
+                "pages": [
+                  "dashboard/dashboard-overview",
+                  "dashboard/home",
+                  {
+                    "group": "Transactions",
+                    "pages": [
+                      "dashboard/transactions",
+                      "dashboard/transaction-details"
+                    ]
+                  },
+                  "dashboard/payment-links",
+                  {
+                    "group": "Developers",
+                    "pages": [
+                      "dashboard/dev-api-keys",
+                      "dashboard/dev-webhooks"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Online Payments",
+                "pages": [
+                  {
+                    "group": "Disputes",
+                    "pages": [
+                      "dashboard/online-payments/disputes",
+                      "dashboard/online-payments/dispute-details"
+                    ]
+                  },
+                  {
+                    "group": "Finances",
+                    "pages": [
+                      "dashboard/online-payments/finances",
+                      "dashboard/online-payments/settlement-details"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "dropdown": "API Reference",
+        "icon": "square-terminal",
+        "tabs": [
+          {
+            "tab": "API Reference",
             "groups": [
               {
                 "group": "Tonder API",
@@ -250,52 +301,6 @@
                   "reference/get-transaction-status",
                   "reference/get-tokenization-token",
                   "reference/tokenize-card-data"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Dashboard",
-        "groups": [
-          {
-            "group": "Dashboard",
-            "pages": [
-              "dashboard/dashboard-overview",
-              "dashboard/home",
-              {
-                "group": "Transactions",
-                "pages": [
-                  "dashboard/transactions",
-                  "dashboard/transaction-details"
-                ]
-              },
-              "dashboard/payment-links",
-              {
-                "group": "Developers",
-                "pages": [
-                  "dashboard/dev-api-keys",
-                  "dashboard/dev-webhooks"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Online Payments",
-            "pages": [
-              {
-                "group": "Disputes",
-                "pages": [
-                  "dashboard/online-payments/disputes",
-                  "dashboard/online-payments/dispute-details"
-                ]
-              },
-              {
-                "group": "Finances",
-                "pages": [
-                  "dashboard/online-payments/finances",
-                  "dashboard/online-payments/settlement-details"
                 ]
               }
             ]

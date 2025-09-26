@@ -1,0 +1,402 @@
+---
+title: "Refund a Payment"
+sidebarTitle: "Refund a Payment"
+'og:description': "How to refund a completed payment"
+---
+
+Tonder's refund functionality enables merchants to return funds to customers for card transactions. You'll use this when you need to process customer returns, cancellations, or any situation requiring payment reversal. Refunds are processed through the same unified `/process/` endpoint using `operation_type: "refund"`.
+
+<Note>
+Refunds are only available for card payments. SPEI, OXXO, and Mercado Pago transactions cannot be refunded.
+</Note>
+
+## Prerequisites
+
+- The original transaction ID from the payment you want to refund. Learn how to [get transaction status and IDs](/reference/get-transaction-status).
+
+<Warning>
+**Important limitations**
+- Refunds work exclusively with credit and debit card transactions.
+- Each transaction can only be refunded once (partial or full).
+- Refunds must be processed within 120 days after payment confirmation.
+</Warning>
+
+## Processing a Refund
+
+The refund process involves preparing your request data, sending it to the API, and handling the response appropriately.
+
+### Step 1: Make the Refund Request
+
+Gather the required information and send your refund request to the [Process Transaction](/reference/process-transaction) endpoint. You'll need four essential fields:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `operation_type` | string | Yes | Must be `"refund"` |
+| `amount` | decimal | Yes | Refund amount (can be partial or full) |
+| `currency` | string | Yes | Currency code (must match original transaction) |
+| `original_transaction_id` | string | Yes | ID of the original payment transaction |
+
+The `amount` field determines whether you're processing a partial or full refund. You can refund any amount up to the original transaction value.
+
+Make your request to the [Process Transaction](/reference/process-transaction) endpoint with your refund data. Here's how to do it using cURL:
+
+```bash
+curl -X POST https://stage.tonder.io/api/v1/process/ \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "operation_type": "refund",
+    "amount": 50.00,
+    "currency": "MXN",
+    "original_transaction_id": "6ada8797-235e-4674-86de-7b23e90e1163"
+  }'
+```
+
+### Step 2: Handle the Response
+
+Upon successful request, the API will return an immediate acknowledgment. Here you find a description of the fields in the response:
+
+```json
+{
+  "id": "07230c98-e749-4d27-a90d-6f3e117205aa",
+  "operation_type": "refund",
+  "status": "Success",
+  "amount": 50.0,
+  "currency": "MXN",
+  "client_reference": null,
+  "transaction_id": "20832559",
+  "provider": "tonder",
+  "created_at": "2025-09-18T15:38:38.157382Z",
+  "status_code": 201,
+  "original_transaction_id": "6ada8797-235e-4674-86de-7b23e90e1163",
+  "reason": null,
+  "refund_id": "74"
+}
+```
+
+In this example, the refund has been processed successfully. Always check the `status` field in your response and implement appropriate logic based on the status value received.
+
+After receiving the response, save the transaction ID from the `id` field to monitor progress.
+
+<Warning>
+**Validation of `id` and `status` fields**
+
+For proper refund validation, you must check the `id` and `status` fields:
+- `id` is the unique transaction identifier - store this for future reference.
+- `status` indicates the current refund state - use this to determine next steps.
+</Warning>
+
+The table below details the fields that are returned in the response:
+
+| Field | Description |
+|-------|-------------|
+| `id` | Unique refund transaction identifier for your records |
+| `operation_type` | Type of operation (`"refund"`) |
+| `status` | Current refund status (`"Success"`, `"Failed"`, etc.) |
+| `amount` | Refunded amount |
+| `currency` | Currency code |
+| `original_transaction_id` | ID of the original payment transaction |
+| `refund_id` | Internal refund identifier for tracking |
+| `created_at` | Timestamp when the refund was created |
+| `status_code` | HTTP status code of the response |
+
+### Step 3: Handle Errors
+
+Handle common refund errors by checking the response status and error messages. Here's a Python example that demonstrates proper error handling:
+
+<AccordionGroup>
+<Accordion title="Error Handling Example">
+
+This example demonstrates comprehensive error handling for refund operations. The code follows these key principles:
+
+1. Prevents hanging requests with a 30-second timeout.
+2. Checks for successful 201 responses.
+3. Catches network and request errors.
+4. Returns consistent success/error objects.
+5. Provides clear status messages for debugging.
+
+```python
+import requests
+import json
+
+def process_refund_safely(original_transaction_id, refund_amount, api_key):
+    """Process a refund with comprehensive error handling"""
+    
+    url = "https://stage.tonder.io/api/v1/process/"
+    headers = {
+        "Authorization": f"Token {api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    refund_data = {
+        "operation_type": "refund",
+        "amount": refund_amount,
+        "currency": "MXN",
+        "original_transaction_id": original_transaction_id
+    }
+    
+    try:
+        response = requests.post(url, headers=headers, json=refund_data, timeout=30)
+        
+        if response.status_code == 201:
+            result = response.json()
+            print(f"✅ Refund successful: {result['id']}")
+            return {"success": True, "data": result}
+        else:
+            error = response.json()
+            print(f"❌ Refund failed: {error}")
+            return {"success": False, "error": error}
+            
+    except requests.exceptions.RequestException as e:
+        print(f"🔌 Network error: {e}")
+        return {"success": False, "error": str(e)}
+
+# Example usage
+result = process_refund_safely(
+    original_transaction_id="6ada8797-235e-4674-86de-7b23e90e1163",
+    refund_amount=50.00,
+    api_key="your_api_key_here"
+)
+
+if result["success"]:
+    refund_data = result["data"]
+    print(f"Refund ID: {refund_data['refund_id']}")
+    print(f"Amount refunded: ${refund_data['amount']}")
+else:
+    print("Handle the error appropriately in your application")
+```
+
+</Accordion>
+
+<Accordion title="Complete Implementation Examples">
+
+These complete implementations show how to integrate refund processing into your application with both partial and full refund capabilities. The implementations follow these steps:
+
+1. Set up base URL and authentication.
+2. Structure the refund data payload.
+3. Make the POST request with proper headers.
+4. Process success and error responses.
+5. Implement partial vs full refund logic.
+
+<CodeGroup>
+
+
+```python Python - Complete Implementation
+import requests
+import json
+
+def process_refund(original_transaction_id, refund_amount):
+    """Process refund for card transaction"""
+    
+    # API configuration
+    api_key = '04fbdd63113c009b6ac14c7d230b13909ae11221'
+    base_url = 'https://stage.tonder.io/api/v1/process/'
+    
+    # Headers
+    headers = {
+        'Authorization': f'Token {api_key}',
+        'Content-Type': 'application/json'
+    }
+    
+    # Refund data
+    refund_data = {
+        'operation_type': 'refund',
+        'amount': refund_amount,
+        'currency': 'MXN',
+        'original_transaction_id': original_transaction_id
+    }
+    
+    try:
+        # Make refund request
+        response = requests.post(
+            base_url,
+            headers=headers,
+            json=refund_data,
+            timeout=30
+        )
+        
+        if response.status_code == 201:
+            result = response.json()
+            print(f"Refund successful: {result['id']}")
+            return result
+        else:
+            error = response.json()
+            print(f"Refund failed: {error}")
+            return None
+            
+    except requests.exceptions.RequestException as e:
+        print(f"Network error: {e}")
+        return None
+
+def process_partial_refund():
+    """Example: Process partial refund"""
+    original_transaction_id = "6ada8797-235e-4674-86de-7b23e90e1163"
+    partial_amount = 50.00  # Refund $50 from original $100 payment
+    
+    return process_refund(original_transaction_id, partial_amount)
+
+def process_full_refund():
+    """Example: Process full refund"""
+    original_transaction_id = "6ada8797-235e-4674-86de-7b23e90e1163"
+    full_amount = 100.00  # Refund complete original amount
+    
+    return process_refund(original_transaction_id, full_amount)
+
+# Example usage
+if __name__ == "__main__":
+    # Process partial refund
+    partial_result = process_partial_refund()
+    
+    if partial_result:
+        print(f"Partial refund processed: {partial_result['refund_id']}")
+        print(f"Refund amount: ${partial_result['amount']}")
+        print(f"Status: {partial_result['status']}")
+```
+
+```javascript JavaScript - Complete Implementation
+async function processRefund(originalTransactionId, refundAmount) {
+    // API configuration
+    const apiKey = '04fbdd63113c009b6ac14c7d230b13909ae11221';
+    const baseUrl = 'https://stage.tonder.io/api/v1/process/';
+    
+    // Headers
+    const headers = {
+        'Authorization': `Token ${apiKey}`,
+        'Content-Type': 'application/json'
+    };
+    
+    // Refund data
+    const refundData = {
+        operation_type: 'refund',
+        amount: refundAmount,
+        currency: 'MXN',
+        original_transaction_id: originalTransactionId
+    };
+    
+    try {
+        // Make refund request
+        const response = await fetch(baseUrl, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(refundData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.status === 201) {
+            console.log(`Refund successful: ${result.id}`);
+            return result;
+        } else {
+            console.error('Refund failed:', result);
+            return null;
+        }
+        
+    } catch (error) {
+        console.error('Network error:', error);
+        return null;
+    }
+}
+
+async function processPartialRefund() {
+    // Example: Process partial refund
+    const originalTransactionId = "6ada8797-235e-4674-86de-7b23e90e1163";
+    const partialAmount = 50.00; // Refund $50 from original $100 payment
+    
+    return await processRefund(originalTransactionId, partialAmount);
+}
+
+async function processFullRefund() {
+    // Example: Process full refund
+    const originalTransactionId = "6ada8797-235e-4674-86de-7b23e90e1163";
+    const fullAmount = 100.00; // Refund complete original amount
+    
+    return await processRefund(originalTransactionId, fullAmount);
+}
+
+// Example usage
+processPartialRefund()
+    .then(result => {
+        if (result) {
+            console.log(`Partial refund processed: ${result.refund_id}`);
+            console.log(`Refund amount: $${result.amount}`);
+            console.log(`Status: ${result.status}`);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+```
+
+</CodeGroup>
+</Accordion>
+
+</AccordionGroup>
+
+## Troubleshooting
+
+Check the following common errors and how to resolve them:
+
+<AccordionGroup>
+
+<Accordion title="Already Refunded Error">
+
+This error occurs when attempting to refund a transaction that has already been refunded (partial or full).
+
+```json
+{
+  "error": "Invalid request data",
+  "details": "Transaction has already been refunded"
+}
+```
+
+To solve this issue, remember that each transaction can only be refunded once. Keep a local record of refunded transactions to avoid duplicate attempts and always check the transaction status before initiating a refund.
+
+</Accordion>
+
+<Accordion title="Invalid Refund Amount Error">
+
+This error occurs when the refund amount exceeds the original transaction amount.
+
+```json
+{
+  "error": "Invalid request data",
+  "details": "Refund requested amount is greater that original amount"
+}
+```
+
+To solve this issue, ensure the refund amount is less than or equal to the original payment amount. Always validate refund amounts against original transaction amounts before sending requests and implement proper validation logic in your application.
+
+</Accordion>
+
+<Accordion title="Transaction Not Found or Not Refundable">
+
+This error occurs when the original transaction cannot be found or is not eligible for refunds.
+
+```json
+{
+  "error": "Invalid request data",
+  "details": "Original transaction not found or not refundable"
+}
+```
+
+This can happen due to an invalid transaction ID, attempting to refund non-card payments (SPEI, OXXO, or Mercado Pago), transactions older than 120 days, or incomplete transactions. To solve this, verify the transaction ID is correct and ensure the transaction is a completed card payment within the refund window.
+
+</Accordion>
+
+<Accordion title="Network timeouts or connection errors">
+
+This error occurs when experiencing request timeouts, connection refused, or other network-related exceptions.
+
+To solve this issue, implement retry logic with exponential backoff for network-related failures and always use appropriate timeout values (recommended: 30 seconds) in your HTTP requests. This ensures your application can handle temporary network issues gracefully.
+
+</Accordion>
+
+</AccordionGroup>
+
+## Next Steps
+
+Now that you can process refunds, consider these next steps to enhance your payment system:
+
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when refund statuses change, ensuring your system stays synchronized with payment updates.
+- Implement proper logging and audit trails for refund operations to maintain compliance and help with customer service inquiries.
+- Consider integrating refund functionality into your customer-facing interfaces to allow self-service refund requests.

@@ -1,0 +1,114 @@
+---
+title: "Authentication"
+sidebarTitle: "Authentication"
+'og:description': "How to authenticate your API requests"
+---
+
+All requests to the Tonder API must be authenticated. We use a combination of an API key and an HMAC-SHA256 signature to ensure that all communication is secure and comes from a trusted source.
+
+An unauthenticated request will result in a `401 Unauthorized` error.
+
+## Authentication Methods
+
+There are two key components to authenticating your requests:
+
+1.  API Key: A unique token that identifies your business.
+2.  HMAC Signature: A hash calculated from your request body and your secret key, which verifies the integrity and authenticity of the request.
+
+## Required Headers
+
+You must include these headers in every API request:
+
+| Header                    | Description                                                                                              |
+| ------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `Authorization`           | Your API key, prefixed with ` Token  `.                                                                     |
+| `X-Signature-Transaction` | The Base64-encoded HMAC-SHA256 signature calculated from the request body. Required for `POST` requests. |
+| `Content-Type`            | Must be `application/json` for requests with a body.                                                     |
+
+Here's an example of how to include these headers in your request:
+
+```http
+Authorization: Token <YOUR_API_KEY>
+X-Signature-Transaction: <CALCULATED_HMAC_SIGNATURE>
+Content-Type: application/json
+```
+
+## How to Generate the HMAC Signature
+
+The HMAC signature ensures that the request body has not been tampered with in transit. It is calculated using the `HMAC-SHA256` algorithm.
+
+The HMAC signature is calculated using the following steps:
+
+1. Get the raw JSON payload of your POST request.
+2. Serialise the JSON object as a string, sorting keys alphabetically and removing all whitespace between separators (for example, use `{"a":1,"b":2}` not `{"b": 2, "a": 1}`).
+3. Retrieve your secret key from the Tonder dashboard.
+4. Use the HMAC-SHA256 algorithm with your secret key to hash the serialised JSON string. The output should be in binary format.
+5. Encode the binary digest as a Base64 string. This is your final signature.
+
+This Python example demonstrates the full process for generating a valid signature by serializing the JSON payload with sorted keys, calculating the HMAC-SHA256 digest using your secret key, and encoding the result as a Base64 string.
+
+```python
+import json
+import hmac
+import hashlib
+import base64
+
+def create_signature(secret_key, request_body):
+    """
+    Creates a Base64-encoded HMAC-SHA256 signature for a Tonder API request.
+
+    Args:
+        secret_key (str): Your Tonder API secret key.
+        request_body (dict): The dictionary representing the JSON request body.
+
+    Returns:
+        str: The Base64-encoded signature.
+    """
+    # Step 2: Serialize the JSON payload with sorted keys and no whitespace.
+    json_payload = json.dumps(
+        request_body, 
+        separators=(',', ':'), 
+        sort_keys=True
+    )
+    
+    # Step 4: Calculate the HMAC-SHA256 digest.
+    signature_bytes = hmac.new(
+        secret_key.encode('utf-8'),
+        json_payload.encode('utf-8'),
+        hashlib.sha256
+    ).digest()
+    
+    # Step 5: Convert the digest to a Base64 string.
+    return base64.b64encode(signature_bytes).decode('utf-8')
+
+# Example Usage
+my_secret_key = "your_secret_key_from_dashboard"
+my_request_body = {
+    "operation_type": "payment",
+    "amount": 100.00,
+    "currency": "MXN",
+    "customer": {
+        "name": "Test Customer",
+        "email": "test@example.com"
+    },
+    "payment_method": {
+        "type": "CARD",
+        "card_number": "4242424242424242" 
+    }
+}
+
+signature = create_signature(my_secret_key, my_request_body)
+print(f"Generated Signature: {signature}")
+```
+
+<Warning>
+**HMAC Configuration**
+
+HMAC validation can be enabled or disabled on a per-business basis. The specific fields from the request body used to generate the signature are also configurable. The example above assumes the entire request body is used. If you encounter authentication issues, verify your HMAC configuration with your Tonder Customer Success Manager or check your dashboard settings.
+</Warning>
+
+## Next Steps
+
+- Test different scenarios using our [test data](/direct-integration/testing-data).
+- Learn how to [process payments](/direct-integration/guides/create-payments/create-a-payment) with other methods like SPEI and OXXO.
+- Check out the [full guide to going live](/direct-integration/process-overview).

@@ -1,0 +1,207 @@
+---
+title: "Payment Methods Reference"
+sidebarTitle: "Payment Methods Reference"
+'og:description': "Quick reference for all supported payment methods, parameters, and specifications"
+---
+
+This page provides quick reference information for all payment methods supported by Tonder's Direct Integration.
+
+## Supported Payment Methods Overview
+
+Tonder supports five main payment methods, each designed for different customer preferences and use cases. This table provides a quick reference for all available methods:
+
+| Method | Type Value | Processing Time | Description |
+|--------|------------|-----------------|-------------|
+| **Card Payments** | `CARD` | Instant | Credit and debit cards (Visa, Mastercard, American Express) |
+| **SPEI Bank Transfers** | `SPEI` | Real-time | Mexican bank transfers (24/7 availability) |
+| **OXXO Cash Payments** | `OXXO` | 24-48 hours | Cash payments at OXXO convenience stores |
+| **Mercado Pago Digital Wallet** | `MERCADOPAGO` | Instant | Digital wallet popular in Latin America |
+| **SafetyPay Cash Payments** | `SAFETYPAY` | 24-48 hours | Alternative cash payment method |
+
+## Common Parameters
+
+All payment methods share these common parameters that must be included in every payment request:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `operation_type` | string | Yes | Must be `"payment"` |
+| `amount` | decimal | Yes | Transaction amount in MXN |
+| `currency` | string | Yes | Must be `"MXN"` for Mexico |
+| `customer` | object | Yes | Customer information (name, email) |
+| `payment_method` | object | Yes | Payment method details |
+| `client_reference` | string | Yes | Unique order identifier |
+
+## Method-Specific Parameters
+
+Each payment method has unique parameters and requirements. Expand the sections below to see the specific parameters for each method:
+
+<AccordionGroup>
+<Accordion title="Card Payments (CARD)">
+Card payments require specific card details and support both tokenized and raw card data. The following parameters are needed for card transactions:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `payment_method.type` | string | Yes | Must be `"CARD"` |
+| `payment_method.card_number` | string | Yes | Card number (tokenized or raw) |
+| `payment_method.cardholder_name` | string | Yes | Cardholder name (tokenized or raw) |
+| `payment_method.cvv` | string | Yes | CVV code (tokenized or raw) |
+| `payment_method.expiration_month` | string | Yes | Expiration month (tokenized or raw) |
+| `payment_method.expiration_year` | string | Yes | Expiration year (tokenized or raw) |
+| `return_url` | string | No | Required for 3DS authentication |
+</Accordion>
+
+<Accordion title="SPEI Bank Transfers (SPEI)">
+SPEI bank transfers are the simplest payment method with minimal parameter requirements. SPEI operates 24/7, 365 days a year for maximum convenience:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `payment_method.type` | string | Yes | Must be `"SPEI"` |
+
+**Operating Hours:** 24/7, 365 days a year
+</Accordion>
+
+<Accordion title="OXXO Cash Payments (OXXO)">
+OXXO cash payments require minimal setup and generate payment instructions for customers to pay at any OXXO store. The response includes all necessary payment details:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `payment_method.type` | string | Yes | Must be `"OXXO"` |
+
+**Response Includes:**
+- `payment_instructions.reference_code` - Payment reference for OXXO store
+- `payment_instructions.barcode` - Barcode for payment scanning
+- `payment_instructions.expiration_date` - Payment expiration date
+- `voucher_pdf` - Downloadable payment voucher
+</Accordion>
+
+<Accordion title="Mercado Pago (MERCADOPAGO)">
+Mercado Pago digital wallet integration provides a seamless payment experience for Latin American customers. The integration supports both direct and redirect flows:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `payment_method.type` | string | Yes | Must be `"MERCADOPAGO"` |
+| `return_url` | string | No | Required for redirect flow |
+</Accordion>
+
+<Accordion title="SafetyPay (SAFETYPAY)">
+SafetyPay provides an alternative cash payment method for customers who prefer not to use traditional banking. The integration requires minimal configuration:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `payment_method.type` | string | Yes | Must be `"SAFETYPAY"` |
+</Accordion>
+</AccordionGroup>
+
+## Status Flow Reference
+
+Understanding payment status flows is crucial for proper integration. Each payment method follows a specific status progression:
+
+<AccordionGroup>
+<Accordion title="Synchronous Payment Methods">
+Synchronous payment methods provide immediate results, allowing you to know the payment outcome instantly. These methods process transactions in real-time and return final status immediately:
+
+- Card Payments: `pending` → `authorized`/`declined`.
+- Mercado Pago: `pending` → `success`/`failed`.
+</Accordion>
+
+<Accordion title="Asynchronous Payment Methods">
+Asynchronous payment methods require additional processing time and may involve external verification steps. These methods return an initial status and update to final status once processing is complete:
+
+- SPEI: `pending` → `processing` → `success`.
+- OXXO: `pending` → `success`.
+- SafetyPay: `pending` → `success`.
+</Accordion>
+</AccordionGroup>
+
+## Error Codes by Payment Method
+
+Proper error handling is essential for a robust integration. Each payment method can return specific error codes that you should handle appropriately:
+
+<AccordionGroup>
+<Accordion title="Card Payment Errors">
+Card payments can fail for various reasons related to the card itself or the issuing bank. These are the most common error codes you'll encounter when processing card transactions:
+
+- `card_declined` - Card declined by issuer.
+- `insufficient_funds` - Not enough funds.
+- `expired_card` - Card has expired.
+- `invalid_card` - Card number invalid.
+</Accordion>
+
+<Accordion title="SPEI Errors">
+SPEI bank transfers have specific operational constraints and amount limitations that can cause transaction failures. These errors typically occur due to timing or amount restrictions:
+
+- `spei_unavailable` - Outside operating hours.
+- `invalid_amount` - Amount exceeds SPEI limits.
+</Accordion>
+
+<Accordion title="OXXO/SafetyPay Errors">
+Cash payment methods like OXXO and SafetyPay have specific amount limits to ensure transaction security and compliance. These errors occur when the transaction amount falls outside the allowed range:
+
+- `amount_too_high` - Exceeds payment limits.
+- `amount_too_low` - Below minimum payment amount.
+</Accordion>
+</AccordionGroup>
+
+## SPEI Operational Information
+
+SPEI operates with specific timing considerations that affect when transfers can be processed and completed.
+
+### Operating Hours
+
+SPEI transfer processing varies by day and time, with different schedules for weekdays, weekends, and holidays:
+
+| Day/Period                | Processing Hours                | Notes                        |
+|---------------------------|---------------------------------|------------------------------|
+| Monday to Friday          | 6:00 AM – 6:00 PM (CDMX time)   | Same-day processing if before 5:00 PM |
+| Saturday                  | 9:00 AM – 2:00 PM               | Limited processing           |
+| Sunday                    | No processing                   |                              |
+| Bank holidays             | No processing                   |                              |
+
+<Note>
+**Processing Times for SPEI**
+
+SPEI generally operates 24/7, but individual institutions may apply maintenance windows or additional validations that can introduce delays. Some banks or payment providers may apply their own internal processing schedules or restrictions.
+
+Possible delays may occur due to scheduled maintenance windows, anti-fraud validations, and institutional batch processing policies. Please verify specific hours or limitations with your financial institution or provider.
+</Note>
+
+### Processing Time Examples
+
+These examples show typical processing times for SPEI transfers submitted at different times and days:
+
+| Submission Time | Day       | Expected Processing Time  |
+| --------------- | --------- | ------------------------- |
+| 10:00 AM        | Monday    | Same day (within minutes) |
+| 4:30 PM         | Tuesday   | Same day (within minutes) |
+| 5:30 PM         | Wednesday | Same day (within minutes) |
+| 11:00 AM        | Saturday  | Same day (within minutes) |
+| 2:30 PM         | Saturday  | Same day (within minutes) |
+| 10:00 AM        | Sunday    | Same day (within minutes) |
+
+<Note>
+All times are shown in local Mexico City time. Actual processing times can vary depending on your bank or fintech provider's policies, internal fraud or compliance checks, and scheduled maintenance windows.
+
+SPEI itself doesn't enforce business day cut-off times anymore, so in theory, transfers can go through at any hour. However, your provider or bank might still have their own restrictions or delays—so it's always worth double-checking if you need funds to arrive urgently.
+</Note>
+
+### Holiday Calendar
+
+The following Mexican holidays may affect SPEI processing times and availability:
+
+- New Year's Day (January 1)
+- Constitution Day (February 5)
+- Benito Juárez's Birthday (March 21)
+- Easter (varies)
+- Labor Day (May 1)
+- Independence Day (September 16)
+- Revolution Day (November 20)
+- Christmas Day (December 25)
+
+## Next Steps
+
+Now that you understand the payment methods and their parameters, you can proceed with your integration:
+
+- Implement [card payments](/direct-integration/payment-methods/card-payments) to start processing transactions.
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) for real-time payment status notifications.
+- Review [HTTP response codes](/direct-integration/http-response-codes) for proper error handling.
+- Check the [quickstart guide](/direct-integration/quickstart) to begin your integration.

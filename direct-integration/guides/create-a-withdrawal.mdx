@@ -1,0 +1,228 @@
+---
+title: "Create a Withdrawal"
+sidebarTitle: "Create a Withdrawal"
+'og:description': "How to send payouts using Tonder's API"
+---
+
+This guide explains how to send payouts, or withdrawals, to beneficiaries using the Tonder API. Withdrawals are processed through the same unified [Process Transaction](/reference/process-transaction) endpoint as payments, by setting the `operation_type` to `"withdrawal"`.
+
+<Note>
+**Availability Notice**
+
+Withdrawals are currently only available for beneficiaries in Mexico. Support for additional countries will be added in future releases.
+</Note>
+
+<Info>
+**Available Transfer Methods**
+
+There are two transfer methods available:
+
+- SPEI: Bank transfers processed same business day during banking hours.
+- Debit Card: Instant deposits available within 5-15 minutes, 24/7.
+</Info>
+
+## Step 1: Choose Your Transfer Method
+
+Select the transfer method that fits your payout needs. Here you can find a quick comparison between the two methods:
+
+| Aspect | SPEI | Debit Card |
+|--------|------|------------|
+| Processing Time | Same business day | 5-15 minutes |
+| Availability | Banking hours only | 24/7 |
+| Account Type | 18-digit CLABE | 16-digit card number |
+| Best For | Regular payments, larger amounts | Urgent payments, instant cashouts |
+
+### SPEI Bank Transfer
+
+SPEI (Sistema de Pagos Electrónicos Interbancarios) is Mexico's standard electronic payment system for bank-to-bank transfers.
+
+You should use SPEI when:
+- Making regular business payments like commissions or vendor payments.
+- Processing payroll and salary transfers.
+- Sending larger amounts where cost-effectiveness is important.
+- Same-day processing during business hours is acceptable.
+
+<Info>
+**Key requirements**
+
+Pay attention to the following specifics for SPEI withdrawals:
+- The `transfer_method` value must be `"SPEI"`.
+- The `beneficiary.account` must be a valid 18-digit CLABE (Clave Bancaria Estandarizada).
+- Processing occurs during banking hours (typically 9 AM - 5 PM MXT, Monday-Friday).
+</Info>
+
+### Debit Card Instant Transfer
+
+Debit card withdrawals provide near-instant fund delivery directly to the beneficiary's debit card.
+
+You should use Debit Card withdrawals when:
+- Making urgent or emergency payments that can't wait for business hours.
+- Paying gig economy workers who need immediate access to funds.
+- Providing instant cashouts or on-demand withdrawals.
+- Processing customer refunds that require immediate availability.
+
+<Info>
+**Key requirements**
+
+Pay attention to the following specifics for debit card withdrawals:
+
+- The `transfer_method` value must be `"DEBIT_CARD"`.
+- The `beneficiary.account` must be a valid 16-digit debit card number.
+- Processing occurs 24/7, including weekends and holidays.
+- Funds are typically available within 5-15 minutes.
+</Info>
+
+## Step 2: Make the Withdrawal Request
+
+Create and send your withdrawal request using the [Process Transaction](/reference/process-transaction) endpoint with `operation_type` set to `"withdrawal"`.
+
+The request must have the following fields:
+
+| Field | Description |
+|-------|-------------|
+| `operation_type` | Always set to `"withdrawal"` for payout operations |
+| `amount` | The withdrawal amount in the specified currency |
+| `currency` | Currency code (currently only `"MXN"` is supported) |
+| `transfer_method` | Either `"SPEI"` or `"DEBIT_CARD"` |
+| `beneficiary` | Complete beneficiary information object |
+
+The `beneficiary` object contains the recipient's information for the withdrawal. This object specifies who will receive the funds and how they should be delivered. You can see the properties of the `beneficiary` object in the table below:
+
+| Field | Description |
+|-------|-------------|
+| `account` | The destination account number (18-digit CLABE for SPEI transfers, or 16-digit card number for debit card deposits) |
+| `name` | Full legal name of the beneficiary as it appears on their bank account or card |
+| `rfc` | Mexican tax identification number (RFC) - required for compliance and verification |
+| `institution` | Bank institution code (you can find codes in our [Mexican Banking Reference](/direct-integration/reference/mexican-banking-reference)) |
+| `email` | Beneficiary's email address for notifications and record-keeping |
+
+Here are examples for both transfer methods:
+
+<CodeGroup>
+
+```json SPEI Transfer
+{
+  "operation_type": "withdrawal",
+  "amount": 750.00,
+  "currency": "MXN",
+  "reference": "payout-001",
+  "transfer_method": "SPEI",
+  "description": "Commission payment",
+  "beneficiary": {
+    "account": "012345678901234567", // 18-digit CLABE
+    "name": "Roberto Martínez García",
+    "rfc": "MAGR850920XY1",
+    "institution": "40012",
+    "email": "roberto.martinez@email.com"
+  }
+}
+```
+
+```json Debit Card Transfer
+{
+  "operation_type": "withdrawal",
+  "amount": 500.00,
+  "currency": "MXN",
+  "reference": "card-payout-002",
+  "transfer_method": "DEBIT_CARD",
+  "description": "Instant payout to debit card",
+  "beneficiary": {
+    "account": "4111111111111111", // 16-digit card number
+    "name": "Ana María González",
+    "rfc": "GOAN850315AB2",
+    "institution": "40012",
+    "email": "ana.gonzalez@email.com"
+  }
+}
+```
+
+</CodeGroup>
+
+Make a POST request to the [Process Transaction](/reference/process-transaction) endpoint with your withdrawal data:
+
+```bash
+curl -X POST https://stage.tonder.io/api/v1/process/ \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "operation_type": "withdrawal",
+    "amount": 750.00,
+    "currency": "MXN",
+    "reference": "payout-001",
+    "transfer_method": "SPEI",
+    "description": "Commission payment",
+    "beneficiary": {
+      "account": "012345678901234567",
+      "name": "Roberto Martínez García",
+      "rfc": "MAGR850920XY1",
+      "institution": "40012",
+      "email": "roberto.martinez@email.com"
+    }
+  }'
+```
+
+## Step 3: Handle the Response
+
+Upon successful request, the API will return an immediate acknowledgment. Here you find a description of the fields in the response:
+
+| Field | Description |
+|-------|-------------|
+| `id` | Unique transaction identifier |
+| `operation_type` | Confirms this is a withdrawal operation |
+| `status` | Current transaction status (initially `processing`) |
+| `amount` | Withdrawal amount as submitted |
+| `currency` | Currency code |
+| `merchant_reference` | Your internal reference identifier |
+| `created_at` | ISO 8601 timestamp when the withdrawal was created |
+| `status_code` | HTTP status code (201 for successful creation) |
+
+The response structure is as follows:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440001",
+  "operation_type": "withdrawal",
+  "status": "processing",
+  "amount": 750.00,
+  "currency": "MXN",
+  "merchant_reference": "payout-001",
+  "created_at": "2024-07-26T10:30:00Z",
+  "status_code": 201
+}
+```
+
+After receiving the response, save the transaction ID from the `id` field to monitor progress.
+
+## Step 4: Check the Transaction Status
+
+Since withdrawals are asynchronous operations, you need to monitor the transaction to check the final status. Use the transaction `id` from the response to query the [Get Transaction Status](/reference/get-transaction-status) endpoint.
+
+<Warning>
+**Important**
+
+Always check the `id` and `status` fields from the response. The `id` is required to monitor the withdrawal progress, and the `status` tells you the current state of the transaction.
+</Warning>
+
+As your withdrawal progresses, it will move through different statuses. Here's what each status means and what you should do:
+
+| Status | Description | Next Steps |
+|--------|-------------|------------|
+| `pending` | The withdrawal request has been received and is queued | Monitor for status change |
+| `processing` | The transfer is currently being processed by the bank | Wait for completion |
+| `success` | The transfer was completed successfully | The transaction is complete |
+| `failed` | The transfer failed due to a processing or system error | Check the error details and retry if appropriate |
+| `declined` | The transfer was declined by the bank (e.g., invalid account) | Correct beneficiary data and create a new withdrawal |
+
+### Monitoring Options
+
+You can monitor withdrawal status using one of these methods:
+
+- Webhooks (Recommended): configure [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time status updates automatically.
+
+- Status Polling: check transaction status periodically using the [Get Transaction Status](/reference/get-transaction-status) endpoint.
+
+## Next Steps
+
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when withdrawal statuses change.
+- Check out [HTTP response codes](/direct-integration/http-response-codes) to understand how to handle different API responses and error scenarios.
+- Explore [rate limits](/direct-integration/rate-limits) to ensure your withdrawal processing doesn't exceed API usage limits.

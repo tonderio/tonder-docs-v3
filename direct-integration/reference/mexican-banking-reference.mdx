@@ -1,0 +1,63 @@
+---
+title: "Mexican Banking Reference"
+sidebarTitle: "Mexican Banking Overview"
+'og:description': "Complete reference guide for Mexican banking system implementation"
+---
+
+This comprehensive reference covers everything you need to implement SPEI transfers and withdrawals in Mexico. Understanding these core concepts will help you build reliable payment integrations with the Mexican banking system.
+
+## Essential Concepts
+
+Get familiar with these core concepts before implementing your integration:
+
+<AccordionGroup>
+  <Accordion title="CLABE Numbers">
+    CLABE (Clave Bancaria Estandarizada) is Mexico's standardized bank account number format used for SPEI transfers. Each CLABE contains:
+    - Bank code (3 digits) - Identifies the financial institution.
+    - Branch code (3 digits) - Identifies the specific branch.
+    - Account number (11 digits) - The actual account identifier.
+    - Check digit (1 digit) - Validation digit calculated using a weighted algorithm.
+    
+    Example: `012345678901234567` where `012` = BBVA México, `345` = branch, `67890123456` = account, `7` = check digit.
+
+    To know more about CLABE numbers, see [CLABE Validation](/direct-integration/reference/clabe-validation).
+  </Accordion>
+
+  <Accordion title="RFC Tax IDs">
+    RFC (Registro Federal de Contribuyentes) are Mexican tax identification numbers mandatory for financial transactions. There are two formats:
+    
+    - Individual RFC: has 13 characters in total, and it's made up of 4 letters + 6 digits + 3 alphanumeric characters. Example: `MAGR850920XY1` (name letters + birth date + verification code).
+    - Business RFC: has 12 characters in total, and it's made up of 3 letters + 6 digits + 3 alphanumeric characters. Example: `ABC850920123` (business letters + registration date + verification code).
+      
+    For detailed validation rules, see [CLABE Validation](/direct-integration/reference/clabe-validation).
+  </Accordion>
+
+  <Accordion title="SPEI Operating Times">
+    SPEI (Sistema de Pagos Electrónicos Interbancarios) is Mexico's real-time transfer system that operates 24/7. However, actual processing times may vary due to:
+    
+    - Standard processing: Transfers are usually completed within minutes at any time.
+    - Institution-specific restrictions: Individual banks may have their own maintenance windows or processing delays.
+    - Security validations: Anti-fraud checks can introduce additional processing time.
+    - Holiday schedule: Major Mexican holidays may affect some institutions' processing capabilities.
+    
+    For detailed timing information and operational constraints, see [CLABE Component Extraction](/direct-integration/reference/clabe-component-extraction).
+  </Accordion>
+</AccordionGroup>
+
+## Implementation Guides
+
+Now that you understand the concepts, choose the specific guide for your needs:
+
+<CardGroup cols={3}>
+  <Card title="Institution Codes" icon="building-columns" href="/direct-integration/reference/institution-codes">
+    Complete list of Mexican bank codes, CLABE prefixes, and account types for SPEI transactions.
+  </Card>
+  
+  <Card title="CLABE Validation" icon="shield-check" href="/direct-integration/reference/clabe-validation">
+    Validation algorithms, RFC formats, and error handling for Mexican banking data.
+  </Card>
+  
+  <Card title="CLABE Component Extraction" icon="code" href="/direct-integration/reference/clabe-component-extraction">
+    Parse CLABE numbers and understand SPEI operational timing constraints.
+  </Card>
+</CardGroup>

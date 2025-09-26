@@ -1,0 +1,210 @@
+---
+title: "How to Accept Card Payments"
+sidebarTitle: "Card Payments"
+'og:description': "Step-by-step guide to process credit and debit card payments with Tonder"
+---
+
+This guide shows you how to accept credit and debit card payments using Tonder's unified API. You'll learn to process both regular card payments and handle 3D Secure authentication when required.
+
+## Step 1: Prepare Your Card Payment Request
+
+Create your payment request with the card payment method. Always use tokenized card data when possible for enhanced security.
+
+```json
+{
+  "operation_type": "payment",
+  "amount": 150.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "Ana María Rodríguez",
+    "email": "ana.rodriguez@email.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",        // Tokenized
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b", // Tokenized
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",             // Tokenized
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e", // Tokenized
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"  // Tokenized
+  },
+  "client_reference": "order-789",
+  "return_url": "https://yourstore.com/payment/return"
+}
+```
+
+<Note>
+Always include a `return_url` when processing card payments. This is required for 3D Secure authentication flows.
+</Note>
+
+## Step 2: Send the Payment Request
+
+Make a POST request to the unified payment endpoint:
+
+```bash
+curl -X POST https://stage.tonder.io/api/v1/process/ \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "operation_type": "payment",
+    "amount": 150.00,
+    "currency": "MXN",
+    "customer": {
+      "name": "Ana María Rodríguez",
+      "email": "ana.rodriguez@email.com"
+    },
+    "payment_method": {
+      "type": "CARD",
+      "card_number": "9230-0892-4469-1474",
+      "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b",
+      "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",
+      "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e",
+      "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"
+    },
+    "client_reference": "order-789",
+    "return_url": "https://yourstore.com/payment/return"
+  }'
+```
+
+## Step 3: Handle the Response
+
+### Payment Response Scenarios
+
+Card payments can have different response flows depending on whether 3D Secure authentication is required. When no additional authentication is needed, the payment is processed immediately and returns an `authorized` status. When additional authentication is required, the customer will be redirected to their bank and the response includes redirect information.
+
+<CodeGroup>
+```json Successful Payment (No 3DS)
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "authorized",
+  "amount": 150.00,
+  "currency": "MXN",
+  "payment_id": 12345,
+  "transaction_id": "txn_abc123",
+  "created_at": "2024-07-26T10:30:00Z"
+}
+```
+
+```json 3D Secure Authentication Required
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "pending",
+  "next_action": {
+    "redirect_to_url": {
+      "url": "https://secure.payment-provider.com/3ds/abc123",
+      "return_url": "https://yourstore.com/payment/return"
+    }
+  }
+}
+```
+</CodeGroup>
+
+## Step 4: Handle 3D Secure Authentication
+
+When 3D Secure is required, follow these steps:
+
+<Steps>
+<Step title="Redirect the customer to the 3DS URL">
+Use the URL provided in `next_action.redirect_to_url.url` to redirect your customer.
+</Step>
+<Step title="Customer completes authentication">
+The customer will complete the 3D Secure challenge on their bank's page.
+</Step>
+<Step title="Customer returns to your site">
+After authentication, the customer is redirected back to your `return_url`.
+</Step>
+<Step title="Check the final payment status">
+Make a GET request to verify the final payment status.
+</Step>
+</Steps>
+
+```bash
+curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-446655440000/ \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## Implementation Tips
+
+Follow the best practices below to handle card payments:
+
+<AccordionGroup>
+<Accordion title="General Tips">
+- Always use tokenized card data to reduce PCI compliance scope.
+- Ensure your UI can handle redirect flows smoothly for 3D Secure authentication.
+- Save the transaction ID for future reference and reconciliation.
+- Use test cards to verify both successful and failed scenarios.
+</Accordion>
+
+<Accordion title="Security Best Practices">
+- Never store raw card data on your servers.
+- Always use HTTPS for all API communications.
+- Implement proper error handling to avoid exposing sensitive information.
+- Use webhooks to track payment status changes asynchronously.
+</Accordion>
+</AccordionGroup>
+
+## PCI Compliant Raw Card Processing
+
+For merchants with full PCI DSS Level 1 compliance, Tonder offers direct raw card processing that bypasses tokenization. This section covers the security requirements and considerations for this approach.
+
+When processing raw card data, you must maintain full PCI DSS Level 1 compliance. This section provides the essential requirements and best practices to ensure secure card data handling.
+
+<AccordionGroup>
+<Accordion title="Critical Security Requirements">
+These are the core security requirements for PCI compliant processing:
+
+- Protect stored, processed, and transmitted card data at all times.
+- Use TLS 1.2+ for all card data transmissions.
+- Restrict access to card data on need-to-know basis only.
+- Log and monitor all access to cardholder data environments.
+- Continuously test security systems and processes.
+- Maintain ongoing compliance validation and documentation.
+</Accordion>
+
+<Accordion title="Data Handling Requirements">
+**Prohibited Actions**
+
+These are the prohibited actions with card data:
+
+- Do not store CVV data after authorization.
+- Do not store card data without encryption or tokenization.
+- Do not log card numbers, CVV, or expiration dates.
+- Do not use HTTP without TLS 1.2+ encryption.
+
+**Required Actions**
+
+Always make sure to perform these actions when processing card data:
+
+- Check card data format before processing.
+- Confirm HTTPS before transmission.
+- Log all access to payment processing systems.
+- Apply security patches regularly.
+</Accordion>
+</AccordionGroup>
+
+### PCI Compliant vs Tokenized Processing
+
+The following table compares PCI compliant raw card processing with tokenized processing to help you choose the right approach:
+
+| Aspect | PCI Compliant Processing | Tokenized Processing |
+|--------|-------------------------|---------------------|
+| **API Calls** | 1 step (direct process) | 3 steps (auth → tokenize → process) |
+| **PCI Compliance** | Full PCI DSS Level 1 required | Not required for merchant |
+| **Integration Complexity** | Lower (single endpoint) | Higher (multiple endpoints) |
+| **Latency** | Lower (direct processing) | Higher (additional API calls) |
+| **Security Responsibility** | Merchant responsibility | Handled by Tonder/Skyflow |
+| **Maintenance Cost** | Higher (compliance audits) | Lower |
+| **Card Data Storage** | Prohibited without encryption | Tokens can be safely stored |
+| **Infrastructure Requirements** | Dedicated secure servers | Standard infrastructure |
+| **Audit Requirements** | Annual PCI DSS audits | Minimal compliance requirements |
+
+<Note>
+Choose PCI compliant processing only if you already have full PCI DSS Level 1 certification and dedicated infrastructure. For most merchants, [tokenized processing](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token) is the recommended approach.
+</Note>
+
+## Next Steps
+
+- Learn how to [create payments with card tokens](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token) for enhanced security.
+- Explore [3D Secure payments](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for additional authentication details.
+- See the [PCI Compliant Raw Card Processing guide](/direct-integration/guides/create-payments/raw-card-processing) for step-by-step implementation.
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time payment notifications.

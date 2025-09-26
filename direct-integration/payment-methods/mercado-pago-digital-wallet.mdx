@@ -1,0 +1,297 @@
+---
+title: "How to Accept Mercado Pago Payments"
+sidebarTitle: "Mercado Pago"
+'og:description': "Step-by-step guide to process payments with Mercado Pago digital wallet"
+---
+
+This guide shows you how to accept payments using Mercado Pago, Latin America's most popular digital wallet. Mercado Pago offers instant payment processing and is especially popular among younger demographics and frequent online shoppers.
+
+## When to Use Mercado Pago
+
+Mercado Pago is ideal for:
+
+- E-commerce customers familiar with digital wallets.
+- Younger demographics (18-35 years old).
+- Repeat customers who value quick checkout.
+- Markets where Mercado Pago has strong adoption.
+
+## Step 1: Create and Send the Payment Request
+
+Mercado Pago payments use a redirect flow where customers authenticate on Mercado Pago's platform. Send your payment request to the [Process Transaction](/reference/process-transaction) endpoint:
+
+```bash
+curl -X POST https://stage.tonder.io/api/v1/process/ \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "operation_type": "payment",
+    "amount": 350.00,
+    "currency": "MXN",
+    "customer": {
+      "name": "José Antonio Ramírez",
+      "email": "jose.ramirez@email.com"
+    },
+    "payment_method": {
+      "type": "MERCADOPAGO"
+    },
+    "client_reference": "order-456",
+    "return_url": "https://yourstore.com/payment/return"
+  }'
+```
+
+<Note>
+Always include a `return_url` for Mercado Pago payments. This is where customers will be redirected after completing their payment.
+</Note>
+
+## Step 2: Handle the Response and Redirect
+
+The API response will include payment instructions and redirect information. Mercado Pago payments require a redirect flow where customers authenticate on Mercado Pago's platform:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "pending",
+  "amount": 350.00,
+  "currency": "MXN",
+  "next_action": {
+    "redirect_to_url": {
+      "url": "https://mercadopago.com/checkout/123456789",
+      "return_url": "https://yourstore.com/payment/return"
+    }
+  },
+  "created_at": "2024-07-26T10:30:00Z"
+}
+```
+
+The response contains key fields you need to handle the payment flow:
+
+| Field | Description |
+|-------|-------------|
+| `id` | Unique transaction identifier - store this for status checking |
+| `status` | Current payment status - will be `pending` initially |
+| `next_action.redirect_to_url.url` | URL where you should redirect the customer |
+| `next_action.redirect_to_url.return_url` | URL where customer returns after payment |
+
+<Warning>
+**`id` and `status` fields validation**
+
+Check that you received a valid `id` and `status` before proceeding. If either is missing or invalid, do not redirect the customer and handle the error appropriately.
+</Warning>
+
+## Step 3: Redirect Customer to Mercado Pago
+
+Guide your customer through the payment flow:
+
+<Steps>
+<Step title="Redirect to Mercado Pago">
+Use the URL from `next_action.redirect_to_url.url` to redirect your customer.
+</Step>
+<Step title="Customer authenticates">
+Customer logs into their Mercado Pago account and confirms payment details.
+</Step>
+<Step title="Customer completes payment">
+Customer selects their preferred funding source and confirms the payment.
+</Step>
+<Step title="Customer returns to your site">
+After payment, customer is redirected back to your `return_url`.
+</Step>
+</Steps>
+
+Here's an example of how to redirect the customer to Mercado Pago. This code validates the response, extracts the redirect URL, and handles the customer redirect:
+
+```javascript
+// Redirect customer to Mercado Pago
+function redirectToMercadoPago(response) {
+  if (response.next_action && response.next_action.redirect_to_url) {
+    const redirectUrl = response.next_action.redirect_to_url.url;
+    
+    // Option 1: Redirect in same window
+    window.location.href = redirectUrl;
+    
+    // Option 2: Open in popup (better UX)
+    const popup = window.open(
+      redirectUrl, 
+      'mercadopago_checkout',
+      'width=800,height=600,scrollbars=yes,resizable=yes'
+    );
+    
+    // Monitor popup for completion
+    const checkClosed = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(checkClosed);
+        checkPaymentStatus(response.id);
+      }
+    }, 1000);
+  }
+}
+```
+
+## Step 4: Handle Customer Return
+
+When customers return to your site, check the payment status. This code verifies the payment status and shows the appropriate page:
+
+```javascript
+// Handle return from Mercado Pago
+function handleMercadoPagoReturn() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const transactionId = urlParams.get('transaction_id') || 
+                       sessionStorage.getItem('pending_transaction_id');
+  
+  if (transactionId) {
+    checkPaymentStatus(transactionId);
+  }
+}
+
+// Check final payment status
+async function checkPaymentStatus(transactionId) {
+  try {
+    const response = await fetch(`/api/transactions/${transactionId}/status`);
+    const payment = await response.json();
+    
+    if (payment.status === 'success') {
+      showSuccessPage(payment);
+    } else if (payment.status === 'failed') {
+      showFailurePage(payment);
+    } else {
+      // Still pending, check again in a few seconds
+      setTimeout(() => checkPaymentStatus(transactionId), 3000);
+    }
+  } catch (error) {
+    console.error('Error checking payment status:', error);
+  }
+}
+```
+
+## Step 5: Track Payment Status
+
+Mercado Pago payments follow this status flow:
+
+1. `pending` - Customer being redirected to Mercado Pago
+2. `success` - Payment completed successfully  
+3. `failed` - Payment failed or was cancelled
+
+It's recommended to use [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time updates. Here's an example of a webhook payload:
+
+```json
+{
+  "event": "payment.status_changed",
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "success",
+    "amount": 350.00,
+    "completed_at": "2024-07-26T10:35:00Z",
+    "mercadopago_payment_id": "mp_12345678"
+  }
+}
+```
+
+If you prefer not to use webhooks, you can check payment status via API:
+
+```bash
+curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-446655440000/ \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## Step 6: Handle Different Payment Outcomes
+
+Different payment outcomes can occur:
+
+<AccordionGroup>
+<Accordion title="Successful Payment">
+When the payment is completed successfully, you'll receive a response with `status: "success"` and additional Mercado Pago details:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "success",
+  "amount": 350.00,
+  "currency": "MXN",
+  "mercadopago_payment_id": "mp_12345678",
+  "funding_source": "credit_card",
+  "completed_at": "2024-07-26T10:35:00Z"
+}
+```
+</Accordion>
+
+<Accordion title="Failed or Cancelled Payment">
+When the payment fails or is cancelled, you'll receive a response with `status: "failed"` and a reason for the failure:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "failed",
+  "amount": 350.00,
+  "currency": "MXN",
+  "failure_reason": "cancelled_by_user",
+  "failed_at": "2024-07-26T10:33:00Z"
+}
+```
+</Accordion>
+</AccordionGroup>
+
+## Best Practices for Mercado Pago Integration
+
+Follow the best practices below to integrate Mercado Pago:
+
+<AccordionGroup>
+<Accordion title="User Experience">
+- Display Mercado Pago logo to build customer confidence.
+- Show progress indicators during redirects.
+- Ensure redirect flow works well on mobile devices.
+- Consider using popups for better user experience.
+</Accordion>
+
+<Accordion title="Technical Implementation">
+- Save the transaction ID before redirecting.
+- Set reasonable timeouts for payment completion.
+- Gracefully handle network issues and API errors.
+- Always verify payment status server-side, not just client-side.
+</Accordion>
+
+<Accordion title="Customer Communication">
+- Set clear expectations about the redirect process.
+- Provide support information for Mercado Pago-related questions.
+- Send confirmation emails after successful payments.
+- Offer alternative payment methods as backup.
+</Accordion>
+</AccordionGroup>
+
+## Common Integration Patterns
+
+This is an example of how to implement Mercado Pago integration:
+
+```javascript
+class MercadoPagoCheckout {
+  async processPayment(orderData) {
+    try {
+      // Create payment request
+      const payment = await this.createPayment(orderData);
+      
+      // Store transaction ID for later verification
+      sessionStorage.setItem('pending_transaction_id', payment.id);
+      
+      // Redirect to Mercado Pago
+      if (payment.next_action) {
+        window.location.href = payment.next_action.redirect_to_url.url;
+      }
+    } catch (error) {
+      this.handlePaymentError(error);
+    }
+  }
+  
+  async handleReturn() {
+    const transactionId = sessionStorage.getItem('pending_transaction_id');
+    if (transactionId) {
+      await this.verifyPayment(transactionId);
+      sessionStorage.removeItem('pending_transaction_id');
+    }
+  }
+}
+```
+
+## Next Steps
+
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when Mercado Pago payments are completed.
+- Learn about [HTTP response codes](/direct-integration/http-response-codes) to handle different API responses.
+- Explore [card payments](/direct-integration/payment-methods/card-payments) as an alternative for customers without digital wallets.

@@ -1,0 +1,68 @@
+---
+title: "Testing data"
+sidebarTitle: "Testing Data"
+'og:description': "Test data for sandbox environment"
+---
+
+Use the following test data in the **sandbox environment** to simulate various transaction scenarios and ensure your integration handles them correctly.
+
+<Warning>
+This data will only work in the `https://stage.tonder.io/` environment. Do not use real card or bank account numbers for testing.
+</Warning>
+
+## Test Cards
+
+You can use these card numbers to trigger specific responses from the API. Any valid future expiration date (e.g., 12/2027) and any 3-digit CVV (e.g., 123) can be used unless otherwise specified.
+
+| Card Number      | Scenario                      | Expected Status | Notes                                                        |
+| ---------------- | ----------------------------- | --------------- | ------------------------------------------------------------ |
+| `4242424242424242` | **Successful payment** | `authorized`    | Use this for testing a standard, successful card transaction.  |
+| `4000000000000002` | **Card declined** | `declined`      | Simulates a generic decline from the issuing bank.           |
+| `4000000000009995` | **Insufficient funds** | `declined`      | Simulates a decline due to insufficient funds.               |
+| `4000000000000119` | **3D Secure required** | `pending`       | Triggers a `next_action` object in the response for 3DS handling. |
+| `4000000000000341` | **Processing error** | `failed`        | Simulates a generic processing error at the provider level.    |
+| `4111111111111111` | **Successful withdrawal** | `processing`    | For testing successful direct-to-debit card withdrawals.     |
+| `5555555555554444` | **Withdrawal processing error** | `failed`        | For testing a failed direct-to-debit card withdrawal.        |
+
+## Test Bank Accounts (CLABE for SPEI)
+
+Use these CLABE numbers to test SPEI payments and withdrawals in Mexico.
+
+| CLABE              | Scenario                   | Expected Result / Status         |
+| ------------------ | -------------------------- | -------------------------------- |
+| `646180157000000004` | **Successful transfer** | `processing` status              |
+| `012345678901234567` | **Invalid checksum** | `422` Validation error           |
+| `999999999999999999` | **Non-existent bank** | `institution_not_found` error    |
+
+## Testing Different Scenarios
+
+Before going live, it's a good practice to run through these common test cases to ensure your integration is robust.
+
+<AccordionGroup>
+<Accordion title="Successful Payment">
+
+  * **How to test**: Submit a payment request using the test card `4242424242424242`.
+  * **What should happen**: The API should return a `201 Created` response with a status of `authorized` or `success`.
+  * **What to look for**: Confirm that the response includes a valid transaction ID and that your system correctly records the successful payment.
+</Accordion>
+    <Accordion title="Declined Payment">
+  * **How to test**: Submit a payment request using the test card `4000000000000002`.
+  * **What should happen**: The API should respond with a status of `declined`.
+  * **What to look for**: Ensure the response contains an error message explaining the reason for the decline and that your application handles this gracefully (e.g., by asking the user to try another card).
+</Accordion>
+    <Accordion title="3D Secure Challenge">
+  * **How to test**: Initiate a payment with the test card `4000000000000119`.
+  * **What should happen**: The API will return a `202 Accepted` response with a status of `pending` and will include a `next_action.redirect_to_url` object.
+  * **What to look for**: Verify that your application can correctly parse this response and simulate redirecting the user to the provided URL for authentication.
+</Accordion>
+    <Accordion title="OXXO Cash Payment">
+  * **How to test**: Submit a payment request with `payment_method.type` set to `OXXO` or `oxxopay`.
+  * **What should happen**: The API should return a `201 Created` response with a status of `pending` and provide a `payment_instructions` object.
+  * **What to look for**: Check that the response includes a barcode and a reference code. Ensure your application can display these instructions clearly to the user.
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+- Explore the [authentication API reference](/direct-integration/api-reference/process-transaction) for technical details.
+- Review the [API rate limits](/direct-integration/rate-limits) to make sure you don’t hit any unexpected errors during testing.

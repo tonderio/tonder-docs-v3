@@ -1,0 +1,263 @@
+---
+title: "How to Accept OXXO Cash Payments"
+sidebarTitle: "OXXO Cash Payments"
+'og:description': "Step-by-step guide to process cash payments at OXXO stores with Tonder"
+---
+
+This guide shows you how to accept cash payments at OXXO convenience stores in Mexico. OXXO is Mexico's largest convenience store chain, making it ideal for customers who prefer to pay with cash or don't have bank accounts.
+
+## When to Use OXXO
+
+OXXO payments are perfect for:
+
+- Customers without bank accounts or credit cards.
+- E-commerce customers who prefer cash payments.
+- Areas with high OXXO store density.
+- Building trust with cash-preferred demographics.
+
+## Step 1: Create and Send the Payment Request
+
+OXXO payments are simple to set up - just specify the payment type and amount. Send your payment request to the [Process Transaction](/reference/process-transaction) endpoint and the API will generate a payment voucher for your customer:
+
+```bash
+curl -X POST https://stage.tonder.io/api/v1/process/ \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "operation_type": "payment",
+    "amount": 250.00,
+    "currency": "MXN",
+    "customer": {
+      "name": "María Isabel Fernández",
+      "email": "maria.fernandez@email.com"
+    },
+    "payment_method": {
+      "type": "OXXO"
+    },
+    "client_reference": "order-123"
+  }'
+```
+
+<Info>
+For detailed information about all available request fields and their requirements, see the [Create a Payment](/direct-integration/guides/create-payments/create-a-payment) guide.
+</Info>
+
+## Step 2: Handle the Response
+
+OXXO payments start with a `pending` status and include payment instructions for the customer:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "pending",
+  "amount": 250.00,
+  "currency": "MXN",
+  "payment_instructions": {
+    "reference_code": "99900012345678",
+    "barcode": "||99900012345678||",
+    "store_name": "OXXO",
+    "expiration_date": "2024-07-29T23:59:59Z",
+    "instructions": [
+      "Acude a cualquier tienda OXXO",
+      "Presenta este código de barras en caja",
+      "Paga exactamente $250.00 MXN en efectivo"
+    ]
+  },
+  "voucher_pdf": "https://api.tonder.io/vouchers/abc123.pdf",
+  "created_at": "2024-07-26T10:30:00Z"
+}
+```
+
+The response contains key fields you need to handle the OXXO payment flow:
+
+| Field | Description |
+|-------|-------------|
+| `id` | Unique transaction identifier - store this for status checking |
+| `status` | Current payment status - will be `pending` initially |
+| `payment_instructions.reference_code` | OXXO reference code for payment |
+| `payment_instructions.barcode` | Barcode to display to customer |
+| `payment_instructions.expiration_date` | When the payment voucher expires |
+| `voucher_pdf` | URL to download the payment voucher PDF |
+
+<Warning>
+**`Id` and `Status` Fields Validation**
+
+Check that you received a valid `id` and `status` before proceeding. If either is missing or invalid, do not display payment instructions and handle the error appropriately.
+</Warning>
+
+## Step 3: Display Payment Instructions to Your Customer
+
+Present the payment voucher clearly to help customers complete their OXXO payment successfully. Create a user-friendly page that displays all necessary information for the customer to pay at any OXXO store:
+
+<Steps>
+<Step title="Show the barcode prominently">
+Display the `barcode` in a format the customer can easily show to the cashier.
+</Step>
+<Step title="Include the reference code">
+Show the `reference_code` as backup in case the barcode can't be scanned.
+</Step>
+<Step title="Provide clear instructions">
+Use the `instructions` array to guide the customer through the payment process.
+</Step>
+<Step title="Highlight the expiration date">
+Make sure customers know when the voucher expires.
+</Step>
+<Step title="Offer the PDF voucher">
+Provide a link to download the `voucher_pdf` for printing.
+</Step>
+</Steps>
+
+Here's an example of a customer voucher template:
+
+```html
+<div class="oxxo-voucher">
+  <h2>Completa tu pago en OXXO</h2>
+  
+  <div class="barcode">
+    <img src="data:image/png;base64,{BARCODE_IMAGE}" />
+    <p>Código: 99900012345678</p>
+  </div>
+  
+  <div class="amount">
+    <h3>Monto a pagar: $250.00 MXN</h3>
+  </div>
+  
+  <div class="instructions">
+    <h4>Instrucciones:</h4>
+    <ol>
+      <li>Acude a cualquier tienda OXXO</li>
+      <li>Presenta este código de barras en caja</li>
+      <li>Paga exactamente $250.00 MXN en efectivo</li>
+    </ol>
+  </div>
+  
+  <div class="expiration">
+    <p><strong>Vence:</strong> 29 de julio, 2024</p>
+  </div>
+  
+  <a href="{VOUCHER_PDF_URL}" class="download-button">
+    Descargar comprobante PDF
+  </a>
+</div>
+```
+
+## Step 4: Track Payment Status
+
+OXXO payments follow this status flow:
+
+1. `pending` - Waiting for customer to pay at store.
+2. `success` - Cash payment received and confirmed.
+
+[Webhooks](/direct-integration/webhooks/how-webhooks-works) provide real-time notifications when payment status changes. Set up webhooks to receive payment confirmations automatically:
+
+```json
+{
+  "event": "payment.status_changed",
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "status": "success",
+    "amount": 250.00,
+    "completed_at": "2024-07-27T14:30:00Z",
+    "store_location": "OXXO Colonia Roma"
+  }
+}
+```
+
+If you prefer not to use webhooks, you can check payment status via API:
+
+```bash
+curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-446655440000/ \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## Step 5: Handle OXXO-Specific Scenarios
+
+There are some specificities to consider when using OXXO payments:
+
+<AccordionGroup>
+<Accordion title="Payment Timing">
+The processing time for OXXO payments follows these rules:
+
+- Payments are processed 24-48 hours after customer pays at store.
+- OXXO stores typically open 24/7.
+- Vouchers usually expire after 3-7 days.
+</Accordion>
+
+<Accordion title="Amount Limits">
+Regarding the amount limits, OXXO has the following restrictions:
+
+- Minimum amount is $20 MXN (varies by configuration).
+- Maximum amount is $10,000 MXN per transaction.
+- Daily limits may apply per customer.
+</Accordion>
+
+<Accordion title="Common Issues">
+Some common issues that may occur when using OXXO payments are:
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| `amount_too_high` | Exceeds OXXO limits | Split into multiple payments |
+| `amount_too_low` | Below minimum threshold | Increase amount or use different method |
+| `expired_voucher` | Customer paid after expiration | Create new payment request |
+</Accordion>
+</AccordionGroup>
+
+## Best Practices for OXXO Payments
+
+Follow the best practices below to integrate OXXO payments:
+
+<AccordionGroup>
+<Accordion title="Customer Communication">
+- Send payment instructions via email and SMS.
+- Include store locator links to help customers find nearby OXXO stores.
+- Provide clear expiration date warnings.
+- Offer customer support for payment questions.
+</Accordion>
+
+<Accordion title="Order Management">
+- Keep orders in "pending payment" status until confirmed.
+- Send reminder emails before voucher expiration.
+- Have a process for handling expired payments.
+- Consider offering payment extensions for loyal customers.
+</Accordion>
+
+<Accordion title="Technical Implementation">
+- Generate barcode images for better user experience.
+- Make vouchers mobile-friendly for easy display at stores.
+- Cache PDF vouchers for faster loading.
+- Implement retry logic for voucher generation.
+</Accordion>
+</AccordionGroup>
+
+## Implementation Example
+
+Here is an example of how to implement OXXO payments. This code displays the payment voucher information on the frontend:
+
+```javascript
+// Frontend: Display OXXO voucher
+function displayOXXOVoucher(response) {
+  const voucher = response.payment_instructions;
+  
+  document.getElementById('barcode').textContent = voucher.barcode;
+  document.getElementById('reference').textContent = voucher.reference_code;
+  document.getElementById('amount').textContent = `$${response.amount} MXN`;
+  document.getElementById('expiration').textContent = 
+    new Date(voucher.expiration_date).toLocaleDateString('es-MX');
+  document.getElementById('pdf-link').href = response.voucher_pdf;
+  
+  // Show instructions
+  const instructionsList = document.getElementById('instructions');
+  voucher.instructions.forEach(instruction => {
+    const li = document.createElement('li');
+    li.textContent = instruction;
+    instructionsList.appendChild(li);
+  });
+}
+```
+
+## Next Steps
+
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive notifications when OXXO payments are completed.
+- Learn about [HTTP response codes](/direct-integration/http-response-codes) to handle different API responses.
+- Explore [SPEI bank transfers](/direct-integration/payment-methods/spei-bank-transfers) for customers who prefer bank payments.

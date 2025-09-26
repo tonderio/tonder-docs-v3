@@ -1,0 +1,85 @@
+---
+title: "Rate Limits"
+sidebarTitle: "Rate Limits"
+'og:description': "API rate limits and best practices"
+---
+
+To ensure system stability and fair usage for all users, the Tonder API enforces rate limits on incoming requests. If you exceed these limits, the API will respond with an `HTTP 429 Too Many Requests` error.
+
+## Default Rate Limits
+
+These are the standard rate limits for the main API endpoints.
+
+| Endpoint                               | Limit          | Time Window |
+| -------------------------------------- | -------------- | ----------- |
+| `POST /process/`                       | 100 requests   | per minute  |
+| `GET /transactions/{transaction_id}/`  | 300 requests   | per minute  |
+
+<Note>
+If your application has specific needs for higher rate limits, please contact our support team to discuss your use case.
+</Note>
+
+## Rate Limit Headers
+
+The API includes the following headers in every response to help you track your current rate limit status programmatically.
+
+| Header                  | Description                                                  | Example Value |
+| ----------------------- | ------------------------------------------------------------ | ------------- |
+| `X-RateLimit-Limit`     | The maximum number of requests allowed in the current time window. | `100`           |
+| `X-RateLimit-Remaining` | The number of requests remaining in the current time window. | `95`            |
+| `X-RateLimit-Reset`     | The Unix timestamp indicating when the current time window resets. | `1640995200`  |
+
+By monitoring these headers, your application can proactively manage its request rate to avoid being rate-limited.
+
+## Handling a Rate Limit Error
+
+When you exceed the rate limit, the API will return an `HTTP 429` status code and a JSON body containing information on when you can retry.
+
+```json
+{
+  "error": {
+    "code": "rate_limit_exceeded",
+    "message": "Too many requests",
+    "retry_after": 60
+  }
+}
+```
+
+The `retry_after` field indicates the number of seconds you should wait before making another request.
+
+### Best Practices for Handling Rate Limits
+
+- Wait at least the number of seconds indicated in `retry_after` before retrying after receiving a `429` response.
+- Implement exponential backoff for server-side errors or rate limits by retrying requests with progressively longer delays.
+- Cache responses to avoid repeating requests for the same information, especially for `GET` requests that rarely change.
+- Control concurrency to ensure your application doesn't exceed the allowed limit within the time window when sending parallel requests.
+
+Below is an example of how to handle rate limits in Python.
+
+<Accordion title="Python Example: Basic Rate Limit Handling">
+
+```python
+import requests
+import time
+
+def make_request_with_retry(url, headers, data):
+    response = requests.post(url, headers=headers, json=data)
+
+    if response.status_code == 429:
+        error_data = response.json()
+        retry_after = error_data.get('error', {}).get('retry_after', 60) # Default to 60s
+        print(f"Rate limited. Retrying after {retry_after} seconds...")
+        time.sleep(retry_after)
+        # Retry the request once after waiting
+        return requests.post(url, headers=headers, json=data)
+
+    return response
+```
+
+</Accordion>
+
+## Next Steps
+
+- Learn more about [HTTP response codes](/direct-integration/http-response-codes) to understand how to handle different API responses.
+- See how to [create a payment](/direct-integration/guides/create-payments/create-a-payment) and test your rate limit handling in real scenarios.
+- Explore the [environment guide](/direct-integration/environment) to ensure you're using the correct credentials and URLs in each phase.

@@ -1,0 +1,206 @@
+---
+title: "Create a Payment with Card Tokenization"
+sidebarTitle: "Card Tokenization"
+'og:description': "How to use card tokenization for secure payments"
+---
+
+To enhance security and simplify your PCI compliance, Tonder provides a card tokenization service. This service converts sensitive card data into secure, non-sensitive tokens that you can use to process payments without ever handling raw card data on your servers.
+
+This guide shows you how to tokenize card data and use those tokens to process secure payments. The process involves two main steps:
+
+1. Tokenize the card by securely exchanging raw card details for tokens.
+2. Create the payment using the tokens in place of the card details in your payment request.
+
+<Note>
+**Security Benefits of Tokenization**
+
+Since raw card data never touches your servers, your PCI DSS compliance burden is significantly reduced. Tokens are useless to attackers if intercepted, as they can only be used through Tonder's secure environment. You can safely store these tokens in your database for recurring payments or "saved card" features.
+</Note>
+
+<Note>
+**How Tokenization Works**
+
+Tonder tokenizes each card field individually (card number, CVV, expiration month, etc.) rather than creating a single token for the entire card. This means you'll receive separate tokens for each sensitive field, which you then use in place of the original values when making payment requests.
+</Note>
+
+## Step 1: Get an Access Token
+
+Before you can use the tokenization service, you must get a short-lived access token using the [Get Tokenization Access Token](/reference/get-tokenization-token) endpoint with your standard Tonder API key.
+
+This request obtains a JWT access token required for card tokenization:
+
+<AccordionGroup>
+<Accordion title="Request">
+Make sure to include your Tonder API key in the Authorization header.
+
+```bash
+curl -X GET https://app.tonder.io/api/v1/tokenization/auth/ \
+-H "Authorization: Token <YOUR_TONDER_API_KEY>"
+```
+</Accordion>
+
+<Accordion title="Response">
+
+The server will respond with a JWT access token, as shown in the example below.
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+</Accordion>
+</AccordionGroup>
+
+You will use the `access_token` from the response to authorize your request to the tokenization service in the next step.
+
+## Step 2: Tokenize the Card Data
+
+Now, send the raw card details to the [Tokenize Card Data](/reference/tokenize-card-data) endpoint. This request must be authorized with the access token you just obtained and will return individual tokens for each sensitive field.
+
+These are the required parameters for the tokenization service:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `card_number` | string | The full card number (e.g., "4242424242424242") |
+| `cardholder_name` | string | The name on the card |
+| `cvv` | string | Card security code (3-4 digits) |
+| `expiration_month` | string | Card expiration month (e.g., "07") |
+| `expiration_year` | string | Card expiration year (e.g., "2025") |
+
+Below you can find examples of a request and a response from the tokenization service.
+
+<AccordionGroup>
+<Accordion title="Request">
+Include the access token from Step 1 in the authorization header and send the card data in the request body:
+
+```bash
+curl -X POST https://token.tonder.io/v1/gateway/inboundRoutes/f6eb7af640b041b590a0b2f095a83fa4/token \
+-H "X-Skyflow-Authorization: <YOUR_ACCESS_TOKEN_FROM_STEP_1>" \
+-H "Content-Type: application/json" \
+-d '{
+  "card_number": "4242424242424242",
+  "cardholder_name": "Ozzy Osbourne",
+  "cvv": "123",
+  "expiration_month": "07",
+  "expiration_year": "2025"
+}'
+```
+</Accordion>
+
+<Accordion title="Response">
+The service will respond with a JSON object where each sensitive field has been replaced with a unique individual token. Notice that each original field now contains a separate token value:
+
+```json Tokenization Response
+{
+  "card_number": "9230-0892-4469-1474",        // Token for card number
+  "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b", // Token for cardholder name
+  "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",             // Token for CVV
+  "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e", // Token for expiration month
+  "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"  // Token for expiration year
+}
+```
+</Accordion>
+</AccordionGroup>
+
+<Note>
+Each field is tokenized separately. You must use each individual token in the corresponding field when making payment requests. The tokens are not interchangeable between fields.
+</Note>
+
+<Note>
+Due to PCI DSS requirements, your company must share relevant attestation documents with Tonder before we can activate production access to the tokenization endpoint.
+</Note>
+
+## Step 3: Create the Payment Using Tokens
+
+Finally, make a standard payment request to the [Process Transaction](/reference/process-transaction) endpoint. In the `payment_method` object, use the individual token values you received from the tokenization service instead of the raw card details.
+
+This request processes the payment using the tokenized card data:
+
+```json Payment Request
+{
+  "operation_type": "payment",
+  "amount": 150.00,
+  "currency": "MXN",
+  "customer": {
+    "name": "John Doe",
+    "email": "john.doe@email.com"
+  },
+  "payment_method": {
+    "type": "CARD",
+    "card_number": "9230-0892-4469-1474",        // Token
+    "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b", // Token
+    "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",             // Token
+    "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e", // Token
+    "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"  // Token
+  },
+  "client_reference": "order-789"
+}
+```
+
+This request is authenticated with your standard Tonder API key and HMAC signature, just like [any other payment request](/direct-integration/guides/create-payments/create-a-payment). The API will securely detokenize the values on the server-side to process the payment.
+
+A successful tokenized payment response will have the same structure as a standard card payment:
+
+```json Payment Response
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "operation_type": "payment",
+  "status": "authorized",
+  "amount": 150.00,
+  "currency": "MXN",
+  "merchant_reference": "order-789",
+  "payment_id": 12345,
+  "transaction_id": "txn_token123",
+  "provider": "stripe",
+  "created_at": "2024-07-26T10:30:00Z",
+  "status_code": 201
+}
+```
+
+In this example, the payment has been authorized, but not yet completed. Always check the `status` field in your response and implement appropriate logic based on the status value received.
+
+The table below details the fields that are returned in the response:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique transaction identifier |
+| `operation_type` | string | Always `"payment"` |
+| `status` | string | Transaction status |
+| `amount` | decimal | Transaction amount |
+| `currency` | string | Currency code |
+| `client_reference` | string | Your reference identifier |
+| `payment_id` | integer | Internal payment ID |
+| `transaction_id` | string | Provider transaction ID |
+| `provider` | string | Payment provider used |
+| `created_at` | string | ISO 8601 timestamp |
+| `status_code` | integer | HTTP status code |
+| `next_action` | object | Required actions (3DS, redirects) |
+
+## Step 4: Check the Transaction Status
+
+For asynchronous payments, or if you need to confirm the final status of any transaction, you can query the transaction status using the [Get Transaction Status](/reference/get-transaction-status) endpoint with the `id` from the payment response:
+
+```bash cURL
+curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-446655440000/ \
+-H "Authorization: Token <YOUR_SANDBOX_API_KEY>"
+```
+
+This will return the full transaction object with its current status (e.g., `success`, `failed`, `expired`).
+
+<Warning>
+**Critical: Always validate both `id` and `status` fields**
+
+For proper payment validation, you must check:
+- `id` is the unique transaction identifier - store this for future reference.
+- `status` is the current payment state - determines next actions.
+
+Never rely on HTTP status codes alone for payment validation.
+</Warning>
+
+## Next Steps
+
+After successfully tokenizing card data and processing payments:
+
+- Try [creating payments with 3D Secure](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for enhanced card security when using tokens.
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications when payment statuses change.
+

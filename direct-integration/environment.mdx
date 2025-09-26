@@ -1,0 +1,51 @@
+---
+title: "Environment"
+sidebarTitle: "Environment"
+'og:description': "Tonder API environments and configuration"
+---
+
+Tonder provides two distinct environments for your integration: 
+
+- **Stage** for development and testing
+- **Production** for processing live transactions. 
+
+Each environment has its own base URL and API credentials.
+
+<Note>
+It is crucial to use the correct base URL and API keys for each environment. Using production keys in the stage environment or vice-versa will result in authentication errors.
+</Note>
+
+## Base URLs
+
+The base URL is the root for all API requests. Append the specific endpoint paths (e.g., [Process Transaction](/reference/process-transaction)) to the appropriate base URL.
+
+| Environment    | Base URL                          | Purpose                               |
+| -------------- | --------------------------------- | ------------------------------------- |
+| Stage | `https://stage.tonder.io/api/v1/` | For all development and testing.      |
+| Production | `https://app.tonder.io/api/v1/`   | For processing live transactions.     |
+
+For example, a request to the process endpoint in the Stage environment would use the following URL:
+
+```POST https://stage.tonder.io/api/v1/process/```
+
+The same request in the Production environment would use the following URL:
+
+```POST https://app.tonder.io/api/v1/process/```
+
+## API Credentials
+
+Each environment uses a separate set of API credentials (API Key and Secret Key).
+
+  * **Stage Credentials**: Use these for all your testing in the sandbox. They can be found in the developer section of the [Tonder Staging Dashboard](https://app.tonder.io).
+  * **Production Credentials**: Use these only for live transactions. They are available in the developer section of the [Tonder Production Dashboard](https://app.tonder.io).
+
+<Warning>
+Never use your production API keys in your testing environment or expose them in client-side code. Store them securely on your server.
+</Warning>
+
+## Next Steps
+
+- Check out [authentication methods](/direct-integration/authentication) to secure your API requests.
+- Follow the [create a payment](/direct-integration/guides/create-payments/create-a-payment) guide to make your first transaction.
+- Use [testing data](/direct-integration/testing-data) to simulate different payment scenarios.
+

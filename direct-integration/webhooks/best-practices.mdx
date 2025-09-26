@@ -1,0 +1,55 @@
+---
+title: "Webhook Best Practices"
+sidebarTitle: "Best Practices"
+'og:description': "Security and implementation best practices for webhooks"
+---
+
+This page provides essential security and implementation best practices for webhook endpoints. Following these recommendations will help you build secure, reliable webhook integrations that handle transaction events properly and protect against common vulnerabilities.
+
+## Security Best Practices
+
+Implement these security measures to protect your webhook endpoints:
+
+<AccordionGroup>
+  <Accordion title="Always use a secure (HTTPS) URL for your webhook endpoint">
+    HTTP connections are unencrypted and vulnerable to man-in-the-middle attacks. HTTPS ensures data transmitted between Tonder and your endpoint remains secure and tamper-proof.
+  </Accordion>
+  
+  <Accordion title="Use an authentication method to verify requests from Tonder">
+    Configure authentication (BEARER, API_TOKEN, or BASIC_AUTH) when creating your webhook to prevent unauthorized requests from malicious actors attempting to trigger false events in your system.
+  </Accordion>
+  
+  <Accordion title="Validate the event structure and content before processing">
+    Check that required fields are present and contain expected data types before processing webhook events to prevent errors from malformed or unexpected payloads.
+  </Accordion>
+</AccordionGroup>
+
+## Implementation Best Practices
+
+Follow these implementation guidelines for reliable webhook processing:
+
+<AccordionGroup>
+  <Accordion title="Acknowledge receipt immediately with a 200 OK status">
+    Tonder has a 30-second timeout for webhook responses. Return a success status immediately upon receiving the webhook, then process the actual business logic (like updating databases or sending emails) in the background to avoid timeouts.
+  </Accordion>
+  
+  <Accordion title="Use the event_id to deduplicate events">
+    Store processed event IDs temporarily (24-48 hours) and check against this list before processing new events. Tonder's retry mechanism may send the same event multiple times if your endpoint is temporarily unavailable.
+  </Accordion>
+  
+  <Accordion title="Keep detailed logs of all incoming webhook events">
+    Log the full webhook payload, processing status, and any errors to help troubleshoot issues. Include timestamps and event IDs to correlate webhook events with your application's business logic.
+  </Accordion>
+  
+  <Accordion title="Ensure errors don't crash your entire system">
+    Wrap webhook processing in try-catch blocks and handle errors gracefully. A failed webhook should not bring down your entire application or prevent other webhooks from being processed.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+After implementing webhook best practices:
+
+- Create your [first payment](/direct-integration/guides/create-payments/create-a-payment) to test webhook notifications.
+- Review [HTTP response codes](/direct-integration/http-response-codes) for proper webhook response handling.
+- Check [rate limits](/direct-integration/rate-limits) to understand webhook delivery patterns.

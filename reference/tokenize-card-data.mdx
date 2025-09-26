@@ -1,0 +1,83 @@
+---
+title: "Tokenize Card Data"
+openapi: "POST /tokenization/"
+---
+
+<Warning>
+Due to PCI DSS requirements, your company must share relevant attestation documents before Tonder activates production endpoint access. Contact your Tonder representative for compliance requirements.
+</Warning>
+
+<Warning>
+  The X-Skyflow-Authorization header needs to be in the following format:
+
+  `X-Skyflow-Authorization: <ACCESS_TOKEN_FROM_TOKENIZATION_AUTH>`
+</Warning>
+
+Securely tokenize sensitive card data using Tonder's vault service. This endpoint converts each card field into individual tokens that can be safely stored and used for payment processing.
+
+## How Tokenization Works
+
+Tonder tokenizes **each card field individually** rather than creating a single token for the entire card. This means:
+
+- Each sensitive field (card number, CVV, expiration month, etc.) receives its own unique token
+- Tokens must be used in their corresponding fields when making payment requests
+- Tokens are not interchangeable between fields
+
+## Authentication Flow
+
+Before using this endpoint, you must:
+
+1. **Get an access token** using the [Get Tokenization Access Token](/reference/get-tokenization-token) endpoint
+2. **Use the access token** in the `X-Skyflow-Authorization` header for this request
+3. **Use the tokens** in payment requests via the [Process Transaction](/reference/process-transaction) endpoint
+
+## Security Requirements
+
+### PCI Compliance
+
+Before using tokenization in production:
+- Submit PCI DSS compliance documentation
+- Complete security questionnaire  
+- Undergo security review process
+- Receive production endpoint access approval
+
+### Best Practices
+
+- **Use immediately**: Send card data for tokenization immediately after collection
+- **Don't store raw data**: Never store unencrypted card data on your servers
+- **Secure transmission**: Always use HTTPS for all tokenization requests
+- **Token storage**: Safely store the returned tokens for future payment processing
+
+## Field Requirements
+
+All card fields are required for tokenization:
+
+| Field | Format | Description |
+|-------|---------|-------------|
+| `card_number` | 13-19 digits | The complete card number without spaces or dashes |
+| `cardholder_name` | String (max 255 chars) | Name as it appears on the card |
+| `cvv` | 3-4 digits | Card security code |
+| `expiration_month` | MM format | Two-digit month (01-12) |
+| `expiration_year` | YYYY format | Four-digit year |
+
+## Response Format
+
+The response contains individual tokens for each field:
+
+```json
+{
+  "card_number": "9230-0892-4469-1474",        // Token for card number
+  "cardholder_name": "c05d89b2-299c-4f93-b49a-42be00d3b64b", // Token for cardholder name
+  "cvv": "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7",             // Token for CVV
+  "expiration_month": "e401a32e-4174-424f-9688-727005f6a80e", // Token for expiration month
+  "expiration_year": "bd9ccc23-3d00-4109-9626-fc6581389063"  // Token for expiration year
+}
+```
+
+<Note>
+**Important**: Each field is tokenized separately. Use each individual token in the corresponding field when making payment requests. The tokens are not interchangeable between fields.
+</Note>
+
+## Next Steps
+
+For a complete step-by-step guide on using these tokens to process payments, see [Create a Payment with Card Tokenization](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token).

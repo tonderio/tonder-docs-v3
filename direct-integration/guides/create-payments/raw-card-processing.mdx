@@ -1,0 +1,156 @@
+---
+title: "Create a Payment with Raw Card Data"
+sidebarTitle: "PCI Compliant Raw Card Processing"
+---
+
+This guide shows you how to process payments directly with raw card data without tokenization. This approach is designed for merchants who already have full PCI DSS Level 1 compliance and want to eliminate the multi-step tokenization process.
+
+<Warning>
+**Availability Restriction**
+
+This process is only available for clients who are fully PCI DSS compliant. You must maintain enterprise-grade security and handle raw card data according to all PCI DSS requirements.
+</Warning>
+
+## Prerequisites
+
+Before you begin, ensure you have full PCI DSS Level 1 certification, which is mandatory for handling raw card data.
+
+<Info>
+**When to Use This Approach**
+
+Raw card processing is recommended for:
+- Large enterprise merchants already PCI Level 1 certified.
+- Payment processors operating under existing PCI compliance.
+- High-volume businesses with existing PCI infrastructure.
+- Systems where reduced latency is critical.
+
+It is not recommended for:
+- Small to medium businesses without PCI compliance.
+- New payment integrations.
+- Cost-conscious merchants (compliance maintenance is expensive).
+</Info>
+
+## Step 1: Configure API Authentication
+
+Configure your authentication headers to access the PCI-compliant processing endpoints.
+
+Include these headers in every request:
+
+```http
+Authorization: Token <YOUR_API_KEY>
+Content-Type: application/json
+```
+
+## Step 2: Process the Payment
+
+Send a POST request with raw card data directly to the PCI compliant endpoint.
+
+The request structure is identical to the [standard process endpoint](/direct-integration/guides/create-payments/create-a-payment), but with raw card data.
+
+<Info>
+For testing, use the card numbers and test data available in our [Testing Data guide](/direct-integration/testing-data) to ensure your integration works correctly before going live.
+</Info>
+
+Send a `POST` request to the [Process Transaction](/reference/process-transaction) endpoint with the required parameters below:
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| operation_type | string | Must be `"payment"` to process a payment |
+| amount | number | Payment amount (e.g., `150.00`) |
+| currency | string | Currency code (e.g., `"MXN"` for Mexican Peso) |
+| customer | object | Customer information containing `name` and `email` |
+| payment_method | object | Payment method details including `type` and raw card information |
+| client_reference | string | Your unique reference for this transaction |
+| return_url | string | URL where customer returns after 3DS authentication |
+
+Here's an example of a request with raw card data:
+
+```bash cURL Example
+curl -X POST https://process-sandbox.tonder.io/ \
+  -H "Authorization: Token 04fbdd63113c009b6ac14c7d230b13909ae11221" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "operation_type": "payment",
+    "amount": 150.00,
+    "currency": "MXN",
+    "customer": {
+      "name": "Ana María Rodríguez",
+      "email": "ana.rodriguez@email.com"
+    },
+    "payment_method": {
+      "type": "CARD",
+      "card_number": "4444444444444455",
+      "cardholder_name": "Ana María Rodríguez",
+      "cvv": "123",
+      "expiration_year": "26",
+      "expiration_month": "07"
+    },
+    "client_reference": "order-789",
+    "return_url": "https://mystore.com/payment/return"
+  }'
+```
+
+## Step 4: Handle the Response
+
+Process the payment response according to the status received. The API returns a JSON object with the following structure:
+
+```json
+{
+  "amount": 150,
+  "client_reference": "order-789",
+  "created_at": "2025-09-04T23:03:33.778574Z",
+  "currency": "MXN",
+  "id": "2fd6a7fa-2997-434d-a8e0-1128cf7d00a3",
+  "next_action": {
+    "redirect_to_url": {
+      "return_url": "https://mystore.com/payment/return?tndr_payment_id=45396",
+      "url": "https://sandbox.cardpay.com/MI/payments/redirect?token=9e53b5de-76d5-4c59-82a8-09ad4e87f42a",
+      "verify_transaction_status_url": "/transactions/2fd6a7fa-2997-434d-a8e0-1128cf7d00a3/"
+    }
+  },
+  "operation_type": "payment",
+  "payment_id": 45396,
+  "provider": "tonder",
+  "status": "Pending",
+  "status_code": 201,
+  "transaction_id": 8707
+}
+```
+
+In this example, the payment is **pending** and requires 3DS authentication. Always check the `status` field in your response and implement appropriate logic based on the status value received.
+
+The table below details the fields that are returned in the response:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique transaction identifier |
+| `operation_type` | string | Always `"payment"` |
+| `status` | string | Transaction status |
+| `amount` | decimal | Transaction amount |
+| `currency` | string | Currency code |
+| `client_reference` | string | Your reference identifier |
+| `payment_id` | integer | Internal payment ID |
+| `transaction_id` | integer | Internal transaction ID |
+| `provider` | string | Payment provider used |
+| `created_at` | string | ISO 8601 timestamp |
+| `status_code` | integer | HTTP status code |
+| `next_action` | object | Required actions (3DS, redirects) |
+
+<Warning>
+**Validation of `id` and `status` fields**
+
+For proper payment validation, you must check:
+- `id` is the unique transaction identifier - store this for future reference.
+- `status` is the current payment state - determines next actions.
+
+Never rely on HTTP status codes alone for payment validation.
+</Warning>
+
+## Next Steps
+
+After implementing PCI compliant raw card processing:
+
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) for real-time payment status updates.
+- Implement [3D Secure authentication](/direct-integration/guides/create-payments/create-a-payment-with-3ds) for enhanced security.
+- Review [HTTP response codes](/direct-integration/http-response-codes) for comprehensive error handling.
+- Test your implementation using [testing data](/direct-integration/testing-data).
