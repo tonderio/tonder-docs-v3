@@ -1,0 +1,97 @@
+---
+title: "Make a Payment (React Native)"
+description: "Learn how to accept a payment in your React Native app using Tonder's SDK."
+---
+
+This guide walks you through the process of making a payment using the Tonder React Native SDK.
+
+---
+
+## Prerequisites
+
+-   You have successfully [installed and configured](/sdk-integration/mobile/react-native/installation) the Tonder SDK.
+-   You have a screen in your app where you can implement the checkout flow.
+
+---
+
+## Steps
+
+### 1. Wrap Your App with `TonderProvider`
+
+To use the SDK, you must wrap your root component or the relevant part of your application with the `TonderProvider`. This component initializes the SDK and makes its functions available to all child components via a React Context.
+
+```jsx title="App.js"
+import { TonderProvider, SDKType } from '@tonder.io/rn-sdk';
+
+function App() {
+  return (
+    <TonderProvider
+      config={{
+        type: SDKType.INLINE,
+        mode: 'development',
+        apiKey: 'YOUR_API_KEY',
+      }}
+    >
+      {/* Your application's navigation and screens go here */}
+      <YourCheckoutScreen />
+    </TonderProvider>
+  );
+}
+```
+
+2. Create the Payment Instance
+In your checkout screen, use the useTonder hook to access the SDK's create method. You must call this method to configure the payment session. It requires a secure token obtained from your backend and the payment data.
+
+```js
+
+import { useTonder } from '@tonder.io/rn-sdk';
+import { useEffect } from 'react';
+
+export default function PaymentScreen() {
+  const { create } = useTonder();
+
+  useEffect(() => {
+    const initializePayment = async () => {
+      // 1. Fetch a secure token from your backend
+      const secureToken = await getSecureToken(); 
+      
+      // 2. Define your payment data
+      const paymentData = {
+        customer: { firstName: "Juan", email: "juan.hernandez@mail.com", /* ... */ },
+        cart: { total: 399, items: [ /* ... */ ] },
+        currency: "mxn"
+      };
+
+      // 3. Create the payment instance
+      await create({
+        secureToken: secureToken,
+        paymentData: paymentData,
+      });
+    };
+    
+    initializePayment();
+  }, []);
+
+  // ... rest of your component
+}
+```
+
+3. Render the Payment Component
+
+Finally, render the TonderPayment component. This component displays the entire pre-built checkout UI, including the card form, payment button, and any saved cards or alternative payment methods. The SDK handles the payment submission and 3DS flow automatically.
+
+```js
+
+import { TonderPayment } from '@tonder.io/rn-sdk';
+import { SafeAreaView } from 'react-native';
+
+export default function PaymentScreen() {
+  // ... (previous useEffect code)
+
+  return (
+    <SafeAreaView>
+      <TonderPayment />
+    </SafeAreaView>
+  );
+}
+```

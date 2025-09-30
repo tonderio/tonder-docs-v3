@@ -1,0 +1,51 @@
+---
+title: "Start using Tonder SDKs"
+description: "A quick start guide to integrating Tonder and processing your first payment."
+time_to_complete: "≈ 15 min"
+audience: "New users"
+prerequisites:
+  - "A Tonder merchant account"
+  - "Access to your API Keys"
+---
+
+This tutorial provides a high-level overview of the steps required to integrate any Tonder SDK and process your first payment. By the end of this guide, you will understand the fundamental integration workflow.
+
+## Before you begin
+
+Make sure you have the following:
+-   **Your Tonder API Keys**: You can find your keys in the **Developers** section of the [Tonder Dashboard](https://stage.tonder.io/dashboard/developers/).
+-   **A development environment** for your chosen platform (Web, iOS, or Android).
+
+## Steps
+
+### 1. Choose and install your SDK
+
+First, you need to select the right SDK for your platform. Tonder provides dedicated SDKs for web (JavaScript) and mobile (React Native, Ionic, Flutter).
+
+Follow the specific installation instructions for your chosen platform:
+-   [Mobile SDK Installation](/sdk-integration/mobile/flutter/installation)
+-   [JS SDK Installation](/sdk-integration/web/js-inline/installation)
+
+### 2. Initialize the SDK in your app
+
+Once installed, you need to initialize the SDK within your application. This step typically involves providing your public API key and configuring the environment (e.g., `development` or `production`).
+
+This establishes a secure connection between your application and Tonder's services.
+
+### 3. Configure and display the checkout
+
+The SDK allows you to either embed individual payment fields into your custom checkout form or render a complete, pre-built UI. You'll configure it with customer and cart details, such as the total amount and currency.
+
+### 4. Process a payment
+
+With the checkout displayed, the final step is to call the SDK's payment function. This function securely captures the user's payment details, sends them to Tonder for processing, and returns the transaction result.
+
+For detailed, step-by-step instructions, refer to the guide for your specific platform:
+-   [Make a payment with the Mobile SDK](/sdk-integration/mobile/flutter/make-a-payment)
+-   [Make a payment with the JS SDK](/sdk-integration/web/js-inline/make-a-payment)
+
+## Next steps
+
+-   Learn how to [enroll a payment method](/sdk-integration/mobile/ionic/enroll-payment-method) for returning customers.
+-   Explore how to [customize the look and feel](/sdk-integration/web/js-inline/customization) of the SDK components.
+-   Consult the [SDK Methods Reference](/sdk-integration/mobile/flutter/methods) for detailed information on all available functions.

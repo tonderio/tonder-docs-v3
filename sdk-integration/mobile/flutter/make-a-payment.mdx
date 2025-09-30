@@ -1,0 +1,65 @@
+---
+title: "Make a Payment (Flutter)"
+description: "Learn how to accept a payment in your Flutter app using Tonder's SDK."
+---
+
+This guide walks you through processing a payment using the **Full SDK** (`InlineCheckout`) for Flutter.
+
+---
+
+## Prerequisites
+
+-   You have successfully [installed and configured](/sdk-integration/mobile/flutter/installation) the Tonder Flutter SDK.
+-   You have a widget in your app ready to display the checkout.
+
+---
+
+## Steps
+
+### 1. Initialize the SDK
+
+Create an instance of the `InlineCheckout` class, providing your API key and return URL.
+
+```dart title="checkout_widget.dart"
+import 'package:full_sdk/inline_checkout.dart';
+
+// ... inside your widget's state
+
+late InlineCheckout? _fullPlugin;
+
+@override
+void initState() {
+  super.initState();
+  const apiKey = "YOUR_API_KEY";
+  const returnUrl = "YOUR_RETURN_URL";
+
+  _fullPlugin = InlineCheckout(
+    apiKeyTonder: apiKey,
+    returnUrl: returnUrl,
+    successUrl: returnUrl,
+    renderPaymentButton: false, // Set to true if you want the SDK's button
+  );
+}
+```
+
+2. Configure Payment Data
+Before displaying the checkout, you must provide the customer and cart details using the SDK's methods.
+
+```dart
+
+// Set customer and cart data
+final customerData = { 'first_name': 'Juan', 'email': 'juan@example.com' };
+_fullPlugin!.setPaymentData(customerData);
+_fullPlugin!.setCartTotal(399);
+```
+
+3. Inject the Checkout and Process Payment
+Call injectCheckout() to render the checkout form. The payment action is handled by the component injected by the SDK.
+
+```dart
+
+// Inject the UI into the widget tree
+await _fullPlugin!.injectCheckout();
+```
+
+The SDK's component will handle the user interaction for submitting the payment.

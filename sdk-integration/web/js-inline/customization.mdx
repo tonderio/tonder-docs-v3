@@ -1,0 +1,61 @@
+---
+title: "Customize the SDK (JS Inline)"
+description: "Learn how to customize the style and appearance of the Tonder JS Inline SDK."
+---
+
+The Tonder JS SDK allows you to customize the checkout's appearance to match your website's branding. You can customize styles for input fields, labels, and error messages, as well as the text for labels and placeholders.
+
+## How to Apply Customizations
+
+You apply customizations by passing `styles`, `labels`, and `placeholders` objects to the `InlineCheckout` constructor during initialization.
+
+```javascript
+import { InlineCheckout } from "tonder-web-sdk";
+
+const customConfig = {
+  // ... your style, label, and placeholder definitions here
+};
+
+const inlineCheckout = new InlineCheckout({
+  apiKey: "YOUR_API_KEY",
+  returnUrl: "YOUR_RETURN_URL",
+  ...customConfig
+});
+```
+
+## Styleable Properties (styles)
+
+The styles object is structured to target different elements and their states (e.g., base, complete, invalid).
+
+- inputStyles: Controls the appearance of the card number, expiration date, and CVV fields.
+
+- labelStyles: Controls the appearance of the labels above each input field.
+
+- errorTextStyles: Controls the appearance of validation error messages.
+
+## Text Properties (labels, placeholders)
+
+- labels: Provide an object with new text for the input labels (e.g., nameLabel, cardLabel).
+
+- placeholders: Provide an object with new placeholder text for the inputs (e.g., namePlaceholder, cardPlaceholder).
+
+<Accordion title="View Full Customization Example">
+
+```javascript
+
+const customConfig = {
+  styles: {
+    global: { '@import': 'url("[https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap)")' },
+    inputStyles: {
+      base: { border: "1px solid #E0E0E0", padding: "12px 10px", borderRadius: "8px", fontFamily: '"Inter", sans-serif' },
+      invalid: { border: "1px solid #f44336" },
+      complete: { border: "1px solid #4caf50" },
+    },
+    labelStyles: { base: { fontSize: '14px', fontFamily: '"Inter", sans-serif' } },
+    errorTextStyles: { base: { fontSize: '12px', color: "#f44336" } },
+  },
+  labels: { nameLabel: "Cardholder Name", cvvLabel: "CVC" },
+  placeholders: { namePlaceholder: 'J. Doe', cvvPlaceholder: '123' }
+};
+```
+</Accordion>

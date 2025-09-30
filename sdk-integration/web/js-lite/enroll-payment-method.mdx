@@ -1,0 +1,65 @@
+---
+title: "Enroll a Payment Method (JS Lite)"
+description: "How to securely save a customer's card on your website using the JS Lite SDK."
+---
+
+You can securely save customer card details for future purchases using the **Lite version** of the Tonder JS SDK. This process tokenizes the card information, so you avoid the security risks and PCI compliance burden of storing sensitive data.
+
+---
+
+## Prerequisites
+
+-   You are using the [Lite Checkout](/sdk-integration/web/js-lite/make-a-payment) version of the JS SDK.
+-   Your backend is set up to provide a [Secure Token](/sdk-integration/web/js-lite/make-a-payment) required for card management.
+-   You have initialized the `LiteCheckout` SDK instance.
+
+<Warning>
+You must use a **Secure Token** to manage cards with the Tonder SDK. This token provides temporary, restricted access to card vaulting functions and should be generated on your server to protect your secret API key.
+</Warning>
+
+---
+
+## Steps
+
+### 1. Configure the SDK with a Secure Token
+
+When you initialize the `LiteCheckout` instance, you must configure it with the customer's email and the secure token you obtained from your backend.
+
+```javascript
+const liteCheckout = new LiteCheckout({ apiKey: "YOUR_PUBLIC_API_KEY" });
+
+liteCheckout.configureCheckout({
+  customer: { email: "customer@example.com" },
+  secureToken: "SECURE_TOKEN_FROM_YOUR_BACKEND"
+});
+
+liteCheckout.injectCheckout();
+```
+
+### 2. Save a Customer Card
+
+Use the saveCustomerCard method to tokenize and save the card details. This method takes an object containing the raw card information collected from your custom UI.
+
+```javascript
+
+const handleSaveCard = async () => {
+  try {
+    const cardData = {
+      card_number: "4111111111111111",
+      cvv: "123",
+      expiration_month: "12",
+      expiration_year: "25",
+      cardholder_name: "John Doe",
+    };
+
+    const response = await liteCheckout.saveCustomerCard(cardData);
+    console.log("Card saved successfully:", response);
+    // The response will contain a unique identifier (skyflow_id) for the saved card.
+  } catch (error) {
+    console.error("Error saving card:", error);
+  }
+};
+```
+
+3. Retrieve and Manage Saved Cards
+Once cards are saved, you can retrieve them using getCustomerCards() and delete them using removeCustomerCard(cardId).

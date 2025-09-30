@@ -1,0 +1,51 @@
+---
+title: "Requirements and Installation (React Native)"
+description: "How to install and configure Tonder's SDK for React Native."
+---
+
+This guide provides the installation and configuration steps for Tonder's React Native SDK.
+
+---
+
+## Prerequisites
+
+Before you begin, ensure your project meets the following requirements:
+
+-   `react-native >= 0.70`
+-   `react >= 16.8`
+-   `react-native-svg >= 15.0.0`
+-   `react-native-webview >= 13.6.0`
+
+<Warning>
+  The SDK will not work with older versions of these packages.
+</Warning>
+
+---
+
+## Installation
+
+Install the SDK package from npm.
+
+```bash
+npm install @tonder.io/rn-sdk
+Mobile Environment Configuration
+You must grant internet permissions for the SDK to function correctly on native devices.
+```
+
+<Tabs>
+<Tab title="Android">
+Add the INTERNET permission to your AndroidManifest.xml file.
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+</Tab>
+<Tab title="iOS / macOS">
+For iOS and macOS, add the network client entitlement to your .entitlements files.
+
+```xml
+<key>com.apple.security.network.client</key>
+<true/>
+```
+</Tab>
+</Tabs>

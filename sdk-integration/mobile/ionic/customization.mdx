@@ -1,0 +1,21 @@
+---
+title: "Customize the SDK (Ionic)"
+description: "Learn about customization options for the Ionic SDK."
+---
+
+Customization options for the Tonder Ionic SDK depend on whether you are using the Full or Lite version.
+
+## Full SDK (`@tonder.io/ionic-full-sdk`)
+
+The Full SDK provides a standardized, pre-built user interface to ensure a quick and secure integration. As such, it offers limited direct styling options. The primary method of customization is to use the **Lite SDK**.
+
+## Lite SDK (`@tonder.io/ionic-lite-sdk`)
+
+The Lite SDK is designed for maximum flexibility. It provides the core, secure logic for payment processing and card management but does not render a visible UI.
+
+This approach allows you to:
+-   Build your own payment form using standard Ionic components.
+-   Apply your application's existing design system and styles.
+-   Control the layout and user experience completely.
+
+To implement the Lite SDK, you will create your own input fields and then pass the collected data to the SDK's `payment()` or `saveCustomerCard()` methods.

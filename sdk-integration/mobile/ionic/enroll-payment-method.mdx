@@ -1,0 +1,53 @@
+---
+title: "Enroll a Payment Method (Ionic)"
+description: "How to securely save a customer's card for future use with the Ionic SDK."
+---
+
+<Info>
+Card enrollment and management features are available in the **Lite version** (`@tonder.io/ionic-lite-sdk`) of the Ionic SDK. This allows you to build a custom UI for saving cards.
+</Info>
+
+## Prerequisites
+
+-   You are using the `LiteCheckout` from the `@tonder.io/ionic-lite-sdk` package.
+-   Your backend is set up to provide a [Secure Token](/sdk-integration/web/js-lite/make-a-payment) for card management.
+
+## Steps
+
+### 1. Configure the SDK with a Secure Token
+
+When you initialize the `LiteCheckout` instance, you must configure it with the customer's email and the secure token obtained from your backend.
+
+```javascript
+import { LiteCheckout } from "@tonder.io/ionic-lite-sdk";
+
+const liteCheckout = new LiteCheckout({ apiKey: "YOUR_API_KEY" });
+
+liteCheckout.configureCheckout({
+  customer: { email: "customer@example.com" },
+  secureToken: "SECURE_TOKEN_FROM_YOUR_BACKEND"
+});
+```
+
+2. Save a Customer Card
+Use the saveCustomerCard method to tokenize and save the card details collected from your custom UI.
+
+```javascript
+
+const handleSaveCard = async () => {
+  try {
+    const cardData = {
+      card_number: "4111111111111111",
+      cvv: "123",
+      expiration_month: "12",
+      expiration_year: "25",
+      cardholder_name: "John Doe",
+    };
+
+    const response = await liteCheckout.saveCustomerCard(cardData);
+    console.log("Card saved successfully:", response);
+  } catch (error) {
+    console.error("Error saving card:", error);
+  }
+};
+```

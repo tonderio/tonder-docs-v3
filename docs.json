@@ -257,6 +257,76 @@
         ]
       },
       {
+        "tab": "SDK Integration",
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": [
+              "sdk-integration/overview",
+              "sdk-integration/start-using-tonder-sdkss"
+            ]
+          },
+          {
+            "group": "Web SDKs",
+            "pages": [
+              {
+                "group": "JS Inline",
+                "pages": [
+                  "sdk-integration/web/js-inline/installation",
+                  "sdk-integration/web/js-inline/make-a-payment",
+                  "sdk-integration/web/js-inline/methods",
+                  "sdk-integration/web/js-inline/customization"
+                ]
+              },
+              {
+                "group": "JS Lite",
+                "pages": [
+                  "sdk-integration/web/js-lite/installation",
+                  "sdk-integration/web/js-lite/make-a-payment",
+                  "sdk-integration/web/js-lite/methods",
+                  "sdk-integration/web/js-lite/customization",
+                  "sdk-integration/web/js-lite/enroll-payment-method"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Mobile SDKs",
+            "pages": [
+              {
+                "group": "Flutter",
+                "pages": [
+                  "sdk-integration/mobile/flutter/installation",
+                  "sdk-integration/mobile/flutter/make-a-payment",
+                  "sdk-integration/mobile/flutter/methods",
+                  "sdk-integration/mobile/flutter/customization"
+                ]
+              },
+              {
+                "group": "Ionic",
+                "pages": [
+                  "sdk-integration/mobile/ionic/installation",
+                  "sdk-integration/mobile/ionic/make-a-payment",
+                  "sdk-integration/mobile/ionic/methods",
+                  "sdk-integration/mobile/ionic/customization",
+                  "sdk-integration/mobile/ionic/enroll-payment-method"
+                ]
+              },
+              {
+                "group": "React Native",
+                "pages": [
+                  "sdk-integration/mobile/react-native/installation",
+                  "sdk-integration/mobile/react-native/create-a-payment",
+                  "sdk-integration/mobile/react-native/methods",
+                  "sdk-integration/mobile/react-native/customization",
+                  "sdk-integration/mobile/react-native/enroll-payment-method"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Dashboard",
         "groups": [
           {

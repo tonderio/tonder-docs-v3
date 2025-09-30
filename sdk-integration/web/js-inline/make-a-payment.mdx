@@ -1,0 +1,90 @@
+---
+title: "Make a Payment (JS Inline)"
+description: "Learn how to accept payments on your website using the Tonder JS Inline SDK."
+---
+
+This guide covers how to process a payment using the **Inline Checkout** version of the Tonder JS SDK.
+
+<Info>
+The **JS Inline SDK** is designed for quick, single-transaction payments and does not directly expose methods for enrolling or managing saved cards. Its primary purpose is to provide a complete, out-of-the-box checkout UI.
+
+To securely save and manage customer payment methods, you must use the **[JS Lite SDK](/sdk-integration/web/js-lite/enroll-payment-method)**, which provides the necessary methods and requires a custom UI.
+</Info>
+
+
+## Prerequisites
+
+-   You have successfully [installed the Tonder JS SDK](/sdk-integration/web/js-inline/installation).
+-   You have a checkout page on your website with an empty `div` and a button.
+
+```html
+<div id="tonder-checkout"></div>
+<button id="pay-button">Pay Now</button>
+```
+
+## Steps
+
+1. Initialize the SDK
+Create a new instance of InlineCheckout, providing your API key and return URL.
+
+<CodeGroup>
+
+```javascript npm package option
+import { InlineCheckout } from "tonder-web-sdk";
+
+const inlineCheckout = new InlineCheckout({
+  apiKey: 'YOUR_API_KEY',
+  returnUrl: 'https://your-website.com/return',
+  mode: 'development',
+});
+```
+
+```javascript script tag option
+const inlineCheckout = new TonderSdk.InlineCheckout({
+  apiKey: 'YOUR_API_KEY',
+  returnUrl: 'https://your-website.com/return',
+  mode: 'development',
+});
+```
+
+</CodeGroup>
+
+2. Inject the Checkout UI
+Call injectCheckout() to render the pre-built payment form inside the div with the tonder-checkout ID.
+
+```javascript
+
+inlineCheckout.injectCheckout();
+```
+3. Add a Payment Button
+Add an event listener to your payment button. When clicked, it should call the payment() method with the customer and cart data.
+
+```javascript
+document.getElementById('pay-button').addEventListener('click', async () => {
+  const checkoutData = {
+    customer: { firstName: "Juan", email: "juan.hernandez@mail.com" },
+    currency: 'mxn',
+    cart: { total: 399, items: [{ name: "T-Shirt", amount_total: 399 }] }
+  };
+  try {
+    const response = await inlineCheckout.payment(checkoutData);
+    alert('Payment successful!');
+  } catch (error) {
+    alert('Payment failed.');
+  }
+});
+```
+
+4. Handle 3DS Verification
+
+After a 3DS challenge, the user is redirected back to your returnUrl. Call verify3dsTransaction() on this page to get the final status of the payment.
+
+```javascript
+
+// On your return page
+inlineCheckout.verify3dsTransaction().then(response => {
+  if (response.transaction_status === 'Success') {
+    alert('3DS Transaction successful!');
+  }
+});
+```

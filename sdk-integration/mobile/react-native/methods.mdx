@@ -1,0 +1,29 @@
+---
+title: "SDK Methods (React Native)"
+description: "Reference for the methods available in Tonder's React Native SDK."
+---
+
+This page provides a reference for the core methods and components available in the Tonder React Native SDK. The SDK uses a combination of a Provider, hooks, and components to manage state and render UI.
+
+---
+
+## Core Components
+
+| Component          | Description                                                                                             |
+| ------------------ | ------------------------------------------------------------------------------------------------------- |
+| `TonderProvider`   | A wrapper component that initializes the SDK and provides its context to children. Must be at the root of your checkout flow. |
+| `TonderPayment`    | Renders the complete, pre-built payment UI. Used when `SDKType` is `INLINE`.                              |
+| `TonderEnrollment` | Renders the complete, pre-built card enrollment form. Used when `SDKType` is `ENROLLMENT`.              |
+
+---
+
+## Core Hooks and Methods
+
+The `useTonder` hook is the primary way to interact with the SDK's logic.
+
+| Method                   | Description                                                                                             |
+| ------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `useTonder()`            | A React hook that provides access to the SDK's methods (`create`, `saveCustomerCard`, etc.).            |
+| `create(config)`         | Initializes a payment or enrollment session. Requires `secureToken`, `paymentData` or `customer` data. |
+| `saveCustomerCard()`     | Triggers the card saving process. Only available in `ENROLLMENT` mode.                                  |
+| `removeCustomerCard(cardId)` | Deletes a previously saved card.      

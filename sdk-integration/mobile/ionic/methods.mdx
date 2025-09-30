@@ -1,0 +1,31 @@
+---
+title: "SDK Methods (Ionic)"
+description: "Reference for the methods available in Tonder's Ionic SDKs."
+---
+
+This page provides a reference for the core methods available in the Ionic SDKs.
+
+---
+
+## Full SDK (`InlineCheckout`) Methods
+
+| Method                   | Description                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| `new InlineCheckout(config)`| Initializes the SDK with `apiKey`, `returnUrl`, and `mode`.                  |
+| `injectCheckout()`       | Renders the pre-built checkout UI into your designated container.              |
+| `payment(paymentData)`   | Initiates a payment transaction using the provided customer and cart data.     |
+| `verify3dsTransaction()` | Verifies the status of a 3D Secure transaction after the user returns.         |
+| `removeCheckout()`       | Cleans up the SDK instance and removes UI components from the DOM.             |
+
+---
+
+## Lite SDK (`LiteCheckout`) Methods
+
+Includes all `InlineCheckout` methods, plus the following for card management:
+
+| Method                         | Description                                                                  |
+| ------------------------------ | ---------------------------------------------------------------------------- |
+| `configureCheckout(config)`    | Sets customer email and the `secureToken` required for card management.      |
+| `getCustomerCards()`           | Retrieves a list of saved cards for the configured customer.                 |
+| `saveCustomerCard(cardData)`   | Securely tokenizes and saves new card details.                               |
+| `removeCustomerCard(cardId)`   | Deletes a previously saved card using its unique ID.                         |

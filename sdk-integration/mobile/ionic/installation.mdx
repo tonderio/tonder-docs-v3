@@ -1,0 +1,40 @@
+---
+title: "Requirements and Installation (Ionic)"
+description: "How to install and configure Tonder's SDK for Ionic."
+---
+
+This guide provides the installation and configuration steps for Tonder's Ionic SDKs.
+
+## Prerequisites
+
+You must add the Openpay script tags to your main `index.html` file. These are required for PCI DSS compliance and for the SDK to reliably connect to the payment processor.
+
+```html title="index.html"
+<head>
+  ...
+  <script src="[https://openpay.s3.amazonaws.com/openpay.v1.min.js](https://openpay.s3.amazonaws.com/openpay.v1.min.js)"></script>
+  <script src="[https://openpay.s3.amazonaws.com/openpay-data.v1.min.js](https://openpay.s3.amazonaws.com/openpay-data.v1.min.js)"></script>
+  ...
+</head>
+```
+
+## Installation
+
+Tonder provides two SDK packages for Ionic, depending on your needs.
+
+- @tonder.io/ionic-full-sdk: Provides a complete, pre-built checkout UI (Inline Checkout).
+
+- @tonder.io/ionic-lite-sdk: Provides core payment functionality, allowing you to build your own custom UI.
+
+Install the required package(s) using your preferred package manager.
+
+<CodeGroup>
+
+```bash
+npm i @tonder.io/ionic-full-sdk
+```
+
+```bash
+yarn add @tonder.io/ionic-full-sdk
+```
+</CodeGroup>

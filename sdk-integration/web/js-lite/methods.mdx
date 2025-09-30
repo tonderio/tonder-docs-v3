@@ -1,0 +1,44 @@
+---
+title: "SDK Methods (JS Lite)"
+description: "Reference for the methods in Tonder's JS Lite SDK."
+---
+
+This page provides a reference for the methods available in the `LiteCheckout` class and the standalone validation helpers.
+
+---
+
+## LiteCheckout Class Methods
+
+| Method                         | Description                                                                              |
+| ------------------------------ | ---------------------------------------------------------------------------------------- |
+| `new LiteCheckout(config)`     | Constructor to create and initialize a new SDK instance.                                 |
+| `configureCheckout(config)`    | Sets customer email and the `secureToken` required for card management.                  |
+| `injectCheckout()`             | Initializes the SDK's hidden services. Must be called before other methods.              |
+| `payment(paymentData)`         | Initiates a payment. Requires `card` details in the payload.                           |
+| `verify3dsTransaction()`       | Verifies the status of a 3D Secure transaction after redirection.                        |
+| `getCustomerCards()`           | Retrieves a list of saved cards for the configured customer.                             |
+| `saveCustomerCard(cardData)`   | Securely tokenizes and saves new card details.                                           |
+| `removeCustomerCard(cardId)`   | Deletes a previously saved card using its unique `skyflow_id`.                           |
+
+---
+
+## Validation Helper Functions
+
+The SDK exports standalone functions to help you validate card information on the client side before submission.
+
+| Function                   | Description                                    |
+| -------------------------- | ---------------------------------------------- |
+| `validateCardNumber(..)`   | Validates the card number using the Luhn algorithm. |
+| `validateCardholderName(..)`| Checks if the cardholder name is not empty.      |
+| `validateCVV(..)`          | Ensures the CVV is 3 or 4 digits.              |
+| `validateExpirationDate(..)`| Validates the expiration date in MM/YY format. |
+
+**Example Usage:**
+```javascript
+import { validateCardNumber, validateCVV } from "tonder-web-sdk";
+
+if (validateCardNumber(cardNumber) && validateCVV(cvv)) {
+  // Proceed
+} else {
+  // Show error
+}

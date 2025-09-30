@@ -1,0 +1,17 @@
+---
+title: "SDK Methods (JS Inline)"
+description: "Reference documentation for the methods in Tonder's JS Inline SDK."
+---
+
+This page provides a reference for the core methods available in the `InlineCheckout` class.
+
+## Core Methods
+
+| Method                   | Description                                                                                         |
+| ------------------------ | --------------------------------------------------------------------------------------------------- |
+| `new InlineCheckout(config)` | Constructor to create and initialize a new SDK instance. Requires `apiKey`, `returnUrl`, `mode`, and optional `styles`. |
+| `configureCheckout(config)`| Sets initial data like customer email to pre-fill information or show saved cards.                |
+| `injectCheckout()`       | Renders the pre-built checkout UI into the designated container div.                                |
+| `payment(paymentData)`   | Initiates a payment transaction using the provided customer and cart data.                           |
+| `verify3dsTransaction()` | Verifies the status of a 3D Secure transaction after the user is redirected back to your site.       |
+| `removeCheckout()`       | Cleans up the SDK instance and removes UI components from the DOM.                                  |

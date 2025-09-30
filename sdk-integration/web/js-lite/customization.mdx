@@ -1,0 +1,29 @@
+---
+title: "Customize the SDK (JS Lite)"
+description: "Learn about customization options for the JS Lite SDK."
+---
+
+The Tonder JS Lite SDK is designed for maximum customization by allowing you to build your own user interface.
+
+---
+
+## UI and Styling
+
+Unlike the [Inline SDK](/sdk-integration/web/js-inline/customization), the Lite SDK does not render any visible UI components. This means you have complete control over the look and feel of your payment form.
+
+You are responsible for:
+-   Creating all HTML input elements (`<input>`, `<select>`) for card details.
+-   Styling these elements using your own CSS or design system.
+-   Arranging the layout of the form on your page.
+
+---
+
+## Functional Customization
+
+While you build the UI, the Lite SDK provides essential backend functionality and helpers:
+
+-   **Payment Processing**: The `payment()` method securely handles the transaction.
+-   **Card Enrollment**: The `saveCustomerCard()` method tokenizes and saves card data.
+-   **Client-Side Validation**: You can use the exported [validation helper functions](/sdk-integration/web/js-lite/methods#validation-helper-functions) (e.g., `validateCardNumber`, `validateCVV`) to provide real-time feedback to your users, ensuring data is in the correct format before it's sent to Tonder.
+
+By combining your custom-built UI with the SDK's core methods, you can create a fully branded and secure checkout experience.

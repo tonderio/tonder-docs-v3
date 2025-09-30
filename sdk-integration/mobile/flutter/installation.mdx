@@ -1,0 +1,61 @@
+---
+title: "Requirements and Installation (Flutter)"
+description: "How to install and configure Tonder's SDK for Flutter."
+---
+
+This guide provides the installation and configuration steps for Tonder's Flutter SDKs.
+
+## Prerequisites
+
+You need to add the Skyflow Maven repository to your Android project configuration to handle secure data vaulting.
+
+-   Add the following to `android/build.gradle`:
+    ```gradle title="android/build.gradle"
+    maven {
+        url '[https://maven.pkg.github.com/skyflowapi/skyflow-android-sdk](https://maven.pkg.github.com/skyflowapi/skyflow-android-sdk)'
+        credentials {
+            username = 'username'
+            password = 'password'
+        }
+    }
+    ```
+
+-   Add the following to `android/gradle.properties`:
+    ```ini title="android/gradle.properties"
+    android.useAndroidX=true
+    ```
+
+## Installation
+
+Tonder provides two SDK packages for Flutter.
+
+-   `tonder_sdk_lite`: For building a custom payment UI.
+-   `full_sdk`: For a pre-built, inline checkout experience.
+
+Add the required package to your `pubspec.yaml` file or use `flutter pub add`.
+
+```bash
+flutter pub add full_sdk
+```
+
+Mobile Environment Configuration
+You must grant internet permissions for the SDK to function correctly on native devices.
+
+<Tabs>
+<Tab title="Android">
+Add the INTERNET permission to your AndroidManifest.xml file.
+
+```xml
+
+<uses-permission android:name="android.permission.INTERNET" />
+```
+</Tab>
+<Tab title="iOS / macOS">
+For iOS and macOS, add the network client entitlement to your .entitlements files.
+
+```xml
+<key>com.apple.security.network.client</key>
+<true/>
+```
+</Tab>
+</Tabs>

@@ -1,0 +1,101 @@
+---
+title: "Customize the SDK (React Native)"
+description: "Learn how to customize the appearance and behavior of the React Native SDK."
+---
+
+The React Native SDK offers extensive customization options to ensure the payment experience aligns with your app's branding and user flow. You can customize UI components, labels, placeholders, and behavior.
+
+## How to Apply Customizations
+
+You pass a `customization` object during the `create` call. This object contains all your configuration for styles, text, and behavior.
+
+```javascript
+const { create } = useTonder<SDKType.INLINE>();
+
+create({
+  secureToken: 'YOUR_SECURE_TOKEN',
+  paymentData: yourPaymentData,
+  customization: {
+    // Your customization objects go here
+  },
+});
+```
+
+## Customization Options
+
+### Behavior (paymentButton, saveCards, paymentMethods)
+Control the visibility and functionality of different UI elements.
+
+```javascript
+customization: {
+  // Show or hide the default payment button
+  paymentButton: {
+    show: true,
+    text: 'Pay Now',
+    showAmount: true,
+  },
+  // Control saved card options
+  saveCards: {
+    showSaved: true,
+    showSaveCardOption: true,
+    autoSave: false,
+    showDeleteOption: true,
+  },
+  // Show or hide alternative payment methods
+  paymentMethods: {
+    show: true,
+  },
+}
+```
+
+### Text (labels, placeholders)
+Change the default text for labels and input placeholders.
+
+```javascript
+
+customization: {
+  labels: {
+    name: 'Cardholder Name',
+    cardNumber: 'Card Number',
+    cvv: 'Security Code',
+    expiryDate: 'Expiration Date',
+  },
+  placeholders: {
+    name: 'Jane Doe',
+    cardNumber: '4242 4242 4242 4242',
+    cvv: '123',
+  },
+}
+```
+
+### Styling (styles)
+Provide a styles object to override the default appearance of SDK components. The structure allows you to target specific elements like the main container, card form, and buttons.
+
+<Accordion title="View Full Styling Example">
+
+```javascript
+
+const customStyles = {
+  sdkCard: {
+    base: { backgroundColor: '#f9f9f9', borderRadius: 10, padding: 16 },
+  },
+  cardForm: {
+    base: { marginVertical: 8 },
+    inputStyles: {
+      base: { borderWidth: 1, borderColor: '#cccccc', borderRadius: 6, padding: 12, fontSize: 16 },
+    },
+  },
+  paymentButton: {
+    base: { backgroundColor: '#007AFF', paddingVertical: 15, borderRadius: 8, alignItems: 'center' },
+  },
+  errorMessage: {
+    base: { color: '#dc3545', fontSize: 14 },
+  },
+};
+
+// ... inside create()
+customization: {
+  styles: customStyles,
+}
+```
+</Accordion>

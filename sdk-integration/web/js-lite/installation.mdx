@@ -1,0 +1,47 @@
+---
+title: "Installation (JS Lite)"
+description: "How to install and set up Tonder's JS Lite SDK in your web project."
+---
+
+This guide provides the installation steps for Tonder's JavaScript Lite SDK.
+
+## Requirements
+
+The Tonder JS SDK relies on third-party scripts for PCI DSS compliance and connecting to payment processors. You must include these scripts in your HTML file for the SDK to function correctly.
+
+Add the following script tags to the `<head>` of your HTML file:
+
+```html title="index.html"
+<head>
+  ...
+  <script src="[https://js.skyflow.com/v1/index.js](https://js.skyflow.com/v1/index.js)"></script>
+  <script src="[https://openpay.s3.amazonaws.com/openpay.v1.min.js](https://openpay.s3.amazonaws.com/openpay.v1.min.js)"></script>
+  <script src="[https://openpay.s3.amazonaws.com/openpay-data.v1.min.js](https://openpay.s3.amazonaws.com/openpay-data.v1.min.js)"></script>
+  ...
+</head>
+````
+
+## Installation
+
+You can add the Tonder JS SDK to your project either by using the npm package or by including a script tag directly in your HTML file.
+
+<AccordionGroup>
+<Accordion title="NPM Package">
+For projects using a package manager like npm or yarn, run the following command:
+
+```bash
+npm i tonder-web-sdk
+```
+
+This is the recommended approach for modern web applications.
+</Accordion>
+
+<Accordion title="Script Tag">
+
+To use the SDK without a package manager, add the following script tag to your HTML file, preferably before the closing `<body>` tag.
+
+```html
+<script src="[https://zplit-prod.s3.amazonaws.com/v1/bundle.min.js](https://zplit-prod.s3.amazonaws.com/v1/bundle.min.js)"></script>
+```
+</Accordion>
+</AccordionGroup>

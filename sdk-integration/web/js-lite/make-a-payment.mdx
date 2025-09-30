@@ -1,0 +1,65 @@
+---
+title: "Make a Payment (JS Lite)"
+description: "Learn how to accept payments using the JS Lite SDK and a custom UI."
+---
+
+The Lite Checkout gives you core payment functionality while you build the UI.
+
+## Prerequisites
+
+-   You have successfully [installed the Tonder JS SDK](/sdk-integration/web/js-lite/installation).
+-   You have built your own custom HTML form for collecting card details.
+
+## Steps
+
+### 1. Initialize the Lite SDK
+
+Create an instance of `LiteCheckout`. Even though you are building a custom UI, you must still call `injectCheckout()` to initialize the SDK's hidden logic.
+
+```javascript
+import { LiteCheckout } from "tonder-web-sdk";
+
+const liteCheckout = new LiteCheckout({
+  apiKey: "YOUR_API_KEY",
+  returnUrl: "[https://your-website.com/return](https://your-website.com/return)",
+  mode: 'development',
+});
+
+// This is required to initialize the SDK's underlying services
+liteCheckout.injectCheckout();
+```
+
+2. Build Your Custom Form
+Create your own HTML form for card number, expiration date, CVV, and cardholder name. Use the SDK's validation helpers to provide real-time feedback to the user.
+
+3. Call the Payment Method
+In your payment button's event listener, collect the card data from your custom form and include it in the payment() method's payload.
+
+```javascript
+
+document.getElementById('custom-pay-button').addEventListener('click', async (event) => {
+  event.preventDefault();
+
+  const cardData = {
+    card_number: document.getElementById('card-number').value,
+    cardholder_name: document.getElementById('card-name').value,
+    expiration_month: document.getElementById('exp-month').value,
+    expiration_year: document.getElementById('exp-year').value,
+    cvv: document.getElementById('cvv').value,
+  };
+
+  const checkoutData = {
+    customer: { firstName: "Juan", email: "juan.hernandez@mail.com" },
+    currency: 'mxn',
+    cart: { total: 399, items: [{ name: "T-Shirt", amount_total: 399 }] },
+    card: cardData
+  };
+
+  try {
+    const response = await liteCheckout.payment(checkoutData);
+    alert('Payment successful!');
+  } catch (error) {
+    alert('Payment failed.');
+  }
+});
+```

@@ -1,0 +1,17 @@
+---
+title: "SDK Methods (Flutter)"
+description: "Reference for the methods available in Tonder's Flutter SDK."
+---
+
+This page provides a reference for the core methods available in the `InlineCheckout` class of the Flutter Full SDK.
+
+---
+
+## Core Methods
+
+| Method               | Description                                                                     |
+| -------------------- | ------------------------------------------------------------------------------- |
+| `new InlineCheckout(..)` | Initializes the SDK with configuration like `apiKeyTonder` and `returnUrl`.     |
+| `setPaymentData(data)` | Loads the customer data (name, email, etc.) into the SDK instance.              |
+| `setCartTotal(total)`| Sets the total amount for the transaction.                                      |
+| `injectCheckout()`   | Renders the pre-built checkout UI.                                              |
