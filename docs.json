@@ -232,18 +232,6 @@
                 ]
               },
               {
-                "group": "API Reference",
-                "pages": [
-                  "reference/retrieve-business",
-                  "reference/create-client",
-                  "reference/create-order",
-                  "reference/create-payment",
-                  "reference/create-checkout-router",
-                  "reference/create-secure-token",
-                  "reference/refund-payment"
-                ]
-              },
-              {
                 "group": "Direct Integration API",
                 "pages": [
                   "reference/process-transaction",
