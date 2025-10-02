@@ -1,13 +1,15 @@
 ---
-title: "Customize the SDK (JS Inline)"
-description: "Learn how to customize the style and appearance of the Tonder JS Inline SDK."
+title: "Customize the SDK"
+og:description: "Learn how to customize the style and appearance of the Tonder JS Inline SDK."
 ---
 
-The Tonder JS SDK allows you to customize the checkout's appearance to match your website's branding. You can customize styles for input fields, labels, and error messages, as well as the text for labels and placeholders.
+This guide covers how to customise the Tonder JS Inline SDK to match your website's design and branding requirements. Whether you're looking to integrate Tonder's payment processing into your existing design system or create a cohesive checkout experience, this documentation will help you understand your customisation options and implementation approaches.
 
-## How to Apply Customizations
+The Tonder JS SDK allows you to customise the checkout's appearance to match your website's branding. You can customise styles for input fields, labels, and error messages, as well as the text for labels and placeholders.
 
-You apply customizations by passing `styles`, `labels`, and `placeholders` objects to the `InlineCheckout` constructor during initialization.
+## How to Apply Customisations
+
+You apply customisations by passing `styles`, `labels`, and `placeholders` objects to the `InlineCheckout` constructor during initialisation.
 
 ```javascript
 import { InlineCheckout } from "tonder-web-sdk";
@@ -23,23 +25,43 @@ const inlineCheckout = new InlineCheckout({
 });
 ```
 
-## Styleable Properties (styles)
+## Customisation Properties
 
-The styles object is structured to target different elements and their states (e.g., base, complete, invalid).
+The customisation object supports both styling and text customisation options. The styles object is structured to target different elements and their states (e.g., base, complete, invalid).
 
-- inputStyles: Controls the appearance of the card number, expiration date, and CVV fields.
+### Style Properties
 
-- labelStyles: Controls the appearance of the labels above each input field.
+| Property | Description |
+|----------|-------------|
+| `inputStyles` | Controls the appearance of the card number, expiration date, and CVV fields |
+| `labelStyles` | Controls the appearance of the labels above each input field |
+| `errorTextStyles` | Controls the appearance of validation error messages |
 
-- errorTextStyles: Controls the appearance of validation error messages.
+### Text Properties
 
-## Text Properties (labels, placeholders)
+In addition to styling, you can also customise the text content of labels and placeholders to match your application's language or terminology:
 
-- labels: Provide an object with new text for the input labels (e.g., nameLabel, cardLabel).
+| Property | Description |
+|----------|-------------|
+| `labels` | Provide an object with new text for the input labels (e.g., nameLabel, cardLabel) |
+| `placeholders` | Provide an object with new placeholder text for the inputs (e.g., namePlaceholder, cardPlaceholder) |
 
-- placeholders: Provide an object with new placeholder text for the inputs (e.g., namePlaceholder, cardPlaceholder).
+### Style State Properties
+
+The style properties support different states for enhanced user experience:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `inputStyles.base` | object | Default styles for input fields |
+| `inputStyles.invalid` | object | Styles applied when input validation fails |
+| `inputStyles.complete` | object | Styles applied when input is valid and complete |
+| `labelStyles.base` | object | Default styles for field labels |
+| `errorTextStyles.base` | object | Default styles for error messages |
+| `global` | object | Global CSS imports and styles |
 
 <Accordion title="View Full Customization Example">
+
+Here's a comprehensive example that demonstrates how to customise both the visual appearance and text content of the checkout interface. This configuration applies a modern design with custom fonts, colours, and terminology.
 
 ```javascript
 
@@ -59,3 +81,10 @@ const customConfig = {
 };
 ```
 </Accordion>
+
+## Next Steps
+
+Now that you understand the customisation options available with the Tonder JS Inline SDK, you're ready to implement payment processing in your web application. Here are the recommended next steps to get you started:
+
+- Learn how to [make a payment](/sdk-integration/web/js-inline/make-a-payment) using the JS Inline SDK.
+- Explore the [available SDK methods](/sdk-integration/web/js-inline/methods) for payment processing.

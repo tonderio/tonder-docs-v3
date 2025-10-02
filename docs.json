@@ -67,76 +67,6 @@
         ]
       },
       {
-        "tab": "Integrate Tonder",
-        "groups": [
-          {
-            "group": "Integrations",
-            "pages": [
-              "integration/intro",
-              "integration/choose-integration"
-            ]
-          },
-          {
-            "group": "SDKs",
-            "pages": [
-              "integration/sdks/sdk-overview",
-              {
-                "group": "JS SDK",
-                "pages": [
-                  "integration/sdks/web/js-sdk",
-                  {
-                    "group": "JS Inline Checkout",
-                    "pages": [
-                      "integration/sdks/web/js-inline-checkout",
-                      "integration/sdks/web/js-sdk-styles"
-                    ]
-                  },
-                  "integration/sdks/web/js-lite-checkout",
-                  "integration/sdks/web/code-examples"
-                ]
-              },
-              {
-                "group": "Mobile SDKs",
-                "pages": [
-                  {
-                    "group": "Ionic",
-                    "pages": [
-                      "integration/sdks/mobile/ionic/ionic-sdk-lite",
-                      "integration/sdks/mobile/ionic/ionic-sdk-full"
-                    ]
-                  },
-                  {
-                    "group": "Flutter",
-                    "pages": [
-                      "integration/sdks/mobile/flutter/flutter-sdk-lite",
-                      "integration/sdks/mobile/flutter/flutter-sdk-full"
-                    ]
-                  },
-                  {
-                    "group": "React Native",
-                    "pages": [
-                      "integration/sdks/mobile/react-native/rn-sdk",
-                      "integration/sdks/mobile/react-native/inline",
-                      "integration/sdks/mobile/react-native/lite",
-                      "integration/sdks/mobile/react-native/enrollment"
-                    ]
-                  }
-                ]
-              },
-              "integration/sdks/secure-token"
-            ]
-          },
-          {
-            "group": "Plugins",
-            "pages": [
-              "integration/plugins/plugins-overview",
-              "integration/plugins/magento",
-              "integration/plugins/woo-commerce"
-            ]
-          }
-        ]
-      },
-      {
         "tab": "Direct Integration",
         "dropdowns": [
           {
@@ -269,10 +199,11 @@
           {
             "group": "Web SDKs",
             "pages": [
+              "sdk-integration/web/overview",
               {
                 "group": "JS Inline",
                 "pages": [
-                  "sdk-integration/web/js-inline/installation",
+                  "sdk-integration/web/js-inline/requirements-and-installation",
                   "sdk-integration/web/js-inline/make-a-payment",
                   "sdk-integration/web/js-inline/methods",
                   "sdk-integration/web/js-inline/customization"
@@ -281,7 +212,7 @@
               {
                 "group": "JS Lite",
                 "pages": [
-                  "sdk-integration/web/js-lite/installation",
+                  "sdk-integration/web/js-lite/requirements-and-installation",
                   "sdk-integration/web/js-lite/make-a-payment",
                   "sdk-integration/web/js-lite/methods",
                   "sdk-integration/web/js-lite/customization",
@@ -293,10 +224,11 @@
           {
             "group": "Mobile SDKs",
             "pages": [
+              "sdk-integration/mobile/overview",
               {
                 "group": "Flutter",
                 "pages": [
-                  "sdk-integration/mobile/flutter/installation",
+                  "sdk-integration/mobile/flutter/requirements-and-installation",
                   "sdk-integration/mobile/flutter/make-a-payment",
                   "sdk-integration/mobile/flutter/methods",
                   "sdk-integration/mobile/flutter/customization"
@@ -305,7 +237,7 @@
               {
                 "group": "Ionic",
                 "pages": [
-                  "sdk-integration/mobile/ionic/installation",
+                  "sdk-integration/mobile/ionic/requirements-and-installation",
                   "sdk-integration/mobile/ionic/make-a-payment",
                   "sdk-integration/mobile/ionic/methods",
                   "sdk-integration/mobile/ionic/customization",
@@ -315,8 +247,8 @@
               {
                 "group": "React Native",
                 "pages": [
-                  "sdk-integration/mobile/react-native/installation",
-                  "sdk-integration/mobile/react-native/create-a-payment",
+                  "sdk-integration/mobile/react-native/requirements-and-installation",
+                  "sdk-integration/mobile/react-native/make-a-payment",
                   "sdk-integration/mobile/react-native/methods",
                   "sdk-integration/mobile/react-native/customization",
                   "sdk-integration/mobile/react-native/enroll-payment-method"

@@ -1,17 +1,134 @@
 ---
-title: "SDK Methods (JS Inline)"
-description: "Reference documentation for the methods in Tonder's JS Inline SDK."
+title: "SDK Methods"
+og:description: "Reference for the methods available in Tonder's JavaScript Inline SDK."
 ---
 
-This page provides a reference for the core methods available in the `InlineCheckout` class.
+This page provides a comprehensive reference for the core methods available in the `InlineCheckout` class. Whether you're implementing basic payment processing or advanced checkout functionality, this documentation will help you understand the available methods and their usage.
 
-## Core Methods
+## Method Details
 
-| Method                   | Description                                                                                         |
-| ------------------------ | --------------------------------------------------------------------------------------------------- |
-| `new InlineCheckout(config)` | Constructor to create and initialize a new SDK instance. Requires `apiKey`, `returnUrl`, `mode`, and optional `styles`. |
-| `configureCheckout(config)`| Sets initial data like customer email to pre-fill information or show saved cards.                |
-| `injectCheckout()`       | Renders the pre-built checkout UI into the designated container div.                                |
-| `payment(paymentData)`   | Initiates a payment transaction using the provided customer and cart data.                           |
-| `verify3dsTransaction()` | Verifies the status of a 3D Secure transaction after the user is redirected back to your site.       |
-| `removeCheckout()`       | Cleans up the SDK instance and removes UI components from the DOM.                                  |
+Each method in the Tonder JS Inline SDK serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each method, including their parameters, usage examples, and practical implementation guidance.
+
+<AccordionGroup>
+  <Accordion title="new InlineCheckout(config)">
+
+Creates and initialises a new SDK instance with your API credentials and configuration options.
+
+The constructor accepts the following configuration parameters:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `apiKey` | string | Yes | Your Tonder API key for authentication |
+| `returnUrl` | string | Yes | URL where users will be redirected after 3D Secure verification |
+| `mode` | string | Yes | Environment mode: `'development'` or `'production'` |
+| `styles` | object | No | Custom styling options for the checkout UI |
+| `labels` | object | No | Custom text for input labels |
+| `placeholders` | object | No | Custom placeholder text for input fields |
+
+Here's how to initialise the SDK with basic configuration:
+
+```javascript
+import { InlineCheckout } from "tonder-web-sdk";
+
+const inlineCheckout = new InlineCheckout({
+  apiKey: 'YOUR_API_KEY',
+  returnUrl: 'https://your-website.com/return',
+  mode: 'development',
+  styles: {
+    inputStyles: {
+      base: { border: "1px solid #E0E0E0", padding: "12px 10px" }
+    }
+  }
+});
+```
+
+  </Accordion>
+
+  <Accordion title="injectCheckout()">
+
+Renders the pre-built checkout interface within your designated container div. This method creates and displays the complete payment form with card input fields, validation, and styling.
+
+This method doesn't require any parameters. Simply call it to render the checkout interface:
+
+```javascript
+inlineCheckout.injectCheckout();
+```
+
+  </Accordion>
+
+  <Accordion title="payment(paymentData)">
+
+Initiates a payment transaction using the provided customer and cart data. This method processes the payment and handles the secure transaction flow.
+
+The payment method expects a data object with the following structure:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `paymentData` | object | Yes | Payment information including customer and cart details |
+| `paymentData.customer` | object | Yes | Customer information (firstName, email, etc.) |
+| `paymentData.cart` | object | Yes | Cart information (total, items) |
+| `paymentData.currency` | string | Yes | Currency code (e.g., 'mxn') |
+
+Here's a complete example of processing a payment:
+
+```javascript
+const checkoutData = {
+  customer: { 
+    firstName: "Juan", 
+    email: "juan.hernandez@mail.com" 
+  },
+  currency: 'mxn',
+  cart: { 
+    total: 399, 
+    items: [{ name: "T-Shirt", amount_total: 399 }] 
+  }
+};
+
+try {
+  const response = await inlineCheckout.payment(checkoutData);
+  console.log('Payment successful:', response);
+} catch (error) {
+  console.error('Payment failed:', error);
+}
+```
+
+  </Accordion>
+
+  <Accordion title="verify3dsTransaction()">
+
+Verifies the status of a 3D Secure transaction after the user is redirected back to your site. This method should be called on your return page to get the final transaction status.
+
+This method doesn't require any parameters and should be called on your return page after 3D Secure verification:
+
+```javascript
+// On your return page
+inlineCheckout.verify3dsTransaction().then(response => {
+  if (response.transaction_status === 'Success') {
+    alert('3DS Transaction successful!');
+  } else {
+    alert('3DS Transaction failed');
+  }
+});
+```
+
+  </Accordion>
+
+  <Accordion title="removeCheckout()">
+
+Cleans up the SDK instance and removes UI components from the DOM. Use this method when you need to destroy the checkout interface.
+
+This method doesn't require any parameters and can be called whenever you need to clean up the checkout interface:
+
+```javascript
+inlineCheckout.removeCheckout();
+```
+
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that you understand the available methods in the Tonder JS Inline SDK, you're ready to implement payment processing in your web application. Here are the recommended next steps:
+
+- Learn how to [make a payment](/sdk-integration/web/js-inline/make-a-payment) using these methods.
+- Customise the [SDK appearance and behavior](/sdk-integration/web/js-inline/customization) to match your website's design.

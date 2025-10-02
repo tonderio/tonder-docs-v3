@@ -1,29 +1,198 @@
 ---
-title: "SDK Methods (React Native)"
-description: "Reference for the methods available in Tonder's React Native SDK."
+title: "SDK Methods"
+og:description: "Reference for the methods available in Tonder's React Native SDK."
 ---
 
 This page provides a reference for the core methods and components available in the Tonder React Native SDK. The SDK uses a combination of a Provider, hooks, and components to manage state and render UI.
 
----
-
 ## Core Components
 
-| Component          | Description                                                                                             |
-| ------------------ | ------------------------------------------------------------------------------------------------------- |
-| `TonderProvider`   | A wrapper component that initializes the SDK and provides its context to children. Must be at the root of your checkout flow. |
-| `TonderPayment`    | Renders the complete, pre-built payment UI. Used when `SDKType` is `INLINE`.                              |
-| `TonderEnrollment` | Renders the complete, pre-built card enrollment form. Used when `SDKType` is `ENROLLMENT`.              |
+The Tonder React Native SDK provides these essential components for building payment interfaces. Each component serves a specific purpose in the payment integration workflow.
 
----
+## Method Details
 
-## Core Hooks and Methods
+Each component and method in the Tonder React Native SDK serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each component and method, including their usage examples and practical implementation guidance.
 
-The `useTonder` hook is the primary way to interact with the SDK's logic.
+<AccordionGroup>
+  <Accordion title="TonderProvider">
 
-| Method                   | Description                                                                                             |
-| ------------------------ | ------------------------------------------------------------------------------------------------------- |
-| `useTonder()`            | A React hook that provides access to the SDK's methods (`create`, `saveCustomerCard`, etc.).            |
-| `create(config)`         | Initializes a payment or enrollment session. Requires `secureToken`, `paymentData` or `customer` data. |
-| `saveCustomerCard()`     | Triggers the card saving process. Only available in `ENROLLMENT` mode.                                  |
-| `removeCustomerCard(cardId)` | Deletes a previously saved card.      
+A wrapper component that initializes the SDK and provides its context to children. This component must be placed at the root of your checkout flow to make SDK functionality available throughout your application.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `config` | Object | Configuration object with SDK settings |
+| `config.type` | SDKType | Type of SDK: INLINE or ENROLLMENT |
+| `config.mode` | String | Operating mode: 'development' or 'production' |
+| `config.apiKey` | String | Your Tonder API key for authentication |
+
+Here's an example of how to configure the TonderProvider:
+
+```jsx
+import { TonderProvider, SDKType } from '@tonder.io/rn-sdk';
+
+function App() {
+  return (
+    <TonderProvider
+      config={{
+        type: SDKType.INLINE,
+        mode: 'development',
+        apiKey: 'YOUR_API_KEY',
+      }}
+    >
+      <YourCheckoutScreen />
+    </TonderProvider>
+  );
+}
+```
+
+  </Accordion>
+
+  <Accordion title="TonderPayment">
+
+Renders the complete, pre-built payment UI. This component is used when `SDKType` is `INLINE` and provides a full checkout experience with card input, validation, and payment processing.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This component takes no props |
+
+Here's an example of how to render the TonderPayment component:
+
+```jsx
+import { TonderPayment } from '@tonder.io/rn-sdk';
+
+export default function PaymentScreen() {
+  return (
+    <SafeAreaView>
+      <TonderPayment />
+    </SafeAreaView>
+  );
+}
+```
+
+  </Accordion>
+
+  <Accordion title="TonderEnrollment">
+
+Renders the complete, pre-built card enrollment form. This component is used when `SDKType` is `ENROLLMENT` and provides a secure form for saving customer payment methods.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This component takes no props |
+
+Here's an example of how to render the TonderEnrollment component:
+
+```jsx
+import { TonderEnrollment } from '@tonder.io/rn-sdk';
+
+export default function EnrollmentScreen() {
+  return (
+    <SafeAreaView>
+      <TonderEnrollment />
+    </SafeAreaView>
+  );
+}
+```
+
+  </Accordion>
+
+  <Accordion title="useTonder Hook">
+
+A React hook that provides access to the SDK's methods for payment processing and card management. This is the primary way to interact with the SDK's logic.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This hook takes no parameters |
+
+Here's an example of how to use the useTonder hook:
+
+```jsx
+import { useTonder } from '@tonder.io/rn-sdk';
+
+export default function PaymentScreen() {
+  const { create, saveCustomerCard } = useTonder();
+  
+  // Use the methods as needed
+}
+```
+
+  </Accordion>
+
+  <Accordion title="create Method">
+
+Initializes a payment or enrollment session. This method requires a secure token and either payment data or customer data depending on the SDK type.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `config` | Object | Configuration object for the session |
+| `config.secureToken` | String | Secure token obtained from your backend |
+| `config.paymentData` | Object | Payment information (for INLINE mode) |
+| `config.customer` | Object | Customer information (for ENROLLMENT mode) |
+| `config.callbacks` | Object | Optional callback functions |
+
+Here's an example of how to create a payment session:
+
+```jsx
+const { create } = useTonder();
+
+await create({
+  secureToken: secureToken,
+  paymentData: {
+    customer: { firstName: "Juan", email: "juan@example.com" },
+    cart: { total: 399, items: [] },
+    currency: "mxn"
+  },
+});
+```
+
+  </Accordion>
+
+  <Accordion title="saveCustomerCard Method">
+
+Triggers the card saving process. This method is only available in `ENROLLMENT` mode and is used to save customer payment methods.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters |
+
+Here's an example of how to save a customer card:
+
+```jsx
+const { saveCustomerCard } = useTonder();
+
+const handleSaveCard = async () => {
+  try {
+    await saveCustomerCard();
+    console.log('Card saved successfully');
+  } catch (error) {
+    console.error('Error saving card:', error);
+  }
+};
+```
+
+  </Accordion>
+
+  <Accordion title="removeCustomerCard Method">
+
+Deletes a previously saved card using its unique ID. This method allows customers to manage their saved payment methods.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `cardId` | String | Unique identifier of the card to remove |
+
+Here's an example of how to remove a customer card:
+
+```jsx
+const { removeCustomerCard } = useTonder();
+
+const handleRemoveCard = async (cardId) => {
+  try {
+    await removeCustomerCard(cardId);
+    console.log('Card removed successfully');
+  } catch (error) {
+    console.error('Error removing card:', error);
+  }
+};
+```
+
+  </Accordion>
+</AccordionGroup>

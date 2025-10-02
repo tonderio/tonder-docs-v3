@@ -1,23 +1,89 @@
 ---
-title: "Customize the SDK (Flutter)"
-description: "Learn about customization options for the Flutter SDK."
+title: "Customize the SDK"
+og:description: "Learn how to customize the Flutter SDK with custom UI components."
 ---
 
-Customization options for the Tonder Flutter SDK depend on whether you are using the Full or Lite version.
+<Warning>
+The Full SDK (`full_sdk`) does not support customization as it provides a standardized, pre-built user interface. For custom payment forms and styling, you must use the Lite SDK (`tonder_sdk_lite`).
+</Warning>
 
----
+## Lite SDK Customization
 
-## Full SDK (`full_sdk`)
+The Lite SDK is designed for maximum flexibility and complete UI control. It provides the core, secure logic for payment processing without rendering any visible UI, allowing you to build a completely custom payment experience.
 
-The Full SDK provides a standardized, pre-built user interface to ensure a quick and secure integration. As such, it offers limited direct styling options. The primary method of customization is to use the **Lite SDK**.
+This approach offers the following benefits:
 
-## Lite SDK (`tonder_sdk_lite`)
+- Build your own payment form using standard Flutter widgets.
+- Apply your application's existing design system and styles.
+- Control the layout, flow, and interactions completely.
+- All payment logic remains secure and PCI-compliant.
 
-The Lite SDK is designed for maximum flexibility. It provides the core, secure logic for payment processing but does not render a visible UI.
-
-This approach allows you to:
--   Build your own payment form using standard Flutter widgets.
--   Apply your application's existing design system and styles.
--   Control the layout and user experience completely.
+### Implementation Approach
 
 To implement the Lite SDK, you will create your own input fields and then pass the collected data to the SDK's payment methods.
+
+Here's a simple example showing how to use the Lite SDK with custom UI. This code creates a custom payment widget that collects user input through Flutter's standard TextField component and then uses the SDK's documented methods to process the payment data:
+
+```dart
+import 'package:tonder_sdk_lite/lite_checkout.dart';
+
+class CustomPaymentWidget extends StatefulWidget {
+  @override
+  _CustomPaymentWidgetState createState() => _CustomPaymentWidgetState();
+}
+
+class _CustomPaymentWidgetState extends State<CustomPaymentWidget> {
+  late LiteCheckout _liteCheckout;
+  final _emailController = TextEditingController();
+  
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the Lite SDK (based on documented constructor)
+    _liteCheckout = LiteCheckout(
+      apiKey: "YOUR_API_KEY",
+      returnUrl: "YOUR_RETURN_URL",
+    );
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Your custom email field
+        TextField(
+          controller: _emailController,
+          decoration: InputDecoration(labelText: 'Email'),
+        ),
+        
+        // Your custom payment button
+        ElevatedButton(
+          onPressed: _processPayment,
+          child: Text('Process Payment'),
+        ),
+      ],
+    );
+  }
+  
+  void _processPayment() async {
+    // Set customer data using documented method
+    final customerData = {
+      'first_name': 'Customer',
+      'email': _emailController.text,
+    };
+    _liteCheckout.setPaymentData(customerData);
+    
+    // Set cart total using documented method
+    _liteCheckout.setCartTotal(399);
+    
+    // Process payment using SDK methods
+    // (Specific payment method would depend on Lite SDK documentation)
+  }
+}
+```
+
+### Next Steps
+
+- Learn how to [make a payment](/sdk-integration/mobile/flutter/make-a-payment) with the Full SDK
+- Explore the [available SDK methods](/sdk-integration/mobile/flutter/methods) for payment processing
+- Review the [installation guide](/sdk-integration/mobile/flutter/installation) for Lite SDK setup

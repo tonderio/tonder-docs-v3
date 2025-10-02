@@ -1,35 +1,41 @@
 ---
-title: "Make a Payment (JS Inline)"
-description: "Learn how to accept payments on your website using the Tonder JS Inline SDK."
+title: "Make a Payment"
+og:description: "Learn how to accept payments on your website using the Tonder JS Inline SDK."
 ---
 
-This guide covers how to process a payment using the **Inline Checkout** version of the Tonder JS SDK.
+This guide walks you through processing a payment using the JS Inline SDK (`InlineCheckout`) for web applications. You'll learn how to initialise the SDK, configure payment data, display the checkout interface, and handle the complete payment flow including 3D Secure verification.
 
-<Info>
-The **JS Inline SDK** is designed for quick, single-transaction payments and does not directly expose methods for enrolling or managing saved cards. Its primary purpose is to provide a complete, out-of-the-box checkout UI.
+<Note>
+The JS Inline SDK is designed for quick, single-transaction payments and does not directly expose methods for enrolling or managing saved cards. Its primary purpose is to provide a complete, out-of-the-box checkout UI.
 
-To securely save and manage customer payment methods, you must use the **[JS Lite SDK](/sdk-integration/web/js-lite/enroll-payment-method)**, which provides the necessary methods and requires a custom UI.
-</Info>
-
+To securely save and manage customer payment methods, you must use the [JS Lite SDK](/sdk-integration/web/js-lite/enroll-payment-method), which provides the necessary methods and requires a custom UI.
+</Note>
 
 ## Prerequisites
 
--   You have successfully [installed the Tonder JS SDK](/sdk-integration/web/js-inline/installation).
--   You have a checkout page on your website with an empty `div` and a button.
+Before you can process payments with the Tonder JS Inline SDK, ensure you have completed the necessary setup and have the required components in place.
+
+- You have successfully [installed the Tonder JS SDK](/sdk-integration/web/js-inline/installation).
+- You have a checkout page on your website with an empty `div` and a button.
+
+Ensure your checkout page includes the required HTML elements for the SDK integration. The `div` with the `tonder-checkout` ID will serve as the container where the payment form will be rendered, while the button will trigger the payment process.
 
 ```html
 <div id="tonder-checkout"></div>
 <button id="pay-button">Pay Now</button>
 ```
 
-## Steps
+## Payment Integration Steps
 
-1. Initialize the SDK
-Create a new instance of InlineCheckout, providing your API key and return URL.
+Follow these steps to integrate payment processing into your web application. This process involves initialising the SDK, configuring payment data, displaying the checkout interface, and processing the transaction.
+
+### Step 1: Initialize the SDK
+
+Create an instance of the `InlineCheckout` class to establish a secure connection with Tonder's payment services. This initialisation configures the SDK with your API credentials and sets up the operating mode for your environment.
 
 <CodeGroup>
 
-```javascript npm package option
+```javascript NPM Package Option
 import { InlineCheckout } from "tonder-web-sdk";
 
 const inlineCheckout = new InlineCheckout({
@@ -39,7 +45,7 @@ const inlineCheckout = new InlineCheckout({
 });
 ```
 
-```javascript script tag option
+```javascript Script Tag Option
 const inlineCheckout = new TonderSdk.InlineCheckout({
   apiKey: 'YOUR_API_KEY',
   returnUrl: 'https://your-website.com/return',
@@ -49,15 +55,17 @@ const inlineCheckout = new TonderSdk.InlineCheckout({
 
 </CodeGroup>
 
-2. Inject the Checkout UI
-Call injectCheckout() to render the pre-built payment form inside the div with the tonder-checkout ID.
+### Step 2: Inject the Checkout UI
+
+Render the pre-built checkout interface within your designated container. The `injectCheckout()` method creates and displays the complete payment form with card input fields, validation, and styling.
 
 ```javascript
-
 inlineCheckout.injectCheckout();
 ```
-3. Add a Payment Button
-Add an event listener to your payment button. When clicked, it should call the payment() method with the customer and cart data.
+
+### Step 3: Process the Payment
+
+Configure the payment processing by adding an event listener to your payment button. When clicked, the SDK will collect the payment data and initiate the secure transaction process.
 
 ```javascript
 document.getElementById('pay-button').addEventListener('click', async () => {
@@ -75,9 +83,9 @@ document.getElementById('pay-button').addEventListener('click', async () => {
 });
 ```
 
-4. Handle 3DS Verification
+### Step 4: Handle 3DS Verification
 
-After a 3DS challenge, the user is redirected back to your returnUrl. Call verify3dsTransaction() on this page to get the final status of the payment.
+If a 3D Secure challenge is required, the SDK will automatically handle the redirection process. After the user returns to your returnUrl, call `verify3dsTransaction()` to get the final transaction status.
 
 ```javascript
 
@@ -88,3 +96,11 @@ inlineCheckout.verify3dsTransaction().then(response => {
   }
 });
 ```
+
+## Next Steps
+
+Now that you've successfully integrated payment processing into your web application, explore these advanced features to enhance your payment experience:
+
+- Explore the [available SDK methods](/sdk-integration/web/js-inline/methods) for advanced payment operations.
+- Customise the [SDK appearance and behavior](/sdk-integration/web/js-inline/customization) to match your website's design.
+- Learn how to [enroll payment methods](/sdk-integration/web/js-lite/enroll-payment-method) for returning customers using the JS Lite SDK.

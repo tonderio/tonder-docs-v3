@@ -1,44 +1,257 @@
 ---
-title: "SDK Methods (JS Lite)"
-description: "Reference for the methods in Tonder's JS Lite SDK."
+title: "SDK Methods"
+og:description: "Reference for the methods in Tonder's JS Lite SDK."
 ---
 
-This page provides a reference for the methods available in the `LiteCheckout` class and the standalone validation helpers.
-
----
+This page provides a comprehensive reference for the core methods available in the `LiteCheckout` class and the standalone validation helpers. Whether you're implementing basic payment processing or advanced card management functionality, this documentation will help you understand the available methods and their usage.
 
 ## LiteCheckout Class Methods
 
-| Method                         | Description                                                                              |
-| ------------------------------ | ---------------------------------------------------------------------------------------- |
-| `new LiteCheckout(config)`     | Constructor to create and initialize a new SDK instance.                                 |
-| `configureCheckout(config)`    | Sets customer email and the `secureToken` required for card management.                  |
-| `injectCheckout()`             | Initializes the SDK's hidden services. Must be called before other methods.              |
-| `payment(paymentData)`         | Initiates a payment. Requires `card` details in the payload.                           |
-| `verify3dsTransaction()`       | Verifies the status of a 3D Secure transaction after redirection.                        |
-| `getCustomerCards()`           | Retrieves a list of saved cards for the configured customer.                             |
-| `saveCustomerCard(cardData)`   | Securely tokenizes and saves new card details.                                           |
-| `removeCustomerCard(cardId)`   | Deletes a previously saved card using its unique `skyflow_id`.                           |
+| Method | Description |
+|--------|-------------|
+| `new LiteCheckout(config)` | Constructor to create and initialise a new SDK instance |
+| `configureCheckout(config)` | Sets customer email and the `secureToken` required for card management |
+| `injectCheckout()` | Initialises the SDK's hidden services. Must be called before other methods |
+| `payment(paymentData)` | Initiates a payment. Requires `card` details in the payload |
+| `verify3dsTransaction()` | Verifies the status of a 3D Secure transaction after redirection |
+| `getCustomerCards()` | Retrieves a list of saved cards for the configured customer |
+| `saveCustomerCard(cardData)` | Securely tokenizes and saves new card details |
+| `removeCustomerCard(cardId)` | Deletes a previously saved card using its unique `skyflow_id` |
 
----
+## Method Details
+
+Each method in the Tonder JS Lite SDK serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each method, including their parameters, usage examples, and practical implementation guidance.
+
+<AccordionGroup>
+  <Accordion title="new LiteCheckout(config)">
+
+Creates and initialises a new SDK instance with your API credentials and configuration options.
+
+The constructor accepts the following configuration parameters:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `apiKey` | string | Yes | Your Tonder API key for authentication |
+| `returnUrl` | string | Yes | URL where users will be redirected after 3D Secure verification |
+| `mode` | string | Yes | Environment mode: `'development'` or `'production'` |
+
+Here's how to initialise the SDK with basic configuration:
+
+```javascript
+import { LiteCheckout } from "tonder-web-sdk";
+
+const liteCheckout = new LiteCheckout({
+  apiKey: "YOUR_API_KEY",
+  returnUrl: "https://your-website.com/return",
+  mode: 'development',
+});
+```
+
+  </Accordion>
+
+  <Accordion title="configureCheckout(config)">
+
+Sets customer email and the secure token required for card management operations.
+
+The configuration object accepts the following parameters:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `customer` | object | Yes | Customer information including email |
+| `customer.email` | string | Yes | Customer's email address |
+| `secureToken` | string | Yes | Secure token from your backend for card management |
+
+Here's how to configure the SDK for card management:
+
+```javascript
+liteCheckout.configureCheckout({
+  customer: { email: "customer@example.com" },
+  secureToken: "SECURE_TOKEN_FROM_YOUR_BACKEND"
+});
+```
+
+  </Accordion>
+
+  <Accordion title="injectCheckout()">
+
+Initialises the SDK's hidden services. This method must be called before other methods can be used.
+
+This method doesn't require any parameters. Simply call it to initialise the SDK:
+
+```javascript
+liteCheckout.injectCheckout();
+```
+
+  </Accordion>
+
+  <Accordion title="payment(paymentData)">
+
+Initiates a payment transaction using the provided customer, cart, and card data.
+
+The payment method expects a data object with the following structure:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `paymentData` | object | Yes | Payment information including customer, cart, and card details |
+| `paymentData.customer` | object | Yes | Customer information (firstName, email, etc.) |
+| `paymentData.cart` | object | Yes | Cart information (total, items) |
+| `paymentData.currency` | string | Yes | Currency code (e.g., 'mxn') |
+| `paymentData.card` | object | Yes | Card details (card_number, cvv, expiration_month, expiration_year, cardholder_name) |
+
+Here's a complete example of processing a payment:
+
+```javascript
+const cardData = {
+  card_number: document.getElementById('card-number').value,
+  cardholder_name: document.getElementById('card-name').value,
+  expiration_month: document.getElementById('exp-month').value,
+  expiration_year: document.getElementById('exp-year').value,
+  cvv: document.getElementById('cvv').value,
+};
+
+const checkoutData = {
+  customer: { firstName: "Juan", email: "juan.hernandez@mail.com" },
+  currency: 'mxn',
+  cart: { total: 399, items: [{ name: "T-Shirt", amount_total: 399 }] },
+  card: cardData
+};
+
+try {
+  const response = await liteCheckout.payment(checkoutData);
+  console.log('Payment successful:', response);
+} catch (error) {
+  console.error('Payment failed:', error);
+}
+```
+
+  </Accordion>
+
+  <Accordion title="verify3dsTransaction()">
+
+Verifies the status of a 3D Secure transaction after the user is redirected back to your site.
+
+This method doesn't require any parameters and should be called on your return page after 3D Secure verification:
+
+```javascript
+// On your return page
+liteCheckout.verify3dsTransaction().then(response => {
+  if (response.transaction_status === 'Success') {
+    alert('3DS Transaction successful!');
+  } else {
+    alert('3DS Transaction failed');
+  }
+});
+```
+
+  </Accordion>
+
+  <Accordion title="saveCustomerCard(cardData)">
+
+Securely tokenizes and saves new card details for future use.
+
+The method expects a card data object with the following structure:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `cardData` | object | Yes | Card information to be tokenized and saved |
+| `cardData.card_number` | string | Yes | The card number |
+| `cardData.cvv` | string | Yes | The CVV code |
+| `cardData.expiration_month` | string | Yes | Expiration month (MM format) |
+| `cardData.expiration_year` | string | Yes | Expiration year (YY format) |
+| `cardData.cardholder_name` | string | Yes | Cardholder's name |
+
+Here's how to save a customer card:
+
+```javascript
+const handleSaveCard = async () => {
+  try {
+    const cardData = {
+      card_number: "4111111111111111",
+      cvv: "123",
+      expiration_month: "12",
+      expiration_year: "25",
+      cardholder_name: "John Doe",
+    };
+
+    const response = await liteCheckout.saveCustomerCard(cardData);
+    console.log("Card saved successfully:", response);
+    // The response will contain a unique identifier (skyflow_id) for the saved card.
+  } catch (error) {
+    console.error("Error saving card:", error);
+  }
+};
+```
+
+  </Accordion>
+
+  <Accordion title="getCustomerCards()">
+
+Retrieves a list of saved cards for the configured customer.
+
+This method doesn't require any parameters and returns the customer's saved cards:
+
+```javascript
+try {
+  const cards = await liteCheckout.getCustomerCards();
+  console.log('Customer cards:', cards);
+} catch (error) {
+  console.error('Error retrieving cards:', error);
+}
+```
+
+  </Accordion>
+
+  <Accordion title="removeCustomerCard(cardId)">
+
+Deletes a previously saved card using its unique skyflow_id.
+
+The method expects the following parameter:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `cardId` | string | Yes | The unique skyflow_id of the card to remove |
+
+Here's how to remove a customer card:
+
+```javascript
+try {
+  await liteCheckout.removeCustomerCard("skyflow_id_of_the_card");
+  console.log('Card removed successfully');
+} catch (error) {
+  console.error('Error removing card:', error);
+}
+```
+
+  </Accordion>
+</AccordionGroup>
 
 ## Validation Helper Functions
 
 The SDK exports standalone functions to help you validate card information on the client side before submission.
 
-| Function                   | Description                                    |
-| -------------------------- | ---------------------------------------------- |
-| `validateCardNumber(..)`   | Validates the card number using the Luhn algorithm. |
-| `validateCardholderName(..)`| Checks if the cardholder name is not empty.      |
-| `validateCVV(..)`          | Ensures the CVV is 3 or 4 digits.              |
-| `validateExpirationDate(..)`| Validates the expiration date in MM/YY format. |
+| Function | Description |
+|----------|-------------|
+| `validateCardNumber(..)` | Validates the card number using the Luhn algorithm |
+| `validateCardholderName(..)` | Checks if the cardholder name is not empty |
+| `validateCVV(..)` | Ensures the CVV is 3 or 4 digits |
+| `validateExpirationDate(..)` | Validates the expiration date in MM/YY format |
 
-**Example Usage:**
+Here's how to use the validation helpers in your custom form:
+
 ```javascript
 import { validateCardNumber, validateCVV } from "tonder-web-sdk";
 
 if (validateCardNumber(cardNumber) && validateCVV(cvv)) {
-  // Proceed
+  // Proceed with payment
 } else {
-  // Show error
+  // Show error to user
 }
+```
+
+## Next Steps
+
+Now that you understand the available methods in the Tonder JS Lite SDK, you're ready to implement advanced payment functionality in your web application. Here are the recommended next steps:
+
+- Learn how to [make a payment](/sdk-integration/web/js-lite/make-a-payment) using these methods with custom UI.
+- Understand [customisation options](/sdk-integration/web/js-lite/customization) for building your own payment interface.
+- Learn how to [enroll payment methods](/sdk-integration/web/js-lite/enroll-payment-method) for returning customers.

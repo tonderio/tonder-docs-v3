@@ -1,29 +1,31 @@
 ---
-title: "Enroll a Payment Method (JS Lite)"
-description: "How to securely save a customer's card on your website using the JS Lite SDK."
+title: "Enroll a Payment Method"
+og:description: "How to securely save a customer's card on your website using the JS Lite SDK."
 ---
+
+This guide walks you through securely saving customer card details for future purchases using the **JS Lite SDK** (`LiteCheckout`). You'll learn how to configure the SDK with secure tokens, tokenize card information, and manage saved payment methods for returning customers.
 
 You can securely save customer card details for future purchases using the **Lite version** of the Tonder JS SDK. This process tokenizes the card information, so you avoid the security risks and PCI compliance burden of storing sensitive data.
 
----
-
 ## Prerequisites
 
--   You are using the [Lite Checkout](/sdk-integration/web/js-lite/make-a-payment) version of the JS SDK.
--   Your backend is set up to provide a [Secure Token](/sdk-integration/web/js-lite/make-a-payment) required for card management.
--   You have initialized the `LiteCheckout` SDK instance.
+Before you can enroll payment methods with the Tonder JS Lite SDK, ensure you have completed the necessary setup and have the required components in place.
+
+- You are using the [Lite Checkout](/sdk-integration/web/js-lite/make-a-payment) version of the JS SDK.
+- Your backend is set up to provide a [Secure Token](/sdk-integration/web/js-lite/make-a-payment) required for card management.
+- You have initialised the `LiteCheckout` SDK instance.
 
 <Warning>
 You must use a **Secure Token** to manage cards with the Tonder SDK. This token provides temporary, restricted access to card vaulting functions and should be generated on your server to protect your secret API key.
 </Warning>
 
----
+## Payment Method Enrollment Steps
 
-## Steps
+Follow these steps to securely enroll customer payment methods using the JS Lite SDK. This process involves configuring the SDK with secure tokens, tokenizing card information, and managing saved payment methods.
 
-### 1. Configure the SDK with a Secure Token
+### Step 1: Configure the SDK with a Secure Token
 
-When you initialize the `LiteCheckout` instance, you must configure it with the customer's email and the secure token you obtained from your backend.
+When you initialise the `LiteCheckout` instance, you must configure it with the customer's email and the secure token you obtained from your backend.
 
 ```javascript
 const liteCheckout = new LiteCheckout({ apiKey: "YOUR_PUBLIC_API_KEY" });
@@ -36,7 +38,7 @@ liteCheckout.configureCheckout({
 liteCheckout.injectCheckout();
 ```
 
-### 2. Save a Customer Card
+### Step 2: Save a Customer Card
 
 Use the saveCustomerCard method to tokenize and save the card details. This method takes an object containing the raw card information collected from your custom UI.
 
@@ -61,5 +63,14 @@ const handleSaveCard = async () => {
 };
 ```
 
-3. Retrieve and Manage Saved Cards
-Once cards are saved, you can retrieve them using getCustomerCards() and delete them using removeCustomerCard(cardId).
+### Step 3: Retrieve and Manage Saved Cards
+
+Once cards are saved, you can retrieve them using `getCustomerCards()` and delete them using `removeCustomerCard(cardId)`.
+
+## Next Steps
+
+Now that you've successfully implemented payment method enrollment with the JS Lite SDK, explore these advanced features to enhance your payment experience:
+
+- Learn how to [make a payment](/sdk-integration/web/js-lite/make-a-payment) using saved payment methods.
+- Explore the [available SDK methods](/sdk-integration/web/js-lite/methods) for advanced card management operations.
+- Understand [customisation options](/sdk-integration/web/js-lite/customization) for building your own payment interface.

@@ -1,13 +1,13 @@
 ---
-title: "Customize the SDK (React Native)"
-description: "Learn how to customize the appearance and behavior of the React Native SDK."
+title: "Customize the SDK"
+og:description: "Learn how to customize the appearance and behavior of the React Native SDK."
 ---
 
-The React Native SDK offers extensive customization options to ensure the payment experience aligns with your app's branding and user flow. You can customize UI components, labels, placeholders, and behavior.
+This guide shows you how to customize the appearance and behavior of the Tonder React Native SDK. You can customize UI components, labels, placeholders, and styling to ensure the payment experience aligns with your app's branding and user flow.
 
 ## How to Apply Customizations
 
-You pass a `customization` object during the `create` call. This object contains all your configuration for styles, text, and behavior.
+You pass a `customization` object during the `create` call. This object contains all your configuration for styles, text, and behavior, allowing you to tailor the SDK to match your app's design system.
 
 ```javascript
 const { create } = useTonder<SDKType.INLINE>();
@@ -23,8 +23,22 @@ create({
 
 ## Customization Options
 
-### Behavior (paymentButton, saveCards, paymentMethods)
-Control the visibility and functionality of different UI elements.
+Each customization option serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each customization option, including their parameters, usage examples, and practical implementation guidance.
+
+### Behavior Customization
+
+Control the visibility and functionality of different UI elements through the behavior configuration options.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `paymentButton.show` | boolean | Controls whether the default payment button is displayed |
+| `paymentButton.text` | string | Custom text for the payment button |
+| `paymentButton.showAmount` | boolean | Whether to display the payment amount on the button |
+| `saveCards.showSaved` | boolean | Controls visibility of saved card options |
+| `saveCards.showSaveCardOption` | boolean | Whether to show the option to save the current card |
+| `saveCards.autoSave` | boolean | Automatically save cards without user confirmation |
+| `saveCards.showDeleteOption` | boolean | Whether to show delete option for saved cards |
+| `paymentMethods.show` | boolean | Controls visibility of alternative payment methods |
 
 ```javascript
 customization: {
@@ -48,11 +62,21 @@ customization: {
 }
 ```
 
-### Text (labels, placeholders)
-Change the default text for labels and input placeholders.
+### Text Customization
+
+Change the default text for labels and input placeholders to match your app's language and terminology.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `labels.name` | string | Text for the cardholder name field label |
+| `labels.cardNumber` | string | Text for the card number field label |
+| `labels.cvv` | string | Text for the CVV field label |
+| `labels.expiryDate` | string | Text for the expiration date field label |
+| `placeholders.name` | string | Placeholder text for the cardholder name input |
+| `placeholders.cardNumber` | string | Placeholder text for the card number input |
+| `placeholders.cvv` | string | Placeholder text for the CVV input |
 
 ```javascript
-
 customization: {
   labels: {
     name: 'Cardholder Name',
@@ -68,13 +92,21 @@ customization: {
 }
 ```
 
-### Styling (styles)
+### Styling Customization
+
 Provide a styles object to override the default appearance of SDK components. The structure allows you to target specific elements like the main container, card form, and buttons.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `sdkCard.base` | object | Styles for the main SDK container card |
+| `cardForm.base` | object | Styles for the card form container |
+| `cardForm.inputStyles.base` | object | Styles for input fields within the card form |
+| `paymentButton.base` | object | Styles for the payment button |
+| `errorMessage.base` | object | Styles for error messages |
 
 <Accordion title="View Full Styling Example">
 
 ```javascript
-
 const customStyles = {
   sdkCard: {
     base: { backgroundColor: '#f9f9f9', borderRadius: 10, padding: 16 },
@@ -98,4 +130,13 @@ customization: {
   styles: customStyles,
 }
 ```
+
 </Accordion>
+
+## Next Steps
+
+Now that you've learned how to customize the React Native SDK, explore these advanced features to enhance your payment experience:
+
+- Learn how to [create a payment](/sdk-integration/mobile/react-native/create-a-payment) using the React Native SDK.
+- Explore the [available SDK methods](/sdk-integration/mobile/react-native/methods) for payment processing.
+- Learn how to [enroll payment methods](/sdk-integration/mobile/react-native/enroll-payment-method) for returning customers.

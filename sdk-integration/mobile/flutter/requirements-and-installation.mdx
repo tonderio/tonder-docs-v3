@@ -1,0 +1,75 @@
+---
+title: "Requirements and Installation"
+og:description: "How to install and configure Tonder's SDK for Flutter."
+---
+
+This guide provides the installation and configuration steps for Tonder's Flutter SDKs.
+
+## Prerequisites
+
+You need to add the Skyflow Maven repository to your Android project configuration to handle secure data vaulting.
+
+1. Add the Skyflow Maven repository to your Android project configuration. This repository contains the secure data vaulting components required for PCI DSS compliance:
+
+```gradle title="android/build.gradle"
+maven {
+    url '[https://maven.pkg.github.com/skyflowapi/skyflow-android-sdk](https://maven.pkg.github.com/skyflowapi/skyflow-android-sdk)'
+    credentials {
+        username = 'username'
+        password = 'password'
+    }
+}
+```
+
+2. Enable AndroidX support in your project. This ensures compatibility with modern Android libraries and the Tonder SDK:
+
+```ini title="android/gradle.properties"
+android.useAndroidX=true
+```
+
+## Installation
+
+To install the Tonder Flutter SDK, you need to add the appropriate package to your project and configure mobile environment permissions. Tonder provides two SDK packages depending on your needs: the Full SDK for pre-built UI or the Lite SDK for custom payment interfaces.
+
+### Step 1: Install the SDK Package
+
+Choose the appropriate package for your project:
+
+- `tonder_sdk_lite`: use this package for building a custom payment UI.
+- `full_sdk`: use this package for a pre-built, inline checkout experience.
+
+Add the required package to your `pubspec.yaml` file or use `flutter pub add`:
+
+```bash
+flutter pub add full_sdk
+```
+
+### Step 2: Configure Mobile Environment Permissions
+
+You must grant internet permissions for the SDK to function correctly on native devices.
+
+<Tabs>
+<Tab title="Android">
+Add the INTERNET permission to your `AndroidManifest.xml` file.
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+</Tab>
+<Tab title="iOS / macOS">
+For iOS and macOS, add the network client entitlement to your `.entitlements` files.
+
+```xml
+<key>com.apple.security.network.client</key>
+<true/>
+```
+</Tab>
+</Tabs>
+
+## Next Steps
+
+Now that you've successfully installed the Tonder Flutter SDK, you're ready to start integrating payments into your application. Follow these guides to complete your Flutter payment integration:
+
+- Learn how to [make a payment](/sdk-integration/mobile/flutter/make-a-payment) using the Flutter SDK.
+- Explore the [available SDK methods](/sdk-integration/mobile/flutter/methods) for payment processing.
+- Customize the [SDK appearance and behavior](/sdk-integration/mobile/flutter/customization) to match your app's design.

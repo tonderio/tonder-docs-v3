@@ -1,27 +1,31 @@
 ---
-title: "Make a Payment (Ionic)"
-description: "Learn how to accept a payment in your Ionic app using Tonder's SDK."
+title: "Make a Payment"
+og:description: "Learn how to accept a payment in your Ionic app using Tonder's SDK."
 ---
 
-This guide walks you through processing a payment using the **Full SDK** (`InlineCheckout`) for Ionic.
+This guide walks you through processing a payment using the **Full SDK** (`InlineCheckout`) for Ionic. You'll learn how to initialize the SDK, configure payment data, display the checkout interface, and handle the complete payment flow including 3D Secure verification.
 
 ## Prerequisites
 
--   You have successfully [installed and configured](/sdk-integration/mobile/ionic/installation) the Tonder Ionic SDK.
--   You have a checkout page with an empty `div` element to contain the SDK's UI.
+Before you can process payments with the Tonder Ionic SDK, ensure you have completed the necessary setup and have the required components in place.
+
+- You have successfully [installed and configured](/sdk-integration/mobile/ionic/installation) the Tonder Ionic SDK.
+- You have a checkout page with an empty `div` element to contain the SDK's UI.
 
 ```html
 <div id="tonder-checkout"></div>
 <button id="pay-button">Pay Now</button>
 ```
 
-## Steps
+## Payment Integration Steps
 
-1. Initialize the SDK
-Import and create a new instance of InlineCheckout, providing your API key, return URL, and operating mode.
+Follow these steps to integrate payment processing into your Ionic application. This process involves initializing the SDK, configuring payment data, displaying the checkout interface, and processing the transaction.
+
+### Step 1: Initialize the SDK
+
+Create an instance of the `InlineCheckout` class to establish a secure connection with Tonder's payment services. This initialization configures the SDK with your API credentials and sets up the operating mode for your environment.
 
 ```javascript
-
 import { InlineCheckout } from "@tonder.io/ionic-full-sdk";
 
 const inlineCheckout = new InlineCheckout({
@@ -31,19 +35,19 @@ const inlineCheckout = new InlineCheckout({
 });
 ```
 
-2. Inject the Checkout UI
-Call the injectCheckout() method to render the pre-built payment form inside your designated div.
+### Step 2: Inject the Checkout UI
+
+Render the pre-built checkout interface within your designated container. The `injectCheckout()` method creates and displays the complete payment form with card input fields, validation, and styling.
 
 ```javascript
-
 inlineCheckout.injectCheckout();
 ```
 
-3. Process the Payment
-Add an event listener to your payment button. When clicked, call the payment() method, passing the customer and cart data.
+### Step 3: Process the Payment
+
+Configure the payment processing by adding an event listener to your payment button. When clicked, the SDK will collect the payment data and initiate the secure transaction process.
 
 ```javascript
-
 document.getElementById('your-pay-button').addEventListener('click', async () => {
   const paymentData = {
     customer: { firstName: "Juan", email: "juan.hernandez@mail.com", /* ... */ },
@@ -60,11 +64,11 @@ document.getElementById('your-pay-button').addEventListener('click', async () =>
 });
 ```
 
-4. Handle 3DS Verification
-If a 3D Secure challenge is required, the SDK will handle the redirection. After the user returns to your returnUrl, call verify3dsTransaction() to get the final transaction status.
+### Step 4: Handle 3DS Verification
+
+If a 3D Secure challenge is required, the SDK will automatically handle the redirection process. After the user returns to your returnUrl, call `verify3dsTransaction()` to get the final transaction status.
 
 ```javascript
-
 // On your return page
 inlineCheckout.verify3dsTransaction().then(response => {
   if (response.transaction_status === 'Success') {
@@ -74,3 +78,11 @@ inlineCheckout.verify3dsTransaction().then(response => {
   }
 });
 ```
+
+## Next Steps
+
+Now that you've successfully integrated payment processing into your Ionic app, explore these advanced features to enhance your payment experience:
+
+- Explore the [available SDK methods](/sdk-integration/mobile/ionic/methods) for advanced payment operations.
+- Customize the [SDK appearance and behavior](/sdk-integration/mobile/ionic/customization) to match your app's design.
+- Learn how to [enroll payment methods](/sdk-integration/mobile/ionic/enroll-payment-method) for returning customers.

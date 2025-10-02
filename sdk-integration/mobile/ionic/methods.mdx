@@ -1,31 +1,158 @@
 ---
-title: "SDK Methods (Ionic)"
-description: "Reference for the methods available in Tonder's Ionic SDKs."
+title: "SDK Methods"
+og:description: "Reference for the methods available in Tonder's Ionic SDKs."
 ---
 
 This page provides a reference for the core methods available in the Ionic SDKs.
 
----
+## Core Methods
 
-## Full SDK (`InlineCheckout`) Methods
+The Tonder Ionic SDK provides these essential methods for initializing, configuring, and processing payments. Each method serves a specific purpose in the payment integration workflow.
 
-| Method                   | Description                                                                    |
-| ------------------------ | ------------------------------------------------------------------------------ |
-| `new InlineCheckout(config)`| Initializes the SDK with `apiKey`, `returnUrl`, and `mode`.                  |
-| `injectCheckout()`       | Renders the pre-built checkout UI into your designated container.              |
-| `payment(paymentData)`   | Initiates a payment transaction using the provided customer and cart data.     |
-| `verify3dsTransaction()` | Verifies the status of a 3D Secure transaction after the user returns.         |
-| `removeCheckout()`       | Cleans up the SDK instance and removes UI components from the DOM.             |
+## Method Details
 
----
+Each method in the Tonder Ionic SDK serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each method, including their parameters, usage examples, and practical implementation guidance.
 
-## Lite SDK (`LiteCheckout`) Methods
+<AccordionGroup>
+  <Accordion title="InlineCheckout Constructor">
 
-Includes all `InlineCheckout` methods, plus the following for card management:
+Creates a new instance of the InlineCheckout class with the necessary configuration for secure payment processing. This constructor establishes the connection with Tonder's services and configures the payment environment.
 
-| Method                         | Description                                                                  |
-| ------------------------------ | ---------------------------------------------------------------------------- |
-| `configureCheckout(config)`    | Sets customer email and the `secureToken` required for card management.      |
-| `getCustomerCards()`           | Retrieves a list of saved cards for the configured customer.                 |
-| `saveCustomerCard(cardData)`   | Securely tokenizes and saves new card details.                               |
-| `removeCustomerCard(cardId)`   | Deletes a previously saved card using its unique ID.                         |
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `apiKey` | String | Your Tonder API key for authentication |
+| `returnUrl` | String | URL where users are redirected after payment completion |
+| `mode` | String | Operating mode: "stage" or "production" |
+
+Here's an example of how to initialize the InlineCheckout class:
+
+```javascript
+const inlineCheckout = new InlineCheckout({
+  apiKey: "YOUR_API_KEY",
+  returnUrl: "YOUR_RETURN_URL",
+  mode: "stage"
+});
+```
+
+  </Accordion>
+
+  <Accordion title="injectCheckout">
+
+Renders the pre-built checkout UI into your designated container. This method creates and displays the complete payment form with card input fields, validation, and styling.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters |
+
+Here's an example of how to inject the checkout UI:
+
+```javascript
+inlineCheckout.injectCheckout();
+```
+
+  </Accordion>
+
+  <Accordion title="payment">
+
+Initiates a payment transaction using the provided customer and cart data. This method processes the payment securely and handles the transaction flow.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `paymentData` | Object | Customer and cart information for the transaction |
+
+Here's an example of how to process a payment:
+
+```javascript
+const paymentData = {
+  customer: { firstName: "Juan", email: "juan@example.com" },
+  cart: { total: 399, items: [] },
+  currency: "mxn"
+};
+
+const response = await inlineCheckout.payment(paymentData);
+```
+
+  </Accordion>
+
+  <Accordion title="verify3dsTransaction">
+
+Verifies the status of a 3D Secure transaction after the user returns from the authentication process. This method should be called on your return page to confirm the final transaction status.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters |
+
+Here's an example of how to verify a 3DS transaction:
+
+```javascript
+inlineCheckout.verify3dsTransaction().then(response => {
+  if (response.transaction_status === 'Success') {
+    console.log('Payment verified successfully');
+  }
+});
+```
+
+  </Accordion>
+
+  <Accordion title="removeCheckout">
+
+Cleans up the SDK instance and removes UI components from the DOM. This method should be called when you no longer need the checkout interface.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters |
+
+Here's an example of how to remove the checkout:
+
+```javascript
+inlineCheckout.removeCheckout();
+```
+
+  </Accordion>
+</AccordionGroup>
+
+## Lite SDK Methods
+
+The Lite SDK includes all `InlineCheckout` methods, plus additional methods for card management:
+
+<AccordionGroup>
+  <Accordion title="configureCheckout">
+
+Sets customer email and the secure token required for card management operations.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `config` | Object | Configuration object with customer email and secure token |
+
+  </Accordion>
+
+  <Accordion title="getCustomerCards">
+
+Retrieves a list of saved cards for the configured customer.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters |
+
+  </Accordion>
+
+  <Accordion title="saveCustomerCard">
+
+Securely tokenizes and saves new card details for the customer.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `cardData` | Object | Card information to be saved |
+
+  </Accordion>
+
+  <Accordion title="removeCustomerCard">
+
+Deletes a previously saved card using its unique ID.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `cardId` | String | Unique identifier of the card to remove |
+
+  </Accordion>
+</AccordionGroup>
