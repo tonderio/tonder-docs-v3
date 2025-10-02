@@ -22,41 +22,55 @@ Tonder provides two JavaScript SDKs for web applications, each designed for diff
   </Card>
 </CardGroup>
 
-## Choosing the Right SDK
+## SDK Comparison
 
-Each SDK serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each SDK, including their best use cases, features, and practical implementation guidance.
+Each web SDK serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each SDK, including their best use cases, features, and practical implementation guidance.
 
 ### JS Inline SDK
 
-The JS Inline SDK is designed for quick, single-transaction payments and does not directly expose methods for enrolling or managing saved cards. Its primary purpose is to provide a complete, out-of-the-box checkout UI.
+The JS Inline SDK is ideal for teams who want a quick, secure integration with minimal development effort. It provides a complete, pre-built payment interface that handles all the complex payment logic for you. It's best for:
 
-**Best for:**
 - Quick integration and prototyping
 - Standard checkout flows
 - Teams with limited frontend development resources
 - Projects that prioritize speed to market
 
-**Features:**
-- Pre-built, customizable checkout UI
-- Automatic form validation
-- Built-in error handling
-- PCI DSS compliant out of the box
+The main features of the JS Inline SDK are:
+
+| Feature | Description |
+|---------|-------------|
+| Pre-built UI | Complete payment interface with card input fields, validation, and styling |
+| Automatic Validation | Built-in form validation for card numbers, expiration dates, and CVV |
+| 3DS Support | Automatic handling of 3D Secure authentication challenges |
+| PCI Compliance | Secure data handling without sensitive data touching your servers |
 
 ### JS Lite SDK
 
-The JS Lite SDK is designed for developers who want full control over the checkout experience. It provides a complete, out-of-the-box checkout UI that handles all the complex payment logic for you.
+The JS Lite SDK gives you complete control over the payment experience while handling the secure payment processing behind the scenes. Perfect for applications with existing design systems or custom UI requirements. It's best for:
 
-**Best for:**
 - Custom checkout designs
 - Complex payment flows
 - Existing design systems
 - Advanced payment method management
 
-**Features:**
-- Complete UI control
-- Card enrollment and management
-- Advanced customization options
-- Integration with existing forms
+The main features of the JS Lite SDK are:
+
+| Feature | Description |
+|---------|-------------|
+| Custom UI | Build your own payment forms using HTML and CSS |
+| Card Management | Save, retrieve, and delete customer payment methods |
+| Secure Tokenization | Tokenize card data without storing sensitive information |
+| Flexible Integration | Integrate with existing components and design systems |
+
+## Platform Support
+
+Each web SDK has specific platform requirements:
+
+| SDK | Requirements |
+|-----|-------------|
+| JS Inline | Modern web browsers with JavaScript support |
+| JS Lite | Modern web browsers with JavaScript support |
+| Cross-platform | All SDKs support desktop and mobile web browsers |
 
 ## Next Steps
 

@@ -14,67 +14,40 @@ Before you begin, make sure you have the following:
 
 ## Integration Steps
 
-Follow these four essential steps to integrate Tonder into your application and process your first payment. Each step builds upon the previous one, creating a complete payment integration workflow.
+Follow these essential steps to integrate Tonder into your application and process your first payment. Each step builds upon the previous one, creating a complete payment integration workflow.
 
-### 1. Choose and install your SDK
+<Steps>
+  <Step title="Choose and install your SDK">
+    First, you need to select the right SDK for your platform. Tonder provides dedicated SDKs for web (JavaScript) and mobile (React Native, Ionic, Flutter).
+  </Step>
+  <Step title="Initialize and configure the SDK">
+    Once installed, you need to initialize the SDK within your application and configure it for your checkout. This step involves:
 
-First, you need to select the right SDK for your platform. Tonder provides dedicated SDKs for web (JavaScript) and mobile (React Native, Ionic, Flutter).
+    - Providing your public API key and configuring the environment (e.g., `development` or `production`)
+    - Setting up customer and cart details, such as the total amount and currency
+    - Choosing between embedding individual payment fields into your custom checkout form or rendering a complete, pre-built UI
 
-Follow the specific installation instructions for your chosen platform:
+    This establishes a secure connection between your application and Tonder's services and prepares the checkout interface for payment processing.
+  </Step>
+  <Step title="Process a payment">
+    With the checkout displayed, the final step is to call the SDK's payment function. This function securely captures the user's payment details, sends them to Tonder for processing, and returns the transaction result.
+  </Step>
+</Steps>
 
-<CardGroup cols={2}>
-  <Card 
-    title="Mobile SDK Installation" 
-    icon="mobile"
-    href="/sdk-integration/mobile/overview"
-  >
-    Install Tonder SDKs for Flutter, Ionic, or React Native applications.
-  </Card>
-  <Card 
-    title="Web SDK Installation" 
-    icon="js"
-    href="/sdk-integration/web/overview"
-  >
-    Install Tonder JavaScript SDKs for web applications.
-  </Card>
-</CardGroup>
-
-### 2. Initialize and configure the SDK
-
-Once installed, you need to initialize the SDK within your application and configure it for your checkout. This step involves:
-
-- Providing your public API key and configuring the environment (e.g., `development` or `production`)
-- Setting up customer and cart details, such as the total amount and currency
-- Choosing between embedding individual payment fields into your custom checkout form or rendering a complete, pre-built UI
-
-This establishes a secure connection between your application and Tonder's services and prepares the checkout interface for payment processing.
-
-### 3. Process a payment
-
-With the checkout displayed, the final step is to call the SDK's payment function. This function securely captures the user's payment details, sends them to Tonder for processing, and returns the transaction result.
-
-For detailed, step-by-step instructions, refer to the guide for your specific platform:
+You can find more information about each SDK platform in the following pages:
 <CardGroup cols={2}>
   <Card 
     title="Mobile SDK" 
     icon="mobile"
     href="/sdk-integration/mobile/overview"
   >
-    Make a payment with the Mobile SDK.
+    Learn more about the Mobile SDKs.
   </Card>
   <Card 
     title="Web SDK" 
     icon="js"
     href="/sdk-integration/web/overview"
   >
-    Make a payment with the Web SDK.
+    Learn more about the Web SDKs.
   </Card>
 </CardGroup>
-
-## Next steps
-
-Now that you've successfully integrated Tonder and processed your first payment, explore these advanced features to enhance your payment experience:
-
-- Learn how to [enroll a payment method](/sdk-integration/web/js-lite/enroll-payment-method) for returning customers.
-- Explore how to [customize the look and feel](/sdk-integration/web/js-inline/customization) of the SDK components.
-- Consult the [SDK Methods Reference](/sdk-integration/web/js-inline/methods) for detailed information on all available functions.
