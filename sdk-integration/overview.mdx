@@ -1,0 +1,60 @@
+---
+title: "Tonder SDKs"
+og:description: "Understand the purpose of Tonder's SDKs and how they simplify payment integration."
+---
+
+Tonder's Software Development Kits (SDKs) are powerful tools designed to help you integrate our payment processing services directly into your web and mobile applications. By using our SDKs, you can create a seamless and secure checkout experience for your customers with minimal development effort.
+
+The primary benefits of using Tonder SDKs include simplified integration through well-documented functions that save development time, and enhanced security through secure data handling that ensures PCI DSS compliance without sensitive data touching your servers.
+
+## SDK Integration Workflow
+
+Integrating a Tonder SDK follows a consistent workflow. The process ensures that you can securely initialize a session, display payment options, and process transactions, including handling 3D Secure authentication when required.
+
+The typical workflow involves:
+
+<Steps>
+  <Step title="Initialization">
+    Your application requests a secure token from your backend to initialize the SDK.
+  </Step>
+  <Step title="Configuration">
+    You configure the SDK with customer and cart information.
+  </Step>
+  <Step title="UI Injection">
+    The SDK renders the necessary payment fields or a full checkout UI within your application.
+  </Step>
+  <Step title="Payment Processing">
+    The user submits their payment information, which the SDK securely sends to Tonder for processing.
+  </Step>
+  <Step title="3DS Handling">
+    If required, the SDK automatically handles the 3D Secure challenge.
+  </Step>
+  <Step title="Response">
+    Tonder returns the final transaction status to your application.
+  </Step>
+</Steps>
+
+<Note>
+To understand how to integrate Tonder's SDKs, you can follow our [step-by-step guide](/sdk-integration/start-using-tonder-sdkss) to integrate Tonder and process your first payment.
+</Note>
+
+## Available SDKs
+
+Tonder provides SDKs for the most common web and mobile platforms. Choose the one that best fits your technology stack.
+
+<CardGroup cols={2}>
+  <Card 
+    title="Mobile SDKs" 
+    icon="mobile" 
+    href="/sdk-integration/mobile/overview"
+  >
+    Build a native payment experience in your iOS and Android applications using React Native, Ionic, or Flutter.
+  </Card>
+  <Card 
+    title="Web SDKs" 
+    icon="js" 
+    href="/sdk-integration/web/overview"
+  >
+    Integrate Tonder's payment processing directly into your website or web application.
+  </Card>
+</CardGroup>
