@@ -214,9 +214,9 @@
                 "pages": [
                   "sdk-integration/web/js-lite/requirements-and-installation",
                   "sdk-integration/web/js-lite/make-a-payment",
+                  "sdk-integration/web/js-lite/enroll-payment-method",
                   "sdk-integration/web/js-lite/methods",
-                  "sdk-integration/web/js-lite/customization",
-                  "sdk-integration/web/js-lite/enroll-payment-method"
+                  "sdk-integration/web/js-lite/customization"
                 ]
               }
             ]
@@ -239,9 +239,9 @@
                 "pages": [
                   "sdk-integration/mobile/ionic/requirements-and-installation",
                   "sdk-integration/mobile/ionic/make-a-payment",
+                  "sdk-integration/mobile/ionic/enroll-payment-method",
                   "sdk-integration/mobile/ionic/methods",
-                  "sdk-integration/mobile/ionic/customization",
-                  "sdk-integration/mobile/ionic/enroll-payment-method"
+                  "sdk-integration/mobile/ionic/customization"
                 ]
               },
               {
@@ -249,9 +249,9 @@
                 "pages": [
                   "sdk-integration/mobile/react-native/requirements-and-installation",
                   "sdk-integration/mobile/react-native/make-a-payment",
+                  "sdk-integration/mobile/react-native/enroll-payment-method",
                   "sdk-integration/mobile/react-native/methods",
-                  "sdk-integration/mobile/react-native/customization",
-                  "sdk-integration/mobile/react-native/enroll-payment-method"
+                  "sdk-integration/mobile/react-native/customization"
                 ]
               }
             ]
