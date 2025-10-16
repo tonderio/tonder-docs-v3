@@ -125,14 +125,6 @@
               },
               "integration/sdks/secure-token"
             ]
-          },
-          {
-            "group": "Plugins",
-            "pages": [
-              "integration/plugins/plugins-overview",
-              "integration/plugins/magento",
-              "integration/plugins/woo-commerce"
-            ]
           }
         ]
       },
