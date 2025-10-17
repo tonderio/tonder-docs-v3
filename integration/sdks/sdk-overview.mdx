@@ -17,58 +17,27 @@ When integrating Tonder's SDKs into your application, it's important to follow a
 
 <Frame>![](/images/SDKs/sdk-workflow.png) </Frame>
 
-## Using Tonder SDKs
+## Choose Your SDK Type
 
-Tonder offers easy to configure Web and mobile SDKs. To check the available solutions and how to use each one, refer to their respective page below:
-
-### Web SDKs
-
-<CardGroup cols={1}>
-  <Card title="JS SDK" icon="js" href="./web/js-sdk"/>
-</CardGroup>
-  
-### Mobile SDKs
+Tonder offers two types of SDKs to match your integration needs:
 
 <CardGroup cols={2}>
-  <Card title="Ionic SDK Lite" icon={<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 100 100" fill="none">
-<rect width="100" height="100" rx="24" fill="#176BFF"/>
-<path d="M49.9997 31.3323C46.3042 31.3323 42.6918 32.4281 39.6191 34.4812C36.5465 36.5343 34.1516 39.4524 32.7374 42.8665C31.3232 46.2807 30.9532 50.0375 31.6742 53.662C32.3951 57.2864 34.1746 60.6157 36.7877 63.2288C39.4008 65.8418 42.7301 67.6214 46.3545 68.3423C49.9789 69.0632 53.7358 68.6932 57.1499 67.279C60.5641 65.8649 63.4822 63.47 65.5353 60.3974C67.5884 57.3247 68.6842 53.7123 68.6842 50.0168C68.6783 45.0632 66.7079 40.3141 63.2051 36.8114C59.7024 33.3086 54.9533 31.3382 49.9997 31.3323Z" fill="white"/>
-<path d="M76.8273 32.9887C81.5279 32.9887 85.3385 29.1781 85.3385 24.4775C85.3385 19.7769 81.5279 15.9663 76.8273 15.9663C72.1267 15.9663 68.3161 19.7769 68.3161 24.4775C68.3161 29.1781 72.1267 32.9887 76.8273 32.9887Z" fill="white"/>
-<path d="M87.3074 33.0334L86.9504 32.2526L86.3927 32.8996C84.9973 34.4829 83.2329 35.6975 81.2558 36.4357L80.6981 36.6365L80.9212 37.1942C83.927 44.4229 84.3075 52.4757 81.9965 59.9555C79.6856 67.4353 74.8292 73.8702 68.2698 78.1436C61.7104 82.417 53.8619 84.2594 46.0861 83.351C38.3103 82.4426 31.0979 78.8408 25.7001 73.1705C20.3023 67.5002 17.0599 60.1193 16.5353 52.3082C16.0107 44.4971 18.2371 36.7488 22.8281 30.4077C27.4192 24.0665 34.0853 19.5327 41.6698 17.5927C49.2542 15.6527 57.2786 16.429 64.3505 19.787L64.8748 20.0379L65.1035 19.4802C65.937 17.5415 67.2358 15.8384 68.885 14.5218L69.5543 13.9641L68.7902 13.5681C62.9852 10.551 56.5363 8.98374 49.9941 9.00013C41.1365 9.0014 32.5176 11.8711 25.4272 17.1798C18.3367 22.4884 13.1561 29.9505 10.6607 38.4493C8.16531 46.9481 8.48929 56.0265 11.5842 64.3257C14.679 72.625 20.3784 79.6988 27.8292 84.4886C35.28 89.2783 44.0816 91.5263 52.9167 90.8962C61.7518 90.2661 70.1453 86.7917 76.8409 80.993C83.5366 75.1944 88.1743 67.3833 90.06 58.7288C91.9458 50.0743 90.9781 41.0419 87.3018 32.9832L87.3074 33.0334Z" fill="white"/>
-</svg>} href="./mobile/ionic/ionic-sdk-lite"/>
-  <Card title="Ionic SDK Full" icon={<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 100 100" fill="none">
-<rect width="100" height="100" rx="24" fill="#176BFF"/>
-<path d="M49.9997 31.3323C46.3042 31.3323 42.6918 32.4281 39.6191 34.4812C36.5465 36.5343 34.1516 39.4524 32.7374 42.8665C31.3232 46.2807 30.9532 50.0375 31.6742 53.662C32.3951 57.2864 34.1746 60.6157 36.7877 63.2288C39.4008 65.8418 42.7301 67.6214 46.3545 68.3423C49.9789 69.0632 53.7358 68.6932 57.1499 67.279C60.5641 65.8649 63.4822 63.47 65.5353 60.3974C67.5884 57.3247 68.6842 53.7123 68.6842 50.0168C68.6783 45.0632 66.7079 40.3141 63.2051 36.8114C59.7024 33.3086 54.9533 31.3382 49.9997 31.3323Z" fill="white"/>
-<path d="M76.8273 32.9887C81.5279 32.9887 85.3385 29.1781 85.3385 24.4775C85.3385 19.7769 81.5279 15.9663 76.8273 15.9663C72.1267 15.9663 68.3161 19.7769 68.3161 24.4775C68.3161 29.1781 72.1267 32.9887 76.8273 32.9887Z" fill="white"/>
-<path d="M87.3074 33.0334L86.9504 32.2526L86.3927 32.8996C84.9973 34.4829 83.2329 35.6975 81.2558 36.4357L80.6981 36.6365L80.9212 37.1942C83.927 44.4229 84.3075 52.4757 81.9965 59.9555C79.6856 67.4353 74.8292 73.8702 68.2698 78.1436C61.7104 82.417 53.8619 84.2594 46.0861 83.351C38.3103 82.4426 31.0979 78.8408 25.7001 73.1705C20.3023 67.5002 17.0599 60.1193 16.5353 52.3082C16.0107 44.4971 18.2371 36.7488 22.8281 30.4077C27.4192 24.0665 34.0853 19.5327 41.6698 17.5927C49.2542 15.6527 57.2786 16.429 64.3505 19.787L64.8748 20.0379L65.1035 19.4802C65.937 17.5415 67.2358 15.8384 68.885 14.5218L69.5543 13.9641L68.7902 13.5681C62.9852 10.551 56.5363 8.98374 49.9941 9.00013C41.1365 9.0014 32.5176 11.8711 25.4272 17.1798C18.3367 22.4884 13.1561 29.9505 10.6607 38.4493C8.16531 46.9481 8.48929 56.0265 11.5842 64.3257C14.679 72.625 20.3784 79.6988 27.8292 84.4886C35.28 89.2783 44.0816 91.5263 52.9167 90.8962C61.7518 90.2661 70.1453 86.7917 76.8409 80.993C83.5366 75.1944 88.1743 67.3833 90.06 58.7288C91.9458 50.0743 90.9781 41.0419 87.3018 32.9832L87.3074 33.0334Z" fill="white"/>
-</svg>} href="./mobile/ionic/ionic-sdk-full"/>
+  <Card title="Full SDK" icon="window" href="/integration/sdks/full-sdk-overview">
+    Pre-built checkout interface with ready-to-use UI for quick implementation.
+  </Card>
+
+  <Card title="Lite SDK" icon="code" href="/integration/sdks/lite-sdk-overview">
+    Build custom payment UI with complete design control and flexibility.
+  </Card>
 </CardGroup>
 
-<CardGroup cols={2}>
-  <Card title="Flutter SDK Lite" icon={<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 100 100" fill="none">
-<rect width="100" height="100" rx="24" fill="white"/>
-<g clip-path="url(#clip0_400_201)">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M53.9398 91.9335L31.5159 69.6568L43.9092 57.0471L78.8648 91.9335H53.9398Z" fill="#02539A"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M31.239 69.674L53.4638 47.4492H78.4494L43.8746 82.024L31.239 69.674Z" fill="#45D1FD" fill-opacity="0.85"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M12 50.288L24.6183 62.8976L78.4494 9.06653H53.334L12 50.288Z" fill="#45D1FD"/>
-</g>
-<defs>
-<clipPath id="clip0_400_201">
-<rect width="66.8648" height="83" fill="white" transform="translate(12 9)"/>
-</clipPath>
-</defs>
-</svg>} href="./mobile/flutter/flutter-sdk-lite"/>
-  <Card title="Flutter SDK Full" icon={<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 100 100" fill="none">
-<rect width="100" height="100" rx="24" fill="white"/>
-<g clip-path="url(#clip0_400_201)">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M53.9398 91.9335L31.5159 69.6568L43.9092 57.0471L78.8648 91.9335H53.9398Z" fill="#02539A"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M31.239 69.674L53.4638 47.4492H78.4494L43.8746 82.024L31.239 69.674Z" fill="#45D1FD" fill-opacity="0.85"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M12 50.288L24.6183 62.8976L78.4494 9.06653H53.334L12 50.288Z" fill="#45D1FD"/>
-</g>
-<defs>
-<clipPath id="clip0_400_201">
-<rect width="66.8648" height="83" fill="white" transform="translate(12 9)"/>
-</clipPath>
-</defs>
-</svg>} href="./mobile/flutter/flutter-sdk-full"/>
-</CardGroup>
+## Platform Support
+
+Both Full SDK and Lite SDK are available for:
+
+- **Web** - JavaScript integration for web applications
+- **Flutter** - Native implementation for iOS and Android
+- **Ionic** - Hybrid mobile apps with the Ionic framework
+- **React Native** - Cross-platform mobile apps
+
+Visit the Full SDK or Lite SDK overview pages above to explore platform-specific implementation guides.
