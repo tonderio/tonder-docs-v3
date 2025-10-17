@@ -187,30 +187,81 @@
         ]
       },
       {
-        "tab": "SDK Integration",
+        "tab": "Full SDK",
         "groups": [
           {
             "group": "Introduction",
             "pages": [
-              "sdk-integration/overview",
+              "integration/sdks/full-sdk-overview",
               "sdk-integration/start-using-tonder-sdkss"
             ]
           },
           {
-            "group": "Web SDKs",
+            "group": "Web SDK (Pre-built UI)",
             "pages": [
               "sdk-integration/web/overview",
               {
-                "group": "JS Inline",
+                "group": "Web Full SDK",
                 "pages": [
                   "sdk-integration/web/js-inline/requirements-and-installation",
                   "sdk-integration/web/js-inline/make-a-payment",
                   "sdk-integration/web/js-inline/methods",
                   "sdk-integration/web/js-inline/customization"
                 ]
+              }
+            ]
+          },
+          {
+            "group": "Mobile SDKs (Pre-built UI)",
+            "pages": [
+              "sdk-integration/mobile/overview",
+              {
+                "group": "Flutter Full SDK",
+                "pages": [
+                  "sdk-integration/mobile/flutter/requirements-and-installation",
+                  "sdk-integration/mobile/flutter/make-a-payment",
+                  "sdk-integration/mobile/flutter/methods",
+                  "sdk-integration/mobile/flutter/customization"
+                ]
               },
               {
-                "group": "JS Lite",
+                "group": "Ionic Full SDK",
+                "pages": [
+                  "sdk-integration/mobile/ionic/requirements-and-installation",
+                  "sdk-integration/mobile/ionic/make-a-payment",
+                  "sdk-integration/mobile/ionic/methods",
+                  "sdk-integration/mobile/ionic/customization"
+                ]
+              },
+              {
+                "group": "React Native Full SDK",
+                "pages": [
+                  "sdk-integration/mobile/react-native/requirements-and-installation",
+                  "sdk-integration/mobile/react-native/make-a-payment",
+                  "sdk-integration/mobile/react-native/methods",
+                  "sdk-integration/mobile/react-native/customization"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Lite SDK",
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": [
+              "integration/sdks/lite-sdk-overview",
+              "sdk-integration/start-using-tonder-sdkss"
+            ]
+          },
+          {
+            "group": "Web SDK (Custom UI)",
+            "pages": [
+              "sdk-integration/web/overview",
+              {
+                "group": "Web Lite SDK",
                 "pages": [
                   "sdk-integration/web/js-lite/requirements-and-installation",
                   "sdk-integration/web/js-lite/make-a-payment",
@@ -222,11 +273,11 @@
             ]
           },
           {
-            "group": "Mobile SDKs",
+            "group": "Mobile SDKs (Custom UI)",
             "pages": [
               "sdk-integration/mobile/overview",
               {
-                "group": "Flutter",
+                "group": "Flutter Lite SDK",
                 "pages": [
                   "sdk-integration/mobile/flutter/requirements-and-installation",
                   "sdk-integration/mobile/flutter/make-a-payment",
@@ -235,7 +286,7 @@
                 ]
               },
               {
-                "group": "Ionic",
+                "group": "Ionic Lite SDK",
                 "pages": [
                   "sdk-integration/mobile/ionic/requirements-and-installation",
                   "sdk-integration/mobile/ionic/make-a-payment",
@@ -245,7 +296,7 @@
                 ]
               },
               {
-                "group": "React Native",
+                "group": "React Native Lite SDK",
                 "pages": [
                   "sdk-integration/mobile/react-native/requirements-and-installation",
                   "sdk-integration/mobile/react-native/make-a-payment",
