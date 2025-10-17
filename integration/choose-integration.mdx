@@ -1,4 +1,7 @@
-# Choosing Your Tonder Integration Model
+---
+title: "Choose Your Integration"
+"og:description": "Discover the various integration models Tonder offers for accepting deposits and sending withdrawals. This guide will help you select the best integration approach based on your technical capabilities, time to market, customization needs, and compliance requirements."
+---
 
 Tonder offers multiple integration models to accept deposits and send withdrawals. Selecting the right model is critical for your project's success, as it impacts your time to market, development resources, user experience, and compliance requirements.
 
@@ -9,7 +12,7 @@ This guide will help you understand:
 - The key differences to help you select the right model for your needs.
 - Real-world use cases for platforms like gaming and e-commerce.
 
-### Before You Choose
+## Before You Choose
 
 Consider these key questions to guide your decision:
 
@@ -19,7 +22,7 @@ Consider these key questions to guide your decision:
 - Does your organization hold a valid PCI DSS certification?
 - Do you need to both accept payments (deposits) and send payouts (withdrawals)?
 
----
+After answering these questions, review the integration models below to find the best fit for your business.
 
 ## Quick Comparison
 
@@ -32,11 +35,11 @@ This matrix provides a high-level comparison of the integration models.
 | **Lite SDK**                     |    ✅    |    ❌\*     | ❌\*\*  |     5-7 days      |     High      |        ❌         |
 | **API Direct Integration (S2S)** |    ✅    |     ✅      |   ✅    |     1-2 weeks     |   Complete    |        ✅         |
 
-> \* _Withdrawals for this model are handled via the Standalone Withdrawals API._
->
-> \*\* _Refunds are initiated from the merchant's dashboard._
+<Note>
+  Withdrawals for this model are handled via the Standalone Withdrawals API.
+</Note>
 
----
+<Note> Refunds are initiated from the merchant's dashboard. </Note>
 
 ## Integration Models in Detail
 
@@ -55,13 +58,17 @@ Dive into the specifics of each model to understand its architecture, features, 
 | **PCI Compliance** | Tonder manages all PCI compliance. |
 
 <Note>
-  **When to Choose Hosted Checkout**: You need to launch immediately and accept
-  payments quickly. You do not have a technical team or development resources.
-  Your payment needs are straightforward.
+  **Use this model if** 
+  
+  You need to launch immediately and accept payments
+  quickly. You do not have a technical team or development resources. Your
+  payment needs are straightforward.
 </Note>
 
 <Note>
-  **Limitations**: Cannot be embedded directly into your application or website.
+  **Limitations** 
+  
+  Cannot be embedded directly into your application or website.
   Customization options are limited to branding basics.
 </Note>
 
@@ -79,20 +86,22 @@ Dive into the specifics of each model to understand its architecture, features, 
 | **PCI Compliance** | Tonder handles sensitive data via tokenization.                |
 | **Platforms**      | Web (JavaScript), iOS, Android, React Native, Ionic, Flutter.  |
 
-{" "}
 <Note>
-  **When to Choose the Full SDK**: You need an embedded checkout experience
-  within your website or mobile app. A standard but styleable UI is acceptable
-  for your brand. You are building a mobile application and want a native-feel
-  checkout
+  **Use this model if** 
+  
+  You need an embedded checkout experience within your
+  website or mobile app. A standard but styleable UI is acceptable for your
+  brand. You are building a mobile application and want a native-feel checkout
 </Note>
 
 <Note>
-  **Limitations**: UI customization is limited to styling; the layout and flow
+  **Limitations** 
+  
+  UI customization is limited to styling; the layout and flow
   are fixed.
 </Note>
 
-<hr />
+If you want to learn more about the Full SDK provided, check out the available SDKs below:
 
 <CardGroup cols={3}>
 <Card title="Ionic SDK Full" icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 100 100" fill="none">
@@ -115,7 +124,6 @@ Dive into the specifics of each model to understand its architecture, features, 
 </defs>
 </svg>} href="/integration/sdks/mobile/flutter/flutter-sdk-full"/>
 </CardGroup>
-<hr/>
   </Tab>
   <Tab title="Lite SDK (Custom UI)">
     Build your own custom checkout UI from the ground up while our SDK handles the tokenization of sensitive card data in the background.
@@ -131,15 +139,21 @@ Dive into the specifics of each model to understand its architecture, features, 
 | **Platforms**      | Web (JavaScript), iOS, Android, React Native, Ionic, Flutter.                   |
 
 <Note>
-  **When to Choose the Lite SDK**: Brand consistency and a specific user
+  **Use this model if you need** 
+  
+  Brand consistency and a specific user
   experience are critical. You have unique UI/UX requirements for your checkout
   flow. You have a strong front-end development team.
 </Note>
 
 <Note>
-  **Limitations**: Longer implementation time compared to pre-built solutions.
+  **Limitations** 
+  
+  Longer implementation time compared to pre-built solutions.
   Requires significant UI development effort from your team.
 </Note>
+
+If you want to learn more about the Lite SDK provided, check out the available SDKs below:
 
 <CardGroup cols={3}>
   <Card title="JS" icon="js" href="/integration/sdks/web/js-sdk" />
@@ -217,10 +231,9 @@ Dive into the specifics of each model to understand its architecture, features, 
     href="/integration/sdks/mobile/flutter/flutter-sdk-lite"
   />
 </CardGroup>
-<hr />
 
   </Tab>
-  <Tab title="API Direct Integration (Server-to-Server)">
+  <Tab title="API Direct Integration">
     Direct backend API integration gives you complete control over the payment flow, data handling, and user interface.
 
 | Aspect             | Details                                                        |
@@ -237,17 +250,21 @@ Dive into the specifics of each model to understand its architecture, features, 
 > With this model, your servers will handle raw card data, making PCI DSS certification mandatory. You must provide a valid Attestation of Compliance (AOC) before starting your implementation.
 
 <Note>
-  **When to Choose API Direct Integration**: Your organization is already PCI
-  certified. You need to support deposits, withdrawals, and refunds within a
-  single integration. You process a high volume of transactions and require
-  maximum control and flexibility.
+  **Use this model if**: 
+  
+  Your organization is already PCI certified. You need to
+  support deposits, withdrawals, and refunds within a single integration. You
+  process a high volume of transactions and require maximum control and
+  flexibility.
 </Note>
 
 <Note>
-  **Limitations**: PCI certification is a strict prerequisite. The longest and
+  **Limitations** 
+  
+  PCI certification is a strict prerequisite. The longest and
   most complex implementation path.
 </Note>
-
+If you want to learn more about API Integration, check out the API reference below:
 <CardGroup cols={3}>
   <Card
     title="API Reference"
@@ -258,8 +275,11 @@ Dive into the specifics of each model to understand its architecture, features, 
 </CardGroup>
 
   </Tab>
-  <Tab title="Withdrawals API">
-    The Withdrawals API is a standalone, server-to-server API designed exclusively for sending payments to recipients.
+</Tabs>
+
+## Withdrawals API
+
+The Withdrawals API is a standalone, server-to-server API designed exclusively for sending payments to recipients.
 
 | Aspect            | Details                                                                             |
 | :---------------- | :---------------------------------------------------------------------------------- |
@@ -270,56 +290,14 @@ Dive into the specifics of each model to understand its architecture, features, 
 | **Use Cases**     | Player payouts, seller payments, affiliate commissions, etc.                        |
 
 <Note>
-  **Key Point**: The Withdrawals API is independent of deposit integrations. You
+  **Key Point** The Withdrawals API is independent of deposit integrations. You
   can add withdrawal functionality without modifying your existing payment
   acceptance setup.
 </Note>
 
-  </Tab>
-</Tabs>
-
----
-
-<AccordionGroup>
-  <Accordion title="I need to ACCEPT PAYMENTS (Deposits)">
-    **Do you have developers?**
-    - **No** → **Hosted Checkout**
-    - **Yes** → Continue to question down below
-  </Accordion>
-
-{" "}
-<Accordion title="Do you need a completely custom UI?">
-  - **No** → **Full SDK** (for a standard, embeddable UI) - **Yes** → **Lite
-  SDK** (for full UX/UI control)
-</Accordion>{" "}
-
-{" "}
-<Accordion title="Are you PCI certified and need maximum control?">
-  - **Yes** → **API Integration**
-</Accordion>{" "}
-
-{" "}
-<Accordion title="I need to ACCEPT AND SEND PAYMENTS (Deposits + Withdrawals)">
-  **Are you PCI certified?** - **Yes** → **API Integration** is the all-in-one
-  solution. - **No** → Continue to question down below
-</Accordion>{" "}
-
-  <Accordion title="Choose a deposit model and pair it with the Withdrawals API:">
-    - **Fastest Launch:** Hosted Checkout + Withdrawals API
-    - **Standard Embedded UI:** Full SDK + Withdrawals API
-    - **Custom Branded UI:** Lite SDK + Withdrawals API
-
-  </Accordion>
-
-  <Accordion title="I need to SEND PAYMENTS ONLY (Withdrawals)">
-    -   Use the standalone **Withdrawals API**.
-
-  </Accordion> 
-</AccordionGroup>
-
----
-
 ## Feature Support Across Models
+
+In this table, we summarize the availability of key features across the different integration models.
 
 | Feature          | Hosted Checkout | Full SDK  | Lite SDK  |   API Integration   |
 | :--------------- | :-------------: | :-------: | :-------: | :-----------------: |
@@ -333,52 +311,85 @@ Dive into the specifics of each model to understand its architecture, features, 
 | Webhooks         |       ✅        |    ✅     |    ✅     |         ✅          |
 | Test Environment |       ✅        |    ✅     |    ✅     |         ✅          |
 
-_Contact Tonder support for guidance on selecting the right integration model for your business._
+<Note>
 
----
+  Contact Tonder support for guidance on selecting the right integration model for
+  your business.
 
-### Use Cases
+</Note>
+
+Now that you are aware of the different integration models, use the flowchart below to help you decide which model is best for your business needs.
+
+<AccordionGroup>
+  <Accordion title="I need to ACCEPT PAYMENTS (Deposits)">
+    Do you have developers?
+    - **No** → Hosted Checkout
+    - **Yes** → Continue to question down below
+  </Accordion>
+
+<Accordion title="Do you need a completely custom UI?">
+  - **No** → Full SDK (for a standard, embeddable UI) 
+  - **Yes** → Lite SDK (for full UX/UI control)
+</Accordion>
+
+<Accordion title="Are you PCI certified and need maximum control?">
+  - **Yes** → API Integration 
+  - **No** → Choose between Full SDK or Lite SDK
+  based on UI needs.
+</Accordion>
+
+<Accordion title="I need to ACCEPT AND SEND PAYMENTS (Deposits + Withdrawals)">
+  Are you PCI certified? 
+  - **Yes** → API Integration is the all-in-one
+  - **No** → Continue to question down below
+</Accordion>
+
+  <Accordion title="Choose a deposit model and pair it with the Withdrawals API:">
+    - Fastest Launch: Hosted Checkout + Withdrawals API
+    - Standard Embedded UI: Full SDK + Withdrawals API
+    - Custom Branded UI: Lite SDK + Withdrawals API
+
+  </Accordion>
+
+  <Accordion title="I need to SEND PAYMENTS ONLY (Withdrawals)">
+    -   Use the standalone Withdrawals API.
+
+  </Accordion> 
+</AccordionGroup>
+
+## Use Cases
+
+Every single integration model can be used to support various use cases. Here are some common scenarios and the recommended models for each:
 
 <Tabs>
-  <Tab title="Use Case 1">
-    ### Gaming Platform - Receiving Deposits
-**Need**: Accept deposits from players
+  <Tab title="Receiving Deposits">
+   The Gaming Platform must securely accept deposits from players to initiate the user experience. Developers can choose from multiple endorsed models to meet this need:
+   
+   - Hosted Checkout: The fastest option, requiring no code and minimal setup (estimated $\mathbf{1}$ day).
+   - Full SDK/Lite SDK: These models allow for an embedded checkout experience. Full SDK is quicker (2-3 days) with a standard UI, while the Lite SDK provides complete customization.
+   - API Integration: The model that offers maximum control, but the merchant must be PCI certified (L1 ROC or L2 SAQ D required).
+   
+   All these models support Deposits and Refunds
 
-**Models**:
-
-- Hosted Checkout
-- Full SDK
-- Lite SDK
-- API Integration - if PCI certified
-
-**Flows**: Deposits ✅ | Refunds ✅
-
-  </Tab>
-  <Tab title="Use Case 2">
-    ### Gaming Platform - Sending Payouts
-**Need**: Send winnings to players
-
-**Models**:
-
-- Withdrawals API - combine with any deposit model
-- API Integration - if handling both flows and PCI certified
-
-**Flows**: Withdrawals ✅
+</Tab>
+  <Tab title="Sending Payouts">
+    To satisfy the need to send winnings to players, the Gaming Platform must implement robust withdrawal capabilities. The two primary endorsed models for this outflow are:
+    
+    - Withdrawals API: This standalone, independent API is for Withdrawals only and can be combined with any deposit model. Implementation is a server-to-server API with an estimated setup of 1-2 days.
+    - API Integration (Direct Connect): This single integration handles all three money flows (Deposits, Withdrawals, Refunds), but is only suitable if the platform is PCI certified.
+    
+    This flexible approach simplifies integration, compliance and transaction monitoring.
 
   </Tab>
-  <Tab title="Use Case 3">
-    ### E-commerce web site- Accepting Payments
+  <Tab title="Accepting Payments">
 
-**Need**: Accept customer payments
+For the E-commerce web site, the core need is to securely accept customer payments. Developers can choose from endorsed models that balance speed, customization, and compliance:
 
-**Models**:
+- Hosted Checkout: Best for the fastest implementation (1 day) and sites with no code required.
+- Full SDK/Lite SDK: Offer embedded checkout with the Full SDK providing a standard UI and the Lite SDK offering complete UX/UI control for strong branding.
+- Direct Connect API Integration (S2S): Allows for maximum control and full backend integration, but requires the merchant to be PCI certified.
 
-- Hosted Checkout
-- Full SDK
-- Lite SDK
-- Direct Connect API Integration - if PCI certified
-
-**Flows**: Deposits ✅ | Refunds ✅
+These models all support Deposits and Refunds , providing a complete, scalable, transaction system optimized for e-commerce.
 
   </Tab>
 </Tabs>
