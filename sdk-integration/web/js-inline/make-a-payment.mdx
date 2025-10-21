@@ -31,7 +31,7 @@ Follow these steps to integrate payment processing into your web application. Th
 
 ### Step 1: Initialize the SDK
 
-Create an instance of the `InlineCheckout` class to establish a secure connection with Tonder's payment services. This initialisation configures the SDK with your API credentials and sets up the operating mode for your environment.
+Create an instance of the `InlineCheckout` class to establish a secure connection with Tonder's payment services. This initialisation configures the SDK with your API credentials and sets up the operating mode for your environment. Finally, the initialization should mention the optional signatures parameter for HMAC validation.
 
 <CodeGroup>
 
@@ -39,17 +39,13 @@ Create an instance of the `InlineCheckout` class to establish a secure connectio
 import { InlineCheckout } from "tonder-web-sdk";
 
 const inlineCheckout = new InlineCheckout({
-  apiKey: 'YOUR_API_KEY',
-  returnUrl: 'https://your-website.com/return',
-  mode: 'development',
-});
-```
-
-```javascript Script Tag Option
-const inlineCheckout = new TonderSdk.InlineCheckout({
-  apiKey: 'YOUR_API_KEY',
-  returnUrl: 'https://your-website.com/return',
-  mode: 'development',
+  apiKey: 'YOUR_API_KEY',
+  returnUrl: 'https://your-website.com/return',
+  mode: 'development',
+  signatures: { // Optional: for backend HMAC validation
+    transaction: "nA6nQXxQ....=", // Optional HMAC signature for transaction
+    customer: "2EVYDIOH515v4....=" // Optional HMAC signature for customer
+  }
 });
 ```
 

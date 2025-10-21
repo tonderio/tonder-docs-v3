@@ -16,11 +16,25 @@ import { InlineCheckout } from "tonder-web-sdk";
 
 const customConfig = {
   // ... your style, label, and placeholder definitions here
+  styles: {
+    // ... your custom styles here
+  },
+  labels: { 
+    // ... your custom labels here
+  },
+  placeholders: { 
+    // ... your custom placeholders here
+  }
 };
 
 const inlineCheckout = new InlineCheckout({
-  apiKey: "YOUR_API_KEY",
-  returnUrl: "YOUR_RETURN_URL",
+  // 1. Replace with your actual API Key
+  apiKey: "YOUR_API_KEY", 
+  
+  // 2. Replace with the URL where the user will be redirected after the payment process
+  returnUrl: "YOUR_RETURN_URL", 
+  
+  // Your customization object
   ...customConfig
 });
 ```

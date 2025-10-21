@@ -1,14 +1,12 @@
 ---
-title: "SDK Methods"
+title: "SDK Methods" 
 og:description: "Reference for the methods available in Tonder's JavaScript Inline SDK."
 ---
 
-This page provides a comprehensive reference for the core methods available in the `InlineCheckout` class. Whether you're implementing basic payment processing or advanced checkout functionality, this documentation will help you understand the available methods and their usage.
-
+This page provides a comprehensive reference for the core methods available in the InlineCheckout class. Whether you're implementing basic payment processing or advanced checkout functionality, this documentation will help you understand the available methods and their usage.
 ## Method Details
 
 Each method in the Tonder JS Inline SDK serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each method, including their parameters, usage examples, and practical implementation guidance.
-
 <AccordionGroup>
   <Accordion title="new InlineCheckout(config)">
 
@@ -16,14 +14,15 @@ Creates and initialises a new SDK instance with your API credentials and configu
 
 The constructor accepts the following configuration parameters:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `apiKey` | string | Yes | Your Tonder API key for authentication |
-| `returnUrl` | string | Yes | URL where users will be redirected after 3D Secure verification |
-| `mode` | string | Yes | Environment mode: `'development'` or `'production'` |
-| `styles` | object | No | Custom styling options for the checkout UI |
-| `labels` | object | No | Custom text for input labels |
-| `placeholders` | object | No | Custom placeholder text for input fields |
+| Parameter     | Type   | Required | Description                                                                                       |
+|---------------|--------|:--------:|---------------------------------------------------------------------------------------------------|
+| mode          | string | Yes      | Environment mode for the SDK (e.g., `stage`, `production`, `sandbox`, or `development`).         |
+| apiKey        | string | Yes      | Your Tonder public API key.                                                                       |
+| returnUrl     | string | Yes      | URL where users are redirected after 3D Secure verification.                                      |
+| styles        | object | No       | Custom styling options for the checkout UI (e.g., `inputStyles`, `labelStyles`, `labels`, `placeholders`). |
+| customization | object | No       | UI customization options (for example: showing/hiding the save card option or payment button).     |
+| callbacks     | object | No       | Callback functions for user actions (for example: `onCancel`).                                    |
+| signatures    | object | No       | Optional HMAC signatures for transaction and customer data.                                       |
 
 Here's how to initialise the SDK with basic configuration:
 
@@ -31,26 +30,33 @@ Here's how to initialise the SDK with basic configuration:
 import { InlineCheckout } from "tonder-web-sdk";
 
 const inlineCheckout = new InlineCheckout({
-  apiKey: 'YOUR_API_KEY',
-  returnUrl: 'https://your-website.com/return',
-  mode: 'development',
-  styles: {
-    inputStyles: {
-      base: { border: "1px solid #E0E0E0", padding: "12px 10px" }
-    }
+  apiKey: 'your-api-key',
+  returnUrl: 'https://your-website.com/checkout',
+  mode: 'development', 
+  styles: 
+    inputStyles: {
+      base: { border: "1px solid #E0E0E0", padding: "12px 10px" }
+    }
+  },
+  signatures: { // Optional HMAC signatures
+    transaction: "nA6nQXxQ....=",
+    customer: "2EVYDIOH515v4....="
   }
-});
+);
 ```
 
   </Accordion>
 
   <Accordion title="injectCheckout()">
 
-Renders the pre-built checkout interface within your designated container div. This method creates and displays the complete payment form with card input fields, validation, and styling.
+Renders the pre-built, customizable checkout interface into the designated DOM element (for example: `<div id="tonder-checkout"></div>`). 
+
+This method injects the checkout into the DOM. Ensure the target element exists (call after DOMContentLoaded or place the script after the target element) before calling `injectCheckout()`.
 
 This method doesn't require any parameters. Simply call it to render the checkout interface:
 
 ```javascript
+// Inject the checkout into the DOM
 inlineCheckout.injectCheckout();
 ```
 
@@ -62,52 +68,56 @@ Initiates a payment transaction using the provided customer and cart data. This 
 
 The payment method expects a data object with the following structure:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `paymentData` | object | Yes | Payment information including customer and cart details |
-| `paymentData.customer` | object | Yes | Customer information (firstName, email, etc.) |
-| `paymentData.cart` | object | Yes | Cart information (total, items) |
-| `paymentData.currency` | string | Yes | Currency code (e.g., 'mxn') |
+| Parameter                 | Type   | Required | Description                                                                                         |
+|--------------------------:|:------:|:--------:|:----------------------------------------------------------------------------------------------------|
+| `paymentData`             | object | Yes      | Payment information including customer and cart details.                                            |
+| `paymentData.customer`    | object | Yes      | Customer personal information (e.g., `name`, `email`, `phone`, `billing_address`).                  |
+| `paymentData.cart`        | object | Yes      | Cart details including `total` and an `items` array. Each item typically has `name`, `description`, `quantity`, `price_unit`, and `amount_total`. |
+| `paymentData.currency`    | string | Yes      | Currency code (for example: `MXN`).                                                                 |
+| `paymentData.metadata`    | object | No       | Optional additional data for the transaction (e.g., `orderId`, `notes`, custom fields).             |
 
 Here's a complete example of processing a payment:
 
 ```javascript
 const checkoutData = {
-  customer: { 
-    firstName: "Juan", 
-    email: "juan.hernandez@mail.com" 
-  },
-  currency: 'mxn',
-  cart: { 
-    total: 399, 
-    items: [{ name: "T-Shirt", amount_total: 399 }] 
-  }
+  customer: { 
+    email: "example@email.com" 
+  }, [cite: 223]
+  currency: 'mxn', 
+  cart: { 
+    total: 399, 
+    items: [{ 
+      name: "T-Shirt", 
+      amount_total: 399,
+      description: "Black T-Shirt",
+      quantity: 1,
+      price_unit: 1
+    }] 
+  },
+  metadata: { order_id: "ORDER123" } // Optional additional data
 };
 
 try {
-  const response = await inlineCheckout.payment(checkoutData);
-  console.log('Payment successful:', response);
+  const response = await inlineCheckout.payment(checkoutData);
+  console.log('Payment successful:', response);
 } catch (error) {
-  console.error('Payment failed:', error);
+  console.error('Payment failed:', error);
 }
 ```
-
+  
   </Accordion>
 
   <Accordion title="verify3dsTransaction()">
 
-Verifies the status of a 3D Secure transaction after the user is redirected back to your site. This method should be called on your return page to get the final transaction status.
+Verifies the status of a 3D Secure transaction. This method should be called after injectCheckout() to handle 3DS verification if required. It returns a promise that resolves with the transaction response.
 
-This method doesn't require any parameters and should be called on your return page after 3D Secure verification:
-
+The response status will be one of the following: 'Declined', 'Cancelled', 'Failed', 'Success', 'Pending', or 'Authorized'.
 ```javascript
-// On your return page
-inlineCheckout.verify3dsTransaction().then(response => {
-  if (response.transaction_status === 'Success') {
-    alert('3DS Transaction successful!');
-  } else {
-    alert('3DS Transaction failed');
-  }
+
+// On your return page or after injectCheckout()
+inlineCheckout.verify3dsTransaction().then(response => { 
+  console.log("Verify 3ds response", response); 
+  // e.g., if (response.status === 'Success') { ... }
 });
 ```
 
@@ -120,7 +130,54 @@ Cleans up the SDK instance and removes UI components from the DOM. Use this meth
 This method doesn't require any parameters and can be called whenever you need to clean up the checkout interface:
 
 ```javascript
+// Example in a React component's cleanup
+useEffect(() => {
+  return () => {
+    if (tonder.removeCheckout) {
+      tonder.removeCheckout(); 
+    }
+  };
+}, [tonder]);
+
+// Or call it directly
 inlineCheckout.removeCheckout();
+```
+
+  </Accordion>
+
+  <Accordion title="configureCheckout(data)">
+Sets initial checkout data. This function allows you to set information, such as the customer's email, which can be used to retrieve a list of saved cards.
+
+This method must be used to send all payment data (customer, cart, metadata, etc.) when you are using Tonder's default payment button.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `data` | object | Yes | An object containing initial checkout information, such as customer , cart, currency, or metadata. |
+
+```javascript
+// Set customer email to retrieve saved cards
+inlineCheckout.configureCheckout({ 
+  customer: { email: "example@email.com" } 
+}); 
+
+// Set all data when using the default Tonder payment button
+inlineCheckout.configureCheckout({ 
+  customer: { email: "example@email.com" }, 
+  currency: "mxn", [cite: 223]
+  cart: { [cite: 223]
+    total: 399,
+    items: [
+      { 
+        name: "T-Shirt", 
+        amount_total: 399, 
+        description: "Black T-Shirt",
+        quantity: 1,
+        price_unit: 1
+      }
+    ]
+  },
+  metadata: {} // Optional additional data
+});
 ```
 
   </Accordion>
