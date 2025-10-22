@@ -13,10 +13,10 @@ Before installing the Tonder React Native SDK, ensure your project meets the min
 
 Ensure your project meets the following requirements:
 
-- `react-native >= 0.70`
-- `react >= 16.8`
-- `react-native-svg >= 15.0.0`
-- `react-native-webview >= 13.6.0`
+- react-native >= 0.70
+- react >= 16.8
+- react-native-svg >= 15.0.0
+- react-native-webview >= 13.6.0
 
 <Warning>
 The SDK will not work with older versions of these packages.
@@ -24,7 +24,7 @@ The SDK will not work with older versions of these packages.
 
 ## Installation
 
-To install the Tonder React Native SDK, you need to add the package to your project and configure mobile environment permissions. The SDK provides a complete payment solution with pre-built UI components.
+To install the Tonder React Native SDK, you need to add the package to your project. The SDK provides a complete payment solution with pre-built UI components.
 
 ### Step 1: Install the SDK Package
 
@@ -32,29 +32,9 @@ Install the SDK package from npm:
 
 ```bash
 npm install @tonder.io/rn-sdk
+# OR
+yarn add @tonder.io/rn-sdk
 ```
-
-### Step 2: Configure Mobile Environment Permissions
-
-You must grant internet permissions for the SDK to function correctly on native devices.
-
-<Tabs>
-<Tab title="Android">
-Add the INTERNET permission to your AndroidManifest.xml file.
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-```
-</Tab>
-<Tab title="iOS / macOS">
-For iOS and macOS, add the network client entitlement to your .entitlements files.
-
-```xml
-<key>com.apple.security.network.client</key>
-<true/>
-```
-</Tab>
-</Tabs>
 
 ## Next Steps
 
