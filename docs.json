@@ -62,8 +62,7 @@
                   "online-payments/coverage/mexico",
                   "online-payments/coverage/peru"
                 ]
-              },
-              "online-payments/test-cards"
+              }
             ]
           }
         ]
@@ -146,7 +145,6 @@
                   "direct-integration/environment",
                   "direct-integration/authentication",
                   "direct-integration/http-response-codes",
-                  "direct-integration/testing-data",
                   "direct-integration/rate-limits"
                 ]
               },
