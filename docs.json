@@ -51,13 +51,15 @@
                 "group": "Coverage",
                 "pages": [
                   "online-payments/coverage/coverage",
+                  "online-payments/coverage/argentina",
                   "online-payments/coverage/brazil",
+                  "online-payments/coverage/el-salvador",
+                  "online-payments/coverage/chile",
                   "online-payments/coverage/colombia",
                   "online-payments/coverage/costa-rica",
                   "online-payments/coverage/ecuador",
                   "online-payments/coverage/guatemala",
                   "online-payments/coverage/mexico",
-                  "online-payments/coverage/panama",
                   "online-payments/coverage/peru"
                 ]
               },
