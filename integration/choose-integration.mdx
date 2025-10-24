@@ -1,68 +1,107 @@
 ---
 title: "Choose Your Integration"
-sidebarTitle: "Choose Your Integration"
-'og:description': ""
+"og:description": "Discover the various integration models Tonder offers for accepting deposits and sending withdrawals. This guide will help you select the best integration approach based on your technical capabilities, time to market, customization needs, and compliance requirements."
 ---
 
-Selecting the right integration option to provide payment options to your clients is crucial to ensure the user and developer experience and the project's maintainability. Choosing the appropriate SDK impacts several key aspects of your business:
+Tonder offers multiple integration models to accept deposits and send withdrawals. Selecting the right model is critical for your project's success, as it impacts your time to market, development resources, user experience, and compliance requirements.
 
-- Development Time
-- User Experience
-- Scalability
+This guide will help you understand:
 
-## Tonder Integration Options
+- The four primary integration models for accepting payments.
+- The standalone Withdrawals API for sending payouts.
+- The key differences to help you select the right model for your needs.
+- Real-world use cases for platforms like gaming and e-commerce.
 
-The following table summarizes the characteristics of the available integration options provided by Tonder.
+## Before You Choose
 
-| Feature| [Lite SDK](#lite-sdk)| [Full SDK](#full-sdk)| [API Integration](#api-integration)|
-|------------------------|----------------------------------------------|--------------------------------------|----------------------------------------|
-| Target audience    | Merchants looking for more customization   | Projects needing quick implementation| PCI-certified businesses looking for complete control over the integration |
-| Customization      | Extensive customization options             | Limited customization                | Complete customization                |
-| Flexibility        | High flexibility in design and functionality | Pre-built, less flexible             | High flexibility                       |
-| Ease of use        | Requires more development effort            | Simplifies development with pre-built elements | Requires a complete development of front and back end, in addition to the PCI certification and AOC    |
-| User interface     | Customizable                                 | Ready-to-use UI                      | Customizable                            |
-| Saved card | Not included                                | Included                             | Depends on implementation               |
-| PCI Compliance     | Included                                     | Included                             | Requires PCI certification              |
+Consider these key questions to guide your decision:
 
-Below, you will find additional details from each available integration.
+- Do you have developers available to write code?
+- How quickly do you need to launch and start accepting payments?
+- Is a custom-branded user interface essential for your checkout flow?
+- Does your organization hold a valid PCI DSS certification?
+- Do you need to both accept payments (deposits) and send payouts (withdrawals)?
 
-### Lite SDK
+After answering these questions, review the integration models below to find the best fit for your business.
 
-- **Customization**: The Lite SDK offers extensive customization options for components, allowing developers to tailor the user experience to specific needs.
-- **Target Audience**: Ideal for merchants who require specific, custom implementations and have the resources to design and integrate custom UI components.
-- **Flexibility**: This SDK is highly flexible in terms of design and functionality, providing developers with the tools to create a unique and tailored experience.
-- **PCI Compliance**: The Lite SDK includes PCI capabilities, ensuring secure transactions and compliance with payment security standards.
+## Quick Comparison
 
-<CardGroup cols={3}>
-  <Card title="JS" icon="js" href="/integration/sdks/web/js-sdk"/>
-  <Card title="Ionic SDK Lite" icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 100 100" fill="none">
-<rect width="100" height="100" rx="24" fill="#176BFF"/>
-<path d="M49.9997 31.3323C46.3042 31.3323 42.6918 32.4281 39.6191 34.4812C36.5465 36.5343 34.1516 39.4524 32.7374 42.8665C31.3232 46.2807 30.9532 50.0375 31.6742 53.662C32.3951 57.2864 34.1746 60.6157 36.7877 63.2288C39.4008 65.8418 42.7301 67.6214 46.3545 68.3423C49.9789 69.0632 53.7358 68.6932 57.1499 67.279C60.5641 65.8649 63.4822 63.47 65.5353 60.3974C67.5884 57.3247 68.6842 53.7123 68.6842 50.0168C68.6783 45.0632 66.7079 40.3141 63.2051 36.8114C59.7024 33.3086 54.9533 31.3382 49.9997 31.3323Z" fill="white"/>
-<path d="M76.8273 32.9887C81.5279 32.9887 85.3385 29.1781 85.3385 24.4775C85.3385 19.7769 81.5279 15.9663 76.8273 15.9663C72.1267 15.9663 68.3161 19.7769 68.3161 24.4775C68.3161 29.1781 72.1267 32.9887 76.8273 32.9887Z" fill="white"/>
-<path d="M87.3074 33.0334L86.9504 32.2526L86.3927 32.8996C84.9973 34.4829 83.2329 35.6975 81.2558 36.4357L80.6981 36.6365L80.9212 37.1942C83.927 44.4229 84.3075 52.4757 81.9965 59.9555C79.6856 67.4353 74.8292 73.8702 68.2698 78.1436C61.7104 82.417 53.8619 84.2594 46.0861 83.351C38.3103 82.4426 31.0979 78.8408 25.7001 73.1705C20.3023 67.5002 17.0599 60.1193 16.5353 52.3082C16.0107 44.4971 18.2371 36.7488 22.8281 30.4077C27.4192 24.0665 34.0853 19.5327 41.6698 17.5927C49.2542 15.6527 57.2786 16.429 64.3505 19.787L64.8748 20.0379L65.1035 19.4802C65.937 17.5415 67.2358 15.8384 68.885 14.5218L69.5543 13.9641L68.7902 13.5681C62.9852 10.551 56.5363 8.98374 49.9941 9.00013C41.1365 9.0014 32.5176 11.8711 25.4272 17.1798C18.3367 22.4884 13.1561 29.9505 10.6607 38.4493C8.16531 46.9481 8.48929 56.0265 11.5842 64.3257C14.679 72.625 20.3784 79.6988 27.8292 84.4886C35.28 89.2783 44.0816 91.5263 52.9167 90.8962C61.7518 90.2661 70.1453 86.7917 76.8409 80.993C83.5366 75.1944 88.1743 67.3833 90.06 58.7288C91.9458 50.0743 90.9781 41.0419 87.3018 32.9832L87.3074 33.0334Z" fill="white"/>
-</svg>} href="/integration/sdks/mobile/ionic/ionic-sdk-lite"/>
-  <Card title="Flutter SDK Lite" icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 100 100" fill="none">
-<rect width="100" height="100" rx="24" fill="white"/>
-<g clip-path="url(#clip0_400_201)">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M53.9398 91.9335L31.5159 69.6568L43.9092 57.0471L78.8648 91.9335H53.9398Z" fill="#02539A"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M31.239 69.674L53.4638 47.4492H78.4494L43.8746 82.024L31.239 69.674Z" fill="#45D1FD" fill-opacity="0.85"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M12 50.288L24.6183 62.8976L78.4494 9.06653H53.334L12 50.288Z" fill="#45D1FD"/>
-</g>
-<defs>
-<clipPath id="clip0_400_201">
-<rect width="66.8648" height="83" fill="white" transform="translate(12 9)"/>
-</clipPath>
-</defs>
-</svg>} href="/integration/sdks/mobile/flutter/flutter-sdk-lite"/>
-</CardGroup>
+This matrix provides a high-level comparison of the integration models.
 
-### Full SDK
+| Integration Model                | Deposits | Withdrawals | Refunds | Setup Time (est.) | Customization | PCI Cert Required |
+| :------------------------------- | :------: | :---------: | :-----: | :---------------: | :-----------: | :---------------: |
+| **Hosted Checkout**              |   Yes    |     No      |   No    |       1 day       |      Low      |        No         |
+| **Full SDK**                     |   Yes    |     No      |   No    |     2-3 days      |    Medium     |        No         |
+| **Lite SDK**                     |   Yes    |     No      |   No    |     5-7 days      |     High      |        No         |
+| **API Direct Integration (S2S)** |   Yes    |     Yes     |   Yes   |     1-2 weeks     |   Complete    |        Yes        |
 
-- **User Interface**: The Full SDK comes with a straightforward, ready-to-use UI, enabling developers to deploy payment solutions more quickly.
-- **Ease of Use**: It simplifies the development process with pre-built elements and standard configurations, reducing the need for extensive coding and design.
-- **Saved Cards Feature**: This SDK includes functionality to handle saved cards, which enhances user convenience and encourages user retention.
-- **Target Audience**: Best suited for projects that need quick implementation with less emphasis on customization. It's ideal for merchants looking to integrate a payment solution fast.
-- **PCI Compliance**: Similar to the Lite SDK, the Full SDK also includes PCI capabilities, ensuring secure transactions.
+<Note>
+  Withdrawals for this model are handled via the Standalone Withdrawals API.
+  
+  Refunds are initiated from the merchant's dashboard.
+</Note>
+
+## Integration Models in Detail
+
+Dive into the specifics of each model to understand its architecture, features, and limitations.
+
+<Tabs>
+  <Tab title="Hosted Checkout">
+  A ready-to-use, Tonder-hosted payment page accessed via a redirect URL. This is the fastest way to start accepting payments.
+  | Aspect | Details |
+| :--- | :--- |
+| **UI Location** | Tonder-hosted pages |
+| **Money Flows** | (Yes) Deposits <br/> (Yes) Refunds (via Dashboard) <br/> (No) Withdrawals |
+| **Setup** | Create payment links via the dashboard or an API call. |
+| **Code Required** | No |
+| **Customization** | Upload your logo and set brand colors. |
+| **PCI Compliance** | Tonder manages all PCI compliance. |
+
+
+  **Use this model if** 
+  
+  You need to launch immediately and accept payments
+  quickly. You do not have a technical team or development resources. Your
+  payment needs are straightforward.
+
+
+<Note>
+  **Limitations** 
+  
+  Cannot be embedded directly into your application or website.
+  Customization options are limited to branding basics.
+</Note>
+
+  </Tab>
+  <Tab title="Full SDK (Pre-built UI)">
+    A pre-built checkout interface that you can embed directly into your application, providing a more integrated user experience than a redirect.
+
+| Aspect             | Details                                                        |
+| :----------------- | :------------------------------------------------------------- |
+| **UI Location**    | Embedded in your application (e.g., via iframe).               |
+| **Money Flows**    | (Yes) Deposits <br/> (No) Withdrawals                               |
+| **Setup**          | Install the SDK, configure your keys, and embed the component. |
+| **Code Required**  | Low integration code.                                          |
+| **Customization**  | Styling options (colors, fonts, spacing).                      |
+| **PCI Compliance** | Tonder handles sensitive data via tokenization.                |
+| **Platforms**      | Web (JavaScript), iOS, Android, React Native, Ionic, Flutter.  |
+
+
+  **Use this model if** 
+  
+  You need an embedded checkout experience within your
+  website or mobile app. A standard but styleable UI is acceptable for your
+  brand. You are building a mobile application and want a native-feel checkout
+
+
+<Note>
+  **Limitations** 
+  
+  UI customization is limited to styling; the layout and flow
+  are fixed.
+</Note>
+
+If you want to learn more about the Full SDK provided, check out the available SDKs below:
 
 <CardGroup cols={3}>
 <Card title="Ionic SDK Full" icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 100 100" fill="none">
@@ -85,40 +124,273 @@ Below, you will find additional details from each available integration.
 </defs>
 </svg>} href="/integration/sdks/mobile/flutter/flutter-sdk-full"/>
 </CardGroup>
+  </Tab>
+  <Tab title="Lite SDK (Custom UI)">
+    Build your own custom checkout UI from the ground up while our SDK handles the tokenization of sensitive card data in the background.
 
-### API Integration
+| Aspect             | Details                                                                         |
+| :----------------- | :------------------------------------------------------------------------------ |
+| **UI Location**    | Your custom-built forms and customer journey.                                   |
+| **Money Flows**    | (Yes) Deposits <br/> (No) Withdrawals                                                |
+| **Setup**          | Install SDK, build your payment forms, and integrate the tokenization function. |
+| **Code Required**  | Requires front-end development to build payment forms.                          |
+| **Customization**  | Complete control over the user experience (UX) and user interface (UI).         |
+| **PCI Compliance** | Tonder handles sensitive data via tokenization.                                 |
+| **Platforms**      | Web (JavaScript), iOS, Android, React Native, Ionic, Flutter.                   |
 
-- **Requirements**: API integration requires the merchant company to be PCI-certified. The merchant also needs to forward their Attestation of Compliance (AOC) certification to Tonder before beginning the implementation.
-- **Customization**: The merchant can completely customize the front and back end since the integration is a back-to-back implementation.
-- **Flexibility**: Provides high flexibility in terms of design and functionality, allowing developers to create a tailored experience.
-- **Target Audience**: Best suited for merchants that are PCI-certified and need a highly customized solution.
+  **Use this model if you need** 
+  
+  Brand consistency and a specific user
+  experience are critical. You have unique UI/UX requirements for your checkout
+  flow. You have a strong front-end development team.
+
+<Note>
+  **Limitations** 
+  
+  Longer implementation time compared to pre-built solutions.
+  Requires significant UI development effort from your team.
+</Note>
+
+If you want to learn more about the Lite SDK provided, check out the available SDKs below:
 
 <CardGroup cols={3}>
-<Card title="API Reference" iconType="solid" icon="square-terminal" href="/reference/overview"/>
+  <Card title="JS" icon="js" href="/integration/sdks/web/js-sdk" />
+  <Card
+    title="Ionic SDK Lite"
+    icon={
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 100 100"
+        fill="none"
+      >
+        <rect width="100" height="100" rx="24" fill="#176BFF" />
+        <path
+          d="M49.9997 31.3323C46.3042 31.3323 42.6918 32.4281 39.6191 34.4812C36.5465 36.5343 34.1516 39.4524 32.7374 42.8665C31.3232 46.2807 30.9532 50.0375 31.6742 53.662C32.3951 57.2864 34.1746 60.6157 36.7877 63.2288C39.4008 65.8418 42.7301 67.6214 46.3545 68.3423C49.9789 69.0632 53.7358 68.6932 57.1499 67.279C60.5641 65.8649 63.4822 63.47 65.5353 60.3974C67.5884 57.3247 68.6842 53.7123 68.6842 50.0168C68.6783 45.0632 66.7079 40.3141 63.2051 36.8114C59.7024 33.3086 54.9533 31.3382 49.9997 31.3323Z"
+          fill="white"
+        />
+        <path
+          d="M76.8273 32.9887C81.5279 32.9887 85.3385 29.1781 85.3385 24.4775C85.3385 19.7769 81.5279 15.9663 76.8273 15.9663C72.1267 15.9663 68.3161 19.7769 68.3161 24.4775C68.3161 29.1781 72.1267 32.9887 76.8273 32.9887Z"
+          fill="white"
+        />
+        <path
+          d="M87.3074 33.0334L86.9504 32.2526L86.3927 32.8996C84.9973 34.4829 83.2329 35.6975 81.2558 36.4357L80.6981 36.6365L80.9212 37.1942C83.927 44.4229 84.3075 52.4757 81.9965 59.9555C79.6856 67.4353 74.8292 73.8702 68.2698 78.1436C61.7104 82.417 53.8619 84.2594 46.0861 83.351C38.3103 82.4426 31.0979 78.8408 25.7001 73.1705C20.3023 67.5002 17.0599 60.1193 16.5353 52.3082C16.0107 44.4971 18.2371 36.7488 22.8281 30.4077C27.4192 24.0665 34.0853 19.5327 41.6698 17.5927C49.2542 15.6527 57.2786 16.429 64.3505 19.787L64.8748 20.0379L65.1035 19.4802C65.937 17.5415 67.2358 15.8384 68.885 14.5218L69.5543 13.9641L68.7902 13.5681C62.9852 10.551 56.5363 8.98374 49.9941 9.00013C41.1365 9.0014 32.5176 11.8711 25.4272 17.1798C18.3367 22.4884 13.1561 29.9505 10.6607 38.4493C8.16531 46.9481 8.48929 56.0265 11.5842 64.3257C14.679 72.625 20.3784 79.6988 27.8292 84.4886C35.28 89.2783 44.0816 91.5263 52.9167 90.8962C61.7518 90.2661 70.1453 86.7917 76.8409 80.993C83.5366 75.1944 88.1743 67.3833 90.06 58.7288C91.9458 50.0743 90.9781 41.0419 87.3018 32.9832L87.3074 33.0334Z"
+          fill="white"
+        />
+      </svg>
+    }
+    href="/integration/sdks/mobile/ionic/ionic-sdk-lite"
+  />
+  <Card
+    title="Flutter SDK Lite"
+    icon={
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 100 100"
+        fill="none"
+      >
+        <rect width="100" height="100" rx="24" fill="white" />
+        <g clip-path="url(#clip0_400_201)">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M53.9398 91.9335L31.5159 69.6568L43.9092 57.0471L78.8648 91.9335H53.9398Z"
+            fill="#02539A"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M31.239 69.674L53.4638 47.4492H78.4494L43.8746 82.024L31.239 69.674Z"
+            fill="#45D1FD"
+            fill-opacity="0.85"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M12 50.288L24.6183 62.8976L78.4494 9.06653H53.334L12 50.288Z"
+            fill="#45D1FD"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_400_201">
+            <rect
+              width="66.8648"
+              height="83"
+              fill="white"
+              transform="translate(12 9)"
+            />
+          </clipPath>
+        </defs>
+      </svg>
+    }
+    href="/integration/sdks/mobile/flutter/flutter-sdk-lite"
+  />
 </CardGroup>
 
+  </Tab>
+  <Tab title="API Direct Integration">
+    Direct backend API integration gives you complete control over the payment flow, data handling, and user interface.
 
-## Making the Decision
+| Aspect             | Details                                                        |
+| :----------------- | :------------------------------------------------------------- |
+| **UI Location**    | You build and control the entire front-end and back-end stack. |
+| **Money Flows**    | Deposits <br/> (Yes) Withdrawals <br/> (Yes) Refunds              |
+| **Setup**          | Full back-end API integration.                                 |
+| **Code Required**  | Full-stack development effort.                                 |
+| **Customization**  | Complete control over all aspects of the payment process.      |
+| **PCI Compliance** | **You must be PCI certified**.                                 |
 
-When deciding between the Tonder integration options, consider the following questions:
+ **Use this model if** 
+  
+  Your organization is already PCI certified. You need to
+  support deposits, withdrawals, and refunds within a single integration. You
+  process a high volume of transactions and require maximum control and
+  flexibility.
 
+<Info>
+  **PCI Certification is Required.**
+
+  With this model, your servers will handle raw card data, making PCI DSS certification mandatory. You must provide a valid Attestation of Compliance (AOC) before starting your implementation.
+</Info>
+
+<Note>
+  **Limitations** 
+  
+  PCI certification is a strict prerequisite. The longest and
+  most complex implementation path.
+</Note>
+If you want to learn more about API Integration, check out the API reference below:
+<CardGroup cols={3}>
+  <Card
+    title="API Reference"
+    iconType="solid"
+    icon="square-terminal"
+    href="/reference/overview"
+  />
+</CardGroup>
+
+  </Tab>
+</Tabs>
+
+## Withdrawals API
+
+The Withdrawals API is a standalone, server-to-server API designed exclusively for sending payments to recipients.
+
+| Aspect            | Details                                                                             |
+| :---------------- | :---------------------------------------------------------------------------------- |
+| **Money Flow**    | (Yes) Withdrawals only                                                                 |
+| **Combines With** | Can be used alongside _any_ deposit integration model (Hosted, Full SDK, Lite SDK). |
+| **PCI Scope**     | Tonder manages PCI compliance for this API.                                         |
+| **Setup Time**    | 1-2 days (est.)                                                                     |
+| **Use Cases**     | Player payouts, seller payments, affiliate commissions, etc.                        |
+
+<Note>
+  **Key Point** 
+  
+  The Withdrawals API is independent of deposit integrations. You
+  can add withdrawal functionality without modifying your existing payment
+  acceptance setup.
+</Note>
+
+## Feature Support Across Models
+
+In this table, we summarize the availability of key features across the different integration models.
+
+| Feature          | Hosted Checkout | Full SDK  | Lite SDK  |   API Integration   |
+| :--------------- | :-------------: | :-------: | :-------: | :-----------------: |
+| Card Payments    |       Yes        |    Yes     |    Yes     |         Yes          |
+| Bank Transfers   |       Yes        |    Yes     |    Yes     |         Yes          |
+| Cash Payments    |       Yes        |    Yes     |    Yes     |         Yes          |
+| Digital Wallets  |       Yes        |    Yes     |    Yes     |         Yes          |
+| 3D Secure        |    Automatic    | Automatic | Automatic |   Manual Control    |
+| Tokenization     |    Automatic    | Automatic | Automatic | Merchant Implements |
+| Saved Cards      |       Yes        |    Yes     |    Yes     | Merchant Implements |
+| Webhooks         |       Yes        |    Yes     |    Yes     |         Yes          |
+| Test Environment |       Yes        |    Yes     |    Yes     |         Yes          |
+
+<Note>
+
+Contact Tonder support for guidance on selecting the right integration model for
+your business.
+
+</Note>
+
+Now that you are aware of the different integration models, use the flowchart below to help you decide which model is best for your business needs.
 
 <AccordionGroup>
-  <Accordion title="How much customization do you need?">
-    For a highly tailored user experience, consider the Lite SDK or API integration. For faster, standardized implementations, the Full SDK is more suitable.
+  <Accordion title="I need to ACCEPT PAYMENTS (Deposits)">
+    Do you have developers?
+    - **No** → Hosted Checkout
+    - **Yes** → Continue to question down below
   </Accordion>
 
-  <Accordion title="What is your timeline?">
-    If you need to deploy quickly, the Full SDK offers a faster path to implementation.
-  </Accordion> 
+<Accordion title="Do you need a completely custom UI?">
+  - **No** → Full SDK (for a standard, embeddable UI) 
+  - **Yes** → Lite SDK (for full UX/UI control)
+</Accordion>
 
-  <Accordion title="What resources are available?">
-    If you have the resources for custom development and integration, the Lite SDK or API integration provides the flexibility you need. For teams with limited resources, the Full SDK simplifies the process.
-  </Accordion> 
+<Accordion title="Are you PCI certified and need maximum control?">
+  - **Yes** → API Integration 
+  - **No** → Choose between Full SDK or Lite SDK
+  based on UI needs.
+</Accordion>
 
-  <Accordion title="What are your security requirements?">
-    If you are using API integration, ensure you have the necessary PCI certification and AOC. The other options include PCI compliance as part of the package.
+<Accordion title="I need to ACCEPT AND SEND PAYMENTS (Deposits + Withdrawals)">
+  Are you PCI certified? 
+  - **Yes** → API Integration is the all-in-one 
+  - **No**
+  → Continue to question down below
+</Accordion>
+
+  <Accordion title="Choose a deposit model and pair it with the Withdrawals API:">
+    - Fastest Launch: Hosted Checkout + Withdrawals API
+    - Standard Embedded UI: Full SDK + Withdrawals API
+    - Custom Branded UI: Lite SDK + Withdrawals API
+
+  </Accordion>
+
+  <Accordion title="I need to SEND PAYMENTS ONLY (Withdrawals)">
+    -   Use the standalone Withdrawals API.
+
   </Accordion> 
 </AccordionGroup>
 
-By carefully evaluating these factors, you can choose the Tonder integration that best meets your project's requirements, ensuring a successful implementation and a positive user experience.
+## Use Cases
+
+Every single integration model can be used to support various use cases. Here are some common scenarios and the recommended models for each:
+
+<Tabs>
+  <Tab title="Receiving Deposits">
+   An i-Gaming company wants to implement a Platform with secure deposits from players to initiate the user experience. Developers then can choose from multiple endorsed models to meet this need:
+   
+   - Hosted Checkout: The fastest option, requiring no code and minimal setup (estimated $\mathbf{1}$ day).
+   - Full SDK/Lite SDK: These models allow for an embedded checkout experience. Full SDK is quicker (2-3 days) with a standard UI, while the Lite SDK provides complete customization.
+   - API Integration: The model that offers maximum control, but the merchant must be PCI certified (L1 ROC or L2 SAQ D required).
+   
+   All these models support Deposits and Refunds
+
+</Tab>
+  <Tab title="Sending Payouts">
+    To satisfy the need to send winnings to players, an i-Gaming Platform must implement robust withdrawal capabilities. The two primary endorsed models for this outflow are:
+    
+    - Withdrawals API: This standalone, independent API is for Withdrawals only and can be combined with any deposit model. Implementation is a server-to-server API with an estimated setup of 1-2 days.
+    - API Integration (Direct Connect): This single integration handles all three money flows (Deposits, Withdrawals, Refunds), but is only suitable if the platform is PCI certified.
+    
+    This flexible approach simplifies integration, compliance and transaction monitoring.
+
+  </Tab>
+  <Tab title="Accepting Payments">
+
+For an E-commerce web site, the core need is to securely accept customer payments. Developers can choose from endorsed models that balance speed, customization, and compliance:
+
+- Hosted Checkout: Best for the fastest implementation (1 day) and sites with no code required.
+- Full SDK/Lite SDK: Offer embedded checkout with the Full SDK providing a standard UI and the Lite SDK offering complete UX/UI control for strong branding.
+- Direct Connect API Integration (S2S): Allows for maximum control and full backend integration, but requires the merchant to be PCI certified.
+
+These models all support Deposits and Refunds , providing a complete, scalable, transaction system optimized for e-commerce.
+
+  </Tab>
+</Tabs>
