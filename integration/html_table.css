@@ -1,7 +1,7 @@
 .styled-html-table-wrapper {
   margin: 1rem 0; /* Reduced from 2rem 0 for a smaller view */
   border-radius: 8px;
-  overflow-x: auto;
+  overflow-x: hidden;
   /* Keeping standard shadow for depth */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
@@ -131,8 +131,8 @@
 }
 
 .dark .styled-html-table thead th {
-  /* Applying the blue gradient to the dark mode header cells */
-  background: linear-gradient(90deg, #246bff 0%, #1a4fcc 100%);
+  /* Removing individual background from th to allow thead gradient to show through */
+  background: none; /* Crucial change to remove the divided look */
   color: white;
 }
 
