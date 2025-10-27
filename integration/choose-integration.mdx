@@ -26,14 +26,61 @@ After answering these questions, review the integration models below to find the
 
 ## Quick Comparison
 
-This matrix provides a high-level comparison of the integration models.
+<table className="styled-html-table">
+  <thead>
+    <tr>
+      <th>Integration Model</th>
+      <th>Deposits</th>
+      <th>Withdrawals</th>
+      <th>Refunds</th>
+      <th>Setup Time (est.)</th>
+      <th>Customization</th>
+      <th>PCI Cert Required</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Hosted Checkout</strong></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td>1 day</td>
+      <td><span className="level-low">Low</span></td>
+      <td><span className="badge-error">No</span></td>
+    </tr>
+    <tr>
+      <td><strong>Full SDK</strong></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td>2-3 days</td>
+      <td><span className="level-medium">Medium</span></td>
+      <td><span className="badge-error">No</span></td>
+    </tr>
+    <tr>
+      <td><strong>Lite SDK</strong></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td>5-7 days</td>
+      <td><span className="level-high">High</span></td>
+      <td><span className="badge-error">No</span></td>
+    </tr>
+    <tr>
+      <td><strong>API Direct Integration (S2S)</strong></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td>1-2 weeks</td>
+      <td><span className="level-complete">Complete</span></td>
+      <td><span className="badge-success">Yes</span></td>
+    </tr>
+  </tbody>
+</table>
 
-| Integration Model                | Deposits | Withdrawals | Refunds | Setup Time (est.) | Customization | PCI Cert Required |
-| :------------------------------- | :------: | :---------: | :-----: | :---------------: | :-----------: | :---------------: |
-| **Hosted Checkout**              |   Yes    |     No      |   No    |       1 day       |      Low      |        No         |
-| **Full SDK**                     |   Yes    |     No      |   No    |     2-3 days      |    Medium     |        No         |
-| **Lite SDK**                     |   Yes    |     No      |   No    |     5-7 days      |     High      |        No         |
-| **API Direct Integration (S2S)** |   Yes    |     Yes     |   Yes   |     1-2 weeks     |   Complete    |        Yes        |
+
+
+
 
 <Note>
   Withdrawals for this model are handled via the Standalone Withdrawals API.
@@ -366,9 +413,9 @@ Every single integration model can be used to support various use cases. Here ar
   <Tab title="Receiving Deposits">
    An i-Gaming company wants to implement a Platform with secure deposits from players to initiate the user experience. Developers then can choose from multiple endorsed models to meet this need:
    
-   - Hosted Checkout: The fastest option, requiring no code and minimal setup (estimated $\mathbf{1}$ day).
-   - Full SDK/Lite SDK: These models allow for an embedded checkout experience. Full SDK is quicker (2-3 days) with a standard UI, while the Lite SDK provides complete customization.
-   - API Integration: The model that offers maximum control, but the merchant must be PCI certified (L1 ROC or L2 SAQ D required).
+   - **Hosted Checkout**: The fastest option, requiring no code and minimal setup (estimated $\mathbf{1}$ day).
+   - **Full SDK/Lite SDK**: These models allow for an embedded checkout experience. Full SDK is quicker (2-3 days) with a standard UI, while the Lite SDK provides complete customization.
+   - **API Integration**: The model that offers maximum control, but the merchant must be PCI certified (L1 ROC or L2 SAQ D required).
    
    All these models support Deposits and Refunds
 
@@ -376,8 +423,8 @@ Every single integration model can be used to support various use cases. Here ar
   <Tab title="Sending Payouts">
     To satisfy the need to send winnings to players, an i-Gaming Platform must implement robust withdrawal capabilities. The two primary endorsed models for this outflow are:
     
-    - Withdrawals API: This standalone, independent API is for Withdrawals only and can be combined with any deposit model. Implementation is a server-to-server API with an estimated setup of 1-2 days.
-    - API Integration (Direct Connect): This single integration handles all three money flows (Deposits, Withdrawals, Refunds), but is only suitable if the platform is PCI certified.
+    - **Withdrawals API**: This standalone, independent API is for Withdrawals only and can be combined with any deposit model. Implementation is a server-to-server API with an estimated setup of 1-2 days.
+    - **API Integration** (Direct Connect): This single integration handles all three money flows (Deposits, Withdrawals, Refunds), but is only suitable if the platform is PCI certified.
     
     This flexible approach simplifies integration, compliance and transaction monitoring.
 
@@ -386,9 +433,9 @@ Every single integration model can be used to support various use cases. Here ar
 
 For an E-commerce web site, the core need is to securely accept customer payments. Developers can choose from endorsed models that balance speed, customization, and compliance:
 
-- Hosted Checkout: Best for the fastest implementation (1 day) and sites with no code required.
-- Full SDK/Lite SDK: Offer embedded checkout with the Full SDK providing a standard UI and the Lite SDK offering complete UX/UI control for strong branding.
-- Direct Connect API Integration (S2S): Allows for maximum control and full backend integration, but requires the merchant to be PCI certified.
+- **Hosted Checkout**: Best for the fastest implementation (1 day) and sites with no code required.
+- **Full SDK/Lite SDK**: Offer embedded checkout with the Full SDK providing a standard UI and the Lite SDK offering complete UX/UI control for strong branding.
+- **Direct Connect API Integration (S2S)**: Allows for maximum control and full backend integration, but requires the merchant to be PCI certified.
 
 These models all support Deposits and Refunds , providing a complete, scalable, transaction system optimized for e-commerce.
 
