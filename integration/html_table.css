@@ -1,0 +1,181 @@
+.styled-html-table-wrapper {
+  margin: 1rem 0; /* Reduced from 2rem 0 for a smaller view */
+  border-radius: 8px;
+  overflow-x: hidden;
+  /* Keeping standard shadow for depth */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.styled-html-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  font-size: 0.75rem; /* Reduced from 0.95rem for a more compact look */
+}
+
+/* --- LIGHT MODE ACCENTS --- */
+.styled-html-table thead {
+  /* Applying the blue gradient to the table header */
+  background-color: #246bff; /* Fallback color */
+  background: linear-gradient(90deg, #246bff 0%, #1a4fcc 100%);
+  color: white;
+}
+
+.styled-html-table thead th {
+  color: white;
+}
+
+.styled-html-table th {
+  padding: 0.75rem 0.75rem; /* Reduced from 1.25rem 1rem for less vertical space */
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border: none;
+}
+
+.styled-html-table td {
+  padding: 0.8rem 0.75rem; /* Reduced from 1.25rem 1rem for less vertical space */
+  /* Using a subtle blue border based on the light accent color */
+  border-bottom: 1px solid #c6e3ff; /* Custom subtle blue border */
+}
+
+.styled-html-table tbody tr {
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.styled-html-table tbody tr:hover {
+  /* Using the light blue accent color for hover background */
+  background-color: #d9f1ff;
+}
+
+.styled-html-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* --- Semantic Badge Styles (Adjusted for smaller table size) --- */
+.badge-success {
+  display: inline-block;
+  background-color: #d1fae5;
+  color: #065f46;
+  padding: 0.3rem 0.6rem; /* Reduced padding */
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem; /* Reduced font size */
+}
+
+.badge-error {
+  display: inline-block;
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 0.3rem 0.6rem; /* Reduced padding */
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem; /* Reduced font size */
+}
+
+.level-low {
+  display: inline-block;
+  background-color: #fef3c7;
+  color: #78350f;
+  padding: 0.3rem 0.6rem; /* Reduced padding */
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem; /* Reduced font size */
+}
+
+.level-medium {
+  display: inline-block;
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 0.3rem 0.6rem; /* Reduced padding */
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem; /* Reduced font size */
+}
+
+.level-high {
+  display: inline-block;
+  background-color: #c7d2fe;
+  color: #312e81;
+  padding: 0.3rem 0.6rem; /* Reduced padding */
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem; /* Reduced font size */
+}
+
+.level-complete {
+  display: inline-block;
+  background-color: #d1fae5;
+  color: #065f46;
+  padding: 0.3rem 0.6rem; /* Reduced padding */
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem; /* Reduced font size */
+}
+
+/* --- DARK MODE ACCENTS --- */
+.dark .styled-html-table-wrapper {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark .styled-html-table {
+  background-color: #1f2937;
+  color: #f3f4f6;
+}
+
+.dark .styled-html-table thead {
+  /* Applying the blue gradient to the dark mode header */
+  background-color: #246bff; /* Fallback color */
+  background: linear-gradient(90deg, #246bff 0%, #1a4fcc 100%);
+}
+
+.dark .styled-html-table thead th {
+  /* Removing individual background from th to allow thead gradient to show through */
+  background: none; /* Crucial change to remove the divided look */
+  color: white;
+}
+
+.dark .styled-html-table td {
+  /* Keeping a dark gray border for contrast */
+  border-bottom-color: #374151;
+}
+
+.dark .styled-html-table tbody tr:hover {
+  /* Using a custom darker hover shade */
+  background-color: #2c333e;
+}
+
+.dark .styled-html-table tbody tr:last-child td {
+  border-bottom-color: transparent;
+}
+
+/* Dark Mode - Semantic Badge Styles (Kept as original for clarity) */
+.dark .badge-success {
+  background-color: #064e3b;
+  color: #a7f3d0;
+}
+
+.dark .badge-error {
+  background-color: #7f1d1d;
+  color: #fca5a5;
+}
+
+.dark .level-low {
+  background-color: #78350f;
+  color: #fef3c7;
+}
+
+.dark .level-medium {
+  background-color: #1e3a8a;
+  color: #bfdbfe;
+}
+
+.dark .level-high {
+  background-color: #3730a3;
+  color: #e0e7ff;
+}
+
+.dark .level-complete {
+  background-color: #064e3b;
+  color: #a7f3d0;
+}
