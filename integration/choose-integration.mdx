@@ -24,16 +24,60 @@ Consider these key questions to guide your decision:
 
 After answering these questions, review the integration models below to find the best fit for your business.
 
+
 ## Quick Comparison
 
-This matrix provides a high-level comparison of the integration models.
-
-| Integration Model                | Deposits | Withdrawals | Refunds | Setup Time (est.) | Customization | PCI Cert Required |
-| :------------------------------- | :------: | :---------: | :-----: | :---------------: | :-----------: | :---------------: |
-| **Hosted Checkout**              |   Yes    |     No      |   No    |       1 day       |      Low      |        No         |
-| **Full SDK**                     |   Yes    |     No      |   No    |     2-3 days      |    Medium     |        No         |
-| **Lite SDK**                     |   Yes    |     No      |   No    |     5-7 days      |     High      |        No         |
-| **API Direct Integration (S2S)** |   Yes    |     Yes     |   Yes   |     1-2 weeks     |   Complete    |        Yes        |
+<table className="styled-html-table">
+  <thead>
+    <tr>
+      <th>Integration Model</th>
+      <th>Deposits</th>
+      <th>Withdrawals</th>
+      <th>Refunds</th>
+      <th>Setup Time (est.)</th>
+      <th>Customization</th>
+      <th>PCI Cert Required</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Hosted Checkout</strong></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td>1 day</td>
+      <td><span className="level-low">Low</span></td>
+      <td><span className="badge-error">No</span></td>
+    </tr>
+    <tr>
+      <td><strong>Full SDK</strong></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td>2-3 days</td>
+      <td><span className="level-medium">Medium</span></td>
+      <td><span className="badge-error">No</span></td>
+    </tr>
+    <tr>
+      <td><strong>Lite SDK</strong></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td><span className="badge-error">No</span></td>
+      <td>5-7 days</td>
+      <td><span className="level-high">High</span></td>
+      <td><span className="badge-error">No</span></td>
+    </tr>
+    <tr>
+      <td><strong>API Direct Integration (S2S)</strong></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td>1-2 weeks</td>
+      <td><span className="level-complete">Complete</span></td>
+      <td><span className="badge-success">Yes</span></td>
+    </tr>
+  </tbody>
+</table>
 
 <Note>
   Withdrawals for this model are handled via the Standalone Withdrawals API.
