@@ -73,10 +73,7 @@
         "groups": [
           {
             "group": "Integrations",
-            "pages": [
-              "integration/intro",
-              "integration/choose-integration"
-            ]
+            "pages": ["integration/intro", "integration/choose-integration"]
           },
           {
             "group": "SDKs",
@@ -207,9 +204,7 @@
               },
               {
                 "group": "Resources",
-                "pages": [
-                  "direct-integration/resources/support"
-                ]
+                "pages": ["direct-integration/resources/support"]
               }
             ]
           },
@@ -219,10 +214,7 @@
             "groups": [
               {
                 "group": "Tonder API",
-                "pages": [
-                  "reference/overview",
-                  "reference/currencies"
-                ]
+                "pages": ["reference/overview", "reference/currencies"]
               },
               {
                 "group": "Direct Integration API",
@@ -255,10 +247,7 @@
               "dashboard/payment-links",
               {
                 "group": "Developers",
-                "pages": [
-                  "dashboard/dev-api-keys",
-                  "dashboard/dev-webhooks"
-                ]
+                "pages": ["dashboard/dev-api-keys", "dashboard/dev-webhooks"]
               }
             ]
           },
