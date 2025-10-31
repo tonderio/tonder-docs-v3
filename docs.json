@@ -17,7 +17,7 @@
             "group": "Introduction",
             "pages": [
               "home",
-              "introduction/getting-started",
+              "introduction/choose-integration",
               "introduction/security"
             ]
           },
@@ -69,14 +69,10 @@
         ]
       },
       {
-        "tab": "Integrate Tonder",
+        "tab": "SDKs",
         "groups": [
           {
-            "group": "Integrations",
-            "pages": ["integration/intro", "integration/choose-integration"]
-          },
-          {
-            "group": "SDKs",
+            "group": "SDK Integration",
             "pages": [
               "integration/sdks/sdk-overview",
               {
