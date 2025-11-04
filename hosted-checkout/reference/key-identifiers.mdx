@@ -1,0 +1,76 @@
+---
+title: "Key Identifiers"
+'og:description': "Learn the difference between the id (Session ID), payment_id (Payment ID), and external_id."
+slug: https://www.google.com/search?q=/hosted-checkout/concepts/key-identifiers
+---
+
+When integrating Tonder Hosted Checkout, you will encounter three different IDs. Understanding the purpose of each is essential for a smooth integration and for reconciliation.
+
+### id (Session ID)
+
+The Session ID is a unique string identifier for the Checkout Session itself. A session is the container for the entire payment experience, from the moment you create it to when it's completed or expires.
+
+Example: `cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d`
+
+You use the Session ID in the following ways:
+
+* In the checkout URL Tonder provides, such as https://stage-payflow.tonder.io/checkout/{id}.
+* When calling the [Get a Session](/hosted-checkout/api/get-session) endpoint to check the session's status.
+* It's returned in the `return_url` or `success_url` query parameters.
+
+### payment_id (Payment Transaction ID)
+
+The Payment Transaction ID is a unique numeric identifier assigned by Tonder for a single Payment Transaction. A transaction is a specific payment attempt, such as a card charge.
+
+Example: `41521`
+
+A single session might have multiple payment attempts if the first card is declined. For example:
+
+* `41520` (Attempt 1: Declined)
+* `41521` (Attempt 2: Success)
+
+You can find the Payment ID in the following locations:
+
+* In the Session object (`GET /sessions/{id}`) once a payment is attempted or successful.
+* In webhook payloads, such as `session.completed` and `payment.transaction`.
+
+You use the Payment ID when calling the [Get a Payment Transaction](/hosted-checkout/api/get-payment) endpoint to get details of a specific charge.
+
+### external_id (External ID)
+
+The External ID is a user-defined string, such as `ORD-12345`. This is your internal identifier for the order, and you provide this ID when you create the payment session.
+
+You use the External ID in the following ways:
+
+* You send it in the [Create a Payment Session](/hosted-checkout/api/create-session) request.
+* You use it to reconcile Tonder records with your own database.
+* It's searchable in the [Tonder Dashboard](https://app.tonder.io).
+
+### How They Relate
+
+The diagram below shows how your system's order ID (`external_id`) maps to a Tonder Session, which can have multiple payment attempts:
+
+```
+Your System           Tonder's System
++-------------+       +-----------------------------+
+| Order       |  1:1  | Session (id: string)        |
+| (external_id)|------>| (external_id)               |
++-------------+       |                             |
+                      |   1:N                       |
+                      |   +----------------------+  |
+                      |   | Payment (id: number) |  |
+                      |   +----------------------+  |
+                      |   | Payment (id: number) |  |
+                      |   +----------------------+  |
+                      +-----------------------------+
+```
+
+Here's a typical payment flow:
+
+1. You create an Order, such as `ORD-500`, in your system.
+2. You create a Session (e.g., `cs_97_41521_d11ba771...`) and pass `external_id: "ORD-500"`.
+3. The user tries to pay and Tonder creates a Payment with `payment_id: 41520`.
+4. The payment is declined.
+5. The user tries again with a different card and Tonder creates a new Payment with `payment_id: 41521`.
+6. This payment succeeds.
+7. The Session is now marked `completed` and stores `payment_id: 41521` as the successful transaction.

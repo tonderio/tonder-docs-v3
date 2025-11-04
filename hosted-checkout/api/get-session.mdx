@@ -1,0 +1,25 @@
+---
+title: "Get a Session"
+openapi: "GET /checkout/v1/sessions/{id}"
+---
+
+Retrieve the current state and details of a payment session. This is the recommended way to verify payment completion after a customer is redirected back to your site.
+
+## Common Use Cases
+
+* **Post-Payment Verification**: When a customer returns to your `success_url`, retrieve the session to confirm the payment was actually completed.
+* **Reconciliation**: Check the status of sessions for orders that may have been abandoned or are in an unknown state.
+* **Status Polling**: If you're not using webhooks, you can poll this endpoint to check for payment completion.
+
+## Key Fields to Check
+
+* **status**: The overall session state (`pending`, `completed`, `expired`, `cancelled`).
+* **payment_id**: If present and status is `completed`, this is the ID of the successful payment transaction.
+* **transaction_status**: The status of the actual payment transaction (e.g., `Success`, `Declined`).
+
+## Related Resources
+
+* [How to Manually Check Payment Status](/hosted-checkout/guides/manually-check-payment-status): Integration guide for checking payment status.
+* [Status Reference](/hosted-checkout/reference/status-reference): Complete list of all status values.
+* [Key Identifiers](/hosted-checkout/reference/key-identifiers): Understanding session IDs, payment IDs, and external IDs.
+

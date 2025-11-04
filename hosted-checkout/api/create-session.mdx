@@ -1,0 +1,25 @@
+---
+title: "Create a Payment Session"
+openapi: "POST /checkout/v1/sessions"
+---
+
+This is the main endpoint for initiating a Hosted Checkout payment. It creates a new payment session and returns a secure URL where your customer can complete their payment.
+
+## How It Works
+
+1. Your server calls this endpoint with payment details (amount, items, customer info).
+2. Tonder creates a secure session and returns a checkout URL.
+3. You redirect your customer to this URL.
+4. Customer completes the payment on Tonder's hosted page.
+5. Customer is redirected back to your `success_url` or `cancel_url`.
+
+## Session Lifecycle
+
+The session starts in `pending` status and transitions to `completed`, `expired`, or `cancelled` based on customer actions. See the [Status Reference](/hosted-checkout/reference/status-reference) for all possible status values.
+
+## Related Resources
+
+* [Quickstart Guide](/hosted-checkout/introduction/quickstart): Complete walk-through of creating your first session.
+* [How to Create a Payment Session](/hosted-checkout/guides/create-payment-session): Detailed integration guide.
+* [Status Reference](/hosted-checkout/reference/status-reference): Understanding all session and transaction status values.
+
