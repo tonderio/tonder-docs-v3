@@ -1,0 +1,183 @@
+---
+title: "Start using Tonder Hosted Checkout"
+sidebarTitle: "Quick Start"
+'og:description': "Make your first test payment using Tonder's Hosted Checkout"
+---
+
+This tutorial guides you through the Hosted Checkout flow, from creating a payment session to verifying a successful payment.
+
+By the end, you will be able to:
+
+* Create a payment session with the Tonder API.
+* Redirect a customer to the checkout URL.
+* Complete a test payment.
+* Check the status of the payment.
+
+<Warning>
+All examples use test environment URLs. Make sure to use your Test API Keys for this guide. Never use your production keys for testing.
+</Warning>
+
+## Integration Flow Overview
+
+The diagram below shows the complete flow between your customer, your application, and Tonder's services. This quickstart guide will walk you through implementing each numbered step in the diagram:
+
+<img
+  src="/hosted-checkout/images/hosted-checkout-sequence-diagram.png"
+  alt="Hosted Checkout Sequence Diagram showing interactions between Client, Business Website, Business Server, and Tonder"
+/>
+
+## Step 1: Create a Payment Session
+
+First, call the [Create a Payment Session](/hosted-checkout/api/create-session) endpoint from your server. This endpoint registers the payment details with Tonder and returns a secure URL for you to redirect your customer to. The request must include the following fields:
+
+| Field | Description | Example |
+| :---- | :---- | :---- |
+| customer | Customer information including first name, last name, and email | Object with first_name, last_name, email fields |
+| amount_total | The total charge amount | 15000 (for $150.00) |
+| currency | The ISO currency code | "MXN" |
+| line_items | An array of line items describing the products in the cart | Array of objects with name, quantity, unit_price |
+| return_url | URL to redirect customer after payment (can also use success_url) | "https://your-store.com/checkout/complete" |
+| external_id | (Optional) Your internal order ID | "YOUR-UNIQUE-ORDER-ID-123" |
+
+This example shows how to create a payment session using cURL or Node.js:
+
+<CodeGroup>
+```bash cURL
+curl -X POST 'https://api-stage.tonder.io/checkout/v1/sessions' \
+  -H 'Authorization: Token YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "customer": {
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "email": "jane.doe@example.com"
+    },
+    "amount_total": 15000,
+    "currency": "MXN",
+    "line_items": [
+      {
+        "name": "Test Product",
+        "quantity": 1,
+        "unit_price": 15000
+      }
+    ],
+    "return_url": "https://your-store.com/checkout/complete",
+    "external_id": "YOUR-UNIQUE-ORDER-ID-123"
+  }'
+```
+
+```javascript Node.js
+const fetch = require('node-fetch');
+
+const createSession = async () => {
+  const response = await fetch('https://api-stage.tonder.io/checkout/v1/sessions', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Token YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      customer: {
+        first_name: "Jane",
+        last_name: "Doe",
+        email: "jane.doe@example.com"
+      },
+      amount_total: 15000,
+      currency: "MXN",
+      line_items: [
+        {
+          name: "Test Product",
+          quantity: 1,
+          unit_price: 15000
+        }
+      ],
+      return_url: "https://your-store.com/checkout/complete",
+      external_id: "YOUR-UNIQUE-ORDER-ID-123"
+    })
+  });
+  
+  const data = await response.json();
+  console.log(data);
+  return data;
+};
+
+createSession();
+```
+</CodeGroup>
+
+Tonder will respond with a session object. Look for the `url` field in the response:
+
+```json
+{
+  "id": "cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
+  "url": "https://stage-payflow.tonder.io/checkout/cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
+  "status": "pending",
+  "payment_id": 41521,
+  "amount_total": 15000,
+  "currency": "MXN",
+  "external_id": "YOUR-UNIQUE-ORDER-ID-123",
+  "transaction_status": "Pending",
+  "created_at": 1751478543567
+}
+```
+
+## Step 2: Redirect Your Customer to Tonder
+
+Take the `url` from the response and redirect your customer to Tonder's Hosted Checkout page. In a standard web application, this is typically done with an HTTP 302 redirect. This example shows a simple redirect in a Node.js/Express server:
+
+```javascript
+res.redirect(data.url);
+```
+
+## Step 3: Complete the Test Payment
+
+The customer is now on the Tonder Hosted Checkout page, where they can enter their payment details. Tonder handles the payment verification with the acquiring bank and 3DS authentication automatically. If a payment is declined, the customer can retry with a different card on the same page.
+
+To complete the test payment, follow these steps:
+
+1. Fill in the payment form with test data.
+2. Use a Tonder test card number available in the [Tonder Dashboard](https://app.tonder.io) under **Developers** > **Test Data**.
+3. Use any future expiration date, such as 12/30.
+4. Use any 3-digit CVC, such as 123.
+
+After submitting, Tonder processes the payment, verifies it with the payment provider, and redirects the customer to the `return_url` or `success_url` you provided.
+
+## Step 4: Verify the Payment Status
+
+After Tonder redirects the customer back to your site, you should verify the payment status server-side before displaying a confirmation page. When the customer lands on your `return_url` or `success_url`, the URL will include the session ID as a query parameter:
+
+```
+https://your-store.com/checkout/success?session_id=sess_1a2b3c4d5e6f7g8h
+```
+
+Use this `session_id` to call the [Get a Session](/hosted-checkout/api/get-session) endpoint from your server to securely fetch the final status of the payment. This is more reliable than just assuming the success_url means payment was successful. This example demonstrates how to retrieve the session status:
+
+```bash
+curl -X GET 'https://api-stage.tonder.io/checkout/v1/sessions/cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d' \
+  -H 'Authorization: Token YOUR_API_KEY'
+```
+
+You can also check the status by logging into your [Tonder Dashboard](https://app.tonder.io) and finding the payment associated with your external_id.
+
+If the call is successful, the response will show the status as "completed" and include the payment_id:
+
+```json
+{
+  "id": "cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
+  "url": "https://stage-payflow.tonder.io/checkout/cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
+  "status": "completed",
+  "payment_id": 41521,
+  "amount_total": 15000,
+  "currency": "MXN",
+  "external_id": "YOUR-UNIQUE-ORDER-ID-123",
+  "transaction_status": "Success",
+  "paid_at": 1751478550234
+}
+```
+
+## Next Steps
+
+You've successfully processed a test payment! Here are the recommended next steps:
+
+* Set up [webhooks](/hosted-checkout/guides/setup-listen-webhooks) for the most reliable way to get payment updates. While manual checking works, webhooks are recommended.
+* [Customize the checkout page](/hosted-checkout/guides/customize-checkout-ui) to match your brand identity.

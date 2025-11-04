@@ -1,0 +1,50 @@
+---
+title: "Hosted Checkout Overview"
+sidebarTitle: "Overview"
+'og:description': "Introduction to Tonder Hosted Checkout"
+---
+
+Tonder's Hosted Checkout is a secure, pre-built payment page that makes it easy to accept online payments. You redirect your customer to a Tonder-hosted URL, where they complete their payment. We handle the UI, security, and payment processing, and then redirect the customer back to your site.
+
+## Benefits
+
+Tonder's Hosted Checkout offers several advantages for your business:
+
+* Get started quickly with a low-code integration that involves just one API call to create a payment session.
+* Securely accept card payments without handling sensitive card data directly on your servers, as Tonder handles PCI DSS compliance.
+* Adapt the checkout page to your brand by adding your logo and changing colors, button shapes, and more.
+* Automatically support a variety of payment methods available to your business.
+
+## High-Level Flow
+
+The integration process consists of four main parts: session creation, user redirection, payment completion, and status confirmation.
+
+<img
+  src="/hosted-checkout/images/hosted-checkout-flow.png"
+  alt="Hosted Checkout High-Level Flow Diagram"
+/>
+
+<Steps>
+  <Step title="User Initiates Payment">
+    Your customer clicks "Pay Now" on your website, triggering your server to create a payment session via the Tonder API.
+  </Step>
+  <Step title="Redirect to Tonder">
+    Tonder returns a secure URL that you use to redirect your customer to the Hosted Checkout page.
+  </Step>
+  <Step title="Payment Verification">
+    The customer enters their payment details on Tonder's secure checkout page, and the payment is verified with the acquiring bank or 3DS provider.
+  </Step>
+  <Step title="Payment Processing">
+    Based on the verification result, Tonder processes the payment. If declined, the customer can retry with a different payment method.
+  </Step>
+  <Step title="Return to Your Site">
+    Tonder redirects the customer back to your website with the transaction status, and you display a confirmation page indicating whether the payment was successful.
+  </Step>
+</Steps>
+
+## Next Steps
+
+Ready to integrate Tonder Hosted Checkout? Here are the resources to help you get up and running:
+
+* Follow our step-by-step [Quick Start](/hosted-checkout/introduction/quickstart) guide to create your first payment.
+* See the complete details for all Hosted Checkout API endpoints in the [API Reference](/hosted-checkout/api/create-session).
