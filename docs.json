@@ -205,7 +205,7 @@
             ]
           },
           {
-            "dropdown": "API Reference",
+            "dropdown": "Direct Integration API",
             "icon": "square-terminal",
             "groups": [
               {
@@ -235,7 +235,7 @@
               {
                 "group": "Hosted Checkout Integration",
                 "pages": [
-                  "hosted-checkout/introduction/introduction",
+                  "hosted-checkout/introduction/overview",
                   "hosted-checkout/introduction/quickstart",
                   "hosted-checkout/introduction/environments"
                 ]
@@ -261,7 +261,7 @@
             ]
           },
           {
-            "dropdown": "API Reference",
+            "dropdown": "Hosted Checkout API",
             "icon": "square-terminal",
             "groups": [
               {
