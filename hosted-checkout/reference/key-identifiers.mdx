@@ -1,0 +1,72 @@
+---
+title: "Key Identifiers"
+'og:description': "Learn the difference between the id (Session ID), payment_id (Payment ID), and external_id."
+slug: https://www.google.com/search?q=/hosted-checkout/concepts/key-identifiers
+---
+
+When integrating Tonder Hosted Checkout, you will encounter three different IDs. Understanding the purpose of each is essential for a smooth integration and for reconciliation.
+
+### id (Session ID)
+
+The Session ID uses the format sess_... and is the unique identifier for the Checkout Session itself. A session is the container for the entire payment experience, from the moment you create it to when it's completed or expires.
+
+You use the Session ID in the following ways:
+
+* In the checkout URL Tonder provides, such as https://checkout.tonder.io/session/{id}.
+* When calling the [Get a Session](/hosted-checkout/api/get-session) endpoint to check the session's status.
+* It's returned in the success_url query parameters.
+
+### payment_id (Payment Transaction ID)
+
+The Payment Transaction ID uses the format pay_... and is the unique identifier for a single Payment Transaction. A transaction is a specific payment attempt, such as a card charge.
+
+A single session, such as sess_123, might have multiple payment attempts if the first card is declined. For example:
+
+* pay_abc (Attempt 1: Declined)
+* pay_xyz (Attempt 2: Success)
+
+You can find the Payment ID in the following locations:
+
+* In the Session object (GET /sessions/{id}) once a payment is successful.
+* In webhook payloads, such as session.completed and payment.transaction.
+
+You use the Payment ID when calling the [Get a Payment Transaction](/hosted-checkout/api/get-payment) endpoint to get details of a specific charge.
+
+### external_id (External ID)
+
+The External ID is a user-defined string, such as ORD-12345. This is your internal identifier for the order, and you provide this ID when you create the payment session.
+
+You use the External ID in the following ways:
+
+* You send it in the [Create a Payment Session](/hosted-checkout/api/create-session) request.
+* You use it to reconcile Tonder records with your own database.
+* It's searchable in the [Tonder Dashboard](https://app.tonder.io).
+
+### How They Relate
+
+The diagram below shows how your system's order ID (external_id) maps to a Tonder Session, which can have multiple payment attempts:
+
+```
+Your System           Tonder's System
++-------------+       +-------------------------+
+| Order       |  1:1  | Session (sess_...)      |
+| (external_id)|------>| (external_id)           |
++-------------+       |                         |
+                      |   1:N                   |
+                      |   +-------------------+ |
+                      |   | Payment (pay_...) | |
+                      |   +-------------------+ |
+                      |   | Payment (pay_...) | |
+                      |   +-------------------+ |
+                      +-------------------------+
+```
+
+Here's a typical payment flow:
+
+1. You create an Order, such as ORD-500, in your system.
+2. You create a Session (sess_abc) and pass external_id: "ORD-500".
+3. The user tries to pay and Tonder creates a Payment (pay_123).
+4. The payment is declined.
+5. The user tries again with a different card and Tonder creates a new Payment (pay_456).
+6. This payment succeeds.
+7. The Session sess_abc is now marked completed and stores payment_id: "pay_456" as the successful transaction.
