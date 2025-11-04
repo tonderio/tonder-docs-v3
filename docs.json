@@ -226,6 +226,58 @@
         ]
       },
       {
+        "tab": "Hosted Checkout",
+        "dropdowns": [
+          {
+            "dropdown": "Documentation",
+            "icon": "book-open",
+            "groups": [
+              {
+                "group": "Hosted Checkout Integration",
+                "pages": [
+                  "hosted-checkout/introduction/introduction",
+                  "hosted-checkout/introduction/quickstart",
+                  "hosted-checkout/introduction/environments"
+                ]
+              },
+              {
+                "group": "Guides",
+                "pages": [
+                  "hosted-checkout/guides/create-payment-session",
+                  "hosted-checkout/guides/customize-checkout-ui",
+                  "hosted-checkout/guides/setup-listen-webhooks",
+                  "hosted-checkout/guides/manually-check-payment-status"
+                ]
+              },
+              {
+                "group": "Reference",
+                "pages": [
+                  "hosted-checkout/reference/ui-configuration-fields",
+                  "hosted-checkout/reference/webhook-events-payload",
+                  "hosted-checkout/reference/status-reference",
+                  "hosted-checkout/reference/key-identifiers"
+                ]
+              }
+            ]
+          },
+          {
+            "dropdown": "API Reference",
+            "icon": "square-terminal",
+            "groups": [
+              {
+                "group": "Hosted Checkout API",
+                "pages": [
+                  "hosted-checkout/api/set-business-config",
+                  "hosted-checkout/api/create-session",
+                  "hosted-checkout/api/get-session",
+                  "hosted-checkout/api/get-payment"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Dashboard",
         "groups": [
           {
