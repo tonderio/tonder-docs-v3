@@ -147,7 +147,7 @@ After submitting, Tonder processes the payment, verifies it with the payment pro
 After Tonder redirects the customer back to your site, you should verify the payment status server-side before displaying a confirmation page. When the customer lands on your `return_url` or `success_url`, the URL will include the session ID as a query parameter:
 
 ```
-https://your-store.com/checkout/success?session_id=sess_1a2b3c4d5e6f7g8h
+https://your-store.com/checkout/success?session_id=cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d
 ```
 
 Use this `session_id` to call the [Get a Session](/hosted-checkout/api/get-session) endpoint from your server to securely fetch the final status of the payment. This is more reliable than just assuming the success_url means payment was successful. This example demonstrates how to retrieve the session status:
