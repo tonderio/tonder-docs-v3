@@ -4,7 +4,7 @@ sidebarTitle: "Create a Payment"
 'og:description': "How to create a payment using Tonder's unified endpoint"
 ---
 
-This guide shows you how to create a payment using Tonder's unified [Process Transaction](/reference/process-transaction) endpoint. You can process various payment methods, from credit cards to local options like SPEI and OXXO, through a single, consistent API call.
+This guide shows you how to create a payment using Tonder's unified [Process Transaction](/reference/process-transaction) endpoint. You can process various payment methods, from credit cards to local options like SPEI and OXXO pay y, through a single, consistent API call.
 
 ## Step 1: The Core Request
 
@@ -44,7 +44,7 @@ These fields are required for all payment requests:
 | `client_reference`  | string    | Your unique transaction identifier for reconciliation and tracking purposes.         |
 
 <Note>
-Depending on the payment method you choose, additional fields may be required inside the `payment_method` object (for example: card details, SPEI, OXXO, etc.). For detailed information about each payment method and their specific requirements, see the section below or the [Payment Methods Overview](/direct-integration/payment-methods/payment-methods-overview).
+Depending on the payment method you choose, additional fields may be required inside the `payment_method` object (for example: card details, SPEI, OXXO pay, etc.). For detailed information about each payment method and their specific requirements, see the section below or the [Payment Methods Overview](/direct-integration/payment-methods/payment-methods-overview).
 </Note>
 
 ## Step 2: Processing Different Payment Methods
@@ -142,7 +142,7 @@ A successful SPEI response will have a status of `pending` and includes payment 
 ```
 </Accordion>
 
-<Accordion title="OXXO Cash Payment">
+<Accordion title="OXXO pay Cash Payment">
 To generate a voucher for a cash payment at an OXXO store, set the `type` to `oxxopay`. Here's an example request:
 
 ```json OXXO Cash Payment
@@ -157,30 +157,30 @@ To generate a voucher for a cash payment at an OXXO store, set the `type` to `ox
   "payment_method": {
     "type": "oxxopay"
   },
-  "client_reference": "oxxo-test-001"
+  "client_reference": "oxxopay-test-001
 }
 ```
 
-A successful OXXO response will have a status of `pending` and includes payment instructions with a barcode and reference for the customer:
+A successful OXXO pay response will have a status of `pending` and includes payment instructions with a barcode and reference for the customer:
 
-```json OXXO Payment Response
+```json OXXO pay Payment Response
 {
   "id": "550e8400-e29b-41d4-a716-446655440002",
   "operation_type": "payment",
   "status": "pending",
   "amount": 250.00,
   "currency": "MXN",
-  "merchant_reference": "oxxo-test-001",
+  "merchant_reference": "oxxopay-test-001",
   "payment_id": 12347,
   "transaction_id": "txn_oxxo789",
-  "provider": "oxxo_provider",
+  "provider": "oxxopay_provider",
   "created_at": "2024-07-26T10:40:00Z",
   "status_code": 201,
   "payment_instructions": {
     "reference": "98765432109876543210",
     "barcode": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
     "expires_at": "2024-08-02T10:40:00Z",
-    "store_name": "OXXO"
+    "store_name": "oxxopay"
   }
 }
 ```
@@ -262,7 +262,7 @@ The table below details the fields that are returned in the response:
 Bear in mind that different payment methods have different response flows.
 
   * Card Payments are typically synchronous. You will get a final status (`authorized` or `declined`) in the initial API response.
-  * SPEI and OXXO Payments are asynchronous. The initial status will be `pending` because they require the customer to take further action. You must use [Webhooks](/direct-integration/webhooks/how-webhooks-works) or poll the transaction status endpoint to know when the payment is completed.
+  * SPEI and OXXO pay Payments are asynchronous. The initial status will be `pending` because they require the customer to take further action. You must use [Webhooks](/direct-integration/webhooks/how-webhooks-works) or poll the transaction status endpoint to know when the payment is completed.
 
 ## Step 4: Check the Transaction Status
 

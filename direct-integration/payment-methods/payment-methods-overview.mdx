@@ -21,7 +21,7 @@ All payment methods in Tonder work through the same unified [Process Transaction
   "currency": "MXN",
   "customer": { /* customer data */ },
   "payment_method": {
-    "type": "CARD" // or "SPEI", "OXXO", "MERCADOPAGO", "SAFETYPAY"
+    "type": "CARD" // or "SPEI", "oxxopay", "MERCADOPAGO", "SAFETYPAY"
   },
   "client_reference": "order-123"
 }
@@ -68,7 +68,7 @@ Selecting the appropriate payment methods for your business depends on your targ
 E-commerce platforms need to accommodate diverse customer preferences and transaction sizes. Some primary recommendations are:
 
 - Use card payments for immediate confirmation.
-- Use OXXO for cash-preferred customers.
+- Use OXXO pay for cash-preferred customers.
 - Use SPEI for higher-value purchases.
 </Accordion>
 
@@ -100,7 +100,7 @@ Begin with the most essential payment methods for your market:
 <Step title="Implement card payments first">
 Cards provide immediate confirmation and work for most customers.
 </Step>
-<Step title="Add OXXO for cash payments">
+<Step title="Add OXXO pay for cash payments">
 Essential for the Mexican market where cash is still popular.
 </Step>
 <Step title="Consider SPEI for higher amounts">
@@ -133,8 +133,8 @@ class PaymentMethodSelector {
         recommended: true
       },
       {
-        type: 'OXXO', 
-        name: 'Pago en OXXO',
+        type: 'OXXO pay', 
+        name: 'Pago en OXXO pay',
         processingTime: '24-48 horas',
         icon: 'store',
         description: 'Paga en efectivo en cualquier OXXO'
@@ -207,7 +207,7 @@ Implementing multiple payment methods successfully requires careful planning and
 <Accordion title="Technical Implementation">
 - Use the same [Process Transaction](/reference/process-transaction) endpoint for all payment methods.
 - Implement proper error handling for each method type.
-- Set up webhooks to track asynchronous payments (OXXO, SPEI, SafetyPay).
+- Set up webhooks to track asynchronous payments (OXXO pay, SPEI, SafetyPay).
 - Store payment method preferences for returning customers.
 </Accordion>
 

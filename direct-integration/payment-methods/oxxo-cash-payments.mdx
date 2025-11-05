@@ -1,5 +1,5 @@
 ---
-title: "How to Accept OXXO Cash Payments"
+title: "How to Accept OXXO pay Cash Payments"
 sidebarTitle: "OXXO Cash Payments"
 'og:description': "Step-by-step guide to process cash payments at OXXO stores with Tonder"
 ---
@@ -32,7 +32,7 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
       "email": "maria.fernandez@email.com"
     },
     "payment_method": {
-      "type": "OXXO"
+      "type": "oxxopay"
     },
     "client_reference": "order-123"
   }'
@@ -56,7 +56,7 @@ OXXO payments start with a `pending` status and include payment instructions for
   "payment_instructions": {
     "reference_code": "99900012345678",
     "barcode": "||99900012345678||",
-    "store_name": "OXXO",
+    "store_name": "oxxopay",
     "expiration_date": "2024-07-29T23:59:59Z",
     "instructions": [
       "Acude a cualquier tienda OXXO",
@@ -75,7 +75,7 @@ The response contains key fields you need to handle the OXXO payment flow:
 |-------|-------------|
 | `id` | Unique transaction identifier - store this for status checking |
 | `status` | Current payment status - will be `pending` initially |
-| `payment_instructions.reference_code` | OXXO reference code for payment |
+| `payment_instructions.reference_code` | OXXO pay reference code for payment |
 | `payment_instructions.barcode` | Barcode to display to customer |
 | `payment_instructions.expiration_date` | When the payment voucher expires |
 | `voucher_pdf` | URL to download the payment voucher PDF |
@@ -111,8 +111,8 @@ Provide a link to download the `voucher_pdf` for printing.
 Here's an example of a customer voucher template:
 
 ```html
-<div class="oxxo-voucher">
-  <h2>Completa tu pago en OXXO</h2>
+<div class="OXXO pay-voucher">
+  <h2>Completa tu pago en OXXO pay</h2>
   
   <div class="barcode">
     <img src="data:image/png;base64,{BARCODE_IMAGE}" />
@@ -126,7 +126,7 @@ Here's an example of a customer voucher template:
   <div class="instructions">
     <h4>Instrucciones:</h4>
     <ol>
-      <li>Acude a cualquier tienda OXXO</li>
+      <li>Acude a cualquier tienda OXXO pay</li>
       <li>Presenta este código de barras en caja</li>
       <li>Paga exactamente $250.00 MXN en efectivo</li>
     </ol>
@@ -197,7 +197,7 @@ Some common issues that may occur when using OXXO payments are:
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `amount_too_high` | Exceeds OXXO limits | Split into multiple payments |
+| `amount_too_high` | Exceeds OXXO pay limits | Split into multiple payments |
 | `amount_too_low` | Below minimum threshold | Increase amount or use different method |
 | `expired_voucher` | Customer paid after expiration | Create new payment request |
 </Accordion>
@@ -235,7 +235,7 @@ Follow the best practices below to integrate OXXO payments:
 Here is an example of how to implement OXXO payments. This code displays the payment voucher information on the frontend:
 
 ```javascript
-// Frontend: Display OXXO voucher
+// Frontend: Display OXXO pay voucher
 function displayOXXOVoucher(response) {
   const voucher = response.payment_instructions;
   
