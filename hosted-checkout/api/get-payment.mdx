@@ -1,0 +1,36 @@
+---
+title: "Get a Payment Transaction"
+openapi: "GET /checkout/v1/payments/{payment_id}"
+---
+
+Retrieve detailed information about a specific payment transaction. This endpoint provides granular details about individual payment attempts, including payment method information and transaction timestamps.
+
+## When to Use This vs. Get Session
+
+* **Get Session**: Use when you want to check the overall status of a payment session (recommended for most cases).
+* **Get Payment Transaction**: Use when you need detailed information about a specific payment attempt, such as card details, exact timestamps, or when troubleshooting a specific transaction.
+
+## Getting the payment_id
+
+The `payment_id` is returned in the session object after a successful payment:
+
+1. Customer completes payment on the hosted checkout page.
+2. Session status changes to `completed`.
+3. The session's `payment_id` field is populated with the transaction ID.
+4. You can then use this ID to retrieve detailed transaction information.
+
+## What You'll Get
+
+This endpoint returns comprehensive transaction details including:
+
+* Payment method information (e.g., card brand and last 4 digits).
+* Exact transaction timestamps.
+* Associated session ID for cross-referencing.
+* Customer information used for the payment.
+
+## Related Resources
+
+* [How to Manually Check Payment Status](/hosted-checkout/guides/manually-check-payment-status): Integration guide covering both session and payment retrieval.
+* [Status Reference](/hosted-checkout/reference/status-reference): Understanding all session and transaction status values.
+* [Key Identifiers](/hosted-checkout/reference/key-identifiers): Learn about the different IDs used in Hosted Checkout.
+

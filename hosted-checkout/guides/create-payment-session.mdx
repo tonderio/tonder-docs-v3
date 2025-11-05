@@ -1,0 +1,155 @@
+---
+title: "How to Create a Payment Session"
+sidebarTitle: "Create Payment Session"
+'og:description': "Learn how to call the /checkout/v1/sessions endpoint with all the required fields to initiate a payment."
+---
+
+This guide explains how to create a new payment session by calling the [Create a Payment Session](/hosted-checkout/api/create-session) endpoint. This is the first and most critical step in the Hosted Checkout integration.
+
+## Creating a Payment Session
+
+Follow these steps to construct your request, call the API, and handle the response.
+
+### Step 1: Construct the Request Body
+
+Create a JSON object with the payment details. At a minimum, you must include `customer`, `amount_total`, `currency`, and `line_items`. The table below describes all the required fields for creating a payment session:
+
+| Field | Type | Required | Description |
+| :---- | :---- | :---- | :---- |
+| customer | object | Yes | Object containing customer details (first\_name, last\_name, email). |
+| amount\_total | number | Yes | Total charge amount. |
+| currency | string | Yes | Currency code (e.g., "MXN"). |
+| line\_items | array | Yes | Array of objects detailing the items in the cart (name, quantity, unit\_price). |
+| return\_url | string | Conditional | Required if success\_url is not set. Fallback redirect URL. |
+| success\_url | string | No | Redirect URL after successful payment. |
+| external\_id | string | No | Your unique identifier for the order (e.g., order ID). |
+| expires\_at | integer | No | Unix timestamp (seconds). Must be 30 min to 24h in future. Default 24h. |
+| ui\_config | object | No | Optional. An object to override the default UI settings for this session. |
+
+See the [API Reference](https://www.google.com/search?q=/hosted-checkout/reference/api-reference%23post-checkoutv1sessions) for a full list of all available fields.
+
+### Step 2: Call the API Endpoint
+
+Send a POST request to the [Create a Payment Session](/hosted-checkout/api/create-session) endpoint for your environment, including your API key as a Token in the Authorization header. This example demonstrates how to create a payment session using cURL or Node.js:
+
+<CodeGroup>
+```bash cURL
+curl -X POST 'https://api-stage.tonder.io/checkout/v1/sessions' \
+  -H 'Authorization: Token YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "customer": {
+      "first_name": "Juan",
+      "last_name": "Perez",
+      "email": "juan.perez@example.com"
+    },
+    "amount_total": 25000,
+    "currency": "MXN",
+    "line_items": [
+      {
+        "name": "Blue T-Shirt",
+        "quantity": 1,
+        "unit_price": 25000
+      }
+    ],
+    "return_url": "https://your-store.com/checkout/complete",
+    "external_id": "ORD-2025-A9B8",
+    "ui_config": {
+      "branding": {
+        "brand_color": "#0066FF"
+      }
+    }
+  }'
+```
+
+```javascript Node.js
+const fetch = require('node-fetch');
+
+const sessionDetails = {
+  customer: {
+    first_name: "Juan",
+    last_name: "Perez",
+    email: "juan.perez@example.com"
+  },
+  amount_total: 25000,
+  currency: "MXN",
+  line_items: [
+    {
+      name: "Blue T-Shirt",
+      quantity: 1,
+      unit_price: 25000
+    }
+  ],
+  return_url: "https://your-store.com/checkout/complete",
+  external_id: "ORD-2025-A9B8",
+  ui_config: {
+    branding: {
+      brand_color: "#0066FF"
+    }
+  }
+};
+
+const response = await fetch('https://api-stage.tonder.io/checkout/v1/sessions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Token YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(sessionDetails)
+});
+
+const data = await response.json();
+console.log(data);
+```
+</CodeGroup>
+
+### Step 3: Handle the Response
+
+If successful, Tonder returns a 201 status and the session object. The two most important fields are `id` (the session ID) and `url` (the redirect URL). Here's an example of a successful response:
+
+```json
+{
+  "id": "cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
+  "url": "https://stage-payflow.tonder.io/checkout/cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
+  "status": "pending",
+  "payment_id": 41521,
+  "amount_total": 25000,
+  "currency": "MXN",
+  "external_id": "ORD-2025-A9B8",
+  "session_type": "payment",
+  "checkout_type": "hosted",
+  "return_url": "https://your-store.com/checkout/complete",
+  "metadata": {},
+  "payment_method_types": ["card"],
+  "ui_config": {
+    "branding": {
+      "brand_color": "#0066FF"
+    }
+  },
+  "ui_config_version": "V1",
+  "created_at": 1751478543567,
+  "modified_at": 1751478543567,
+  "customer": {
+    "first_name": "Juan",
+    "last_name": "Perez",
+    "email": "juan.perez@example.com"
+  },
+  "line_items": [
+    {
+      "name": "Blue T-Shirt",
+      "quantity": 1,
+      "unit_price": 25000
+    }
+  ],
+  "transaction_status": "Pending",
+  "provider": "tonder"
+}
+```
+
+## What's Next
+
+Now that you have created a payment session, here are the next steps:
+
+* Set up [webhooks](/hosted-checkout/guides/setup-listen-webhooks) to receive real-time payment status notifications.
+* Learn how to [manually check payment status](/hosted-checkout/guides/manually-check-payment-status) for reconciliation and troubleshooting.
+* See the [UI Configuration Fields reference](/hosted-checkout/guides/customize-checkout-ui) for all available `ui_config` customization options.

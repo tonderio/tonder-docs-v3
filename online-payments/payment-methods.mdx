@@ -5,96 +5,149 @@ title: "Payment Methods"
 
 ## Overview
 
-Tonder provides a comprehensive suite of payment methods across Latin America, enabling you to accept deposits, send withdrawals, and process refunds.
+Tonder supports multiple payment methods across Latin America for accepting deposits, sending withdrawals, and processing refunds. The availability of specific methods varies by country and integration model.
 
-<Tip>
-  Refer to the [Countries Coverage](/online-payments/coverage/coverage) page to check all available payment methods for each Country.
-</Tip>
+**Quick Reference:**
+- **Cards** - Mexico and Chile (deposits and refunds)
+- **Bank Transfers (SPEI)** - Mexico only (deposits, withdrawals)
+- **Cash Payments** - 9 countries (deposits only)
+- **Digital Wallets** - Mexico only (deposits and refunds; withdrawals coming soon)
 
+Refer to the [Countries Coverage](/online-payments/coverage/coverage) page for complete details by country.
 
+---
 
-<Note> This sections details the supported payment methods, their flows, country availability, and important considerations. </Note>
+## Payment Methods at a Glance
+
+| Method                   | Countries     | Deposits | Withdrawals | Refunds | Integration Models                  |
+| ------------------------ | ------------- | -------- | ----------- | ------- | ----------------------------------- |
+| **Cards**                | Mexico, Chile | ✅        | ❌           | ✅       | All models                          |
+| **SPEI (Bank Transfer)** | Mexico        | ✅        | ✅           | ❌       | All models + Withdrawals API        |
+| **Cash Payments**        | 9 countries   | ✅        | ❌           | ❌       | All deposit models                  |
+| **Mercado Pago**         | Mexico        | ✅        | ⏳ Soon      | ✅       | All models + Withdrawals API (soon) |
+
+---
 
 ## Cards
 
- Supported Flows, Availability, and Networks:
+Accept credit and debit card payments from major payment networks.
 
-| Category | Item | Support/Availability |
-| :--- | :--- | :--- |
-| **Supported Flows** | Deposits | (Yes) Accept payments from customers. |
-| | Refunds | (Yes) Return funds to a customer's card. |
-| | Withdrawals | (No) Not supported. |
-| **Country Availability** | Mexico | Supported |
-| | Chile | Supported |
-| **Supported Networks** | Visa | Supported |
-| | Mastercard | Supported |
-| | American Express | Supported |
-| | Carnet | Supported |
+### What You Can Do
+- ✅ **Deposits** - Accept payments from customers
+- ✅ **Refunds** - Return money to customers
+- ❌ **Withdrawals** - Not supported
 
-## Bank transfers
+### Supported Networks
+- Visa
+- Mastercard
+- American Express
+- Carnet
 
-Process direct, real-time bank-to-bank transfers in Mexico using the SPEI (Sistema de Pagos Electrónicos Interbancarios) network.
+### Where Available
+- Mexico
+- Chile
 
-Payment Flow and Withdrawal Details:
+### Integration Models
+- Hosted Checkout
+- Full SDK
+- Lite SDK
+- API Integration (S2S)
 
-## 1. Supported Flows
+### Features
+- 3DS authentication support
+- Card tokenization
+- Save card functionality
 
-| Flow | Support Status | Description |
-| :--- | :--- | :--- |
-| **Deposits** | (Yes) Supported | Accept payments from customers. |
-| **Withdrawals** | (Yes) Supported | Send money to recipients. |
-| **Refunds** | (No) Not supported | |
+---
 
-## 2. Country Availability
+## Bank Transfers (SPEI)
 
-| Country | Status |
-| :--- | :--- |
-| **Mexico** | Available |
+Direct bank-to-bank transfers using Mexico's SPEI system (Sistema de Pagos Electrónicos Interbancarios).
 
-## 3. Withdrawal Methods (Mexico)
+### What You Can Do
+- ✅ **Deposits** - Accept payments from customers
+- ✅ **Withdrawals** - Send money to recipients
 
-| Method | Description |
-| :--- | :--- |
-| **SPEI to a bank account CLABE** | Supported method for sending funds. |
-| **SPEI to a 16-digit debit card number** | Supported method for sending funds. |
+### Where Available
+- Mexico only
 
+### Integration Models
+
+**For Deposits:**
+- Hosted Checkout
+- Full SDK
+- Lite SDK
+- API Integration (S2S)
+
+**For Withdrawals:**
+- Withdrawals API
+- API Integration (S2S)
+
+### Withdrawal Methods
+- SPEI to Bank Account
+- SPEI to Debit Card
+
+### Features
+- Real-time processing
+- Account-to-account (A2A) transfers
+- Lower transaction costs than cards
+
+---
 
 ## Cash Payments
 
-Reach customers without bank accounts by generating a payment reference for them to pay in cash at thousands of convenience stores, supermarkets, and partner locations.
+Generate payment references for customers to pay in cash at convenience stores, retail chains, and payment centers.
 
-Cash Payment Method Details:
+### What You Can Do
+- ✅ **Deposits** - Accept payments from customers
+- ❌ **Withdrawals** - Not supported
+- ❌ **Withdrawals** - Not supported
 
-## 1. Supported Flows
+### Where Available
+9 countries across Latin America:
+- Argentina
+- Chile
+- Colombia
+- Costa Rica
+- Ecuador
+- El Salvador
+- Guatemala
+- Mexico
+- Peru
 
-| Flow | Support Status | Description |
-| :--- | :--- | :--- |
-| **Deposits** | (Yes) Supported | Accept payments from customers. |
-| **Withdrawals** | (No) Not supported | |
-| **Refunds** | (No) Not supported | |
+### Integration Models
+- Hosted Checkout
+- Full SDK
+- Lite SDK
+- API Integration (S2S)
 
-## 2. Country Availability
+### How It Works
+1. Customer selects cash payment method and location
+2. System generates payment reference code
+3. Customer pays at selected retail location within expiration period
+4. Payment confirmed via webhook notification
 
-| Country | Status |
-| :--- | :--- |
-| **Argentina** | Available |
-| **Chile** | Available |
-| **Colombia** | Available |
-| **Costa Rica** | Available |
-| **Ecuador** | Available |
-| **El Salvador** | Available |
-| **Guatemala** | Available |
-| **Mexico** | Available |
-| **Peru** | Available |
+### Payment Locations by Country
 
-## 3. How It Works (Payment Flow)
+**Mexico (20+ locations):**
+- **OxxoPay** (primary)
+- 7-Eleven, Walmart, Extra, CircleK
+- Soriana, Calimax
+- Farmacias del Ahorro
+- BBVA, Santander, Scotiabank
+- And more
 
-1.  The customer selects the cash payment method at checkout.
-2.  The system generates a payment reference (e.g., a number or barcode).
-3.  The customer takes the reference to a participating location and pays in cash.
-4.  Tonder receives confirmation from the processor and notifies you via webhook.
+**Other Countries:**
+- **Argentina**: Pago Fácil
+- **Chile**: Walmart, Lider, Banco Estado locations
+- **Colombia**: Efecty, Punto Red, Redeban (15+ locations)
+- **Costa Rica**: Banco Nacional, PayCash, Payser
+- **Ecuador**: Banco del Barrio, Farmacias 911, Mi Comisariato
+- **El Salvador**: Grupo Mega, Punto Xpress, Farmacias Economicas
+- **Guatemala**: Caja de Desarrollo, Super24
+- **Peru**: Western Union, Banco Ripley, Pago Efectivo
 
-## 4. Example Payment Locations
+Refer to the [Countries Coverage](/online-payments/coverage/coverage) page for the complete list of locations by country.
 
 | Country | Participating Locations |
 | :--- | :--- |
@@ -104,56 +157,111 @@ Cash Payment Method Details:
 | **Colombia** | Efecty, Baloto |
 | **Peru** | PagoEfectivo |
 
-<Note>
-  Refer to the [Countries Coverage](/online-payments/coverage/coverage) page for the complete list of locations by country.
-</Note>
+## Digital Wallets
 
-## Digital Wallet Payment Details (Mercado Pago)
+Accept payments from digital wallet providers.
 
-Offer a faster, one-click checkout experience by accepting payments from digital wallets. Tonder currently supports Mercado Pago.
+### What You Can Do
+- ✅ **Deposits** - Accept payments from customers
+- ⏳ **Withdrawals** - Coming soon (Mexico)
+- ❌ **Withdrawals** - Not supported
 
-## 1. Supported Flows
+### Supported Wallets
+- **Mercado Pago** (Mexico only)
 
-| Flow | Status | Description |
-| :--- | :--- | :--- |
-| **Deposits** | (Yes) Supported | Accept payments from customers. |
-| **Refunds** | (No) Supported | Return funds to a customer's wallet. |
-| **Withdrawals** | Coming soon | |
+### Where Available
+- Mexico only
 
-## 2. Country Availability
+### Integration Models
 
-| Country | Status |
-| :--- | :--- |
-| **Mexico** | Available |
+**For Deposits:**
+- Hosted Checkout
+- Full SDK
+- Lite SDK
+- API Integration (S2S)
 
-## Integration Model Support
+**For Withdrawals (Coming Soon):**
+- Withdrawals API
+- API Integration (S2S)
 
-Your chosen integration model determines which payment methods and flows you can offer. The Withdrawals API is a standalone API used exclusively for payouts.
+### Features
+- One-click payments for wallet users
+- No card details needed
+- Faster checkout experience
 
-## Country Coverage
+---
 
-This section summarizes the methods available by country.
+## Country Coverage Summary
 
+### Mexico - Full Coverage
+**Available Methods:**
+- Cards (Credit, Debit)
+- SPEI (Bank Transfers)
+- Cash Payments (20+ locations)
+- Mercado Pago (Digital Wallet)
 
-| Country / Group | Available Payment Methods | Notes |
-| :--- | :--- | :--- |
-| **Mexico** | * Cards (Credit & Debit) | Comprehensive method support. |
-| | * Bank Transfers (SPEI) | |
-| | * Cash Payments | |
-| | * Digital Wallets (Mercado Pago) | |
-| **Chile** | * Cards (Credit & Debit) | |
-| | * Cash Payments | |
-| **Other Countries** | * Cash Payments only | This group includes: Argentina, Colombia, Costa Rica, Ecuador, El Salvador, Guatemala, and Peru. |
+**Available Flows:**
+- ✅ Deposits - All methods
+- ✅ Withdrawals - SPEI only (Mercado Pago coming soon)
+- ✅ Refunds - Cards, SPEI, Mercado Pago
 
-<Note>
-  Refer to the [Countries Coverage](/online-payments/coverage/coverage) page for the complete list of locations by country.
-</Note>
+---
 
+### Chile
+**Available Methods:**
+- Cards (Credit, Debit)
+- Cash Payments
+
+**Available Flows:**
+- ✅ Deposits - Both methods
+- ❌ Withdrawals - Not available
+- ❌ **Withdrawals** - Not supported
+
+---
+
+### Other Countries
+Argentina, Colombia, Costa Rica, Ecuador, El Salvador, Guatemala, Peru
+
+**Available Methods:**
+- Cash Payments only
+
+**Available Flows:**
+- ✅ Deposits - Cash payments
+- ❌ Withdrawals - Not available
+- ❌ **Withdrawals** - Not supported
+
+Refer to the [Countries Coverage](/online-payments/coverage/coverage) page for detailed information.
+
+---
+
+## Why These Methods Matter
+
+**Cards**
+- Global standard for online payments
+- Instant authorization
+- Best for digital goods and services
+
+**Bank Transfers (SPEI)**
+- Lower transaction fees
+- Popular in Mexico for larger amounts
+- Required for withdrawals/payouts
+
+**Cash Payments**
+- Critical for financial inclusion
+- Reach customers without bank accounts or cards
+- Dominant payment method in many Latin American countries
+- Essential for markets with low card penetration
+
+**Digital Wallets**
+- Faster checkout experience
+- One-click payments
+- Growing adoption in Latin America
+
+---
 
 ## Payment Method Selection
 
- For Customers:
-
+### For Customers
 Available payment methods during checkout depend on:
 
 1. **Country** - Different countries have different methods
@@ -161,8 +269,7 @@ Available payment methods during checkout depend on:
 3. **Transaction Amount** - Some methods have limits
 4. **Integration Model** - Your integration determines which methods are available
 
- For Merchants:
- 
+### For Merchants
 To enable payment methods:
 
 1. **Check Coverage** - Review the [Countries Coverage](/online-payments/coverage/coverage) page
@@ -170,106 +277,54 @@ To enable payment methods:
 3. **Complete Onboarding** - Some methods require additional documentation
 4. **Test Integration** - Verify methods work in sandbox before going live
 
+---
 
 ## Integration Model Support
-this table summarizes which payment methods and flows are supported by each integration model.
 
-<table className="styled-html-table">
-  <thead>
-    <tr>
-      <th>Integration Model</th>
-      <th>Cards</th>
-      <th>SPEI Deposits</th>
-      <th>SPEI Withdrawals</th>
-      <th>Cash</th>
-      <th>Mercado Pago Deposits</th>
-      <th>Mercado Pago Withdrawals</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Hosted Checkout</strong></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-error">No</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-error">No</span></td>
-    </tr>
-    <tr>
-      <td><strong>Full SDK</strong></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-error">No</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-error">No</span></td>
-    </tr>
-    <tr>
-      <td><strong>Lite SDK</strong></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-error">No</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-error">No</span></td>
-    </tr>
-    <tr>
-      <td><strong>API Integration (S2S)</strong></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="level-low">Soon</span></td>
-    </tr>
-    <tr>
-      <td><strong>Withdrawals API</strong></td>
-      <td><span className="badge-error">No</span></td>
-      <td><span className="badge-error">No</span></td>
-      <td><span className="badge-success">Yes</span></td>
-      <td><span className="badge-error">No</span></td>
-      <td><span className="badge-error">No</span></td>
-      <td><span className="level-low">Soon</span></td>
-    </tr>
-  </tbody>
-</table>
+| Integration Model         | Cards | SPEI Deposits | SPEI Withdrawals | Cash | Mercado Pago Deposits | Mercado Pago Withdrawals |
+| ------------------------- | ----- | ------------- | ---------------- | ---- | --------------------- | ------------------------ |
+| **Hosted Checkout**       | ✅     | ✅             | ❌                | ✅    | ✅                     | ❌                        |
+| **Full SDK**              | ✅     | ✅             | ❌                | ✅    | ✅                     | ❌                        |
+| **Lite SDK**              | ✅     | ✅             | ❌                | ✅    | ✅                     | ❌                        |
+| **API Integration (S2S)** | ✅     | ✅             | ✅                | ✅    | ✅                     | ⏳ Soon                   |
+| **Withdrawals API**       | ❌     | ❌             | ✅                | ❌    | ❌                     | ⏳ Soon                   |
+
+---
 
 ## Testing
 
-All payment methods are available for testing in the Tonder sandbox environment.
+All payment methods are available in Tonder's test environment:
 
-- Use our test card numbers to simulate successful and failed card payments.
+- **Test Cards** - Simulate card payment flows
+- **Test SPEI** - Simulate bank transfer flows
+- **Test Cash References** - Simulate cash payment flows
+- **Test Mercado Pago** - Simulate wallet flows
 
-- Use the SPEI simulator to mock inbound deposits and test withdrawals.
+Refer to the Integration documentation for complete test credentials and scenarios.
 
-- Generate test cash references and use the dashboard to simulate a payment.
+---
 
-- Log in to a test Mercado Pago account to simulate wallet payments.
+## Important Notes
 
-Refer to the documentation for complete test credentials and scenarios.
+### Withdrawal Availability
+Withdrawals are currently only available in Mexico via:
+- SPEI to Bank Account
+- SPEI to Debit Card
+- Mercado Pago (coming soon)
 
-## Important considerations
+### Cash Payment Considerations
+- Payment references have expiration periods
+- Customer must pay within expiration window
+- Confirmation times vary by provider
+- Some providers support 24/7 payments, others have business hours
 
-Please review these important notes regarding specific payment flows.
+### Refund Policies
+- **Cards**: Standard refund processing applies
+- **SPEI**: Refunds processed back to originating account
+- **Cash**: Refund policies vary by provider
+- **Mercado Pago**: Standard wallet refund processing
 
- ### Withdrawal Availability
-
-Withdrawals (payouts) are currently available only in Mexico via SPEI (to a bank account or debit card). Mercado Pago withdrawals will be available soon.
-
- ## Cash Payment Expirations
-
-Payment references generated for cash payments have an expiration period (e.g., 24-72 hours). Customers must pay within this window. Confirmation times vary by provider, from real-time to several hours.
-
- ## Refund Policies
-
-- Cards: Standard refund processing applies.
-
-- Bank Transfers (SPEI): Refunds are not supported for SPEI deposits.
-
-- Cash: Refunds are not supported for cash payments.
-
-- Mercado Pago: Standard wallet refund processing applies.
+---
 
 ## Next Steps
 
@@ -277,3 +332,7 @@ Payment references generated for cash payments have an expiration period (e.g., 
 2. **Choose Integration Model** - Select the model that supports your required payment methods
 3. **Contact Support** - Request activation of specific payment methods
 4. **Review Testing Guide** - Understand how to test each payment method
+
+---
+
+*Payment method availability subject to change. Contact Tonder support for current information.*

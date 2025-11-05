@@ -1,0 +1,20 @@
+---
+title: "Set Business Configuration"
+openapi: "POST /checkout/v1/business/config"
+---
+
+Use this endpoint to configure your default branding and UI settings for all Hosted Checkout sessions. Once set, these defaults will apply to every new payment session unless you override them at the session level.
+
+## When to Use This
+
+Call this endpoint once during your initial setup or whenever you want to update your default checkout appearance. This is particularly useful for:
+
+* Setting up your brand colors and logo across all checkout sessions.
+* Maintaining a consistent checkout experience for all customers.
+* Updating your branding without modifying individual session creation calls.
+
+## Related Resources
+
+* [How to Customize the Checkout UI](/hosted-checkout/guides/customize-checkout-ui): Learn how to use this endpoint in practice.
+* [UI Configuration Fields](/hosted-checkout/reference/ui-configuration-fields): Complete reference of all customization options.
+

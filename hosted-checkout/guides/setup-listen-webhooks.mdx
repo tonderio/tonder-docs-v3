@@ -1,0 +1,112 @@
+---
+title: "How to Set Up and Listen for Webhooks"
+sidebarTitle: "Set Up and Listen for Webhooks"
+'og:description': "Learn how to register your endpoint URL and securely receive real-time event notifications for payment statuses."
+---
+
+Webhooks are the most reliable way to receive real-time updates about the status of your payment sessions and transactions. Instead of manually polling the API, Tonder will send an HTTP POST request to your server when an event occurs.
+
+This guide covers how to set up your webhook endpoint in the Tonder Dashboard and how to listen for events.
+
+## Prerequisites
+
+Before you can receive webhooks, you need:
+
+* You need a publicly accessible URL on your server, such as https://your-store.com/webhooks/tonder, that can receive POST requests. This cannot be a localhost URL.
+
+<Note>
+For local testing, services like ngrok can create a public URL that forwards requests to your local machine.
+</Note>
+
+## Configuring and Listening for Webhooks
+
+Follow these steps to register your endpoint, listen for events, acknowledge them, and verify their authenticity.
+
+### Step 1: Register Your Endpoint in the Dashboard
+
+Follow these steps to register your webhook endpoint:
+
+1. Log in to your [Tonder Dashboard](https://app.tonder.io).
+2. Navigate to **Developers** > **Webhooks**.
+3. Click **Add Endpoint**.
+4. Paste your public endpoint URL, such as https://your-store.com/webhooks/tonder, into the **Endpoint URL** field.
+5. Select the events you want to listen to, such as session.completed and session.expired.
+6. Click **Save**.
+
+Tonder will now send events to this URL.
+
+### Step 2: Listen for POST Requests
+
+Your endpoint must be configured to accept POST requests with a JSON body. When an event occurs, Tonder will send a request that looks like this:
+
+```json
+{
+  "event_type": "session.completed",
+  "data": {
+    "id": "cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
+    "external_id": "YOUR-UNIQUE-ORDER-ID-123",
+    "amount": 15000,
+    "status": "completed",
+    "payment_id": 41521,
+    "transaction_status": "Success"
+    // ... other session fields
+  }
+}
+```
+
+### Step 3: Acknowledge the Event
+
+To let Tonder know you've successfully received the webhook, your server must respond with a 200 OK HTTP status code. If Tonder does not receive a 200 OK response, it will assume the delivery failed and will retry sending the webhook. Respond immediately before running any complex business logic, such as updating your database, to avoid timeouts.
+
+This Node.js/Express example demonstrates how to set up a webhook endpoint that acknowledges receipt immediately and then processes the event:
+
+```javascript
+const express = require('express');
+const app = express();
+
+// Use express.json() middleware to parse the body
+app.post('/webhooks/tonder', express.json(), (req, res) => {
+  const event = req.body;
+
+  // 1. Acknowledge receipt immediately
+  res.status(200).send();
+  
+  // 2. Process the event
+  switch (event.event_type) {
+    case 'session.completed':
+      const session = event.data;
+      console.log(`Payment successful for session: ${session.id}`);
+      // TODO: Update your database, fulfill the order, etc.
+      break;
+    case 'session.expired':
+      const expiredSession = event.data;
+      console.log(`Session expired: ${expiredSession.id}`);
+      // TODO: Update your database, mark order as cancelled.
+      break;
+    default:
+      console.log(`Unhandled event type: ${event.event_type}`);
+  }
+});
+
+app.listen(3000, () => console.log('Listening for webhooks on port 3000'));
+```
+
+### Step 4: Verify the Signature (Recommended)
+
+To ensure the webhook request actually came from Tonder, you should verify its signature. Tonder includes a Tonder-Signature header in each webhook request.
+
+<Warning>
+This step is critical for security. It prevents attackers from sending fake webhooks to your endpoint.
+</Warning>
+
+The verification process involves:
+
+1. Getting your Webhook Signing Secret from the [Tonder Dashboard](https://app.tonder.io) on the same page where you add your endpoint.
+2. Comparing the Tonder-Signature header with a signature you compute yourself using the request body and your secret.
+
+## See Also
+
+For more information about webhooks and payment status handling:
+
+* Review the [Webhook Events & Payloads](https://www.google.com/search?q=/hosted-checkout/reference/webhook-events) reference for a full list of all webhook events and their JSON payloads.
+* Learn how to [manually check payment status](https://www.google.com/search?q=/hosted-checkout/guides/manually-check-payment-status) as a fallback if you don't use webhooks.

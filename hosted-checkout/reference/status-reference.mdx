@@ -1,0 +1,47 @@
+---
+title: "Status Reference"
+'og:description': "Reference for all Session Status and Payment Transaction Status values."
+slug: https://www.google.com/search?q=/hosted-checkout/reference/status-reference
+---
+
+This page provides the definitions for the two types of statuses used in the Hosted Checkout: Session Status and Payment Transaction Status.
+
+## Understanding Session vs. Transaction Status
+
+A common point of confusion is the difference between the `status` of a Session and the `status` of a Payment Transaction. They represent two different things:
+
+**Session Status** represents the entire checkout experience you create for your customer. Think of it as the "shopping cart" or "order" that is waiting to be paid. A session's lifecycle is simple: it starts as `pending`, and can only end as `completed` (paid) or `expired` (abandoned).
+
+**Transaction Status** represents a single attempt to pay for that session. A customer might have multiple transactions within one session if their first attempt fails. A transaction's status can be `Pending`, `Success`, `Declined`, or `Expired`.
+
+The table below summarizes the key distinction:
+
+| Type | Purpose | Example Values |
+| :---- | :---- | :---- |
+| Session Status | Tells you the state of the order (Is it paid for?) | `pending`, `completed`, `expired` |
+| Transaction Status | Tells you the state of a specific payment attempt (Did this charge go through?) | `Pending`, `Success`, `Declined`, `Expired` |
+
+<Note>
+For order fulfillment, you should almost always rely on the Session Status. Only listen for `session.status: "completed"` (via webhook or polling) to confirm an order is ready to be shipped.
+</Note>
+
+## Session Status
+
+The `status` field on the Session object represents the overall state of the Hosted Checkout session. The table below describes all possible session status values:
+
+| Status | Description |
+| :---- | :---- |
+| pending | The session has been created, but the customer has not completed the payment. The URL is active. |
+| completed | The customer has successfully completed the payment. This is a final state. |
+| expired | The session was not completed within the allowed time (e.g., customer abandoned the page) and can no longer be paid. This is a final state. |
+
+## Payment Transaction Status
+
+The transaction_status field (on the Session object) or status (on the Payment object) represents the state of a specific payment attempt. The table below describes all possible transaction status values:
+
+| Status | Description |
+| :---- | :---- |
+| Pending | The payment has been initiated but is not yet confirmed (e.g., awaiting 3D Secure authentication). |
+| Success | The payment was successfully authorized and processed. |
+| Declined | The payment was declined by the card issuer or payment processor. The customer may be able to retry. |
+| Expired | The payment attempt was not completed in time (e.g., user failed 3D Secure). |

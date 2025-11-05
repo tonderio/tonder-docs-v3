@@ -1,0 +1,104 @@
+---
+title: "How to Customize the Checkout UI"
+sidebarTitle: "Customize Checkout UI"
+'og:description': "Learn how to customize the Hosted Checkout page with your logo, brand colors, and other UI elements."
+---
+
+You can customize the Hosted Checkout page to match your brand's look and feel. There are two ways to apply customization:
+
+1. Set a default look for all your checkout sessions using the business configuration.
+2. Override the default settings for a specific, individual session.
+
+## Method 1: Set Default Business Configuration
+
+This method updates the default UI settings for your entire business. These settings will apply to all new checkout sessions unless you override them.
+
+Call the [Set Business Configuration](/hosted-checkout/api/set-business-config) endpoint with your logo URL and default ui_config settings. This example demonstrates how to set your default business configuration:
+
+```bash
+curl -X POST 'https://api-stage.tonder.io/checkout/v1/business/config' \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "logo_url": "https://your-cdn.com/logo-dark.png",
+    "ui_config": {
+      "branding": {
+        "brand_color": "#FF5733",
+        "brand_color_text": "#FFFFFF"
+      },
+      "theme": {
+        "shapes": "rounded"
+      }
+    }
+  }'
+```
+
+The API will return the saved configuration:
+
+```json
+{
+  "logo_url": "https://your-cdn.com/logo-dark.png",
+  "ui_config": {
+    "branding": {
+      "brand_color": "#FF5733",
+      "brand_color_text": "#FFFFFF"
+    },
+    "theme": {
+      "shapes": "rounded"
+    }
+  }
+}
+```
+
+Now, all subsequent checkout sessions will use this configuration.
+
+## Method 2: Override UI for a Specific Session
+
+You can override any default setting for a single payment by passing a ui_config object when you [create a payment session](https://www.google.com/search?q=/hosted-checkout/guides/create-payment-session).
+
+This is useful for co-branding, running promotions, or if you operate multiple storefronts under one Tonder account.
+
+When calling the [Create a Payment Session](/hosted-checkout/api/create-session) endpoint, include the `ui_config` object in your request. This example shows how to create a session with custom UI settings for a promotional campaign:
+
+```bash
+curl -X POST 'https://api-stage.tonder.io/checkout/v1/sessions' \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "external_id": "PROMO-XYZ-456",
+    "amount": 1000,
+    "currency": "MXN",
+    "line_items": [
+      {
+        "name": "Promo Item",
+        "quantity": 1,
+        "unit_price": 1000
+      }
+    ],
+    "customer": {
+      "name": "Test Customer",
+      "email": "test@example.com"
+    },
+    "urls": {
+      "success_url": "https://your-store.com/checkout/success",
+      "cancel_url": "https://your-store.com/checkout/cancel"
+    },
+    "ui_config": {
+      "branding": {
+        "brand_color": "#33CFFF"
+      },
+      "labels": {
+        "submit_button": "Pay Now (Promo)"
+      }
+    }
+  }'
+```
+
+This session will use the `#33CFFF` brand color and the custom button text, ignoring the default business config for those fields.
+
+## See Also
+
+For more information about customizing your checkout, check out these resources:
+
+* [UI Configuration Fields](https://www.google.com/search?q=/hosted-checkout/reference/ui-config-fields): A complete list of all available fields for customization.  
+* [How to Create a Payment Session](https://www.google.com/search?q=/hosted-checkout/guides/create-payment-session): The main guide for creating the session itself.

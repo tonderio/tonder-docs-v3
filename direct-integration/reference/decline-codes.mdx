@@ -147,6 +147,160 @@ This is an example of a decline notification payload sent via webhook:
 
 To generate a decline notification, use the following details:
 
+- Card Number: 5555 5555 5555 4444
+
+- Expiration Date: Any future date
+
+- CVV: Any 3-digit CVV (e.g., 123)
+---
+title: "Decline Codes"
+'og:description': "Comprehensive list of decline codes for payment processing"
+---
+
+## Card Decline Codes System
+
+This document defines our standardized internal decline code system designed to unify error handling across all integrated Payment Service Providers (PSPs) and acquirers. The system follows industry best practices for payment processing error categorization.
+
+
+
+## Code Structure
+
+Structure of Decline Codes:
+
+**Format:** `[Category][Type][Sequence]`
+
+* **Category:** Single letter (A-Z) representing the error category.
+* **Type:** `H` (**Hard decline** - permanent failure) or `S` (**Soft decline** - retry allowed).
+* **Sequence:** Two digits (01-99) for specific errors within the category.
+
+
+
+## Decline Codes
+
+Decline codes are organized into categories based on the nature of the error:
+
+### A - Authentication & Security
+
+| Code | Type | Description | Customer Message |
+| :--- | :--- | :--- | :--- |
+| **AH01** | Hard | Invalid card number | Please check your card number and try again. |
+| **AH02** | Hard | Invalid CVV/CVC | Please check your security code and try again. |
+| **AH03** | Hard | Invalid expiry date | Please check your card's expiry date and try again. |
+| **AH04** | Hard | 3D Secure authentication failed | Payment authentication failed. Please try again or use a different payment method. |
+| **AH05** | Hard | Fraudulent transaction detected | This transaction cannot be processed. Please contact your bank. |
+| **AH06** | Hard | Card reported lost | This card has been reported lost. Please use a different payment method. |
+| **AH07** | Hard | Card reported stolen | This card has been reported stolen. Please use a different payment method. |
+| **AH08** | Hard | Suspicious behavior detected | This transaction appears suspicious and cannot be processed. |
+| **AS01** | Soft | 3D Secure authentication required | Additional authentication is required. Please complete the verification process. |
+| **AS02** | Soft | Strong customer authentication (SCA) required | Additional customer authentication is required by your bank. |
+
+### B - Bank/Issuer Issues
+
+| Code | Type | Description | Customer Message |
+| :--- | :--- | :--- | :--- |
+| **BH01** | Hard | Card declined by bank | Your card was declined by your bank. Please contact your bank or use a different payment method. |
+| **BH02** | Hard | Card expired | Your card has expired. Please use a different payment method. |
+| **BH03** | Hard | Card canceled/disabled | This card is no longer active. Please use a different payment method. |
+| **BH04** | Hard | Card restricted | Your card has been restricted. Please contact your bank. |
+| **BH05** | Hard | Bank authorization required | Your bank requires additional authorization for this transaction. |
+| **BH06** | Hard | Card blacklisted | This card cannot be used for payments. Please use a different payment method. |
+| **BH07** | Hard | Invalid account | The account associated with this card is invalid. Please use a different payment method. |
+| **BH08** | Hard | Bank requested card retention | Your bank has requested this card be retained. Please contact your bank. |
+| **BS01** | Soft | Bank temporarily unavailable | Your bank's system is temporarily unavailable. Please try again later. |
+| **BS02** | Soft | Issuer system maintenance | Your bank's system is under maintenance. Please try again later. |
+
+### C - Credit/Funds Issues
+
+| Code | Type | Description | Customer Message |
+| :--- | :--- | :--- | :--- |
+| **CH01** | Hard | Insufficient funds | Your card has insufficient funds for this transaction. |
+| **CH02** | Hard | Credit limit exceeded | This transaction exceeds your card's credit limit. |
+| **CH03** | Hard | Over limit | Your card is over its limit. Please use a different payment method. |
+| **CH04** | Hard | Withdrawal limit exceeded | This transaction exceeds your withdrawal limit. |
+| **CH05** | Hard | Transaction limit exceeded | This transaction exceeds your card's transaction limit. |
+| **CS01** | Soft | Temporary credit hold | There's a temporary hold on your account. Please try again later. |
+
+### D - Data/Configuration Issues
+
+| Code | Type | Description | Customer Message |
+| :--- | :--- | :--- | :--- |
+| **DH01** | Hard | Invalid merchant configuration | We're unable to process this payment. Please contact customer service. |
+| **DH02** | Hard | Currency not supported | This currency is not supported. Please try a different payment method. |
+| **DH03** | Hard | Card type not supported | This card type is not supported for this transaction. |
+| **DH04** | Hard | Invalid amount | The transaction amount is invalid. |
+| **DH05** | Hard | Transaction type not permitted | This type of transaction is not permitted with your card. |
+| **DH06** | Hard | Invalid transaction data | Invalid transaction information. Please try again. |
+| **DS01** | Soft | Validation error - retry allowed | There was a validation error. Please try again. |
+| **DS02** | Soft | Configuration temporarily unavailable | Payment processing is temporarily unavailable. Please try again later. |
+
+### E - External/Network Issues
+
+| Code | Type | Description | Customer Message |
+| :--- | :--- | :--- | :--- |
+| **ES01** | Soft | Network timeout | Connection timeout occurred. Please try again. |
+| **ES02** | Soft | Communication error | Communication error occurred. Please try again. |
+| **ES03** | Soft | Processor unavailable | Payment processor is temporarily unavailable. Please try again later. |
+| **ES04** | Soft | Gateway timeout | Payment gateway timeout. Please try again. |
+| **ES05** | Soft | External service error | External service error. Please try again later. |
+
+### F - Fraud Prevention
+
+| Code | Type | Description | Customer Message |
+| :--- | :--- | :--- | :--- |
+| **FH01** | Hard | High risk transaction blocked | This transaction has been blocked for security reasons. |
+| **FH02** | Hard | Velocity rules violated | Too many transactions in a short period. Please try again later. |
+| **FH03** | Hard | Geographic restrictions | This transaction is not allowed from your location. |
+| **FH04** | Hard | Merchant blacklist match | This transaction cannot be processed. |
+| **FH05** | Hard | Card blocked for fraud | Your card has been blocked for security reasons. Please contact your bank. |
+| **FS01** | Soft | Transaction under fraud review | Your transaction is under security review. Please try again later. |
+
+### G - General/System Issues
+
+| Code | Type | Description | Customer Message |
+| :--- | :--- | :--- | :--- |
+| **GS01** | Soft | General system error | A system error occurred. Please try again. |
+| **GS02** | Soft | Processing error - retry allowed | A processing error occurred. Please try again. |
+| **GS03** | Soft | Duplicate transaction | This appears to be a duplicate transaction. Please check your payment history. |
+| **GS04** | Soft | Transaction expired | This transaction has expired. Please start a new payment. |
+| **GS05** | Soft | Service temporarily unavailable | Payment service is temporarily unavailable. Please try again later. |
+
+### U - User/Customer Issues
+
+| Code | Type | Description | Customer Message |
+| :--- | :--- | :--- | :--- |
+| **UH01** | Hard | Transaction canceled by customer | You have canceled this transaction. |
+| **UH02** | Hard | Customer authentication failed | Authentication failed. Please try again or contact customer service. |
+| **UH03** | Hard | Customer verification failed | Identity verification failed. Please contact customer service. |
+| **US01** | Soft | Customer action required | Please complete the required action to proceed. |
+| **US02** | Soft | Session timeout | Your session has expired. Please start a new payment. |
+
+
+## Webhook Notification Payload Example
+
+This is an example of a decline notification payload sent via webhook:
+
+```json
+{
+  "id": "399f4425-67be-40ae-a3d5-42caa86dfb96",
+  "operation_type": "payment",
+  "amount": "500",
+  "currency": "MXN",
+  "client_reference": "order-credit card deposit test FTH",
+  "status": "Declined",
+  "decline_code": "BH01",
+  "decline_reason": "Card declined by bank",
+  "provider": "tonder",
+  "transaction_id": "9294",
+  "payment_method_type": "CARD",
+  "created": "2025-10-08T19:23:13.068277Z",
+  "event_type": "payment_Declined",
+  "action": "MODIFY"
+}
+```
+## Test Data
+
+To generate a decline notification, use the following details:
+
 - Card Number: 4000000000000077
 
 - Expiration Date: Any future date
