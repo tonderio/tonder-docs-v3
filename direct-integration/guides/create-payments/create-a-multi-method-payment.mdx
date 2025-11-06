@@ -70,7 +70,7 @@ The fallback logic shown in this guide is just one example approach. You're free
 
 Create a function that tries each payment method sequentially until one succeeds. This implementation:
 
-1. Defines a prioritized list of payment methods (CARD, SPEI, OXXO).
+1. Defines a prioritized list of payment methods (CARD, SPEI, OXXO Pay).
 2. Attempts each method in order until one succeeds.
 3. Handles both API failures and payment declines gracefully.
 4. Returns the successful transaction response or raises an exception if all methods fail.
@@ -106,7 +106,7 @@ def process_payment_with_fallback(customer_data, amount, preferred_method="CARD"
         preferred_method,
         "CARD",  # Fallback to card if it wasn't the preferred method
         "SPEI",  # Next, try a bank transfer
-        "OXXO"   # Final fallback is a cash payment
+        "oxxopay"   # Final fallback is a cash payment
     ]
     
     # Use a set to avoid duplicate attempts (e.g., if preferred_method is 'CARD')

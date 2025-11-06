@@ -7,7 +7,7 @@ sidebarTitle: "Refund a Payment"
 Tonder's refund functionality enables merchants to return funds to customers for card transactions. You'll use this when you need to process customer returns, cancellations, or any situation requiring payment reversal. Refunds are processed through the same unified `/process/` endpoint using `operation_type: "refund"`.
 
 <Note>
-Refunds are only available for card payments. SPEI, OXXO, and Mercado Pago transactions cannot be refunded.
+Refunds are only available for card payments. SPEI, OXXO Pay, and Mercado Pago transactions cannot be refunded.
 </Note>
 
 ## Prerequisites
@@ -379,7 +379,7 @@ This error occurs when the original transaction cannot be found or is not eligib
 }
 ```
 
-This can happen due to an invalid transaction ID, attempting to refund non-card payments (SPEI, OXXO, or Mercado Pago), transactions older than 120 days, or incomplete transactions. To solve this, verify the transaction ID is correct and ensure the transaction is a completed card payment within the refund window.
+This can happen due to an invalid transaction ID, attempting to refund non-card payments (SPEI, OXXO Pay, or Mercado Pago), transactions older than 120 days, or incomplete transactions. To solve this, verify the transaction ID is correct and ensure the transaction is a completed card payment within the refund window.
 
 </Accordion>
 

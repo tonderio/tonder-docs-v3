@@ -65,7 +65,7 @@ OXXO cash payments require minimal setup and generate payment instructions for c
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `payment_method.type` | string | Yes | Must be `"OXXO"` |
+| `payment_method.type` | string | Yes | Must be `"oxxopay"` |
 
 **Response Includes:**
 - `payment_instructions.reference_code` - Payment reference for OXXO store
@@ -108,7 +108,7 @@ Synchronous payment methods provide immediate results, allowing you to know the 
 Asynchronous payment methods require additional processing time and may involve external verification steps. These methods return an initial status and update to final status once processing is complete:
 
 - SPEI: `pending` → `processing` → `success`.
-- OXXO: `pending` → `success`.
+- OXXO Pay: `pending` → `success`.
 - SafetyPay: `pending` → `success`.
 </Accordion>
 </AccordionGroup>
@@ -134,8 +134,8 @@ SPEI bank transfers have specific operational constraints and amount limitations
 - `invalid_amount` - Amount exceeds SPEI limits.
 </Accordion>
 
-<Accordion title="OXXO/SafetyPay Errors">
-Cash payment methods like OXXO and SafetyPay have specific amount limits to ensure transaction security and compliance. These errors occur when the transaction amount falls outside the allowed range:
+<Accordion title="OXXO pay/SafetyPay Errors">
+Cash payment methods like OXXO Pay and SafetyPay have specific amount limits to ensure transaction security and compliance. These errors occur when the transaction amount falls outside the allowed range:
 
 - `amount_too_high` - Exceeds payment limits.
 - `amount_too_low` - Below minimum payment amount.
