@@ -133,8 +133,8 @@ class PaymentMethodSelector {
         recommended: true
       },
       {
-        type: 'OXXO pay', 
-        name: 'Pago en OXXO pay',
+        type: 'OXXO Pay', 
+        name: 'Pago en OXXO Pay',
         processingTime: '24-48 horas',
         icon: 'store',
         description: 'Paga en efectivo en cualquier OXXO'
@@ -207,7 +207,7 @@ Implementing multiple payment methods successfully requires careful planning and
 <Accordion title="Technical Implementation">
 - Use the same [Process Transaction](/reference/process-transaction) endpoint for all payment methods.
 - Implement proper error handling for each method type.
-- Set up webhooks to track asynchronous payments (OXXO pay, SPEI, SafetyPay).
+- Set up webhooks to track asynchronous payments (OXXO Pay, SPEI, SafetyPay).
 - Store payment method preferences for returning customers.
 </Accordion>
 

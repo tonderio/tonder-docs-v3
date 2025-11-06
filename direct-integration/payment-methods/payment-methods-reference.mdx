@@ -14,7 +14,7 @@ Tonder supports five main payment methods, each designed for different customer 
 |--------|------------|-----------------|-------------|
 | **Card Payments** | `CARD` | Instant | Credit and debit cards (Visa, Mastercard, American Express) |
 | **SPEI Bank Transfers** | `SPEI` | Real-time | Mexican bank transfers (24/7 availability) |
-| **OXXO pay Cash Payments** | `OXXO` | 24-48 hours | Cash payments at OXXO convenience stores |
+| **OXXO Cash Payments** | `OXXO` | 24-48 hours | Cash payments at OXXO convenience stores |
 | **Mercado Pago Digital Wallet** | `MERCADOPAGO` | Instant | Digital wallet popular in Latin America |
 | **SafetyPay Cash Payments** | `SAFETYPAY` | 24-48 hours | Alternative cash payment method |
 
@@ -60,7 +60,7 @@ SPEI bank transfers are the simplest payment method with minimal parameter requi
 **Operating Hours:** 24/7, 365 days a year
 </Accordion>
 
-<Accordion title="OXXO pay Cash Payments (OXXO)">
+<Accordion title="OXXO Cash Payments (OXXO)">
 OXXO cash payments require minimal setup and generate payment instructions for customers to pay at any OXXO store. The response includes all necessary payment details:
 
 | Parameter | Type | Required | Description |
@@ -108,7 +108,7 @@ Synchronous payment methods provide immediate results, allowing you to know the 
 Asynchronous payment methods require additional processing time and may involve external verification steps. These methods return an initial status and update to final status once processing is complete:
 
 - SPEI: `pending` → `processing` → `success`.
-- OXXO pay: `pending` → `success`.
+- OXXO Pay: `pending` → `success`.
 - SafetyPay: `pending` → `success`.
 </Accordion>
 </AccordionGroup>
@@ -135,7 +135,7 @@ SPEI bank transfers have specific operational constraints and amount limitations
 </Accordion>
 
 <Accordion title="OXXO pay/SafetyPay Errors">
-Cash payment methods like OXXO pay and SafetyPay have specific amount limits to ensure transaction security and compliance. These errors occur when the transaction amount falls outside the allowed range:
+Cash payment methods like OXXO Pay and SafetyPay have specific amount limits to ensure transaction security and compliance. These errors occur when the transaction amount falls outside the allowed range:
 
 - `amount_too_high` - Exceeds payment limits.
 - `amount_too_low` - Below minimum payment amount.

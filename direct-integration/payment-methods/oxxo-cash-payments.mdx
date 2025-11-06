@@ -111,8 +111,8 @@ Provide a link to download the `voucher_pdf` for printing.
 Here's an example of a customer voucher template:
 
 ```html
-<div class="OXXO pay-voucher">
-  <h2>Completa tu pago en OXXO pay</h2>
+<div class="OXXO Pay-voucher">
+  <h2>Completa tu pago en OXXO Pay</h2>
   
   <div class="barcode">
     <img src="data:image/png;base64,{BARCODE_IMAGE}" />
@@ -126,7 +126,7 @@ Here's an example of a customer voucher template:
   <div class="instructions">
     <h4>Instrucciones:</h4>
     <ol>
-      <li>Acude a cualquier tienda OXXO pay</li>
+      <li>Acude a cualquier tienda OXXO Pay</li>
       <li>Presenta este código de barras en caja</li>
       <li>Paga exactamente $250.00 MXN en efectivo</li>
     </ol>
@@ -197,7 +197,7 @@ Some common issues that may occur when using OXXO payments are:
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `amount_too_high` | Exceeds OXXO pay limits | Split into multiple payments |
+| `amount_too_high` | Exceeds OXXO Pay limits | Split into multiple payments |
 | `amount_too_low` | Below minimum threshold | Increase amount or use different method |
 | `expired_voucher` | Customer paid after expiration | Create new payment request |
 </Accordion>
