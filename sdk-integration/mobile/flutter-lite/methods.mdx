@@ -1,0 +1,214 @@
+---
+title: "Flutter Lite SDK - SDK Methods"
+og:description: "Reference for the methods available in Tonder's Flutter Lite SDK."
+---
+
+This page provides a reference for the core methods available in the `LiteCheckout` class of the Flutter Lite SDK.
+
+## Core Methods
+
+The Tonder Flutter Lite SDK provides these essential methods for payment processing and card management with complete UI control. Each method serves a specific purpose in the payment integration workflow.
+
+| Method               | Description                                                                     |
+| -------------------- | ------------------------------------------------------------------------------- |
+| `new LiteCheckout(..)` | Initializes the SDK with configuration like `apiKey` and `returnUrl`.     |
+| `configureCheckout(..)` | Configures customer email and secure token for card management operations. |
+| `setPaymentData(data)` | Loads the customer data (name, email, etc.) into the SDK instance.              |
+| `setCartTotal(total)`| Sets the total amount for the transaction.                                      |
+| `payment(cardData)` | Processes a payment with the provided card data from your custom form. |
+| `saveCustomerCard(cardData)` | Saves a customer's card for future use. |
+| `getCustomerCards()` | Retrieves all saved cards for the customer. |
+| `removeCustomerCard(cardId)` | Removes a saved card by its ID. |
+
+## Method Details
+
+Each method in the Tonder Flutter Lite SDK serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each method, including their parameters, usage examples, and practical implementation guidance.
+
+<AccordionGroup>
+  <Accordion title="LiteCheckout Constructor">
+
+Creates a new instance of the LiteCheckout class with the necessary configuration for secure payment processing. This constructor establishes the connection with Tonder's services and configures the payment environment.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `apiKey` | String | Your Tonder API key for authentication |
+| `returnUrl` | String | URL where users are redirected after payment completion |
+
+Here's an example of how to initialize the LiteCheckout class:
+
+```dart
+LiteCheckout(
+  apiKey: "YOUR_API_KEY",
+  returnUrl: "YOUR_RETURN_URL",
+)
+```
+
+  </Accordion>
+
+  <Accordion title="configureCheckout">
+
+Sets customer email and the secure token required for card management operations.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `customerEmail` | String | Customer's email address |
+| `secureToken` | String | Secure token obtained from your backend (required for card operations) |
+
+Here's an example:
+
+```dart
+_liteCheckout.configureCheckout(
+  customerEmail: 'customer@example.com',
+  secureToken: 'SECURE_TOKEN_FROM_BACKEND',
+);
+```
+
+  </Accordion>
+
+  <Accordion title="setPaymentData">
+
+Configures the customer information that will be used during the payment process. This data is used to associate the transaction with the customer.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `data` | Map\<String, dynamic> | Customer information including name, email, etc. |
+
+Here's an example of how to set the customer data:
+
+```dart
+final customerData = {
+  'first_name': 'Juan',
+  'last_name': 'Pérez',
+  'email': 'juan.perez@example.com'
+};
+_liteCheckout.setPaymentData(customerData);
+```
+
+  </Accordion>
+
+  <Accordion title="setCartTotal">
+
+Sets the total amount for the transaction. This value is used for payment processing.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `total` | int | Total amount in cents (e.g., 399 for $3.99) |
+
+Here's an example of how to set the cart total:
+
+```dart
+_liteCheckout.setCartTotal(399); // $3.99
+```
+
+  </Accordion>
+
+  <Accordion title="payment">
+
+Processes a payment using the provided card data collected from your custom form.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `cardData` | Map\<String, dynamic> | Card information collected from your custom UI |
+
+Here's an example of how to process a payment:
+
+```dart
+final cardData = {
+  'card_number': '4111111111111111',
+  'cardholder_name': 'John Doe',
+  'expiration_month': '12',
+  'expiration_year': '25',
+  'cvv': '123',
+};
+
+try {
+  final response = await _liteCheckout.payment(cardData);
+  print('Payment successful: $response');
+} catch (error) {
+  print('Payment failed: $error');
+}
+```
+
+  </Accordion>
+
+  <Accordion title="saveCustomerCard">
+
+Securely tokenizes and saves new card details for the customer.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `cardData` | Map\<String, dynamic> | Card information to be saved |
+
+Here's an example:
+
+```dart
+final cardData = {
+  'card_number': '4111111111111111',
+  'cardholder_name': 'John Doe',
+  'expiration_month': '12',
+  'expiration_year': '25',
+  'cvv': '123',
+};
+
+try {
+  final response = await _liteCheckout.saveCustomerCard(cardData);
+  print('Card saved successfully: $response');
+} catch (error) {
+  print('Error saving card: $error');
+}
+```
+
+  </Accordion>
+
+  <Accordion title="getCustomerCards">
+
+Retrieves a list of saved cards for the configured customer.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters |
+
+Here's an example:
+
+```dart
+try {
+  final cards = await _liteCheckout.getCustomerCards();
+  print('Saved cards: $cards');
+  // Display cards in your custom UI
+} catch (error) {
+  print('Error loading cards: $error');
+}
+```
+
+  </Accordion>
+
+  <Accordion title="removeCustomerCard">
+
+Deletes a previously saved card using its unique ID.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `cardId` | String | Unique identifier of the card to remove |
+
+Here's an example:
+
+```dart
+try {
+  await _liteCheckout.removeCustomerCard('card_abc123');
+  print('Card removed successfully');
+} catch (error) {
+  print('Error removing card: $error');
+}
+```
+
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that you're familiar with the available methods in the Flutter Lite SDK, explore these guides to enhance your implementation:
+
+- Learn how to [make a payment](/sdk-integration/mobile/flutter-lite/make-a-payment) using the Flutter Lite SDK.
+- Learn how to [enroll payment methods](/sdk-integration/mobile/flutter-lite/enroll-payment-method) for returning customers.
+- Learn more about [customization options](/sdk-integration/mobile/flutter-lite/customization) to match your app's design.
+

@@ -113,19 +113,19 @@
                   {
                     "group": "Flutter Full SDK",
                     "pages": [
-                      "sdk-integration/mobile/flutter/requirements-and-installation",
-                      "sdk-integration/mobile/flutter/make-a-payment",
-                      "sdk-integration/mobile/flutter/methods",
-                      "sdk-integration/mobile/flutter/customization"
+                      "sdk-integration/mobile/flutter-full/requirements-and-installation",
+                      "sdk-integration/mobile/flutter-full/make-a-payment",
+                      "sdk-integration/mobile/flutter-full/methods"
                     ]
                   },
                   {
                     "group": "Flutter Lite SDK",
                     "pages": [
-                      "sdk-integration/mobile/flutter/requirements-and-installation",
-                      "sdk-integration/mobile/flutter/make-a-payment",
-                      "sdk-integration/mobile/flutter/methods",
-                      "sdk-integration/mobile/flutter/customization"
+                      "sdk-integration/mobile/flutter-lite/requirements-and-installation",
+                      "sdk-integration/mobile/flutter-lite/make-a-payment",
+                      "sdk-integration/mobile/flutter-lite/enroll-payment-method",
+                      "sdk-integration/mobile/flutter-lite/methods",
+                      "sdk-integration/mobile/flutter-lite/customization"
                     ]
                   }
                 ]

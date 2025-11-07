@@ -1,0 +1,70 @@
+---
+title: "Flutter Full SDK - Requirements and Installation"
+og:description: "How to install and configure Tonder's Full SDK for Flutter."
+---
+
+This guide provides the installation and configuration steps for Tonder's Flutter Full SDK.
+
+## Prerequisites
+
+You need to add the Skyflow Maven repository to your Android project configuration to handle secure data vaulting.
+
+1. Add the Skyflow Maven repository to your Android project configuration. This repository contains the secure data vaulting components required for PCI DSS compliance:
+
+```gradle title="android/build.gradle"
+maven {
+    url '[https://maven.pkg.github.com/skyflowapi/skyflow-android-sdk](https://maven.pkg.github.com/skyflowapi/skyflow-android-sdk)'
+    credentials {
+        username = 'username'
+        password = 'password'
+    }
+}
+```
+
+2. Enable AndroidX support in your project. This ensures compatibility with modern Android libraries and the Tonder SDK:
+
+```ini title="android/gradle.properties"
+android.useAndroidX=true
+```
+
+## Installation
+
+To install the Tonder Flutter Full SDK, you need to add the Full SDK package to your project and configure mobile environment permissions. The Full SDK provides a pre-built, inline checkout experience.
+
+### Step 1: Install the SDK Package
+
+Add the Full SDK package to your `pubspec.yaml` file or use `flutter pub add`:
+
+```bash
+flutter pub add full_sdk
+```
+
+### Step 2: Configure Mobile Environment Permissions
+
+You must grant internet permissions for the SDK to function correctly on native devices.
+
+<Tabs>
+<Tab title="Android">
+Add the INTERNET permission to your `AndroidManifest.xml` file.
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+</Tab>
+<Tab title="iOS / macOS">
+For iOS and macOS, add the network client entitlement to your `.entitlements` files.
+
+```xml
+<key>com.apple.security.network.client</key>
+<true/>
+```
+</Tab>
+</Tabs>
+
+## Next Steps
+
+Now that you've successfully installed the Tonder Flutter Full SDK, you're ready to start integrating payments into your application. Follow these guides to complete your Flutter payment integration:
+
+- Learn how to [make a payment](/sdk-integration/mobile/flutter-full/make-a-payment) using the Flutter Full SDK.
+- Explore the [available SDK methods](/sdk-integration/mobile/flutter-full/methods) for payment processing.
+

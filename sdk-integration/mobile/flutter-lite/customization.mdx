@@ -1,0 +1,245 @@
+---
+title: "Flutter Lite SDK - Customize the SDK"
+og:description: "Learn how to customize the Flutter Lite SDK with custom UI components."
+---
+
+This guide covers how to customise the Tonder Flutter Lite SDK to match your application's design and user experience requirements. The Lite SDK is specifically designed for maximum flexibility and complete UI control.
+
+<Note>
+The Full SDK (`full_sdk`) does not support customization as it provides a standardized, pre-built user interface. For custom payment forms and styling, you must use the Lite SDK (`tonder_sdk_lite`).
+</Note>
+
+## Lite SDK Customization
+
+The Lite SDK is designed for maximum flexibility and complete UI control. It provides the core, secure logic for payment processing without rendering any visible UI, allowing you to build a completely custom payment experience.
+
+This approach offers the following benefits:
+
+- Build your own payment form using standard Flutter widgets.
+- Apply your application's existing design system and styles.
+- Control the layout, flow, and interactions completely.
+- All payment logic remains secure and PCI-compliant.
+
+### Implementation Approach
+
+To implement the Lite SDK, you will create your own input fields and then pass the collected data to the SDK's payment methods.
+
+Here's a simple example showing how to use the Lite SDK with custom UI. This code creates a custom payment widget that collects user input through Flutter's standard TextField component and then uses the SDK's documented methods to process the payment data:
+
+```dart
+import 'package:tonder_sdk_lite/lite_checkout.dart';
+import 'package:flutter/material.dart';
+
+class CustomPaymentWidget extends StatefulWidget {
+  @override
+  _CustomPaymentWidgetState createState() => _CustomPaymentWidgetState();
+}
+
+class _CustomPaymentWidgetState extends State<CustomPaymentWidget> {
+  late LiteCheckout _liteCheckout;
+  final _emailController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _cardNumberController = TextEditingController();
+  final _cardHolderController = TextEditingController();
+  final _expiryMonthController = TextEditingController();
+  final _expiryYearController = TextEditingController();
+  final _cvvController = TextEditingController();
+  
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the Lite SDK
+    _liteCheckout = LiteCheckout(
+      apiKey: "YOUR_API_KEY",
+      returnUrl: "YOUR_RETURN_URL",
+    );
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Your custom email field
+          TextField(
+            controller: _firstNameController,
+            decoration: InputDecoration(
+              labelText: 'First Name',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          SizedBox(height: 12),
+          
+          TextField(
+            controller: _emailController,
+            decoration: InputDecoration(
+              labelText: 'Email',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          SizedBox(height: 12),
+          
+          TextField(
+            controller: _cardHolderController,
+            decoration: InputDecoration(
+              labelText: 'Cardholder Name',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          SizedBox(height: 12),
+          
+          TextField(
+            controller: _cardNumberController,
+            decoration: InputDecoration(
+              labelText: 'Card Number',
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: 12),
+          
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _expiryMonthController,
+                  decoration: InputDecoration(
+                    labelText: 'MM',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: _expiryYearController,
+                  decoration: InputDecoration(
+                    labelText: 'YY',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12),
+          
+          TextField(
+            controller: _cvvController,
+            decoration: InputDecoration(
+              labelText: 'CVV',
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.number,
+            obscureText: true,
+          ),
+          SizedBox(height: 20),
+          
+          // Your custom payment button
+          ElevatedButton(
+            onPressed: _processPayment,
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(vertical: 16),
+            ),
+            child: Text('Process Payment'),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  void _processPayment() async {
+    // Set customer data using documented method
+    final customerData = {
+      'first_name': _firstNameController.text,
+      'email': _emailController.text,
+    };
+    _liteCheckout.setPaymentData(customerData);
+    
+    // Set cart total using documented method
+    _liteCheckout.setCartTotal(399);
+    
+    // Collect card data from your custom form
+    final cardData = {
+      'card_number': _cardNumberController.text,
+      'cardholder_name': _cardHolderController.text,
+      'expiration_month': _expiryMonthController.text,
+      'expiration_year': _expiryYearController.text,
+      'cvv': _cvvController.text,
+    };
+    
+    // Process payment using SDK methods
+    try {
+      final response = await _liteCheckout.payment(cardData);
+      print('Payment successful: $response');
+      // Handle successful payment
+    } catch (error) {
+      print('Payment failed: $error');
+      // Handle payment error
+    }
+  }
+}
+```
+
+## Building Your Custom UI
+
+When building your custom payment form with the Flutter Lite SDK, ensure you collect all required payment information:
+
+### Required Fields
+
+- Card number
+- Cardholder name
+- Expiration month
+- Expiration year
+- CVV/CVC
+- Customer email
+- Customer name
+
+### Best Practices
+
+- Use appropriate input types and keyboard types
+- Implement real-time card number formatting
+- Display clear error messages
+- Follow Material Design or Cupertino design guidelines
+- Ensure mobile responsiveness
+- Add proper input validation
+
+### Styling Options
+
+With the Lite SDK, you have complete freedom to style your payment form:
+
+```dart
+// Example of custom styling
+TextField(
+  controller: _cardNumberController,
+  decoration: InputDecoration(
+    labelText: 'Card Number',
+    labelStyle: TextStyle(color: Colors.blue),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.blue, width: 2),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+    ),
+    prefixIcon: Icon(Icons.credit_card, color: Colors.blue),
+    filled: true,
+    fillColor: Colors.blue.shade50,
+  ),
+  keyboardType: TextInputType.number,
+  style: TextStyle(fontSize: 16),
+)
+```
+
+## Next Steps
+
+Now that you understand the customisation options available with the Tonder Flutter Lite SDK, you're ready to implement payment processing in your application. Here are the recommended next steps to get you started:
+
+- [Make a payment](/sdk-integration/mobile/flutter-lite/make-a-payment) with the Lite SDK.
+- Explore the [available SDK methods](/sdk-integration/mobile/flutter-lite/methods) for payment processing.
+- Learn how to [enroll payment methods](/sdk-integration/mobile/flutter-lite/enroll-payment-method) for returning customers.
+
