@@ -26,29 +26,26 @@ Here's a simple example showing how to use the Lite SDK with custom UI. This cod
 import { LiteCheckout } from "@tonder.io/ionic-lite-sdk";
 
 class CustomPaymentPage {
-  constructor() {
-    this.liteCheckout = new LiteCheckout({
-      apiKey: "YOUR_API_KEY",
-      returnUrl: "YOUR_RETURN_URL",
-    });
-  }
-  
-  async processPayment() {
-    // Collect data from your custom form
-    const customerData = {
-      firstName: document.getElementById('firstName').value,
-      email: document.getElementById('email').value,
-    };
-    
-    // Set customer data using documented method
-    this.liteCheckout.setPaymentData(customerData);
-    
-    // Set cart total using documented method
-    this.liteCheckout.setCartTotal(399);
-    
-    // Process payment using SDK methods
-    // (Specific payment method would depend on Lite SDK documentation)
-  }
+  constructor() {
+    this.liteCheckout = new LiteCheckout({
+      apiKey: "YOUR_API_KEY",
+      returnUrl: "YOUR_RETURN_URL",
+    });
+  }
+  
+  async processPayment() {
+    // Collect data from your custom form
+    const customerData = {
+      firstName: document.getElementById('firstName').value,
+      email: document.getElementById('email').value,
+    };
+    
+    // Set customer data using documented method
+    this.liteCheckout.setPaymentData(customerData);
+    
+    // Process payment using SDK methods
+    // (Specific payment method would depend on Lite SDK documentation)
+  }
 }
 ```
 
