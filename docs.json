@@ -159,20 +159,20 @@
                   {
                     "group": "React Native Full SDK",
                     "pages": [
-                      "sdk-integration/mobile/react-native/requirements-and-installation",
-                      "sdk-integration/mobile/react-native/make-a-payment",
-                      "sdk-integration/mobile/react-native/methods",
-                      "sdk-integration/mobile/react-native/customization"
+                      "sdk-integration/mobile/react-native-full/requirements-and-installation",
+                      "sdk-integration/mobile/react-native-full/make-a-payment",
+                      "sdk-integration/mobile/react-native-full/methods",
+                      "sdk-integration/mobile/react-native-full/customization"
                     ]
                   },
                   {
                     "group": "React Native Lite SDK",
                     "pages": [
-                      "sdk-integration/mobile/react-native/requirements-and-installation",
-                      "sdk-integration/mobile/react-native/make-a-payment",
-                      "sdk-integration/mobile/react-native/enroll-payment-method",
-                      "sdk-integration/mobile/react-native/methods",
-                      "sdk-integration/mobile/react-native/customization"
+                      "sdk-integration/mobile/react-native-lite/requirements-and-installation",
+                      "sdk-integration/mobile/react-native-lite/make-a-payment",
+                      "sdk-integration/mobile/react-native-lite/enroll-payment-method",
+                      "sdk-integration/mobile/react-native-lite/methods",
+                      "sdk-integration/mobile/react-native-lite/customization"
                     ]
                   }
                 ]

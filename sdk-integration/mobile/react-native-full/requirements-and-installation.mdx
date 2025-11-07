@@ -1,0 +1,48 @@
+---
+title: "React Native Full SDK - Requirements and Installation"
+og:description: "How to install and configure Tonder's Full SDK for React Native."
+---
+
+This guide provides the installation and configuration steps for Tonder's React Native Full SDK.
+
+## Prerequisites
+
+Before installing the Tonder React Native Full SDK, ensure your project meets the minimum requirements for compatibility and functionality. The SDK requires specific versions of React Native and related dependencies to work properly.
+
+### Step 1: Verify Project Requirements
+
+Ensure your project meets the following requirements:
+
+- react-native >= 0.70
+- react >= 16.8
+- react-native-svg >= 15.0.0
+- react-native-webview >= 13.6.0
+
+<Warning>
+The SDK will not work with older versions of these packages.
+</Warning>
+
+## Installation
+
+To install the Tonder React Native SDK, you need to add the package to your project. The SDK provides a complete payment solution with pre-built UI components when used in INLINE mode.
+
+### Step 1: Install the SDK Package
+
+Install the SDK package from npm:
+
+```bash
+npm install @tonder.io/rn-sdk
+# OR
+yarn add @tonder.io/rn-sdk
+```
+
+<Note>The React Native SDK uses a single package with different modes. For the Full SDK experience, you'll configure it with `SDKType.INLINE`.</Note>
+
+## Next Steps
+
+Now that you've successfully installed the Tonder React Native Full SDK, you're ready to start integrating payments into your application. Follow these guides to complete your React Native payment integration:
+
+- Learn how to [make a payment](/sdk-integration/mobile/react-native-full/make-a-payment) using the React Native Full SDK.
+- Explore the [available SDK methods](/sdk-integration/mobile/react-native-full/methods) for payment processing.
+- Customize the [SDK appearance and behavior](/sdk-integration/mobile/react-native-full/customization) to match your app's design.
+

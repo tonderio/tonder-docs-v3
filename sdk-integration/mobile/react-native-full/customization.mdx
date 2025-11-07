@@ -1,9 +1,10 @@
 ---
-title: "React Native SDK - Customize the SDK"
-og:description: "Learn how to customize the appearance and behavior of the React Native SDK."
+title: "React Native Full SDK - Customize the SDK"
+sidebarTitle: "Customize the SDK"
+og:description: "Learn how to customize the appearance and behavior of the React Native Full SDK."
 ---
 
-This guide shows you how to customize the appearance and behavior of the Tonder React Native SDK. You can customize UI components, labels, placeholders, and styling to ensure the payment experience aligns with your app's branding and user flow.
+This guide shows you how to customize the appearance and behavior of the Tonder React Native Full SDK (INLINE mode). You can customize UI components, labels, placeholders, and styling to ensure the payment experience aligns with your app's branding and user flow.
 
 ## How to Apply Customizations
 
@@ -25,50 +26,12 @@ create({
 
 Each customization option serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each customization option, including their parameters, usage examples, and practical implementation guidance.
 
-
-The following general options, which apply to both INLINE and ENROLLMENT, should be added to the document, perhaps under a new "General" subsection within "Behavior Customization."
-
 | Property | Type | Description |
 | :--- | :--- | :--- |
 | **General.showMessages** | boolean | Controls the visibility of error and success messages |
 | **labels** | object | Custom labels for form fields (See Text Customization) |
 | **placeholders** | object | Custom placeholder text for form inputs (See Text Customization) |
 | **styles** | object | Custom styles for UI components (See Styling Customization) |
-
-
-## Enrollment Behavior Customization
-The saveButton options are specific to the ENROLLMENT integration (and are distinct from the INLINE paymentButton options).
-
-| Property | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| **saveButton.show** | boolean | `true` | Controls the visibility of the save button |
-| **saveButton.text** | string | `'Guardar'` | Custom text to display on the save button |
-
-## Enrollment Text Customization
-
-The text customization section is generally correct, but it should be noted that the labels and placeholders objects apply to the ENROLLMENT type as well. Additionally, the text customization options are much more extensive than currently listed:
-
-| Property | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| **labels.saveCardFuturePayment** | string | `"Guardar tarjeta para futuros pagos"` | Label for the save card for future payments checkbox |
-| **labels.saveCardCheckedIcon** | string | `""` | Label for checked icon of the save card for future payments checkbox |
-| **labels.expirationCard** | string | `"Exp."` | Label for the expiration card text |
-| **labels.payWithCard** | string | `"Pagar con tarjeta"` | Label for pay with card option |
-| **placeholders.expiryMonth** | string | `"MM"` | Placeholder for the expiration month field |
-| **placeholders.expiryYear** | string | `"AA"` | Placeholder for the expiration year field |
-## Styling Customization Enhancements
-
-The styling section is incomplete and only provides top-level properties. More detail should be provided on the internal structure of the styles object for INLINE/ENROLLMENT to reflect the actual customizable components:
-
-| Component | Description | Properties (Examples of detailed properties) |
-| :--- | :--- | :--- |
-| **cardForm** | Card form section | `inputStyles`, `labelStyles`, `errorStyles`, `saveCardOption` |
-| **savedCards** | Saved cards list section | `radioBase`, `radioInner`, `radioSelected`, `cardIcon`, `deleteButton` |
-| **paymentMethods** | Payment methods section | `radioBase`, `radioInner`, `radioSelected` |
-| **skeletonCard** | Skeleton loader | `fullField`, `compactField`, `compactRow`, `animatedBGColors` |
-
-
-<Info>LITE version styling is done by passing the styles directly as props to the individual components, rather than through the main customization object. </Info>
 
 ### Behavior Customization
 
@@ -117,9 +80,14 @@ Change the default text for labels and input placeholders to match your app's la
 | `labels.cardNumber` | string | Text for the card number field label |
 | `labels.cvv` | string | Text for the CVV field label |
 | `labels.expiryDate` | string | Text for the expiration date field label |
+| `labels.saveCardFuturePayment` | string | Label for the save card for future payments checkbox |
+| `labels.expirationCard` | string | Label for the expiration card text |
+| `labels.payWithCard` | string | Label for pay with card option |
 | `placeholders.name` | string | Placeholder text for the cardholder name input |
 | `placeholders.cardNumber` | string | Placeholder text for the card number input |
 | `placeholders.cvv` | string | Placeholder text for the CVV input |
+| `placeholders.expiryMonth` | string | Placeholder for the expiration month field |
+| `placeholders.expiryYear` | string | Placeholder for the expiration year field |
 
 ```javascript
 customization: {
@@ -128,11 +96,15 @@ customization: {
     cardNumber: 'Card Number',
     cvv: 'Security Code',
     expiryDate: 'Expiration Date',
+    saveCardFuturePayment: 'Save card for future payments',
+    payWithCard: 'Pay with card',
   },
   placeholders: {
     name: 'Jane Doe',
     cardNumber: '4242 4242 4242 4242',
     cvv: '123',
+    expiryMonth: 'MM',
+    expiryYear: 'YY',
   },
 }
 ```
@@ -141,13 +113,15 @@ customization: {
 
 Provide a styles object to override the default appearance of SDK components. The structure allows you to target specific elements like the main container, card form, and buttons.
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `sdkCard.base` | object | Styles for the main SDK container card |
-| `cardForm.base` | object | Styles for the card form container |
-| `cardForm.inputStyles.base` | object | Styles for input fields within the card form |
-| `paymentButton.base` | object | Styles for the payment button |
-| `errorMessage.base` | object | Styles for error messages |
+| Component | Description | Properties (Examples of detailed properties) |
+| :--- | :--- | :--- |
+| **sdkCard** | Main SDK container card | `base` |
+| **cardForm** | Card form section | `inputStyles`, `labelStyles`, `errorStyles`, `saveCardOption` |
+| **savedCards** | Saved cards list section | `radioBase`, `radioInner`, `radioSelected`, `cardIcon`, `deleteButton` |
+| **paymentMethods** | Payment methods section | `radioBase`, `radioInner`, `radioSelected` |
+| **paymentButton** | Payment button | `base` |
+| **errorMessage** | Error messages | `base` |
+| **skeletonCard** | Skeleton loader | `fullField`, `compactField`, `compactRow`, `animatedBGColors` |
 
 <Accordion title="View Full Styling Example">
 
@@ -180,8 +154,8 @@ customization: {
 
 ## Next Steps
 
-Now that you've learned how to customize the React Native SDK, explore these advanced features to enhance your payment experience:
+Now that you've learned how to customize the React Native Full SDK, explore these features to enhance your payment experience:
 
-- Learn how to [create a payment](/sdk-integration/mobile/react-native/make-a-payment) using the React Native SDK.
-- Explore the [available SDK methods](/sdk-integration/mobile/react-native/methods) for payment processing.
-- Learn how to [enroll payment methods](/sdk-integration/mobile/react-native/enroll-payment-method) for returning customers.
+- Learn how to [make a payment](/sdk-integration/mobile/react-native-full/make-a-payment) using the React Native Full SDK.
+- Explore the [available SDK methods](/sdk-integration/mobile/react-native-full/methods) for payment processing.
+

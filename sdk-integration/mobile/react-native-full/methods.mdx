@@ -1,0 +1,182 @@
+---
+title: "React Native Full SDK - SDK Methods"
+og:description: "Reference for the methods available in Tonder's React Native Full SDK."
+---
+
+This page provides a reference for the core methods and components available in the Tonder React Native Full SDK when using INLINE mode. The SDK uses a combination of a Provider, hooks, and components to manage state and render UI.
+
+## Core Components
+
+The Tonder React Native Full SDK provides these essential components for building payment interfaces in INLINE mode.
+
+<AccordionGroup>
+  <Accordion title="TonderProvider">
+
+A wrapper component that initializes the SDK and provides its context to children. This component must be placed at the root of your checkout flow.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `config` | Object | Configuration object with SDK settings. |
+| `config.type` | SDKType | Type of SDK: `SDKType.INLINE` for Full SDK. |
+| `config.mode` | String | Operating mode: `'development'`, `'production'`, or `'sandbox'`. |
+| `config.apiKey` | String | Your Tonder Public API key. |
+| `config.returnURL` | String | Optional URL for 3DS redirect completion. |
+
+Here's an example of how to configure the TonderProvider:
+
+```jsx
+import { TonderProvider, SDKType, Environment } from '@tonder.io/rn-sdk';
+
+function App() {
+  return (
+    <TonderProvider
+      config={{
+        type: SDKType.INLINE,
+        mode: Environment.stage,
+        apiKey: 'your-api-key',
+      }}
+    >
+      <YourApp />
+    </TonderProvider>
+  );
+}
+```
+
+  </Accordion>
+
+  <Accordion title="TonderPayment">
+
+Renders the complete, pre-built payment UI. This component is used when SDKType is INLINE.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This component takes no props |
+
+Here's an example of how to render the TonderPayment component:
+
+```jsx
+import { TonderPayment } from '@tonder.io/rn-sdk';
+
+export default function FullPaymentScreen() {
+  return (
+    <SafeAreaView>
+      <TonderPayment />
+    </SafeAreaView>
+  );
+}
+```
+
+  </Accordion>
+</AccordionGroup> 
+
+## Hook: useTonder
+
+A React hook that provides access to the SDK's methods for INLINE mode.
+
+```jsx
+import { useTonder, SDKType } from '@tonder.io/rn-sdk';
+
+const { create, payment, reset } = useTonder<SDKType.INLINE>();
+```
+
+## INLINE SDK Methods
+
+These methods are available when using SDKType.INLINE for the Full SDK experience.
+
+<AccordionGroup>
+  <Accordion title="create Method">
+    Initializes the SDK with configuration. This must be called before rendering components or calling other methods.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| config | Object | Configuration object for the session. |
+| config.secureToken | String | Secure token obtained from your backend (required for card operations). |
+| config.paymentData | Object | Payment information with customer and cart details. |
+| config.callbacks | Object | Optional callback functions (e.g., onFinishPayment). |
+| config.customization | Object | Optional UI customization options. |
+| config.events | Object | Optional event handlers for card form input fields. |
+
+```jsx
+const { create } = useTonder<SDKType.INLINE>();
+
+const paymentData: IBaseProcessPaymentRequest = {
+  customer: {
+    email: 'test@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+  },
+  cart: {
+    total: 399,
+    items: [{
+      name: 'Product',
+      amount_total: 399,
+      description: 'Description',
+      price_unit: 399,
+      quantity: 1,
+    }]
+  },
+};
+
+const initializePayment = async () => {
+  const { error } = await create({
+    secureToken: 'your-secure-token',
+    paymentData,
+    callbacks: {
+      onFinishPayment: handlePaymentFinish
+    }
+  });
+  if (error) {
+    console.error('SDK initialization error:', error);
+  }
+};
+```
+  </Accordion>
+
+  <Accordion title="payment Method">
+
+Processes a payment using the configured data. Note: This is only necessary when you want to use a custom payment button (by setting customization.paymentButton.show: false).
+
+```jsx
+const { create, payment } = useTonder<SDKType.INLINE>();
+
+const handlePayment = async () => {
+  const { response, error } = await payment();
+  if (error) {
+    console.error('Error payment: ', error);
+    return;
+  }
+  console.log('Response payment: ', response);
+};
+
+// ... In your component
+<TonderPayment />
+<TouchableOpacity onPress={handlePayment}>
+  <Text>Pay</Text>
+</TouchableOpacity>
+```
+  </Accordion>
+
+  <Accordion title="reset Method">
+  Resets the SDK state to its initial values and cleans up resources. This is useful for re-initializing the payment flow after a transaction.  
+
+```jsx
+const { reset } = useTonder<SDKType.INLINE>();
+
+const callbackFinish = async (response) => {
+  console.log('Callback finish payment', response);
+  // Reset the state and regenerate the SDK to use it again.
+  reset();
+  await initializePayment();
+};
+```
+  
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that you're familiar with the available methods in the React Native Full SDK, explore these guides to enhance your implementation:
+
+- Learn how to [make a payment](/sdk-integration/mobile/react-native-full/make-a-payment) using the React Native Full SDK.
+- Customize the [SDK appearance and behavior](/sdk-integration/mobile/react-native-full/customization) to match your app's design.
+

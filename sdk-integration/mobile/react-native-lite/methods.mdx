@@ -1,0 +1,369 @@
+---
+title: "React Native Lite SDK - SDK Methods"
+og:description: "Reference for the methods available in Tonder's React Native Lite SDK."
+---
+
+This page provides a reference for the core methods and components available in the Tonder React Native Lite SDK when using LITE mode. The SDK provides individual secure components that allow you to build completely custom payment interfaces.
+
+## Core Components
+
+The Tonder React Native Lite SDK provides these individual secure components for building custom payment interfaces.
+
+<AccordionGroup>
+  <Accordion title="TonderProvider">
+
+A wrapper component that initializes the SDK and provides its context to children. This component must be placed at the root of your checkout flow.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `config` | Object | Configuration object with SDK settings. |
+| `config.type` | SDKType | Type of SDK: `SDKType.LITE` for Lite SDK or `SDKType.ENROLLMENT` for card enrollment. |
+| `config.mode` | String | Operating mode: `'development'`, `'production'`, or `'sandbox'`. |
+| `config.apiKey` | String | Your Tonder Public API key. |
+| `config.returnURL` | String | Optional URL for 3DS redirect completion. |
+
+Here's an example of how to configure the TonderProvider:
+
+```jsx
+import { TonderProvider, SDKType, Environment } from '@tonder.io/rn-sdk';
+
+function App() {
+  return (
+    <TonderProvider
+      config={{
+        type: SDKType.LITE, // or SDKType.ENROLLMENT
+        mode: Environment.stage,
+        apiKey: 'your-api-key',
+      }}
+    >
+      <YourApp />
+    </TonderProvider>
+  );
+}
+```
+
+  </Accordion>
+
+  <Accordion title="Individual Secure Components">
+
+For SDKType.LITE integrations, the SDK provides individual, secure components to build a custom UI:
+
+- **CardHolderInput** - Secure input for cardholder name
+- **CardNumberInput** - Secure input for card number
+- **CardCVVInput** - Secure input for CVV/CVC
+- **CardExpirationDateInput** - Secure input for full expiration date
+- **CardExpirationMonthInput** - Secure input for expiration month
+- **CardExpirationYearInput** - Secure input for expiration year
+
+Each component can accept style props to customize the appearance.
+
+```jsx
+import {
+  CardHolderInput,
+  CardNumberInput,
+  CardExpirationMonthInput,
+  CardExpirationYearInput,
+  CardCVVInput
+} from '@tonder.io/rn-sdk';
+
+// ... In your custom form
+<CardHolderInput style={customStyles.input} />
+<CardNumberInput style={customStyles.input} />
+<CardExpirationMonthInput style={customStyles.input} />
+<CardExpirationYearInput style={customStyles.input} />
+<CardCVVInput style={customStyles.input} />
+```
+  </Accordion>
+
+  <Accordion title="TonderEnrollment (Pre-built)">
+
+If you prefer a pre-built enrollment form instead of building a custom one, you can use the TonderEnrollment component when SDKType is ENROLLMENT.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This component takes no props |
+
+```jsx
+import { TonderEnrollment } from '@tonder.io/rn-sdk';
+
+export default function EnrollmentScreen() {
+  return (
+    <SafeAreaView>
+      <TonderEnrollment />
+    </SafeAreaView>
+  );
+}
+```
+
+  </Accordion>
+</AccordionGroup> 
+
+## Hook: useTonder
+
+A React hook that provides access to the SDK's methods for LITE and ENROLLMENT modes.
+
+```jsx
+import { useTonder, SDKType } from '@tonder.io/rn-sdk';
+
+// For LITE mode (custom payment forms)
+const { create, payment, saveCustomerCard, getCustomerCards, ... } = useTonder<SDKType.LITE>();
+
+// For ENROLLMENT mode (card saving)
+const { create, saveCustomerCard, getCardSummary, reset } = useTonder<SDKType.ENROLLMENT>();
+```
+
+## Common Methods
+
+These methods are shared by both LITE and ENROLLMENT modes.
+
+<AccordionGroup>
+  <Accordion title="create Method">
+    Initializes the SDK with configuration. This must be called before rendering components or calling other methods.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| config | Object | Configuration object for the session. |
+| config.secureToken | String | Secure token obtained from your backend (required for card operations). |
+| config.paymentData | Object | Payment information (for LITE mode). |
+| config.customer | Object | Customer information (for ENROLLMENT mode). |
+| config.callbacks | Object | Optional callback functions (e.g., onFinishPayment, onFinishSave). |
+| config.customization | Object | Optional UI customization options. |
+| config.events | Object | Optional event handlers for card form input fields. |
+
+```jsx
+// For LITE mode
+const { create } = useTonder<SDKType.LITE>();
+
+const paymentData = {
+  customer: {
+    email: 'test@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+  },
+  cart: {
+    total: 399,
+    items: [{
+      name: 'Product',
+      amount_total: 399,
+      description: 'Description',
+      price_unit: 399,
+      quantity: 1,
+    }]
+  },
+};
+
+const initializePayment = async () => {
+  const { error } = await create({
+    secureToken: 'your-secure-token',
+    paymentData,
+    callbacks: {
+      onFinishPayment: handlePaymentFinish
+    }
+  });
+};
+
+// For ENROLLMENT mode
+const { create } = useTonder<SDKType.ENROLLMENT>();
+
+const initializeEnrollment = async () => {
+  const { error } = await create({
+    secureToken: 'your-secure-token',
+    customer: {
+      email: 'customer@example.com',
+      firstName: 'Jane',
+      lastName: 'Doe'
+    },
+    callbacks: {
+      onFinishSave: handleCardSaved
+    }
+  });
+};
+```
+  </Accordion>
+
+  <Accordion title="reset Method">
+  Resets the SDK state to its initial values and cleans up resources. This is useful for re-initializing the flow after a transaction.  
+
+```jsx
+const { reset } = useTonder<SDKType.LITE>();
+
+const callbackFinish = async (response) => {
+  console.log('Callback finish', response);
+  // Reset the state and regenerate the SDK to use it again.
+  reset();
+  await initialize();
+};
+```
+  
+  </Accordion>
+</AccordionGroup>
+
+## LITE SDK Methods
+
+Used when type is SDKType.LITE, providing full control over the payment flow with custom components.
+
+<AccordionGroup>
+  <Accordion title="payment Method">
+
+Processes a payment using the configured payment data and the values from the LITE input components.
+
+```jsx
+const { payment } = useTonder<SDKType.LITE>();
+
+const handlePayment = async () => {
+  const { response, error } = await payment();
+  if (error) {
+    console.error('Payment error:', error);
+    return;
+  }
+  console.log('Payment success:', response);
+};
+```
+  
+  </Accordion>
+
+  <Accordion title="saveCustomerCard Method">
+
+Tokenizes and saves the current card information from the LITE input components.
+
+```jsx
+const { saveCustomerCard } = useTonder<SDKType.LITE>();
+
+const handleSaveCard = async () => {
+  const { response, error } = await saveCustomerCard();
+  if (error) {
+    console.error('Error saving card:', error);
+    return;
+  }
+  console.log('Card saved:', response);
+};
+```
+
+  </Accordion>
+
+  <Accordion title="getCustomerCards Method">
+
+Retrieves the list of saved cards for the customer.
+
+```jsx
+const { getCustomerCards } = useTonder<SDKType.LITE>();
+
+const loadCards = async () => {
+  const { response, error } = await getCustomerCards();
+  if (error) {
+    console.error('Error loading cards:', error);
+    return;
+  }
+  console.log('Saved cards:', response);
+};
+```
+
+  </Accordion>
+
+  <Accordion title="getCardSummary Method">
+
+Retrieves detailed information about a saved card using its Skyflow ID.
+
+```jsx
+const { getCardSummary } = useTonder<SDKType.LITE>();
+
+const getCardDetails = async (skyflowId: string) => {
+  const { response, error } = await getCardSummary(skyflowId);
+  if (error) {
+    console.error('Error getting card summary:', error);
+    return;
+  }
+  console.log('Card details:', response);
+};
+```
+
+  </Accordion>
+
+  <Accordion title="removeCustomerCard Method">
+
+Deletes a saved card.
+
+```jsx
+const { removeCustomerCard } = useTonder<SDKType.LITE>();
+
+const deleteCard = async (skyflowId: string) => {
+  const { response, error } = await removeCustomerCard(skyflowId);
+  if (error) {
+    console.error('Error removing card:', error);
+    return;
+  }
+  console.log('Card removed successfully');
+};
+```
+
+  </Accordion>
+
+  <Accordion title="getPaymentMethods Method">
+
+Retrieves available payment methods.
+
+```jsx
+const { getPaymentMethods } = useTonder<SDKType.LITE>();
+
+const loadPaymentMethods = async () => {
+  const { response, error } = await getPaymentMethods();
+  if (error) {
+    console.error('Error loading payment methods:', error);
+    return;
+  }
+  console.log('Available payment methods:', response);
+};
+```
+
+  </Accordion>
+</AccordionGroup>
+
+## ENROLLMENT SDK Methods
+
+Used when type is SDKType.ENROLLMENT for card saving workflows.
+
+<AccordionGroup>
+  <Accordion title="saveCustomerCard Method">
+  Tokenizes and saves the current card information. Note: This is only necessary when building a custom enrollment form or using a custom save button.
+   
+```jsx
+const { saveCustomerCard } = useTonder<SDKType.ENROLLMENT>();
+
+const handleSaveCard = async () => {
+  const { response, error } = await saveCustomerCard();
+  if (error) {
+    console.error('Error saving card:', error);
+    return;
+  }
+  console.log('Response save card:', response);
+};
+```
+  </Accordion>
+
+  <Accordion title="getCardSummary Method">
+  Retrieves detailed information about a saved card using its Skyflow ID.
+  
+```jsx
+const { getCardSummary } = useTonder<SDKType.ENROLLMENT>();
+
+const handleGetCardSummary = async (skyflowId: string) => {
+  const { response, error } = await getCardSummary(skyflowId);
+  if (error) {
+    console.error('Error getting card summary:', error);
+    return;
+  }
+  console.log('Card summary:', response);
+};
+```
+
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that you're familiar with the available methods in the React Native Lite SDK, explore these guides to enhance your implementation:
+
+- Learn how to [make a payment](/sdk-integration/mobile/react-native-lite/make-a-payment) using the React Native Lite SDK.
+- Learn how to [enroll payment methods](/sdk-integration/mobile/react-native-lite/enroll-payment-method) for returning customers.
+- Customize the [SDK appearance and behavior](/sdk-integration/mobile/react-native-lite/customization) to match your app's design.
+
