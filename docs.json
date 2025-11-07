@@ -69,17 +69,17 @@
         ]
       },
       {
-        "tab": "Full SDK",
+        "tab": "SDKs",
         "groups": [
           {
-            "group": "Introduction",
+            "group": "SDK Overview",
             "pages": [
-              "integration/sdks/full-sdk-overview",
+              "integration/sdks/sdk-overview",
               "sdk-integration/start-using-tonder-sdkss"
             ]
           },
           {
-            "group": "Web SDK (Pre-built UI)",
+            "group": "Web SDKs",
             "pages": [
               "sdk-integration/web/overview",
               {
@@ -90,58 +90,7 @@
                   "sdk-integration/web/js-inline/methods",
                   "sdk-integration/web/js-inline/customization"
                 ]
-              }
-            ]
-          },
-          {
-            "group": "Mobile SDKs (Pre-built UI)",
-            "pages": [
-              "sdk-integration/mobile/overview",
-              {
-                "group": "Flutter Full SDK",
-                "pages": [
-                  "sdk-integration/mobile/flutter/requirements-and-installation",
-                  "sdk-integration/mobile/flutter/make-a-payment",
-                  "sdk-integration/mobile/flutter/methods",
-                  "sdk-integration/mobile/flutter/customization"
-                ]
               },
-              {
-                "group": "Ionic Full SDK",
-                "pages": [
-                  "sdk-integration/mobile/ionic/requirements-and-installation",
-                  "sdk-integration/mobile/ionic/make-a-payment",
-                  "sdk-integration/mobile/ionic/methods",
-                  "sdk-integration/mobile/ionic/customization"
-                ]
-              },
-              {
-                "group": "React Native Full SDK",
-                "pages": [
-                  "sdk-integration/mobile/react-native/requirements-and-installation",
-                  "sdk-integration/mobile/react-native/make-a-payment",
-                  "sdk-integration/mobile/react-native/methods",
-                  "sdk-integration/mobile/react-native/customization"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Lite SDK",
-        "groups": [
-          {
-            "group": "Introduction",
-            "pages": [
-              "integration/sdks/lite-sdk-overview",
-              "sdk-integration/start-using-tonder-sdkss"
-            ]
-          },
-          {
-            "group": "Web SDK (Custom UI)",
-            "pages": [
-              "sdk-integration/web/overview",
               {
                 "group": "Web Lite SDK",
                 "pages": [
@@ -155,36 +104,78 @@
             ]
           },
           {
-            "group": "Mobile SDKs (Custom UI)",
+            "group": "Mobile SDKs",
             "pages": [
               "sdk-integration/mobile/overview",
               {
-                "group": "Flutter Lite SDK",
+                "group": "Flutter",
                 "pages": [
-                  "sdk-integration/mobile/flutter/requirements-and-installation",
-                  "sdk-integration/mobile/flutter/make-a-payment",
-                  "sdk-integration/mobile/flutter/methods",
-                  "sdk-integration/mobile/flutter/customization"
+                  {
+                    "group": "Flutter Full SDK",
+                    "pages": [
+                      "sdk-integration/mobile/flutter/requirements-and-installation",
+                      "sdk-integration/mobile/flutter/make-a-payment",
+                      "sdk-integration/mobile/flutter/methods",
+                      "sdk-integration/mobile/flutter/customization"
+                    ]
+                  },
+                  {
+                    "group": "Flutter Lite SDK",
+                    "pages": [
+                      "sdk-integration/mobile/flutter/requirements-and-installation",
+                      "sdk-integration/mobile/flutter/make-a-payment",
+                      "sdk-integration/mobile/flutter/methods",
+                      "sdk-integration/mobile/flutter/customization"
+                    ]
+                  }
                 ]
               },
               {
-                "group": "Ionic Lite SDK",
+                "group": "Ionic",
                 "pages": [
-                  "sdk-integration/mobile/ionic/requirements-and-installation",
-                  "sdk-integration/mobile/ionic/make-a-payment",
-                  "sdk-integration/mobile/ionic/enroll-payment-method",
-                  "sdk-integration/mobile/ionic/methods",
-                  "sdk-integration/mobile/ionic/customization"
+                  {
+                    "group": "Ionic Full SDK",
+                    "pages": [
+                      "sdk-integration/mobile/ionic/requirements-and-installation",
+                      "sdk-integration/mobile/ionic/make-a-payment",
+                      "sdk-integration/mobile/ionic/methods",
+                      "sdk-integration/mobile/ionic/customization"
+                    ]
+                  },
+                  {
+                    "group": "Ionic Lite SDK",
+                    "pages": [
+                      "sdk-integration/mobile/ionic/requirements-and-installation",
+                      "sdk-integration/mobile/ionic/make-a-payment",
+                      "sdk-integration/mobile/ionic/enroll-payment-method",
+                      "sdk-integration/mobile/ionic/methods",
+                      "sdk-integration/mobile/ionic/customization"
+                    ]
+                  }
                 ]
               },
               {
-                "group": "React Native Lite SDK",
+                "group": "React Native",
                 "pages": [
-                  "sdk-integration/mobile/react-native/requirements-and-installation",
-                  "sdk-integration/mobile/react-native/make-a-payment",
-                  "sdk-integration/mobile/react-native/enroll-payment-method",
-                  "sdk-integration/mobile/react-native/methods",
-                  "sdk-integration/mobile/react-native/customization"
+                  {
+                    "group": "React Native Full SDK",
+                    "pages": [
+                      "sdk-integration/mobile/react-native/requirements-and-installation",
+                      "sdk-integration/mobile/react-native/make-a-payment",
+                      "sdk-integration/mobile/react-native/methods",
+                      "sdk-integration/mobile/react-native/customization"
+                    ]
+                  },
+                  {
+                    "group": "React Native Lite SDK",
+                    "pages": [
+                      "sdk-integration/mobile/react-native/requirements-and-installation",
+                      "sdk-integration/mobile/react-native/make-a-payment",
+                      "sdk-integration/mobile/react-native/enroll-payment-method",
+                      "sdk-integration/mobile/react-native/methods",
+                      "sdk-integration/mobile/react-native/customization"
+                    ]
+                  }
                 ]
               }
             ]
