@@ -1,0 +1,224 @@
+---
+title: "Webhook Events & Payloads"
+'og:description': "Reference for all Hosted Checkout webhook events and their corresponding JSON payloads."
+slug: https://www.google.com/search?q=/hosted-checkout/reference/webhook-events
+---
+
+When you [set up a webhook endpoint](https://www.google.com/search?q=/hosted-checkout/guides/setup-listen-webhooks), Tonder will send POST requests with an event payload when key actions occur.
+
+All webhook payloads follow this structure:
+
+```json
+{
+  "action": "session.created",
+  "type": "checkout.hosted",
+  "data": {
+    // ... object related to the event
+  }
+}
+```
+
+The table below describes the top-level fields present in every webhook:
+
+| Field | Type | Description |
+| :---- | :---- | :---- |
+| action | string | The event type (e.g., `session.created`, `session.completed`, `session.expired`). |
+| type | string | The checkout type, always `checkout.hosted` for Hosted Checkout. |
+| data | object | Event-specific data containing session or transaction details. |
+
+## Session Events
+
+### session.created
+
+Sent when a new checkout session is successfully created.
+
+The table below describes the fields in the `data` object for this event:
+
+| Field | Type | Description |
+| :---- | :---- | :---- |
+| id | string | The unique session ID. |
+| url | string | The checkout URL where the customer completes payment. |
+| external_id | string | Your unique identifier for this order. |
+| amount_total | number | Total charge amount. |
+| currency | string | Currency code (e.g., "MXN"). |
+| status | string | Session status, will be `pending` for this event. |
+| payment_id | number | The payment transaction ID. |
+| transaction_status | string | Transaction status, will be `Pending` for this event. |
+| created_at | number | Unix timestamp in milliseconds when the session was created. |
+| customer | object | Customer details including `first_name`, `last_name`, and `email`. |
+
+<AccordionGroup>
+<Accordion title="View Full JSON Payload Example">
+
+```json
+{
+  "action": "session.created",
+  "type": "checkout.hosted",
+  "data": {
+    "id": "cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
+    "url": "https://stage-payflow.tonder.io/checkout/cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
+    "external_id": "ORD-A1B2-NEW",
+    "amount_total": 5000,
+    "currency": "MXN",
+    "status": "pending",
+    "payment_id": 41521,
+    "transaction_status": "Pending",
+    "created_at": 1751478543567,
+    "customer": {
+      "first_name": "New",
+      "last_name": "Customer",
+      "email": "new@example.com"
+    }
+  }
+}
+```
+
+</Accordion>
+</AccordionGroup>
+
+### session.completed
+
+Sent when a session is successfully paid for and completed. This is the primary event for confirming a successful order.
+
+The table below describes the fields in the `data` object for this event:
+
+| Field | Type | Description |
+| :---- | :---- | :---- |
+| id | string | The unique session ID. |
+| url | string | The checkout URL where the customer completed payment. |
+| external_id | string | Your unique identifier for this order. |
+| amount_total | number | Total charge amount. |
+| currency | string | Currency code (e.g., "MXN"). |
+| status | string | Session status, will be `completed` for this event. |
+| payment_id | number | The payment transaction ID. |
+| transaction_status | string | Transaction status, will be `Success` for this event. |
+| paid_at | number | Unix timestamp in milliseconds when the payment was completed. |
+| customer | object | Customer details including `first_name`, `last_name`, and `email`. |
+
+<AccordionGroup>
+<Accordion title="View Full JSON Payload Example">
+
+```json
+{
+  "action": "session.completed",
+  "type": "checkout.hosted",
+  "data": {
+    "id": "cs_97_41528_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
+    "url": "https://stage-payflow.tonder.io/checkout/cs_97_41528_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
+    "external_id": "ORD-G7H8-PAID",
+    "amount_total": 15000,
+    "currency": "MXN",
+    "status": "completed",
+    "payment_id": 41528,
+    "transaction_status": "Success",
+    "paid_at": 1751478550234,
+    "customer": {
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "email": "jane.doe@example.com"
+    }
+  }
+}
+```
+
+</Accordion>
+</AccordionGroup>
+
+### session.expired
+
+Sent when a pending session expires without a successful payment (e.g., the customer abandoned the checkout).
+
+The table below describes the fields in the `data` object for this event:
+
+| Field | Type | Description |
+| :---- | :---- | :---- |
+| id | string | The unique session ID. |
+| url | string | The checkout URL that expired. |
+| external_id | string | Your unique identifier for this order. |
+| amount_total | number | Total charge amount. |
+| currency | string | Currency code (e.g., "MXN"). |
+| status | string | Session status, will be `expired` for this event. |
+| payment_id | number | The payment transaction ID. |
+| transaction_status | string | Transaction status, will be `Expired` for this event. |
+| customer | object | Customer details including `first_name`, `last_name`, and `email`. |
+
+<AccordionGroup>
+<Accordion title="View Full JSON Payload Example">
+
+```json
+{
+  "action": "session.expired",
+  "type": "checkout.hosted",
+  "data": {
+    "id": "cs_97_41529_k1j2h3g4f5e6d7c8b9a0",
+    "url": "https://stage-payflow.tonder.io/checkout/cs_97_41529_k1j2h3g4f5e6d7c8b9a0",
+    "external_id": "ORD-L9M8-EXPIRED",
+    "amount_total": 2500,
+    "currency": "MXN",
+    "status": "expired",
+    "payment_id": 41529,
+    "transaction_status": "Expired",
+    "customer": {
+      "first_name": "Tom",
+      "last_name": "Abandoned",
+      "email": "tom@example.com"
+    }
+  }
+}
+```
+
+</Accordion>
+</AccordionGroup>
+
+## Payment Transaction Events
+
+### payment.transaction
+
+Sent when a payment transaction status changes (e.g., Pending, Success, Declined). A single session may have multiple payment.transaction events if the user retries.
+
+<Note>
+While `session.completed` tells you the order is paid, `payment.transaction` gives you details about each attempt.
+</Note>
+
+The table below describes the fields in the `data` object for this event:
+
+| Field | Type | Description |
+| :---- | :---- | :---- |
+| payment_id | string | The unique payment transaction ID. |
+| session_id | string | The session ID this payment belongs to. |
+| status | string | Transaction status (e.g., `Pending`, `Success`, `Declined`). |
+| amount | number | Payment amount. |
+| currency | string | Currency code (e.g., "MXN"). |
+| payment_method_type | string | Payment method used (e.g., "card"). |
+| created_at | string | ISO 8601 timestamp when the transaction was created. |
+| card_details | object | Card information including `brand` and `last4` digits. |
+| customer | object | Customer details including `name` and `email`. |
+
+<AccordionGroup>
+<Accordion title="View Full JSON Payload Example (Declined)">
+
+```json
+{
+  "event_type": "payment.transaction",
+  "data": {
+    "payment_id": 41522,
+    "session_id": "cs_97_41522_f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8",
+    "status": "Declined",
+    "amount": 7500,
+    "currency": "MXN",
+    "payment_method_type": "card",
+    "created_at": "2025-10-20T15:00:00Z",
+    "card_details": {
+      "brand": "mastercard",
+      "last4": "5555"
+    },
+    "customer": {
+      "name": "Test Retry",
+      "email": "retry@example.com"
+    }
+  }
+}
+```
+
+</Accordion>
+</AccordionGroup>  

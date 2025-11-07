@@ -1,55 +1,34 @@
 ---
 title: "Test Cards"
-'og:description': "This page provides a list of test cards for Visa, Mastercard, and Amex, along with their 3-D Secure results and transaction outcomes. Use these test cards for simulating various payment scenarios when testing your integration with Tonder."
+'og:description': "This page provides a list of test cards for use along with their 3-D Secure results and transaction outcomes. Use these test cards for simulating various payment scenarios when testing your integration with Tonder."
 ---
 
-This page provides a list of test cards for Visa, Mastercard, and Amex, along with their 3-D Secure results and transaction outcomes. Use these test cards for simulating various payment scenarios when testing your integration with Tonder.
-
-<CardGroup cols={3}>
-  <Card title="Visa" icon="cc-visa" href="#visa"/>
-  <Card title="Mastercard" icon="cc-mastercard" href="#mastercard"/>
-  <Card title="American Express" icon="cc-amex" href="#amex"/>
-</CardGroup>
 
 <Tip>
-  For all test cards, you can use the following:
-  - **Cardholder**: Any name.
-  - **CVC**: Any three digits.
-  - **Date**: Any future date.
+  For a better experience we recommend getting in touch with your Tonder representative to obtain test cards specific to your integration and region.
 </Tip>
 
-## Visa
+# Tonder Platform Test Cards
 
-| CARD PAN            | 3-D SECURE RESULT                                          | TRANSACTION RESULT           |
-|---------------------|------------------------------------------------------------|------------------------------|
-| 4000 0000 0000 0085 | 3-D Secure v2, challenge flow, full authentication         | Payment has CONFIRMED status |
-| 4580 0000 0000 0059 | 3-D Secure v2, frictionless flow, attempt                  | Payment has CONFIRMED status |
-| 4000 0000 0000 0093 | 3-D Secure v2, frictionless flow, success                  | Payment has CONFIRMED status |
-| 4000 0000 0000 0051 | No 3-D Secure                                               | Payment has AUTHORIZED status|
-| 4000 0000 0000 0077 | No 3-D Secure                                               | Payment has CONFIRMED status |
-| 4444 4444 4444 4455 | 3-D Secure v2, challenge flow, full authentication         | Payment has DECLINED status  |
-| 4444 4444 4444 9777 | No 3-D Secure                                               | Payment has DECLINED status  |
+<Note> CVV should be **3 digits** and expiration date can be **any future date**.</Note>
 
-## Mastercard
+## Bank 1
 
-| CARD PAN            | 3-D SECURE RESULT                                          | TRANSACTION RESULT           |
-|---------------------|------------------------------------------------------------|------------------------------|
-| 5100 0000 0000 0065 | 3-D Secure v2, challenge flow, full authentication         | Payment has CONFIRMED status |
-| 2400 0000 0000 0069 | 3-D Secure v2, frictionless flow, attempt                  | Payment has CONFIRMED status |
-| 5100 0000 0000 0073 | 3-D Secure v2, frictionless flow, success                  | Payment has CONFIRMED status |
-| 5100 0000 0000 0651 | No 3-D Secure                                               | Payment has AUTHORIZED status|
-| 2400 0000 0000 0077 | No 3-D Secure                                               | Payment has CONFIRMED status |
-| 5555 5555 5555 9955 | 3-D Secure v2, challenge flow, full authentication         | Payment has DECLINED status  |
-| 5555 5555 5555 4477 | No 3-D Secure                                               | Payment has DECLINED status  |
+| Card Number | Expected Result |
+| :--- | :--- |
+| `4000 0000 0000 0077` | Successful payment |
+| `4444 4444 4444 9777` | Card declined |
+| `4000 0000 0000 0085` | 3ds authentication required |
+| `4242 4242 4242 4242` | Processing error (Does not generate a log in Tonder) |
+| *Not Available* | Insufficient funds |
 
-## Amex
 
-| CARD PAN            | 3-D SECURE RESULT                                          | TRANSACTION RESULT           |
-|---------------------|------------------------------------------------------------|------------------------------|
-| 3700 0000 0000 085  | 3-D Secure v2, challenge flow, full authentication         | Payment has CONFIRMED status |
-| 3400 0000 0000 033  | 3-D Secure v2, frictionless flow, success                  | Payment has CONFIRMED status |
-| 3400 0000 0000 009  | 3-D Secure v2, frictionless flow, attempt                  | Payment has CONFIRMED status |
-| 3700 0000 0000 051  | No 3-D Secure                                               | Payment has AUTHORIZED status|
-| 3400 0000 0000 017  | No 3-D Secure                                               | Payment has CONFIRMED status |
-| 3711 1111 1111 155  | 3-D Secure v2, challenge flow, full authentication         | Payment has DECLINED status  |
-| 3411 1111 1111 137  | No 3-D Secure                                               | Payment has DECLINED status  |
+## Bank 2
+
+| Card Number | Expected Result |
+| :--- | :--- |
+| `4000 0000 0000 0077` | Successful payment |
+| `5451 9515 7492 5480` | Card declined |
+| `4456 5280 8038 9860` | 3ds authentication required |
+| `4574 4412 1519 0335` | Processing error (Does not generate a log in Tonder) |
+| `4349 0012 1084 6432` | Insufficient funds |

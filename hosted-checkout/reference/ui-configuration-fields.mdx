@@ -1,0 +1,79 @@
+---
+title: "UI Configuration Fields"
+'og:description': "Reference for all available JSON fields for the ui_config object used in Hosted Checkout customization."
+slug: https://www.google.com/search?q=/hosted-checkout/reference/ui-config-fields
+---
+
+The ui\_config object allows you to customize the look and feel of the Hosted Checkout page.
+
+You can set these fields as a default for your business using the [Set Business Configuration](/hosted-checkout/api/set-business-config) endpoint, or override them for a single session in the [Create a Payment Session](/hosted-checkout/api/create-session) request.
+
+<Note>
+All color fields accept 6-digit hex codes (e.g., #FFFFFF).
+</Note>
+
+### Example ui_config Object
+
+```json
+{
+  "branding": {
+    "brand_color": "#0A2540",
+    "brand_color_text": "#FFFFFF",
+    "secondary_brand_color": "#F0F0F0",
+    "secondary_brand_color_text": "#0A2540"
+  },
+  "theme": {
+    "shapes": "rounded",
+    "background_color": "#FDFDFD",
+    "form_background_color": "#FFFFFF",
+    "text_color": "#333333",
+    "error_color": "#D92D20"
+  },
+  "labels": {
+    "submit_button": "Pay Now",
+    "card_number": "Card Number",
+    "expiry_date": "MM/YY",
+    "cvc": "CVC"
+  }
+}
+```
+
+### branding
+
+Colors related to your brand, used for buttons and highlights.
+
+| Field | Type | Description |
+| :---- | :---- | :---- |
+| brand\_color | string | Main brand color. Used for the submit button. |
+| brand\_color\_text | string | Text color to display on top of brand\_color. |
+| secondary\_brand\_color | string | Secondary color. Used for links or minor buttons. |
+| secondary\_brand\_color\_text | string | Text color to display on top of secondary\_brand\_color. |
+
+### theme
+
+General theme of the checkout page, including shapes and background colors.
+
+| Field | Type | Description |
+| :---- | :---- | :---- |
+| shapes | string | Sets the border radius for buttons and form fields. Options: sharp (0px) or rounded (default, e.g., 8px). |
+| background\_color | string | The main background color of the page. |
+| form\_background\_color | string | The background color of the payment form container. |
+| text\_color | string | The primary color for all text labels. |
+| error\_color | string | The color used for form validation errors. |
+
+### labels
+
+Custom text for form fields and buttons.
+
+| Field | Type | Description |
+| :---- | :---- | :---- |
+| submit\_button | string | Text for the main payment submission button (e.g., "Pay", "Complete Order"). |
+| card\_number | string | Placeholder label for the card number field. |
+| expiry\_date | string | Placeholder label for the card expiration date field. |
+| cvc | string | Placeholder label for the CVC/CVV field. |
+
+## Related Resources
+
+For more information about implementing UI customization:
+
+* [How to Customize the Checkout UI](https://www.google.com/search?q=/hosted-checkout/guides/customize-checkout-ui)

@@ -1,0 +1,22 @@
+---
+title: "Environments"
+'og:description': "Reference for Tonder's Staging and Production Dashboard and API URLs."
+slug: https://www.google.com/search?q=/hosted-checkout/reference/environments
+---
+
+Tonder provides two distinct environments for integration: Staging for development and testing, and Production for live transactions.
+
+You will have separate API keys for each environment.
+
+| Environment | Dashboard | API Base URL |
+| :---- | :---- | :---- |
+| Staging | https://stage.tonder.io | https://api-stage.tonder.io |
+| Production | https://dashboard.tonder.io | https://api.tonder.io |
+
+<Warning>
+Always use your Test API Keys with the Staging URLs and your Production API Keys with the Production URLs.
+</Warning>
+
+During development and testing, use the **Staging** environment to safely test your integration without processing real payments. Log in to the [Staging Dashboard](https://stage.tonder.io) to retrieve your test API keys and configure your settings. Point your application to the staging API base URL (`https://api-stage.tonder.io`) and use test card numbers to simulate payment scenarios.
+
+Once your integration is complete and tested, switch to the **Production** environment for live transactions. Access the [Production Dashboard](https://dashboard.tonder.io) to get your production API keys, and update your application to use the production API base URL (`https://api.tonder.io`). Never use production keys in staging, or test keys in production, as this can lead to configuration issues and failed transactions.

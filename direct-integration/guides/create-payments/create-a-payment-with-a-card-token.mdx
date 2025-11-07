@@ -61,11 +61,11 @@ These are the required parameters for the tokenization service:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `card_number` | string | The full card number (e.g., "4242424242424242") |
+| `card_number` | string | The full card number (e.g., "4000000000000077") |
 | `cardholder_name` | string | The name on the card |
 | `cvv` | string | Card security code (3-4 digits) |
-| `expiration_month` | string | Card expiration month (e.g., "07") |
-| `expiration_year` | string | Card expiration year (e.g., "2025") |
+| `expiration_month` | string | Any future card expiration month (e.g., "07") |
+| `expiration_year` | string | Any future card expiration year (e.g., "26") |
 
 Below you can find examples of a request and a response from the tokenization service.
 
@@ -78,11 +78,11 @@ curl -X POST https://token.tonder.io/v1/gateway/inboundRoutes/f6eb7af640b041b590
 -H "X-Skyflow-Authorization: <YOUR_ACCESS_TOKEN_FROM_STEP_1>" \
 -H "Content-Type: application/json" \
 -d '{
-  "card_number": "4242424242424242",
+  "card_number": "4000000000000077",
   "cardholder_name": "Ozzy Osbourne",
   "cvv": "123",
   "expiration_month": "07",
-  "expiration_year": "2025"
+  "expiration_year": "26"
 }'
 ```
 </Accordion>

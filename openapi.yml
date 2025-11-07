@@ -2163,6 +2163,243 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DirectErrorResponse'
+  "/checkout/v1/business/config":
+    post:
+      summary: Set Business Configuration
+      description: |
+        Sets the default UI configuration (logo and styles) for all your Hosted Checkout sessions.
+        This configuration will be applied to all payment sessions unless overridden at the session level.
+      operationId: setBusinessConfig
+      tags:
+        - Hosted Checkout
+      security:
+        - Authorization: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                logo_url:
+                  type: string
+                  format: uri
+                  description: A publicly accessible URL for your business logo
+                  example: "https://cdn.my-store.com/logo.png"
+                ui_config:
+                  $ref: '#/components/schemas/UIConfig'
+            example:
+              logo_url: "https://cdn.my-store.com/logo.png"
+              ui_config:
+                branding:
+                  brand_color: "#1A2B3C"
+                theme:
+                  shapes: "rounded"
+      responses:
+        '200':
+          description: Configuration saved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logo_url:
+                    type: string
+                    format: uri
+                  ui_config:
+                    $ref: '#/components/schemas/UIConfig'
+              example:
+                logo_url: "https://cdn.my-store.com/logo.png"
+                ui_config:
+                  branding:
+                    brand_color: "#1A2B3C"
+                  theme:
+                    shapes: "rounded"
+        '401':
+          description: Unauthorized - Invalid API key
+        '400':
+          description: Bad Request - Invalid configuration data
+  "/checkout/v1/sessions":
+    post:
+      summary: Create a Payment Session
+      description: |
+        Creates a new Hosted Checkout session. Tonder returns a URL for you to redirect your customer to complete the payment.
+        The session tracks the overall payment state and can handle multiple payment attempts if the first one fails.
+      operationId: createCheckoutSession
+      tags:
+        - Hosted Checkout
+      security:
+        - Authorization: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+            example:
+              customer:
+                first_name: "John"
+                last_name: "Doe"
+                email: "john.doe@example.com"
+              amount_total: 35000
+              currency: "MXN"
+              line_items:
+                - name: "Product 1"
+                  quantity: 1
+                  unit_price: 15000
+                  product_id: "prod-001"
+                - name: "Product 2"
+                  quantity: 2
+                  unit_price: 10000
+                  product_id: "prod-002"
+              return_url: "https://my-store.com/checkout/complete"
+              external_id: "ORD-12345"
+      responses:
+        '201':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutSession'
+              example:
+                id: "cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d"
+                url: "https://stage-payflow.tonder.io/checkout/cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d"
+                status: "pending"
+                payment_id: 41521
+                amount_total: 35000
+                currency: "MXN"
+                expires_at: 1751564943
+                external_id: "ORD-12345"
+                session_type: "payment"
+                checkout_type: "hosted"
+                return_url: "https://my-store.com/checkout/complete"
+                metadata: {}
+                payment_method_types: ["card"]
+                ui_config: {}
+                ui_config_version: "V1"
+                created_at: 1751478543567
+                modified_at: 1751478543567
+                customer:
+                  first_name: "John"
+                  last_name: "Doe"
+                  email: "john.doe@example.com"
+                line_items:
+                  - name: "Product 1"
+                    quantity: 1
+                    unit_price: 15000
+                    product_id: "prod-001"
+                transaction_status: "Pending"
+                provider: "tonder"
+        '400':
+          description: Bad Request - Invalid session data
+        '401':
+          description: Unauthorized - Invalid API key
+        '422':
+          description: Validation Error - Required fields missing or invalid
+  "/checkout/v1/sessions/{id}":
+    get:
+      summary: Get a Session
+      description: |
+        Retrieves the details of a payment session by its ID. This is the recommended way to check 
+        the final status of a payment after the customer is redirected back to your site.
+      operationId: getCheckoutSession
+      tags:
+        - Hosted Checkout
+      security:
+        - Authorization: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The Session ID (e.g., sess_a1b2c3d4e5f6)
+          schema:
+            type: string
+            example: "sess_a1b2c3d4e5f6"
+      responses:
+        '200':
+          description: Session retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutSession'
+              example:
+                id: "cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d"
+                url: "https://stage-payflow.tonder.io/checkout/cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d"
+                status: "completed"
+                payment_id: 41521
+                amount_total: 35000
+                currency: "MXN"
+                expires_at: 1751564943
+                external_id: "ORD-12345"
+                session_type: "payment"
+                checkout_type: "hosted"
+                return_url: "https://my-store.com/checkout/complete"
+                metadata: {}
+                payment_method_types: ["card"]
+                ui_config: {}
+                ui_config_version: "V1"
+                created_at: 1751478543567
+                modified_at: 1751478550234
+                paid_at: 1751478550234
+                customer:
+                  first_name: "John"
+                  last_name: "Doe"
+                  email: "john.doe@example.com"
+                line_items:
+                  - name: "Product 1"
+                    quantity: 1
+                    unit_price: 35000
+                    product_id: "prod-001"
+                transaction_status: "Success"
+                provider: "tonder"
+        '401':
+          description: Unauthorized - Invalid API key
+        '404':
+          description: Session not found
+  "/checkout/v1/payments/{payment_id}":
+    get:
+      summary: Get a Payment Transaction
+      description: |
+        Retrieves the details of a specific payment transaction by its payment_id. 
+        This provides more granular information about individual payment attempts.
+      operationId: getPaymentTransaction
+      tags:
+        - Hosted Checkout
+      security:
+        - Authorization: []
+      parameters:
+        - name: payment_id
+          in: path
+          required: true
+          description: The Payment ID (e.g., pay_x1y2z3a4b5)
+          schema:
+            type: string
+            example: "pay_x1y2z3a4b5"
+      responses:
+        '200':
+          description: Payment transaction retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentTransaction'
+              example:
+                payment_id: "pay_x1y2z3a4b5"
+                session_id: "sess_a1b2c3d4e5f6"
+                status: "Success"
+                amount: 35000
+                currency: "MXN"
+                payment_method_type: "card"
+                created_at: "2025-10-20T14:30:00Z"
+                card_details:
+                  brand: "visa"
+                  last4: "4242"
+                customer:
+                  name: "John Doe"
+                  email: "john.doe@example.com"
+        '401':
+          description: Unauthorized - Invalid API key
+        '404':
+          description: Payment transaction not found
 components:
   schemas:
     GeneralError:
@@ -2536,6 +2773,313 @@ components:
           type: string
           description: Token representing the expiration year
           example: "bd9ccc23-3d00-4109-9626-fc6581389063"
+
+    UIConfig:
+      type: object
+      description: UI configuration for Hosted Checkout customization
+      properties:
+        branding:
+          type: object
+          properties:
+            brand_color:
+              type: string
+              pattern: '^#[0-9A-Fa-f]{6}$'
+              description: Primary brand color (hex code)
+              example: "#1A2B3C"
+        theme:
+          type: object
+          properties:
+            shapes:
+              type: string
+              enum: [rounded, square]
+              description: Shape style for UI elements
+              example: "rounded"
+
+    CreateSessionRequest:
+      type: object
+      required:
+        - customer
+        - amount_total
+        - currency
+        - line_items
+      properties:
+        customer:
+          type: object
+          required:
+            - first_name
+            - last_name
+            - email
+          properties:
+            first_name:
+              type: string
+              description: Customer's first name
+              example: "John"
+            last_name:
+              type: string
+              description: Customer's last name
+              example: "Doe"
+            email:
+              type: string
+              format: email
+              description: Customer's email address
+              example: "john.doe@example.com"
+        amount_total:
+          type: number
+          description: Total charge amount
+          example: 35000
+        currency:
+          type: string
+          description: Currency code
+          enum: ["MXN"]
+          example: "MXN"
+        line_items:
+          type: array
+          description: List of order items
+          items:
+            type: object
+            required:
+              - name
+              - quantity
+              - unit_price
+            properties:
+              name:
+                type: string
+                description: Name or title of the product or service being purchased
+                example: "Product 1"
+              quantity:
+                type: number
+                description: Quantity of the item to be purchased (must be >= 1)
+                example: 1
+              unit_price:
+                type: number
+                description: Unit price of the item
+                example: 15000
+              product_id:
+                type: string
+                description: Optional product identifier used by the merchant's internal system
+                example: "prod-12345"
+        external_id:
+          type: string
+          description: Unique order reference from the merchant. Used to visually identify/filter the order in dashboard
+          example: "ORD-12345"
+        expires_at:
+          type: integer
+          description: Unix timestamp (seconds). Must be 30 min to 24h in future. Default 24h
+          example: 1751063448
+        metadata:
+          type: object
+          description: Additional metadata
+          additionalProperties: true
+        success_url:
+          type: string
+          format: uri
+          description: Redirect after successful payment
+          example: "https://my-store.com/order/success"
+        return_url:
+          type: string
+          format: uri
+          description: Required if success_url is not set. If specified, used as fallback for all redirects
+          example: "https://my-store.com/checkout/complete"
+        pending_url:
+          type: string
+          format: uri
+          description: Redirect if payment is under review. Only applicable for future APM support
+        payment_method_types:
+          type: array
+          description: Defaults to ["card"]. Currently only card is supported
+          items:
+            type: string
+            enum: ["card"]
+          example: ["card"]
+        checkout_type:
+          type: string
+          description: Defaults to "hosted"
+          enum: ["hosted"]
+          example: "hosted"
+        session_type:
+          type: string
+          description: Defaults to "payment"
+          enum: ["payment"]
+          example: "payment"
+        ui_config_version:
+          type: string
+          description: Version of the UI config. Defaults to "V1"
+          example: "V1"
+        ui_config:
+          $ref: '#/components/schemas/UIConfig'
+
+    CheckoutSession:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique session identifier
+          example: "cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d"
+        url:
+          type: string
+          format: uri
+          description: Redirect your customer to this URL to begin the payment
+          example: "https://stage-payflow.tonder.io/checkout/cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d"
+        status:
+          type: string
+          enum: [pending, completed, expired]
+          description: Session status
+          example: "pending"
+        payment_id:
+          type: number
+          description: Associated payment ID
+          example: 41521
+        amount_total:
+          type: number
+          description: Total amount to be charged
+          example: 35000
+        currency:
+          type: string
+          description: Currency used
+          example: "MXN"
+        expires_at:
+          type: integer
+          description: Expiration time (Unix timestamp in seconds)
+          example: 1751564943
+        external_id:
+          type: string
+          description: Order reference from the merchant
+          example: "ORD-12345"
+        session_type:
+          type: string
+          description: Type of session
+          example: "payment"
+        checkout_type:
+          type: string
+          description: Checkout method
+          example: "hosted"
+        success_url:
+          type: string
+          format: uri
+          nullable: true
+          description: Success redirect URL
+        return_url:
+          type: string
+          format: uri
+          description: Return/fallback redirect URL
+        pending_url:
+          type: string
+          format: uri
+          nullable: true
+          description: Pending redirect URL
+        metadata:
+          type: object
+          description: Custom data sent by the merchant
+        payment_method_types:
+          type: array
+          items:
+            type: string
+          description: Allowed payment methods
+          example: ["card"]
+        ui_config:
+          type: object
+          description: UI configuration applied
+        ui_config_version:
+          type: string
+          description: Version of UI config
+          example: "V1"
+        created_at:
+          type: integer
+          description: Creation timestamp in milliseconds
+          example: 1751478543567
+        modified_at:
+          type: integer
+          description: Last modification timestamp in milliseconds
+          example: 1751478543567
+        paid_at:
+          type: integer
+          nullable: true
+          description: Payment completion timestamp in milliseconds
+        customer:
+          type: object
+          properties:
+            first_name:
+              type: string
+              example: "John"
+            last_name:
+              type: string
+              example: "Doe"
+            email:
+              type: string
+              example: "john.doe@example.com"
+        line_items:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              quantity:
+                type: number
+              unit_price:
+                type: number
+              product_id:
+                type: string
+        transaction_status:
+          type: string
+          enum: [Pending, Success, Declined, Expired]
+          description: Result of transaction
+          example: "Pending"
+        provider:
+          type: string
+          description: Gateway used
+          example: "tonder"
+
+    PaymentTransaction:
+      type: object
+      properties:
+        payment_id:
+          type: string
+          description: Unique payment transaction identifier
+          example: "pay_x1y2z3a4b5"
+        session_id:
+          type: string
+          description: Associated session ID
+          example: "sess_a1b2c3d4e5f6"
+        status:
+          type: string
+          description: Transaction status
+          example: "Success"
+        amount:
+          type: integer
+          description: Payment amount in smallest currency unit
+          example: 35000
+        currency:
+          type: string
+          description: 3-letter ISO currency code
+          example: "MXN"
+        payment_method_type:
+          type: string
+          description: Type of payment method used
+          example: "card"
+        created_at:
+          type: string
+          format: date-time
+          description: Transaction creation timestamp
+          example: "2025-10-20T14:30:00Z"
+        card_details:
+          type: object
+          properties:
+            brand:
+              type: string
+              example: "visa"
+            last4:
+              type: string
+              example: "4242"
+        customer:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "John Doe"
+            email:
+              type: string
+              example: "john.doe@example.com"
 
   parameters:
     skipParam:

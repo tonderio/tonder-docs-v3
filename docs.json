@@ -17,7 +17,7 @@
             "group": "Introduction",
             "pages": [
               "home",
-              "introduction/getting-started",
+              "introduction/choose-integration",
               "introduction/security"
             ]
           },
@@ -47,141 +47,23 @@
             "group": "Reference",
             "pages": [
               "online-payments/payment-methods",
+              
               {
                 "group": "Coverage",
                 "pages": [
                   "online-payments/coverage/coverage",
-                  "online-payments/coverage/brazil",
+                  "online-payments/coverage/argentina",
+                  "online-payments/coverage/chile",
                   "online-payments/coverage/colombia",
                   "online-payments/coverage/costa-rica",
                   "online-payments/coverage/ecuador",
+                  "online-payments/coverage/el-salvador",
                   "online-payments/coverage/guatemala",
                   "online-payments/coverage/mexico",
-                  "online-payments/coverage/panama",
                   "online-payments/coverage/peru"
                 ]
-              },
+              }, 
               "online-payments/test-cards"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Direct Integration",
-        "dropdowns": [
-          {
-            "dropdown": "Documentation",
-            "icon": "book-open",
-            "groups": [
-              {
-                "group": "Introduction",
-                "pages": [
-                  "direct-integration/tonder-direct",
-                  "direct-integration/quickstart",
-                  "direct-integration/process-overview",
-                  "direct-integration/environment",
-                  "direct-integration/authentication",
-                  "direct-integration/http-response-codes",
-                  "direct-integration/testing-data",
-                  "direct-integration/rate-limits"
-                ]
-              },
-              {
-                "group": "Direct Integration Guides",
-                "pages": [
-                  {
-                    "group": "Create Payments",
-                    "pages": [
-                      "direct-integration/guides/create-payments/create-a-payment",
-                      "direct-integration/guides/create-payments/create-a-payment-with-3ds",
-                      "direct-integration/guides/create-payments/create-a-payment-with-a-card-token",
-                      "direct-integration/guides/create-payments/raw-card-processing"
-                    ]
-                  },
-                  "direct-integration/guides/create-a-withdrawal",
-                  "direct-integration/guides/refund-a-payment"
-                ]
-              },
-              {
-                "group": "Webhooks",
-                "pages": [
-                  "direct-integration/webhooks/how-webhooks-works",
-                  "direct-integration/webhooks/setup-and-managing",
-                  "direct-integration/webhooks/delivery-and-retry",
-                  "direct-integration/webhooks/best-practices"
-                ]
-              },
-              {
-                "group": "Reference Pages",
-                "pages": [
-                  {
-                    "group": "Mexican Banking Reference",
-                    "pages": [
-                      "direct-integration/reference/mexican-banking-reference",
-                      "direct-integration/reference/institution-codes",
-                      "direct-integration/reference/clabe-validation",
-                      "direct-integration/reference/clabe-component-extraction"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Payment Methods",
-                "pages": [
-                  "direct-integration/payment-methods/payment-methods-overview",
-                  {
-                    "group": "Payment Method Guides",
-                    "pages": [
-                      "direct-integration/payment-methods/card-payments",
-                      "direct-integration/payment-methods/spei-bank-transfers",
-                      "direct-integration/payment-methods/oxxo-cash-payments",
-                      "direct-integration/payment-methods/mercado-pago-digital-wallet",
-                      "direct-integration/payment-methods/safetypay-cash-payments"
-                    ]
-                  },
-                  "direct-integration/payment-methods/payment-methods-reference"
-                ]
-              },
-              {
-                "group": "Resources",
-                "pages": [
-                  "direct-integration/resources/support"
-                ]
-              }
-            ]
-          },
-          {
-            "dropdown": "API Reference",
-            "icon": "square-terminal",
-            "groups": [
-              {
-                "group": "Tonder API",
-                "pages": [
-                  "reference/overview",
-                  "reference/currencies"
-                ]
-              },
-              {
-                "group": "API Reference",
-                "pages": [
-                  "reference/retrieve-business",
-                  "reference/create-client",
-                  "reference/create-order",
-                  "reference/create-payment",
-                  "reference/create-checkout-router",
-                  "reference/create-secure-token",
-                  "reference/refund-payment"
-                ]
-              },
-              {
-                "group": "Direct Integration API",
-                "pages": [
-                  "reference/process-transaction",
-                  "reference/get-transaction-status",
-                  "reference/get-tokenization-token",
-                  "reference/tokenize-card-data"
-                ]
-              }
             ]
           }
         ]
@@ -310,6 +192,160 @@
         ]
       },
       {
+        "tab": "Direct Integration",
+        "dropdowns": [
+          {
+            "dropdown": "Documentation",
+            "icon": "book-open",
+            "groups": [
+              {
+                "group": "Introduction",
+                "pages": [
+                  "direct-integration/tonder-direct",
+                  "direct-integration/quickstart",
+                  "direct-integration/process-overview",
+                  "direct-integration/environment",
+                  "direct-integration/authentication",
+                  "direct-integration/http-response-codes",
+                  "direct-integration/rate-limits"
+                ]
+              },
+              {
+                "group": "Direct Integration Guides",
+                "pages": [
+                  {
+                    "group": "Create Payments",
+                    "pages": [
+                      "direct-integration/guides/create-payments/create-a-payment",
+                      "direct-integration/guides/create-payments/create-a-payment-with-3ds",
+                      "direct-integration/guides/create-payments/create-a-payment-with-a-card-token",
+                      "direct-integration/guides/create-payments/raw-card-processing"
+                    ]
+                  },
+                  "direct-integration/guides/create-a-withdrawal",
+                  "direct-integration/guides/refund-a-payment"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "direct-integration/webhooks/how-webhooks-works",
+                  "direct-integration/webhooks/setup-and-managing",
+                  "direct-integration/webhooks/delivery-and-retry",
+                  "direct-integration/webhooks/best-practices"
+                ]
+              },
+              {
+                "group": "Reference Pages",
+                "pages": [
+                  {
+                    "group": "Mexican Banking Reference",
+                    "pages": [
+                      "direct-integration/reference/mexican-banking-reference",
+                      "direct-integration/reference/institution-codes",
+                      "direct-integration/reference/clabe-validation",
+                      "direct-integration/reference/clabe-component-extraction"
+                    ]
+                  }, "direct-integration/reference/decline-codes"
+                ]
+              },
+              {
+                "group": "Payment Methods",
+                "pages": [
+                  "direct-integration/payment-methods/payment-methods-overview",
+                  {
+                    "group": "Payment Method Guides",
+                    "pages": [
+                      "direct-integration/payment-methods/card-payments",
+                      "direct-integration/payment-methods/spei-bank-transfers",
+                      "direct-integration/payment-methods/oxxo-cash-payments",
+                      "direct-integration/payment-methods/mercado-pago-digital-wallet",
+                      "direct-integration/payment-methods/safetypay-cash-payments"
+                    ]
+                  },
+                  "direct-integration/payment-methods/payment-methods-reference"
+                ]
+              },
+              {
+                "group": "Resources",
+                "pages": ["direct-integration/resources/support"]
+              }
+            ]
+          },
+          {
+            "dropdown": "Direct Integration API",
+            "icon": "square-terminal",
+            "groups": [
+              {
+                "group": "Tonder API",
+                "pages": ["reference/overview", "reference/currencies"]
+              },
+              {
+                "group": "Direct Integration API",
+                "pages": [
+                  "reference/process-transaction",
+                  "reference/get-transaction-status",
+                  "reference/get-tokenization-token",
+                  "reference/tokenize-card-data"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Hosted Checkout",
+        "dropdowns": [
+          {
+            "dropdown": "Documentation",
+            "icon": "book-open",
+            "groups": [
+              {
+                "group": "Hosted Checkout Integration",
+                "pages": [
+                  "hosted-checkout/introduction/overview",
+                  "hosted-checkout/introduction/quickstart",
+                  "hosted-checkout/introduction/environments"
+                ]
+              },
+              {
+                "group": "Guides",
+                "pages": [
+                  "hosted-checkout/guides/create-payment-session",
+                  "hosted-checkout/guides/customize-checkout-ui",
+                  "hosted-checkout/guides/setup-listen-webhooks",
+                  "hosted-checkout/guides/manually-check-payment-status"
+                ]
+              },
+              {
+                "group": "Reference",
+                "pages": [
+                  "hosted-checkout/reference/ui-configuration-fields",
+                  "hosted-checkout/reference/webhook-events-payload",
+                  "hosted-checkout/reference/status-reference",
+                  "hosted-checkout/reference/key-identifiers"
+                ]
+              }
+            ]
+          },
+          {
+            "dropdown": "Hosted Checkout API",
+            "icon": "square-terminal",
+            "groups": [
+              {
+                "group": "Hosted Checkout API",
+                "pages": [
+                  "hosted-checkout/api/set-business-config",
+                  "hosted-checkout/api/create-session",
+                  "hosted-checkout/api/get-session",
+                  "hosted-checkout/api/get-payment"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Dashboard",
         "groups": [
           {
@@ -327,10 +363,7 @@
               "dashboard/payment-links",
               {
                 "group": "Developers",
-                "pages": [
-                  "dashboard/dev-api-keys",
-                  "dashboard/dev-webhooks"
-                ]
+                "pages": ["dashboard/dev-api-keys", "dashboard/dev-webhooks"]
               }
             ]
           },
