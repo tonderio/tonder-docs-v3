@@ -1,0 +1,166 @@
+---
+title: "Make a Payment"
+og:description: "Learn how to accept a payment in your React Native app using Tonder's Lite SDK with custom components."
+---
+
+This guide walks you through processing a payment using the Tonder React Native Lite SDK. You'll learn how to build a custom payment interface using individual secure components while maintaining PCI compliance.
+
+## Prerequisites
+
+Before you can process payments with the Tonder React Native Lite SDK, ensure you have completed the necessary setup and have the required components in place.
+
+- You have successfully [installed and configured](/sdk-integration/mobile/react-native-lite/requirements-and-installation) the Tonder SDK.
+- You have a screen in your app where you can implement the checkout flow with custom UI.
+
+## Payment Integration Steps
+
+Follow these steps to integrate payment processing into your React Native application with the Lite SDK. This process involves configuring the SDK provider in LITE mode, creating payment instances, and building your custom payment interface with secure components.
+
+### Step 1: Wrap Your App with TonderProvider
+
+Configure your app to use the Tonder Lite SDK by wrapping your root component with the `TonderProvider` in LITE mode. This enables the use of individual secure input components for building custom payment forms.
+
+```jsx title="App.js"
+import { TonderProvider, SDKType } from '@tonder.io/rn-sdk';
+
+function App() {
+  return (
+    <TonderProvider
+      config={{
+        type: SDKType.LITE,
+        mode: 'development',
+        apiKey: 'YOUR_API_KEY',
+      }}
+    >
+      {/* Your application's navigation and screens go here */}
+      <YourCheckoutScreen />
+    </TonderProvider>
+  );
+}
+```
+
+### Step 2: Create the Payment Instance
+
+In your checkout screen, use the `useTonder` hook to access the SDK's create method. This method configures the payment session with a secure token from your backend and the payment data.
+
+```js
+import { useTonder, SDKType } from '@tonder.io/rn-sdk';
+import { useEffect } from 'react';
+
+export default function PaymentScreen() {
+  const { create, payment } = useTonder<SDKType.LITE>();
+
+  useEffect(() => {
+    const initializePayment = async () => {
+      // 1. Fetch a secure token from your backend
+      const secureToken = await getSecureToken(); 
+      
+      // 2. Define your payment data
+      const paymentData = {
+        customer: { firstName: "Juan", email: "juan.hernandez@mail.com", /* ... */ },
+        cart: { total: 399, items: [ /* ... */ ] },
+        currency: "mxn"
+      };
+
+      // 3. Create the payment instance
+      await create({
+        secureToken: secureToken,
+        paymentData: paymentData,
+      });
+    };
+    
+    initializePayment();
+  }, []);
+
+  // ... rest of your component
+}
+```
+
+### Step 3: Build Your Custom Payment Form
+
+Use the individual secure components provided by the Lite SDK to build your custom payment form. These components handle secure data collection while you maintain complete control over the layout and styling.
+
+```jsx
+import {
+  CardHolderInput,
+  CardNumberInput,
+  CardExpirationMonthInput,
+  CardExpirationYearInput,
+  CardCVVInput
+} from '@tonder.io/rn-sdk';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+export default function PaymentScreen() {
+  const { create, payment } = useTonder<SDKType.LITE>();
+  
+  // ... (previous useEffect code)
+
+  const handlePayment = async () => {
+    const { response, error } = await payment();
+    if (error) {
+      console.error('Payment error:', error);
+      return;
+    }
+    console.log('Payment success:', response);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.label}>Cardholder Name</Text>
+      <CardHolderInput style={styles.input} />
+      
+      <Text style={styles.label}>Card Number</Text>
+      <CardNumberInput style={styles.input} />
+      
+      <View style={styles.row}>
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>Expiry Month</Text>
+          <CardExpirationMonthInput style={styles.input} />
+        </View>
+        
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>Expiry Year</Text>
+          <CardExpirationYearInput style={styles.input} />
+        </View>
+      </View>
+      
+      <Text style={styles.label}>CVV</Text>
+      <CardCVVInput style={styles.input} />
+      
+      <TouchableOpacity style={styles.button} onPress={handlePayment}>
+        <Text style={styles.buttonText}>Pay Now</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { padding: 16 },
+  label: { fontSize: 14, marginBottom: 8, fontWeight: '600' },
+  input: { 
+    borderWidth: 1, 
+    borderColor: '#ccc', 
+    borderRadius: 8, 
+    padding: 12, 
+    marginBottom: 16 
+  },
+  row: { flexDirection: 'row', gap: 16 },
+  halfWidth: { flex: 1 },
+  button: { 
+    backgroundColor: '#007AFF', 
+    padding: 16, 
+    borderRadius: 8, 
+    alignItems: 'center' 
+  },
+  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+});
+```
+
+## Next Steps
+
+Now that you've successfully integrated payment processing into your React Native app with the Lite SDK, explore these advanced features to enhance your payment experience:
+
+- Learn how to [enroll payment methods](/sdk-integration/mobile/react-native-lite/enroll-payment-method) for returning customers.
+- Explore the [available SDK methods](/sdk-integration/mobile/react-native-lite/methods) for advanced payment operations.
+- Learn more about [customization options](/sdk-integration/mobile/react-native-lite/customization) for styling your custom components.
+

@@ -1,0 +1,216 @@
+---
+title: "Enroll a Payment Method"
+og:description: "How to securely save a customer's card for future use with the Flutter Lite SDK."
+---
+
+This guide shows you how to enroll and manage payment methods using the Flutter Lite SDK. You'll learn how to configure the SDK for card management, save customer cards securely, and retrieve saved payment methods.
+
+<Note>
+Card enrollment and management features are available in the Lite version (`tonder_sdk_lite`) of the Flutter SDK. This allows you to build a custom UI for saving cards.
+</Note>
+
+## Prerequisites
+
+Before you can enroll payment methods with the Tonder Flutter Lite SDK, ensure you have completed the necessary setup and have the required components in place.
+
+- You are using the `LiteCheckout` from the `tonder_sdk_lite` package.
+- Your backend is set up to provide a [Secure Token](/sdk-integration/web/js-lite/make-a-payment) for card management.
+
+## Payment Method Enrollment Steps
+
+Follow these steps to implement payment method enrollment in your Flutter application. This process involves configuring the SDK with secure tokens, collecting card data through your custom UI, and securely saving the payment method for future use.
+
+### Step 1: Configure the SDK with a Secure Token
+
+Initialize the `LiteCheckout` instance and configure it with the customer's email and the secure token obtained from your backend. This configuration enables secure card management operations.
+
+```dart
+import 'package:tonder_sdk_lite/lite_checkout.dart';
+
+class EnrollmentWidget extends StatefulWidget {
+  @override
+  _EnrollmentWidgetState createState() => _EnrollmentWidgetState();
+}
+
+class _EnrollmentWidgetState extends State<EnrollmentWidget> {
+  late LiteCheckout _liteCheckout;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    _liteCheckout = LiteCheckout(
+      apiKey: "YOUR_API_KEY",
+      returnUrl: "YOUR_RETURN_URL",
+    );
+    
+    // Configure with customer email and secure token
+    _initializeEnrollment();
+  }
+  
+  Future<void> _initializeEnrollment() async {
+    final secureToken = await getSecureTokenFromBackend();
+    
+    _liteCheckout.configureCheckout(
+      customerEmail: 'customer@example.com',
+      secureToken: secureToken,
+    );
+  }
+  
+  // ... rest of your widget
+}
+```
+
+### Step 2: Build Your Custom Card Enrollment Form
+
+Create your own card enrollment form using standard Flutter widgets to collect card information.
+
+```dart
+
+class _EnrollmentWidgetState extends State<EnrollmentWidget> {
+  late LiteCheckout _liteCheckout;
+  
+  // Controllers for card input fields
+  final _cardNumberController = TextEditingController();
+  final _cardHolderController = TextEditingController();
+  final _expiryMonthController = TextEditingController();
+  final _expiryYearController = TextEditingController();
+  final _cvvController = TextEditingController();
+  
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text('Save Your Card', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        SizedBox(height: 20),
+        
+        TextField(
+          controller: _cardHolderController,
+          decoration: InputDecoration(labelText: 'Cardholder Name'),
+        ),
+        TextField(
+          controller: _cardNumberController,
+          decoration: InputDecoration(labelText: 'Card Number'),
+          keyboardType: TextInputType.number,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _expiryMonthController,
+                decoration: InputDecoration(labelText: 'Month (MM)'),
+                keyboardType: TextInputType.number,
+              ),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: TextField(
+                controller: _expiryYearController,
+                decoration: InputDecoration(labelText: 'Year (YY)'),
+                keyboardType: TextInputType.number,
+              ),
+            ),
+          ],
+        ),
+        TextField(
+          controller: _cvvController,
+          decoration: InputDecoration(labelText: 'CVV'),
+          keyboardType: TextInputType.number,
+          obscureText: true,
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: _saveCard,
+          child: Text('Save Card'),
+        ),
+      ],
+    );
+  }
+}
+```
+
+### Step 3: Save the Customer Card
+
+Use the `saveCustomerCard` method to tokenize and save the card details collected from your custom UI. This method securely processes the card information and stores it for future transactions.
+
+```dart
+
+Future<void> _saveCard() async {
+  final cardData = {
+    'card_number': _cardNumberController.text,
+    'cardholder_name': _cardHolderController.text,
+    'expiration_month': _expiryMonthController.text,
+    'expiration_year': _expiryYearController.text,
+    'cvv': _cvvController.text,
+  };
+  
+  try {
+    final response = await _liteCheckout.saveCustomerCard(cardData);
+    print('Card saved successfully: $response');
+    
+    // Show success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Card saved successfully!')),
+    );
+  } catch (error) {
+    print('Error saving card: $error');
+    
+    // Show error message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to save card: $error')),
+    );
+  }
+}
+```
+
+### Step 4: Retrieve Saved Cards
+
+Use the `getCustomerCards` method to retrieve all saved payment methods for the configured customer. This allows you to display saved cards in your custom UI.
+
+```dart
+
+Future<void> _loadSavedCards() async {
+  try {
+    final cards = await _liteCheckout.getCustomerCards();
+    print('Saved cards: $cards');
+    
+    setState(() {
+      // Update your UI with the saved cards
+    });
+  } catch (error) {
+    print('Error loading cards: $error');
+  }
+}
+```
+
+### Step 5: Remove a Saved Card
+
+Use the `removeCustomerCard` method to delete a previously saved card using its unique ID. This provides customers with control over their saved payment methods.
+
+```dart
+
+Future<void> _removeCard(String cardId) async {
+  try {
+    await _liteCheckout.removeCustomerCard(cardId);
+    print('Card removed successfully');
+    
+    // Refresh your card list
+    _loadSavedCards();
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Card removed successfully!')),
+    );
+  } catch (error) {
+    print('Error removing card: $error');
+  }
+}
+```
+
+## Next Steps
+
+Now that you've successfully implemented payment method enrollment in your Flutter app, explore these advanced features to enhance your payment experience:
+
+- Learn how to [make a payment](/sdk-integration/mobile/flutter-lite/make-a-payment) using the Flutter Lite SDK.
+- Explore the [available SDK methods](/sdk-integration/mobile/flutter-lite/methods) for payment processing.
+- Learn more about [customization options](/sdk-integration/mobile/flutter-lite/customization) to match your app's design.
+

@@ -1,0 +1,121 @@
+---
+title: "Full SDK Overview"
+og:description: "Pre-built checkout interface you embed in your application"
+---
+
+Full SDK is a **pre-built checkout interface** that you embed directly into your application. It provides a complete, ready-to-use payment form with minimal integration effort, allowing you to accept payments quickly without building the UI from scratch.
+
+## Key Features
+
+Here's a quick overview of what Full SDK offers and how it compares to other integration models:
+
+| Aspect             | Details                                                      |
+| ------------------ | ------------------------------------------------------------ |
+| **Money Flows**    | Available for Deposits<br/>For Withdrawals (use Standalone Withdrawals API) |
+| **Setup**          | Install SDK, configure, embed (e.g. iframe)                  |
+| **Customization**  | Styling (colors, fonts, spacing)                             |
+| **UI Location**    | Embedded in your application                                 |
+| **PCI Compliance** | Tonder tokenizes data                                        |
+| **Code Required**  | Low integration code                                         |
+| **Setup Time**     | 2-3 days (est.)                                              |
+| **Platforms**      | Web (JavaScript), iOS, Android, React Native, Ionic, Flutter |
+| **Best For**       | Standard checkout, mobile apps, quick implementation         |
+
+Choose Full SDK when:
+
+- You need embedded checkout
+- A standard UI is acceptable
+- Building a mobile app
+
+<Warning>
+**Limited UI customization**
+
+When using Full SDK, you can style colors, fonts, and spacing, but cannot change the overall structure or layout.
+</Warning>
+
+## Supported Payment Methods
+
+Full SDK supports all payment methods available in the Tonder platform, giving you flexibility to accept payments from your customers:
+
+- Card Payments
+- Bank Transfers
+- Cash Payments
+- Digital Wallets
+
+Learn more about each payment method and their availability in our [Payment Methods documentation](/online-payments/payment-methods).
+
+## Additional Features
+
+Beyond basic payment processing, Full SDK includes powerful features that enhance security and developer experience:
+
+| Feature                      | Description                                      |
+| ---------------------------- | ------------------------------------------------ |
+| 3D Secure (3DS)              | Automatically handled when required              |
+| Tokenization                 | Automatically secures sensitive card data        |
+| Saved Cards                  | Support for saving and reusing payment methods   |
+| Webhooks                     | Real-time notifications for transaction events   |
+| Test Environment             | Sandbox mode for development and testing         |
+
+## Available Platforms
+
+Full SDK is available across multiple platforms, allowing you to integrate seamlessly whether you're building for web or mobile.
+
+<Tabs>
+  <Tab title="Web">
+    <Card
+      title="Web Full SDK"
+      icon="browser"
+      href="/sdk-integration/web/js-inline/requirements-and-installation"
+    >
+      Embed the pre-built checkout form in your web application using JavaScript
+    </Card>
+  </Tab>
+  
+  <Tab title="Mobile">
+    <CardGroup cols={2}>
+      <Card
+        title="Flutter Full SDK"
+        icon="mobile"
+        href="/sdk-integration/mobile/flutter-full/requirements-and-installation"
+      >
+        Native Flutter implementation for iOS and Android
+      </Card>
+      
+      <Card
+        title="Ionic Full SDK"
+        icon="mobile-screen"
+        href="/sdk-integration/mobile/ionic-full/requirements-and-installation"
+      >
+        Hybrid mobile apps with Ionic framework
+      </Card>
+      
+      <Card
+        title="React Native Full SDK"
+        icon="react"
+        href="/sdk-integration/mobile/react-native-full/requirements-and-installation"
+      >
+        React Native implementation for cross-platform mobile apps
+      </Card>
+    </CardGroup>
+  </Tab>
+</Tabs>
+
+<Info>
+**Need Help Deciding?**
+
+Not sure if Full SDK is right for your project? Check out our [integration model comparison](/integration/choose-integration) or contact Tonder support for personalized guidance.
+</Info>
+
+## Next Steps
+
+Ready to start integrating? Choose your platform below to access detailed implementation guides, code examples, and best practices:
+
+<CardGroup cols={2}>
+  <Card title="Web Full SDK" icon="browser" href="/sdk-integration/web/overview">
+    Get started with Web Full SDK
+  </Card>
+  <Card title="Mobile SDKs" icon="mobile" href="/sdk-integration/mobile/overview">
+    Choose Flutter, Ionic, or React Native
+  </Card>
+</CardGroup>
+

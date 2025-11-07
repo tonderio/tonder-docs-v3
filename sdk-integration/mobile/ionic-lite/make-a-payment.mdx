@@ -1,0 +1,151 @@
+---
+title: "Make a Payment"
+og:description: "Learn how to accept a payment in your Ionic app using Tonder's Lite SDK with custom UI."
+---
+
+This guide walks you through processing a payment using the Lite SDK (LiteCheckout) for Ionic. The Lite SDK gives you complete control over your payment UI while handling all the secure payment processing logic.
+
+## Prerequisites
+
+Before you can process payments with the Tonder Ionic Lite SDK, ensure you have completed the necessary setup and have the required components in place.
+
+- You have successfully [installed and configured](/sdk-integration/mobile/ionic-lite/requirements-and-installation) the Tonder Ionic Lite SDK.
+- You must add Openpay dependencies to your index.html file.
+
+```html title="index.html"
+<head>
+  ...
+  <script src="[https://openpay.s3.amazonaws.com/openpay.v1.min.js](https://openpay.s3.amazonaws.com/openpay.v1.min.js)"></script>
+  <script src="[https://openpay.s3.amazonaws.com/openpay-data.v1.min.js](https://openpay.s3.amazonaws.com/openpay-data.v1.min.js)"></script>
+  ...
+</head>
+```
+
+- You have created your own custom payment form UI.
+
+
+<Note>Before you can process payments, ensure all required dependencies are installed and configured</Note>
+
+
+## Mobile Network Permissions   
+
+If deploying to a mobile platform, you must configure network permissions:
+
+- Android: Edit AndroidManifest.xml to add the Internet permission:
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
+## Payment Integration Steps
+
+This process requires you to initialize the SDK with your custom UI, collect payment data from your form, and process the payment using the SDK's secure methods.
+
+### Step 1: Initialize the SDK
+
+Create an instance of LiteCheckout with your API configuration.
+
+```javascript
+import { LiteCheckout } from "@tonder.io/ionic-lite-sdk";
+
+const liteCheckout = new LiteCheckout({
+  apiKey: "YOUR_API_KEY",
+  returnUrl: "YOUR_RETURN_URL",
+  mode: "stage", // 'stage' or 'production'
+});
+```
+
+### Step 2: Configure Customer Data
+
+Set the initial customer information using the configureCheckout method.
+
+```javascript
+liteCheckout.configureCheckout({
+  customer: {
+    email: "customer@example.com",
+    // Optional: Use a SecureToken for implementing the SaveCard feature
+    // secureToken: "e89eb18.."
+  }
+});
+```
+
+### Step 3: Build Your Custom Payment Form
+
+Create your own payment form using Ionic components. Here's a simple example:
+
+```html
+<ion-item>
+  <ion-label position="floating">Card Number</ion-label>
+  <ion-input id="cardNumber" type="text"></ion-input>
+</ion-item>
+
+<ion-item>
+  <ion-label position="floating">Cardholder Name</ion-label>
+  <ion-input id="cardholderName" type="text"></ion-input>
+</ion-item>
+
+<ion-item>
+  <ion-label position="floating">Expiry Month</ion-label>
+  <ion-input id="expiryMonth" type="text"></ion-input>
+</ion-item>
+
+<ion-item>
+  <ion-label position="floating">Expiry Year</ion-label>
+  <ion-input id="expiryYear" type="text"></ion-input>
+</ion-item>
+
+<ion-item>
+  <ion-label position="floating">CVV</ion-label>
+  <ion-input id="cvv" type="text"></ion-input>
+</ion-item>
+
+<ion-button id="pay-button">Pay Now</ion-button>
+```
+
+### Step 4: Process the Payment
+
+Collect the data from your custom form and process the payment using the Lite SDK methods.
+
+```javascript
+document.getElementById('pay-button').addEventListener('click', async () => {
+  // Collect data from your custom form
+  const paymentData = {
+    customer: {
+      firstName: document.getElementById('firstName').value,
+      email: document.getElementById('email').value,
+      // ... other customer data
+    },
+    cart: {
+      total: "399.00",
+      items: [
+        // ... cart items
+      ]
+    },
+    currency: "MXN",
+    card: {
+      card_number: document.getElementById('cardNumber').value,
+      cardholder_name: document.getElementById('cardholderName').value,
+      expiration_month: document.getElementById('expiryMonth').value,
+      expiration_year: document.getElementById('expiryYear').value,
+      cvv: document.getElementById('cvv').value,
+    }
+  };
+
+  try {
+    // Process payment using Lite SDK methods
+    const response = await liteCheckout.payment(paymentData);
+    console.log('Payment successful:', response);
+  } catch (error) {
+    console.error('Payment failed:', error);
+  }
+});
+```
+
+## Next Steps
+
+Now that you've successfully integrated payment processing into your Ionic app with the Lite SDK, explore these features to enhance your payment experience:
+
+- Learn how to [enroll payment methods](/sdk-integration/mobile/ionic-lite/enroll-payment-method) for returning customers.
+- Explore the [available SDK methods](/sdk-integration/mobile/ionic-lite/methods) for advanced payment operations.
+- Learn more about [customization options](/sdk-integration/mobile/ionic-lite/customization) for building your perfect payment experience.
+

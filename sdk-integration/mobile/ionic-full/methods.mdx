@@ -1,0 +1,153 @@
+---
+title: "SDK Methods"
+og:description: "Reference for the methods available in Tonder's Ionic Full SDK."
+---
+
+This page provides a reference for the core methods available in the Ionic Full SDK.
+
+## Core Methods
+
+The Tonder Ionic Full SDK (@tonder.io/ionic-full-sdk) exposes the InlineCheckout class, which implements all the methods necessary for payment, enrollment, configuration, and cleanup.
+
+## Method Details
+
+Each method in the Tonder Ionic Full SDK serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each method, including their parameters, usage examples, and practical implementation guidance.
+
+<AccordionGroup>
+  <Accordion title="InlineCheckout Constructor">
+
+Creates a new instance of the InlineCheckout class with the necessary configuration for secure payment processing. This constructor establishes the connection with Tonder's services and configures the payment environment.
+
+## `InlineCheckout` Parameter Table
+
+| Parameter | Type | Description | Required |
+| :--- | :--- | :--- | :--- |
+| **`apiKey`** | `String` | Your Tonder API key for authentication. | **Yes** |
+| **`returnUrl`** | `String` | URL where the checkout form is mounted (used for 3DS redirect completion). | **Yes** |
+| **`mode`** | `String` | Operating environment mode. Options: 'product' or 'stage'. | No |
+| **`renderPaymentButton`** | `Boolean` | If true, the SDK renders a default Tonder payment button. If used, you must set payment data using `setPaymentData()`. | No |
+
+Here's an example of how to initialize the InlineCheckout class:
+
+```javascript
+const inlineCheckout = new InlineCheckout({
+  apiKey: "YOUR_API_KEY",
+  returnUrl: "YOUR_RETURN_URL",
+  mode: "stage",
+  renderPaymentButton: false 
+});
+```
+
+  </Accordion>
+
+  <Accordion title="configureCheckout(data)">
+
+Renders the pre-built checkout UI into your designated container. This method creates and displays the complete payment form with card input fields, validation, and styling.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| data | Object | The customer configuration object, containing at least the email |
+
+Here's an example:
+
+```javascript
+// Example using customer email and Secure Token for card saving
+inlineCheckout.configureCheckout({
+  customer: {
+    email: "example@email.com",
+    secureToken: "e89eb18.." // Required for SaveCard functionality
+  }
+});
+```
+
+  </Accordion>
+
+  <Accordion title="injectCheckout()">
+
+Initiates a payment transaction using the provided customer and cart data. This method processes the payment securely and handles the transaction flow.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters. |
+
+Here's an example of how to process a payment:
+
+```javascript
+inlineCheckout.injectCheckout();
+```
+
+  </Accordion>
+
+  <Accordion title="setPaymentData(data)">
+
+Sets the payment data (such as customer, cart, and metadata). This is useful when using the default Tonder payment button.
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| data | object | The full payment data structure. |
+
+Here's an example:
+
+```javascript
+/// Should be called after configureCheckout()
+inlineCheckout.injectCheckout();
+```
+
+  </Accordion>
+
+  <Accordion title="payment">
+
+Processes a payment transaction securely using the provided checkoutData.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| checkoutData | object | Customer and cart information for the transaction, adhering to the Payment Data Structure. |
+
+```javascript
+// This method is used when the developer controls the payment button
+const response = await inlineCheckout.payment(checkoutData);
+```
+</Accordion>
+ 
+  <Accordion title="verify3dsTransaction">
+
+Verifies the status of a 3D Secure (3DS) transaction. It should be called immediately after injectCheckout() to handle the redirect return.
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters. |
+
+```javascript
+// The response status will be one of: ['Declined', 'Cancelled', 'Failed', 'Success', 'Pending', 'Authorized']
+inlineCheckout.verify3dsTransaction().then((response) => {
+  console.log("Verify 3ds response", response); 
+});
+```
+</Accordion>
+ 
+  <Accordion title="saveCard">
+
+Saves a new card. This method is useful when the SDK is configured as an enrollment card (isEnrollmentCard: true).
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters. |
+
+```javascript
+await this.tonderService.saveCard();
+```
+</Accordion>
+  <Accordion title="removeCheckout">
+
+Removes the checkout UI from the DOM and cleans up resources.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters. |
+
+```javascript
+inlineCheckout.removeCheckout();
+```
+</Accordion>
+</AccordionGroup>
+
+
+

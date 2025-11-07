@@ -1,0 +1,355 @@
+---
+title: "Customize the SDK"
+og:description: "Learn how to customize the appearance and behavior of the React Native Lite SDK."
+---
+
+This guide shows you how to customize the appearance of the Tonder React Native Lite SDK (LITE mode). With the Lite SDK, you have complete control over your payment interface by building custom forms with individual secure components.
+
+## Customization with LITE Mode
+
+The Lite SDK provides individual secure input components that you can style directly through props. This gives you complete flexibility to match your app's design system.
+
+<Info>
+Unlike the Full SDK (INLINE mode), LITE mode styling is done by passing style props directly to individual components rather than through a centralized customization object.
+</Info>
+
+## Styling Individual Components
+
+Each secure input component accepts a `style` prop that follows React Native's StyleSheet conventions. You can apply your custom styles to match your app's design.
+
+### Available Components
+
+- **CardHolderInput** - Secure input for cardholder name
+- **CardNumberInput** - Secure input for card number
+- **CardCVVInput** - Secure input for CVV/CVC
+- **CardExpirationDateInput** - Secure input for full expiration date
+- **CardExpirationMonthInput** - Secure input for expiration month
+- **CardExpirationYearInput** - Secure input for expiration year
+
+### Styling Example
+
+```jsx
+import {
+  CardHolderInput,
+  CardNumberInput,
+  CardExpirationMonthInput,
+  CardExpirationYearInput,
+  CardCVVInput
+} from '@tonder.io/rn-sdk';
+import { View, Text, StyleSheet } from 'react-native';
+
+export default function CustomPaymentForm() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.label}>Cardholder Name</Text>
+      <CardHolderInput style={styles.input} />
+      
+      <Text style={styles.label}>Card Number</Text>
+      <CardNumberInput style={styles.input} />
+      
+      <View style={styles.row}>
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>Month</Text>
+          <CardExpirationMonthInput style={styles.smallInput} />
+        </View>
+        
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>Year</Text>
+          <CardExpirationYearInput style={styles.smallInput} />
+        </View>
+      </View>
+      
+      <Text style={styles.label}>CVV</Text>
+      <CardCVVInput style={styles.input} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    padding: 14,
+    fontSize: 16,
+    backgroundColor: '#FAFAFA',
+    marginBottom: 16,
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  halfWidth: {
+    flex: 1,
+  },
+  smallInput: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    padding: 14,
+    fontSize: 16,
+    backgroundColor: '#FAFAFA',
+    marginBottom: 16,
+  },
+});
+```
+
+## Complete Custom Form Example
+
+Here's a comprehensive example showing a fully styled custom payment form using the Lite SDK:
+
+<Accordion title="View Complete Styled Form Example">
+
+```jsx
+import React, { useEffect } from 'react';
+import { 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  StyleSheet, 
+  SafeAreaView 
+} from 'react-native';
+import {
+  TonderProvider,
+  useTonder,
+  SDKType,
+  CardHolderInput,
+  CardNumberInput,
+  CardExpirationMonthInput,
+  CardExpirationYearInput,
+  CardCVVInput
+} from '@tonder.io/rn-sdk';
+
+function PaymentForm() {
+  const { create, payment } = useTonder<SDKType.LITE>();
+
+  useEffect(() => {
+    const initialize = async () => {
+      const secureToken = await getSecureToken();
+      const paymentData = {
+        customer: { 
+          firstName: "Juan", 
+          email: "juan@example.com" 
+        },
+        cart: { 
+          total: 399, 
+          items: [
+            {
+              name: 'Product',
+              amount_total: 399,
+              description: 'Product description',
+              price_unit: 399,
+              quantity: 1,
+            }
+          ] 
+        },
+        currency: "mxn"
+      };
+
+      await create({
+        secureToken,
+        paymentData,
+        callbacks: {
+          onFinishPayment: (response) => {
+            console.log('Payment completed:', response);
+          }
+        }
+      });
+    };
+    
+    initialize();
+  }, []);
+
+  const handlePayment = async () => {
+    const { response, error } = await payment();
+    if (error) {
+      console.error('Payment error:', error);
+      return;
+    }
+    console.log('Payment success:', response);
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.formContainer}>
+        <Text style={styles.title}>Payment Information</Text>
+        
+        <View style={styles.fieldContainer}>
+          <Text style={styles.label}>Cardholder Name</Text>
+          <CardHolderInput style={styles.input} />
+        </View>
+        
+        <View style={styles.fieldContainer}>
+          <Text style={styles.label}>Card Number</Text>
+          <CardNumberInput style={styles.input} />
+        </View>
+        
+        <View style={styles.row}>
+          <View style={styles.halfField}>
+            <Text style={styles.label}>Expiry Month</Text>
+            <CardExpirationMonthInput style={styles.input} />
+          </View>
+          
+          <View style={styles.halfField}>
+            <Text style={styles.label}>Expiry Year</Text>
+            <CardExpirationYearInput style={styles.input} />
+          </View>
+        </View>
+        
+        <View style={styles.fieldContainer}>
+          <Text style={styles.label}>CVV</Text>
+          <CardCVVInput style={styles.smallInput} />
+        </View>
+        
+        <TouchableOpacity style={styles.button} onPress={handlePayment}>
+          <Text style={styles.buttonText}>Pay $399.00</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  formContainer: {
+    margin: 16,
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 24,
+  },
+  fieldContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#4A4A4A',
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#D1D1D1',
+    borderRadius: 8,
+    padding: 14,
+    fontSize: 16,
+    backgroundColor: '#FAFAFA',
+    color: '#1A1A1A',
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  halfField: {
+    flex: 1,
+  },
+  smallInput: {
+    borderWidth: 1,
+    borderColor: '#D1D1D1',
+    borderRadius: 8,
+    padding: 14,
+    fontSize: 16,
+    backgroundColor: '#FAFAFA',
+    width: '50%',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 16,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+});
+
+// Wrap with TonderProvider
+export default function App() {
+  return (
+    <TonderProvider
+      config={{
+        type: SDKType.LITE,
+        mode: 'development',
+        apiKey: 'YOUR_API_KEY',
+      }}
+    >
+      <PaymentForm />
+    </TonderProvider>
+  );
+}
+```
+
+</Accordion>
+
+## Customization Options
+
+When building custom forms with the Lite SDK, you have complete control over:
+
+| Aspect | Description |
+|--------|-------------|
+| **Layout** | Arrange inputs in any configuration - single column, two column, grid, etc. |
+| **Styling** | Apply any React Native styles to match your design system |
+| **Labels** | Create custom labels with your preferred text and styling |
+| **Validation** | Add custom validation messages and error displays |
+| **Behavior** | Control focus, navigation, and submission flow |
+| **Branding** | Integrate seamlessly with your app's existing UI components |
+
+## Event Handlers
+
+You can also pass event handlers to customize the behavior when users interact with the input fields:
+
+```jsx
+const { create } = useTonder<SDKType.LITE>();
+
+await create({
+  secureToken: 'your-token',
+  paymentData: yourData,
+  events: {
+    onCardNumberChange: (isValid) => {
+      console.log('Card number valid:', isValid);
+    },
+    onCVVChange: (isValid) => {
+      console.log('CVV valid:', isValid);
+    },
+    onExpiryChange: (isValid) => {
+      console.log('Expiry valid:', isValid);
+    },
+  }
+});
+```
+
+## Next Steps
+
+Now that you've learned how to customize the React Native Lite SDK, explore these features to enhance your payment experience:
+
+- Learn how to [make a payment](/sdk-integration/mobile/react-native-lite/make-a-payment) using the React Native Lite SDK.
+- Learn how to [enroll payment methods](/sdk-integration/mobile/react-native-lite/enroll-payment-method) for returning customers.
+- Explore the [available SDK methods](/sdk-integration/mobile/react-native-lite/methods) for payment processing.
+

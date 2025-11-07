@@ -1,0 +1,76 @@
+---
+title: "Make a Payment"
+og:description: "Learn how to accept a payment in your Flutter app using Tonder's Full SDK."
+---
+
+This guide walks you through processing a payment using the Full SDK (`InlineCheckout`) for Flutter.
+
+## Prerequisites
+
+Before you can process payments with the Tonder Flutter Full SDK, ensure you have completed the necessary setup and have the required components in place.
+
+- You have successfully [installed and configured](/sdk-integration/mobile/flutter-full/requirements-and-installation) the Tonder Flutter Full SDK.
+- You have a widget in your app ready to display the checkout.
+
+## Payment Integration Steps
+
+Follow these steps to integrate payment processing into your Flutter application. This process involves initializing the SDK, configuring payment data, displaying the checkout interface, and processing the transaction.
+
+### Step 1: Initialize the SDK
+
+Create an instance of the `InlineCheckout` class to establish a secure connection with Tonder's payment services. This initialization configures the SDK with your API credentials and sets up the return URL for handling payment redirects after 3D Secure authentication.
+
+```dart title="checkout_widget.dart"
+
+import 'package:full_sdk/inline_checkout.dart';
+
+// ... inside your widget's state
+
+late InlineCheckout? _fullPlugin;
+
+@override
+void initState() {
+  super.initState();
+  const apiKey = "YOUR_API_KEY";
+  const returnUrl = "YOUR_RETURN_URL";
+
+  _fullPlugin = InlineCheckout(
+    apiKeyTonder: apiKey,
+    returnUrl: returnUrl,
+    successUrl: returnUrl,
+    renderPaymentButton: false, // Set to true if you want the SDK's button
+  );
+}
+```
+
+### Step 2: Configure Payment Data
+
+Configure the payment data that will be processed. This includes setting the customer information (name and email) and the total amount for the transaction. The SDK uses this data to pre-fill the checkout form and calculate the final payment amount.
+
+```dart
+
+// Set customer and cart data
+final customerData = { 'first_name': 'Juan', 'email': 'juan@example.com' };
+_fullPlugin!.setPaymentData(customerData);
+_fullPlugin!.setCartTotal(399);
+```
+
+### Step 3: Inject the Checkout and Process Payment
+
+Render the pre-built checkout interface within your Flutter widget. The `injectCheckout()` method creates and displays the complete payment form with card input fields, validation, and styling. Once injected, the SDK automatically handles user interactions, form validation, and payment processing.
+
+```dart
+// Inject the UI into the widget tree
+await _fullPlugin!.injectCheckout();
+```
+
+<Frame>![](/images/SDKs/checkout-gif.gif)</Frame>
+
+The SDK's component will handle the user interaction for submitting the payment.
+
+## Next Steps
+
+Now that you've successfully integrated payment processing into your Flutter app, explore these advanced features to enhance your payment experience:
+
+- Explore the [available SDK methods](/sdk-integration/mobile/flutter-full/methods) for advanced payment operations.
+

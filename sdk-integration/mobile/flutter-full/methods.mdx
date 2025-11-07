@@ -1,0 +1,107 @@
+---
+title: "SDK Methods"
+og:description: "Reference for the methods available in Tonder's Flutter Full SDK."
+---
+
+This page provides a reference for the core methods available in the `InlineCheckout` class of the Flutter Full SDK.
+
+## Core Methods
+
+The Tonder Flutter Full SDK provides these essential methods for initializing, configuring, and rendering the payment interface. Each method serves a specific purpose in the payment integration workflow.
+
+| Method               | Description                                                                     |
+| -------------------- | ------------------------------------------------------------------------------- |
+| `new InlineCheckout(..)` | Initializes the SDK with configuration like `apiKeyTonder` and `returnUrl`.     |
+| `setPaymentData(data)` | Loads the customer data (name, email, etc.) into the SDK instance.              |
+| `setCartTotal(total)`| Sets the total amount for the transaction.                                      |
+| `injectCheckout()`   | Renders the pre-built checkout UI.                                              |
+
+## Method Details
+
+Each method in the Tonder Flutter Full SDK serves a specific purpose in the payment integration workflow. Below you'll find detailed information about each method, including their parameters, usage examples, and practical implementation guidance.
+
+<AccordionGroup>
+  <Accordion title="InlineCheckout Constructor">
+
+Creates a new instance of the InlineCheckout class with the necessary configuration for secure payment processing. This constructor establishes the connection with Tonder's services and configures the payment environment.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `apiKeyTonder` | String | Your Tonder API key for authentication |
+| `returnUrl` | String | URL where users are redirected after payment completion |
+| `successUrl` | String | URL for successful payment redirects |
+| `renderPaymentButton` | bool | Whether to show the SDK's built-in payment button |
+
+Here's an example of how to initialize the InlineCheckout class:
+
+```dart
+InlineCheckout(
+  apiKeyTonder: "YOUR_API_KEY",
+  returnUrl: "https://your-app.com/return",
+  successUrl: "https://your-app.com/success",
+  renderPaymentButton: false,
+)
+```
+
+  </Accordion>
+
+  <Accordion title="setPaymentData">
+
+Configures the customer information that will be used during the payment process. This data is used to pre-fill the checkout form and associate the transaction with the customer.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `data` | Map\<String, dynamic> | Customer information including name, email, etc. |
+
+Here's an example of how to set the customer data:
+
+```dart
+final customerData = {
+  'first_name': 'Juan',
+  'last_name': 'Pérez',
+  'email': 'juan.perez@example.com'
+};
+_fullPlugin!.setPaymentData(customerData);
+```
+
+  </Accordion>
+
+  <Accordion title="setCartTotal">
+
+Sets the total amount for the transaction. This value is displayed in the checkout interface and used for payment processing.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `total` | int | Total amount in cents (e.g., 399 for $3.99) |
+
+Here's an example of how to set the cart total:
+
+```dart
+_fullPlugin!.setCartTotal(399); // $3.99
+```
+
+  </Accordion>
+
+  <Accordion title="injectCheckout">
+
+Renders the pre-built payment interface within your Flutter widget. This method creates the complete checkout form with card input fields, validation, and styling.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters |
+
+Here's an example of how to inject the checkout:
+
+```dart
+await _fullPlugin!.injectCheckout();
+```
+
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that you're familiar with the available methods in the Flutter Full SDK, explore these guides to enhance your implementation:
+
+- Learn how to [make a payment](/sdk-integration/mobile/flutter-full/make-a-payment) using the Flutter Full SDK.
+

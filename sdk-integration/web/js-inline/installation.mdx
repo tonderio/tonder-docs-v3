@@ -1,0 +1,55 @@
+---
+title: "Installation"
+og:description: "How to install and set up Tonder's JS Inline SDK in your web project."
+---
+
+This guide provides the installation and configuration steps for Tonder's JavaScript Inline SDK. Whether you're building a new web application or integrating payments into an existing site, this documentation will help you get the Tonder JS SDK up and running quickly and securely.
+
+## Prerequisites
+
+Before installing the Tonder JS SDK, you need to configure your project to support secure payment processing. This involves adding the required third-party scripts for PCI DSS compliance and ensuring proper HTML structure for the SDK integration.
+
+The Tonder JS SDK relies on third-party scripts for PCI DSS compliance and connecting to payment processors. You must include these scripts in your HTML file for the SDK to function correctly.
+
+Add the following script tags to the `<head>` of your HTML file:
+
+```html title="index.html"
+<head>
+  ...
+  <script src="https://js.skyflow.com/v1/index.js"></script>
+  <script src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
+  <script src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"></script>
+  ...
+</head>
+```
+
+## Installation
+
+To install the Tonder JS SDK, you can choose between two approaches depending on your project setup: using the npm package for modern web applications or including a script tag directly in your HTML file for simpler integrations.
+
+<AccordionGroup>
+<Accordion title="NPM Package">
+For projects using a package manager like npm or yarn, run the following command:
+
+```bash
+npm i tonder-web-sdk
+```
+This is the recommended approach for modern web applications.
+</Accordion>
+
+<Accordion title="Script Tag">
+To use the SDK without a package manager, add the following script tag to your HTML file, preferably before the closing &lt;/body&gt; tag.
+
+```html
+<script src="[https://zplit-prod.s3.amazonaws.com/v1/bundle.min.js](https://zplit-prod.s3.amazonaws.com/v1/bundle.min.js)"></script>
+```
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that you've successfully installed the Tonder JS SDK, you're ready to start integrating payments into your web application. Follow these guides to complete your payment integration:
+
+- Learn how to [make a payment](/sdk-integration/web/js-inline/make-a-payment) using the JS Inline SDK.
+- Explore the [available SDK methods](/sdk-integration/web/js-inline/methods) for payment processing.
+- Customize the [SDK appearance and behavior](/sdk-integration/web/js-inline/customization) to match your website's design.

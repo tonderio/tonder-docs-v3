@@ -1,0 +1,100 @@
+---
+title: "Enroll a Payment Method"
+og:description: "How to securely save a customer's card for future use with the Ionic Lite SDK."
+---
+
+This guide shows you how to enroll and manage payment methods using the Ionic Lite SDK. You'll learn how to configure the SDK for card management, save customer cards securely, and retrieve saved payment methods.
+
+<Note>
+Card enrollment and management features are available in the Lite version (`@tonder.io/ionic-lite-sdk`) of the Ionic SDK. This allows you to build a custom UI for saving cards.
+</Note>
+
+## Prerequisites
+
+Before you can enroll payment methods with the Tonder Ionic Lite SDK, ensure you have completed the necessary setup and have the required components in place.
+
+- You are using the `LiteCheckout` from the `@tonder.io/ionic-lite-sdk` package.
+- Your backend is set up to provide a [Secure Token](/sdk-integration/web/js-lite/make-a-payment) for card management.
+
+## Payment Method Enrollment Steps
+
+Follow these steps to implement payment method enrollment in your Ionic application. This process involves configuring the SDK with secure tokens, collecting card data through your custom UI, and securely saving the payment method for future use.
+
+### Step 1: Configure the SDK with a Secure Token
+
+Initialize the `LiteCheckout` instance and configure it with the customer's email and the secure token obtained from your backend. This configuration enables secure card management operations.
+
+```javascript
+import { LiteCheckout } from "@tonder.io/ionic-lite-sdk";
+
+const liteCheckout = new LiteCheckout({ apiKey: "YOUR_API_KEY" });
+
+liteCheckout.configureCheckout({
+  customer: { email: "customer@example.com" },
+  secureToken: "SECURE_TOKEN_FROM_YOUR_BACKEND"
+});
+```
+
+### Step 2: Save a Customer Card
+
+Use the `saveCustomerCard` method to tokenize and save the card details collected from your custom UI. This method securely processes the card information and stores it for future transactions.
+
+```javascript
+const handleSaveCard = async () => {
+  try {
+    const cardData = {
+      card_number: "4111111111111111",
+      cvv: "123",
+      expiration_month: "12",
+      expiration_year: "25",
+      cardholder_name: "John Doe",
+    };
+
+    const response = await liteCheckout.saveCustomerCard(cardData);
+    console.log("Card saved successfully:", response);
+  } catch (error) {
+    console.error("Error saving card:", error);
+  }
+};
+```
+
+### Step 3: Retrieve Saved Cards
+
+Use the `getCustomerCards` method to retrieve all saved payment methods for the configured customer. This allows you to display saved cards in your custom UI.
+
+```javascript
+const loadSavedCards = async () => {
+  try {
+    const cards = await liteCheckout.getCustomerCards();
+    console.log("Saved cards:", cards);
+    // Display cards in your custom UI
+  } catch (error) {
+    console.error("Error loading cards:", error);
+  }
+};
+```
+
+### Step 4: Remove a Saved Card
+
+Use the `removeCustomerCard` method to delete a previously saved card using its unique ID. This provides customers with control over their saved payment methods.
+
+```javascript
+const removeCard = async (cardId) => {
+  try {
+    await liteCheckout.removeCustomerCard(cardId);
+    console.log("Card removed successfully");
+    // Refresh your card list
+  } catch (error) {
+    console.error("Error removing card:", error);
+  }
+};
+```
+
+## Next Steps
+
+Now that you've successfully implemented payment method enrollment in your Ionic app, explore these advanced features to enhance your payment experience:
+
+- Learn how to [make a payment](/sdk-integration/mobile/ionic-lite/make-a-payment) using the Ionic Lite SDK.
+- Explore the [available SDK methods](/sdk-integration/mobile/ionic-lite/methods) for payment processing.
+- Customize the [SDK appearance and behavior](/sdk-integration/mobile/ionic-lite/customization) to match your app's design.
+

@@ -1,0 +1,211 @@
+---
+title: "Enroll a Payment Method"
+og:description: "How to securely save a customer's card for future use with the React Native Lite SDK."
+---
+
+This guide shows you how to enroll and manage payment methods using the React Native Lite SDK. You'll learn how to configure the SDK for card enrollment, create enrollment instances, and build custom card saving interfaces.
+
+Enrolling a payment method allows you to securely save a customer's card details, making it easier for them to make repeat purchases. This process involves tokenizing the card information so that you never have to store sensitive data directly.
+
+## Prerequisites
+
+Before you can enroll payment methods with the Tonder React Native Lite SDK, ensure you have completed the necessary setup and have the required components in place.
+
+- You have successfully [installed and configured](/sdk-integration/mobile/react-native-lite/requirements-and-installation) the Tonder SDK for React Native.
+- Your backend is set up to provide a [Secure Token](/sdk-integration/web/js-lite/make-a-payment) for card management operations.
+
+## Payment Method Enrollment Steps
+
+Follow these steps to implement payment method enrollment in your React Native application. This process involves configuring the SDK for enrollment mode, creating enrollment instances, and building a custom card saving interface.
+
+### Step 1: Configure the SDK in Enrollment Mode
+
+Configure the `TonderProvider` with the `SDKType.ENROLLMENT` to prepare the SDK for the card saving workflow. This mode enables card management functionality while allowing you to build a custom UI.
+
+```jsx title="App.js"
+import { TonderProvider, SDKType } from '@tonder.io/rn-sdk';
+
+function App() {
+  return (
+    <TonderProvider
+      config={{
+        type: SDKType.ENROLLMENT,
+        mode: 'development',
+        apiKey: 'YOUR_API_KEY',
+      }}
+    >
+      <YourEnrollmentScreen />
+    </TonderProvider>
+  );
+}
+```
+
+### Step 2: Create the Enrollment Instance
+
+In your enrollment screen, use the create function from the useTonder hook to initialize the enrollment session. Provide the secure token from your backend and the customer's information, along with optional callback functions.
+
+```js
+import { useTonder, SDKType, ICustomer } from '@tonder.io/rn-sdk';
+import { useEffect } from 'react';
+
+export default function EnrollmentScreen() {
+  const { create, saveCustomerCard } = useTonder<SDKType.ENROLLMENT>();
+
+  const customerData: ICustomer = {
+    email: 'customer@example.com',
+    firstName: 'Jane',
+    lastName: 'Doe'
+  };
+
+  useEffect(() => {
+    const initializeEnrollment = async () => {
+      const secureToken = await getSecureToken(); 
+
+      const { error } = await create({
+        secureToken: secureToken,
+        customer: customerData,
+        callbacks: {
+          onFinishSave: (response) => {
+            console.log('Card saved successfully:', response);
+          }
+        }
+      });
+      if (error) { console.error('Enrollment error:', error); }
+    };
+
+    initializeEnrollment();
+  }, []);
+
+  // ... render component
+}
+```
+
+### Step 3: Build Your Custom Enrollment Form
+
+For a fully custom enrollment experience with the Lite SDK, you can build your own form using the secure input components and handle the save action manually.
+
+```jsx
+import {
+  CardHolderInput,
+  CardNumberInput,
+  CardExpirationMonthInput,
+  CardExpirationYearInput,
+  CardCVVInput
+} from '@tonder.io/rn-sdk';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+export default function EnrollmentScreen() {
+  const { create, saveCustomerCard } = useTonder<SDKType.ENROLLMENT>();
+  
+  // ... (previous useEffect code)
+
+  const handleSaveCard = async () => {
+    const { response, error } = await saveCustomerCard();
+    if (error) {
+      console.error('Error saving card:', error);
+      return;
+    }
+    console.log('Card saved successfully:', response);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Save Your Card</Text>
+      
+      <Text style={styles.label}>Cardholder Name</Text>
+      <CardHolderInput style={styles.input} />
+      
+      <Text style={styles.label}>Card Number</Text>
+      <CardNumberInput style={styles.input} />
+      
+      <View style={styles.row}>
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>Expiry Month</Text>
+          <CardExpirationMonthInput style={styles.input} />
+        </View>
+        
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>Expiry Year</Text>
+          <CardExpirationYearInput style={styles.input} />
+        </View>
+      </View>
+      
+      <Text style={styles.label}>CVV</Text>
+      <CardCVVInput style={styles.input} />
+      
+      <TouchableOpacity style={styles.button} onPress={handleSaveCard}>
+        <Text style={styles.buttonText}>Save Card</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { padding: 16 },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 24 },
+  label: { fontSize: 14, marginBottom: 8, fontWeight: '600' },
+  input: { 
+    borderWidth: 1, 
+    borderColor: '#ccc', 
+    borderRadius: 8, 
+    padding: 12, 
+    marginBottom: 16 
+  },
+  row: { flexDirection: 'row', gap: 16 },
+  halfWidth: { flex: 1 },
+  button: { 
+    backgroundColor: '#007AFF', 
+    padding: 16, 
+    borderRadius: 8, 
+    alignItems: 'center' 
+  },
+  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+});
+```
+
+### Step 4: Manage Saved Cards
+
+Use the card management methods to retrieve, view details, and remove saved cards.
+
+```js
+const { getCustomerCards, getCardSummary, removeCustomerCard } = useTonder<SDKType.LITE>();
+
+// Get list of saved cards
+const loadSavedCards = async () => {
+  const { response, error } = await getCustomerCards();
+  if (error) {
+    console.error('Error loading cards:', error);
+    return;
+  }
+  console.log('Saved cards:', response);
+};
+
+// Get details of a specific card
+const getCardDetails = async (skyflowId: string) => {
+  const { response, error } = await getCardSummary(skyflowId);
+  if (error) {
+    console.error('Error getting card summary:', error);
+    return;
+  }
+  console.log('Card details:', response);
+};
+
+// Remove a saved card
+const deleteCard = async (skyflowId: string) => {
+  const { response, error } = await removeCustomerCard(skyflowId);
+  if (error) {
+    console.error('Error removing card:', error);
+    return;
+  }
+  console.log('Card removed successfully');
+};
+```
+
+## Next Steps
+
+Now that you've successfully implemented payment method enrollment in your React Native app, explore these advanced features to enhance your payment experience:
+
+- Learn how to [make a payment](/sdk-integration/mobile/react-native-lite/make-a-payment) using the React Native Lite SDK.
+- Explore the [available SDK methods](/sdk-integration/mobile/react-native-lite/methods) for payment processing.
+- Customize the [SDK appearance and behavior](/sdk-integration/mobile/react-native-lite/customization) to match your app's design.
+

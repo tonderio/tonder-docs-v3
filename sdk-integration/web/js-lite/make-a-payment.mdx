@@ -1,0 +1,107 @@
+---
+title: "Make a Payment"
+og:description: "Learn how to accept payments using the JS Lite SDK and a custom UI."
+---
+
+This guide walks you through processing a payment using the JS Lite SDK (`LiteCheckout`) for web applications with custom UI. You'll learn how to initialise the SDK, build your own payment form, collect card data, and handle the complete payment flow including 3D Secure verification.
+
+The Lite Checkout gives you core payment functionality while you build the UI.
+
+## Prerequisites
+
+Before you can process payments with the Tonder JS Lite SDK, ensure you have completed the necessary setup and have the required components in place.
+
+- You have successfully [installed the Tonder JS SDK](/sdk-integration/web/js-lite/installation).
+- You have built your own custom HTML form for collecting card details.
+
+## Payment Integration Steps
+
+Follow these steps to integrate payment processing into your web application with custom UI. This process involves initialising the SDK, building your custom form, collecting payment data, and processing the transaction.
+
+### Step 1: Initialise the Lite SDK
+
+Create an instance of `LiteCheckout`. Even though you are building a custom UI, you must still call `injectCheckout()` to initialise the SDK's hidden logic.
+
+```javascript
+import { LiteCheckout } from "tonder-web-sdk";
+
+const liteCheckout = new LiteCheckout({
+  apiKey: "YOUR_API_KEY",
+  returnUrl: "[https://your-website.com/return](https://your-website.com/return)",
+  mode: 'development',
+});
+
+// This is required to initialize the SDK's underlying services
+liteCheckout.injectCheckout();
+```
+
+### Step 2: Build Your Custom Form
+
+Create your own HTML form for card number, expiration date, CVV, and cardholder name. Use the SDK's validation helpers to provide real-time feedback to the user.
+
+<Frame>![](/images/SDKs/liteexample.png)</Frame>
+
+Here's a simple example of a custom payment form with validation:
+
+```javascript
+import { validateCardNumber, validateCVV } from "tonder-web-sdk";
+
+// HTML form
+<input type="text" id="card-number" placeholder="Card Number" />
+<input type="text" id="cvv" placeholder="CVV" />
+<button id="custom-pay-button">Pay Now</button>
+
+// Add validation
+document.getElementById('card-number').addEventListener('input', (e) => {
+  if (!validateCardNumber(e.target.value)) {
+    console.log('Invalid card number');
+  }
+});
+
+document.getElementById('cvv').addEventListener('input', (e) => {
+  if (!validateCVV(e.target.value)) {
+    console.log('Invalid CVV');
+  }
+});
+```
+
+### Step 3: Process the Payment
+
+In your payment button's event listener, collect the card data from your custom form and include it in the payment() method's payload.
+
+```javascript
+
+document.getElementById('custom-pay-button').addEventListener('click', async (event) => {
+  event.preventDefault();
+
+  const cardData = {
+    card_number: document.getElementById('card-number').value,
+    cardholder_name: document.getElementById('card-name').value,
+    expiration_month: document.getElementById('exp-month').value,
+    expiration_year: document.getElementById('exp-year').value,
+    cvv: document.getElementById('cvv').value,
+  };
+
+  const checkoutData = {
+    customer: { firstName: "Juan", email: "juan.hernandez@mail.com" },
+    currency: 'mxn',
+    cart: { total: 399, items: [{ name: "T-Shirt", amount_total: 399 }] },
+    card: cardData
+  };
+
+  try {
+    const response = await liteCheckout.payment(checkoutData);
+    alert('Payment successful!');
+  } catch (error) {
+    alert('Payment failed.');
+  }
+});
+```
+
+## Next Steps
+
+Now that you've successfully integrated payment processing into your web application with custom UI, explore these advanced features to enhance your payment experience:
+
+- Explore the [available SDK methods](/sdk-integration/web/js-lite/methods) for advanced payment operations and card management.
+- Understand [customisation options](/sdk-integration/web/js-lite/customization) for building your own payment interface.
+- Learn how to [enroll payment methods](/sdk-integration/web/js-lite/enroll-payment-method) for returning customers.
