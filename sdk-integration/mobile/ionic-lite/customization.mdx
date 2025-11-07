@@ -1,0 +1,93 @@
+---
+title: "Ionic Lite SDK - Customize the SDK"
+og:description: "Learn about customization options for the Ionic Lite SDK."
+---
+
+This guide covers how to customise the Tonder Ionic Lite SDK to match your application's design and user experience requirements. Whether you're looking to integrate Tonder's payment processing into your existing UI or create a completely custom payment flow, this documentation will help you understand your options and implementation approaches.
+
+<Note>
+The Lite SDK is specifically designed for complete customization. If you need a pre-built UI, consider using the Full SDK (`@tonder.io/ionic-full-sdk`).
+</Note>
+
+The Lite SDK is designed for maximum flexibility and complete UI control. It provides the core, secure logic for payment processing without rendering any visible UI, allowing you to build a completely custom payment experience.
+
+- Build your own payment form using standard Ionic components.
+- Apply your application's existing design system and styles.
+- Control the layout, flow, and interactions completely.
+- All payment logic remains secure and PCI-compliant.
+
+### Implementation Approach
+
+To implement the Lite SDK, you will create your own input fields and then pass the collected data to the SDK's payment methods.
+
+Here's a simple example showing how to use the Lite SDK with custom UI. This code creates a custom payment widget that collects user input through Ionic's standard components and then uses the SDK's documented methods to process the payment data:
+
+```javascript
+import { LiteCheckout } from "@tonder.io/ionic-lite-sdk";
+
+class CustomPaymentPage {
+  constructor() {
+    this.liteCheckout = new LiteCheckout({
+      apiKey: "YOUR_API_KEY",
+      returnUrl: "YOUR_RETURN_URL",
+    });
+  }
+  
+  async processPayment() {
+    // Collect data from your custom form
+    const customerData = {
+      firstName: document.getElementById('firstName').value,
+      email: document.getElementById('email').value,
+    };
+    
+    const cardData = {
+      card_number: document.getElementById('cardNumber').value,
+      cvv: document.getElementById('cvv').value,
+      expiration_month: document.getElementById('expiryMonth').value,
+      expiration_year: document.getElementById('expiryYear').value,
+      cardholder_name: document.getElementById('cardholderName').value,
+    };
+    
+    const paymentData = {
+      customer: customerData,
+      cart: { total: "399.00", items: [] },
+      currency: "MXN",
+      card: cardData
+    };
+    
+    // Process payment using SDK methods
+    const response = await this.liteCheckout.payment(paymentData);
+  }
+}
+```
+
+## Building Your Custom UI
+
+When building your custom payment form, ensure you collect all required payment information:
+
+### Required Fields
+
+- Card number
+- Cardholder name
+- Expiration month
+- Expiration year
+- CVV/CVC
+- Customer email
+- Customer name
+
+### Best Practices
+
+- Use appropriate input types and validations
+- Implement real-time card number formatting
+- Display clear error messages
+- Follow accessibility guidelines
+- Ensure mobile responsiveness
+
+## Next Steps
+
+Now that you understand the customisation options available with the Tonder Ionic Lite SDK, you're ready to implement payment processing in your application. Here are the recommended next steps to get you started:
+
+- [Create a payment](/sdk-integration/mobile/ionic-lite/make-a-payment) with the Lite SDK.
+- Explore the [available SDK methods](/sdk-integration/mobile/ionic-lite/methods) for payment processing.
+- Learn how to [enroll payment methods](/sdk-integration/mobile/ionic-lite/enroll-payment-method) for returning customers.
+

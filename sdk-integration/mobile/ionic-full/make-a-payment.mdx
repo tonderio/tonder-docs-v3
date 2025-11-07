@@ -1,15 +1,15 @@
 ---
-title: "Ionic SDK - Make a Payment"
-og:description: "Learn how to accept a payment in your Ionic app using Tonder's SDK."
+title: "Ionic Full SDK - Make a Payment"
+og:description: "Learn how to accept a payment in your Ionic app using Tonder's Full SDK."
 ---
 
 This guide walks you through processing a payment using the Full SDK (InlineCheckout) for Ionic. This revised flow ensures proper initialization, payment data configuration, and immediate 3D Secure verification handling.
 
 ## Prerequisites
 
-Before you can process payments with the Tonder Ionic SDK, ensure you have completed the necessary setup and have the required components in place.
+Before you can process payments with the Tonder Ionic Full SDK, ensure you have completed the necessary setup and have the required components in place.
 
-- You have successfully [installed and configured](/sdk-integration/mobile/ionic/installation) the Tonder Ionic SDK.
+- You have successfully [installed and configured](/sdk-integration/mobile/ionic-full/requirements-and-installation) the Tonder Ionic Full SDK.
 - You must add Openpay dependencies to your index.html file.
 
 ```html title="index.html"
@@ -58,9 +58,9 @@ Create an instance of InlineCheckout and define the required paymentData structu
 import { InlineCheckout } from "@tonder.io/ionic-full-sdk";
 
 const inlineCheckout = new InlineCheckout({
-  apiKey: "YOUR_API_KEY", // Required 
-  returnUrl: "YOUR_RETURN_URL", // Required 
-  mode: "stage", // 'stage' or 'production' 
+  apiKey: "YOUR_API_KEY", // Required 
+  returnUrl: "YOUR_RETURN_URL", // Required 
+  mode: "stage", // 'stage' or 'production' 
   // Optional: Set to true only if you want the SDK to render a default payment button
   // renderPaymentButton: false
 });
@@ -72,14 +72,14 @@ You must call configureCheckout() after creating the instance. This function set
 ```javascript
 // The configureCheckout function allows you to set initial information 
 inlineCheckout.configureCheckout({
-  customer: {
-    email: "example@email.com",
+  customer: {
+    email: "example@email.com",
     // Note: Use a SecureToken for implementing the SaveCard feature 
     // secureToken: "e89eb18.."
-  }
+  }
 });
 
-// Inject the checkout interface into the DOM [cite: 70]
+// Inject the checkout interface into the DOM
 inlineCheckout.injectCheckout();
 ```
 
@@ -89,8 +89,8 @@ This step must be called immediately after injectCheckout() to correctly verify 
 ```javascript
 // It should be called after the injectCheckout method 
 inlineCheckout.verify3dsTransaction().then((response) => {
-  // The response status will be one of: ['Declined', 'Cancelled', 'Failed', 'Success', 'Pending', 'Authorized'] 
-  console.log("Verify 3ds response", response);
+  // The response status will be one of: ['Declined', 'Cancelled', 'Failed', 'Success', 'Pending', 'Authorized'] 
+  console.log("Verify 3ds response", response);
 });
 ```
 
@@ -100,20 +100,20 @@ Configure the payment processing by listening to your custom button click. The c
 ```javascript
 // On your return page
 document.getElementById('pay-button').addEventListener('click', async () => {
-  const paymentData = {
+  const paymentData = {
     // This data structure must conform to the API's requirements 
-    customer: { firstName: "Juan", email: "juan.hernandez@mail.com" /* ... */ },
-    cart: { total: "399.00", items: [ /* ... */ ] }, // Total should be a float string 
-    currency: "MXN"
-  };
+    customer: { firstName: "Juan", email: "juan.hernandez@mail.com" /* ... */ },
+    cart: { total: "399.00", items: [ /* ... */ ] }, // Total should be a float string 
+    currency: "MXN"
+  };
 
-  try {
-    // Process a payment [cite: 81]
-    const response = await inlineCheckout.payment(paymentData); 
-    console.log('Payment successful:', response);
-  } catch (error) {
-    console.error('Payment failed:', error);
-  }
+  try {
+    // Process a payment
+    const response = await inlineCheckout.payment(paymentData); 
+    console.log('Payment successful:', response);
+  } catch (error) {
+    console.error('Payment failed:', error);
+  }
 });
 ```
 
@@ -121,6 +121,5 @@ document.getElementById('pay-button').addEventListener('click', async () => {
 
 Now that you've successfully integrated payment processing into your Ionic app, explore these advanced features to enhance your payment experience:
 
-- Explore the [available SDK methods](/sdk-integration/mobile/ionic/methods) for advanced payment operations.
-- Customize the [SDK appearance and behavior](/sdk-integration/mobile/ionic/customization) to match your app's design.
-- Learn how to [enroll payment methods](/sdk-integration/mobile/ionic/enroll-payment-method) for returning customers.
+- Explore the [available SDK methods](/sdk-integration/mobile/ionic-full/methods) for advanced payment operations.
+

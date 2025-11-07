@@ -136,20 +136,19 @@
                   {
                     "group": "Ionic Full SDK",
                     "pages": [
-                      "sdk-integration/mobile/ionic/requirements-and-installation",
-                      "sdk-integration/mobile/ionic/make-a-payment",
-                      "sdk-integration/mobile/ionic/methods",
-                      "sdk-integration/mobile/ionic/customization"
+                      "sdk-integration/mobile/ionic-full/requirements-and-installation",
+                      "sdk-integration/mobile/ionic-full/make-a-payment",
+                      "sdk-integration/mobile/ionic-full/methods"
                     ]
                   },
                   {
                     "group": "Ionic Lite SDK",
                     "pages": [
-                      "sdk-integration/mobile/ionic/requirements-and-installation",
-                      "sdk-integration/mobile/ionic/make-a-payment",
-                      "sdk-integration/mobile/ionic/enroll-payment-method",
-                      "sdk-integration/mobile/ionic/methods",
-                      "sdk-integration/mobile/ionic/customization"
+                      "sdk-integration/mobile/ionic-lite/requirements-and-installation",
+                      "sdk-integration/mobile/ionic-lite/make-a-payment",
+                      "sdk-integration/mobile/ionic-lite/enroll-payment-method",
+                      "sdk-integration/mobile/ionic-lite/methods",
+                      "sdk-integration/mobile/ionic-lite/customization"
                     ]
                   }
                 ]

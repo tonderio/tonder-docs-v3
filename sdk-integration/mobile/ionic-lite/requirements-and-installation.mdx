@@ -1,0 +1,57 @@
+---
+title: "Ionic Lite SDK - Requirements and Installation"
+og:description: "How to install and configure Tonder's Lite SDK for Ionic."
+---
+
+This guide provides the installation and configuration steps for Tonder's Ionic Lite SDK.
+
+## Prerequisites
+
+Before installing the Tonder Ionic Lite SDK, you need to configure your project to support secure payment processing. This involves adding the Openpay script tags for PCI DSS compliance.
+
+Add the required Openpay script tags to your main `index.html` file. These scripts are essential for PCI DSS compliance and enable the SDK to securely connect to the payment processor.
+
+```html title="index.html"
+<head>
+  ...
+  <script src="[https://openpay.s3.amazonaws.com/openpay.v1.min.js](https://openpay.s3.amazonaws.com/openpay.v1.min.js)"></script>
+  <script src="[https://openpay.s3.amazonaws.com/openpay-data.v1.min.js](https://openpay.s3.amazonaws.com/openpay-data.v1.min.js)"></script>
+  ...
+</head>
+```
+
+## Installation
+
+To install the Tonder Ionic Lite SDK, you need to add the Lite SDK package to your project. The Lite SDK is designed for maximum flexibility and complete UI control, allowing you to build a completely custom payment experience.
+
+### Step 1: Install the SDK Package
+
+Install the Lite SDK package using your preferred package manager:
+
+<CodeGroup>
+
+```bash
+npm i @tonder.io/ionic-lite-sdk
+```
+
+```bash
+yarn add @tonder.io/ionic-lite-sdk
+```
+
+</CodeGroup>
+
+<Note>Tonder recommends reviewing the important npm security changes taking effect October 13, 2025, regarding new token lifetime limits (90-day max) and TOTP 2FA restrictions, as classic tokens will be revoked in November 2025. Update your workflows as needed.</Note>
+
+### Step 2: Build Your Custom UI
+
+Unlike the Full SDK, the Lite SDK does not render any UI components. You'll need to create your own payment form using standard Ionic components. The SDK provides the secure payment processing logic while you maintain complete control over the user interface.
+
+## Next Steps
+
+Now that you've successfully installed the Tonder Ionic Lite SDK, you're ready to start integrating payments into your application with your custom UI. Follow these guides to complete your Ionic payment integration:
+
+- Learn how to [make a payment](/sdk-integration/mobile/ionic-lite/make-a-payment) using the Ionic Lite SDK.
+- Learn how to [enroll payment methods](/sdk-integration/mobile/ionic-lite/enroll-payment-method) for returning customers.
+- Explore the [available SDK methods](/sdk-integration/mobile/ionic-lite/methods) for payment processing.
+- Customize the [SDK appearance and behavior](/sdk-integration/mobile/ionic-lite/customization) to match your app's design.
+

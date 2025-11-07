@@ -1,0 +1,158 @@
+---
+title: "Ionic Lite SDK - SDK Methods"
+og:description: "Reference for the methods available in Tonder's Ionic Lite SDK."
+---
+
+This page provides a reference for the core methods available in the Ionic Lite SDK.
+
+## Core Methods
+
+The Tonder Ionic Lite SDK (@tonder.io/ionic-lite-sdk) exposes the LiteCheckout class, which implements all the methods necessary for payment processing, card management, and configuration.
+
+## Method Details
+
+Each method in the Tonder Ionic Lite SDK serves a specific purpose in the payment integration workflow. The Lite SDK includes all core payment methods plus additional methods for card management. Below you'll find detailed information about each method, including their parameters, usage examples, and practical implementation guidance.
+
+<AccordionGroup>
+  <Accordion title="LiteCheckout Constructor">
+
+Creates a new instance of the LiteCheckout class with the necessary configuration for secure payment processing. This constructor establishes the connection with Tonder's services and configures the payment environment.
+
+## `LiteCheckout` Parameter Table
+
+| Parameter | Type | Description | Required |
+| :--- | :--- | :--- | :--- |
+| **`apiKey`** | `String` | Your Tonder API key for authentication. | **Yes** |
+| **`returnUrl`** | `String` | URL where the checkout form is mounted (used for 3DS redirect completion). | No |
+| **`mode`** | `String` | Operating environment mode. Options: 'product' or 'stage'. | No |
+
+Here's an example of how to initialize the LiteCheckout class:
+
+```javascript
+const liteCheckout = new LiteCheckout({
+  apiKey: "YOUR_API_KEY",
+  returnUrl: "YOUR_RETURN_URL",
+  mode: "stage"
+});
+```
+
+  </Accordion>
+
+  <Accordion title="configureCheckout(config)">
+
+Sets customer email and the secure token required for card management operations.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| config | Object | Configuration object with customer email and secure token |
+
+Here's an example:
+
+```javascript
+liteCheckout.configureCheckout({
+  customer: {
+    email: "example@email.com",
+    secureToken: "e89eb18.." // Required for card management features
+  }
+});
+```
+
+  </Accordion>
+
+  <Accordion title="payment(checkoutData)">
+
+Processes a payment transaction securely using the provided checkoutData collected from your custom UI.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| checkoutData | object | Customer, cart, and card information for the transaction |
+
+```javascript
+const response = await liteCheckout.payment({
+  customer: { firstName: "Juan", email: "juan.hernandez@mail.com" },
+  cart: { total: "399.00", items: [ /* ... */ ] },
+  currency: "MXN",
+  card: {
+    card_number: "4111111111111111",
+    cvv: "123",
+    expiration_month: "12",
+    expiration_year: "25",
+    cardholder_name: "John Doe"
+  }
+});
+```
+</Accordion>
+
+  <Accordion title="getCustomerCards()">
+
+Retrieves a list of saved cards for the configured customer.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters |
+
+```javascript
+const cards = await liteCheckout.getCustomerCards();
+console.log("Saved cards:", cards);
+```
+
+  </Accordion>
+
+  <Accordion title="saveCustomerCard(cardData)">
+
+Securely tokenizes and saves new card details for the customer.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| cardData | Object | Card information to be saved |
+
+```javascript
+const response = await liteCheckout.saveCustomerCard({
+  card_number: "4111111111111111",
+  cvv: "123",
+  expiration_month: "12",
+  expiration_year: "25",
+  cardholder_name: "John Doe"
+});
+```
+
+  </Accordion>
+
+  <Accordion title="removeCustomerCard(cardId)">
+
+Deletes a previously saved card using its unique ID.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| cardId | String | Unique identifier of the card to remove |
+
+```javascript
+await liteCheckout.removeCustomerCard("card_abc123");
+```
+
+  </Accordion>
+  
+  <Accordion title="verify3dsTransaction()">
+
+Verifies the status of a 3D Secure (3DS) transaction. This method should be called to handle the redirect return from a 3DS challenge.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| None | - | This method takes no parameters. |
+
+```javascript
+// The response status will be one of: ['Declined', 'Cancelled', 'Failed', 'Success', 'Pending', 'Authorized']
+const response = await liteCheckout.verify3dsTransaction();
+console.log("Verify 3ds response", response);
+```
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that you're familiar with the available methods in the Ionic Lite SDK, explore these guides to enhance your implementation:
+
+- Learn how to [make a payment](/sdk-integration/mobile/ionic-lite/make-a-payment) using the Ionic Lite SDK.
+- Learn how to [enroll payment methods](/sdk-integration/mobile/ionic-lite/enroll-payment-method) for returning customers.
+- Customize the [SDK appearance and behavior](/sdk-integration/mobile/ionic-lite/customization) to match your app's design.
+
