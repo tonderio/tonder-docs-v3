@@ -82,6 +82,16 @@
       "name": "Contact Us",
       "icon": "envelope",
       "url": "mailto:hello@tonder.io"
+    },
+    {
+      "anchor": "Tonder Examples",
+      "icon": "sparkles",
+      "pages": [
+        {
+          "title": "Live APM Demos",
+          "href": "https://main.d3ufdi32xd85gs.amplifyapp.com/liteSdk/payment-with-apm/examples"
+        }
+      ]
     }
   ],
   "navigation": [
@@ -163,6 +173,10 @@
     {
       "group": "SDKs",
       "pages": [
+        {
+          "title": "Tonder Examples",
+          "href": "https://main.d3ufdi32xd85gs.amplifyapp.com/liteSdk/payment-with-apm/examples"
+        },
         "integration/sdks/sdk-overview",
         {
           "group": "JS SDK",

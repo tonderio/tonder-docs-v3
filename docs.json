@@ -9,6 +9,18 @@
   },
   "favicon": "/favicon.png",
   "navigation": {
+    "anchors": [
+      {
+        "anchor": "Tonder Examples",
+        "icon": "sparkles",
+        "pages": [
+          {
+            "title": "Live APM Demos",
+            "href": "https://main.d3ufdi32xd85gs.amplifyapp.com/liteSdk/payment-with-apm/examples"
+          }
+        ]
+      }
+    ],
     "tabs": [
       {
         "tab": "Getting Started",
