@@ -9,18 +9,20 @@
   },
   "favicon": "/favicon.png",
   "navigation": {
-    "anchors": [
-      {
-        "anchor": "Tonder Examples",
-        "icon": "sparkles",
-        "pages": [
-          {
-            "title": "Live APM Demos",
-            "href": "https://main.d3ufdi32xd85gs.amplifyapp.com/liteSdk/payment-with-apm/examples"
-          }
-        ]
-      }
-    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "SDK Examples Portal",
+          "icon": "sparkles",
+          "href": "https://main.d3ufdi32xd85gs.amplifyapp.com/introduction"
+        },
+        {
+          "anchor": "GitHub",
+          "icon": "github",
+          "href": "https://github.com/tonderio/"
+        }
+      ]
+    },
     "tabs": [
       {
         "tab": "Getting Started",
