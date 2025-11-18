@@ -10,18 +10,7 @@
   "favicon": "/favicon.png",
   "navigation": {
     "global": {
-      "anchors": [
-        {
-          "anchor": "SDK Examples Portal",
-          "icon": "sparkles",
-          "href": "https://main.d3ufdi32xd85gs.amplifyapp.com/introduction"
-        },
-        {
-          "anchor": "GitHub",
-          "icon": "github",
-          "href": "https://github.com/tonderio/"
-        }
-      ]
+      "anchors": []
     },
     "tabs": [
       {
@@ -89,7 +78,8 @@
             "group": "SDK Overview",
             "pages": [
               "integration/sdks/sdk-overview",
-              "sdk-integration/start-using-tonder-sdkss"
+              "sdk-integration/start-using-tonder-sdkss",
+              "integration/sdks/sdk-examples-portal"
             ]
           },
           {
