@@ -9,6 +9,9 @@
   },
   "favicon": "/favicon.png",
   "navigation": {
+    "global": {
+      "anchors": []
+    },
     "tabs": [
       {
         "tab": "Getting Started",
@@ -75,7 +78,8 @@
             "group": "SDK Overview",
             "pages": [
               "integration/sdks/sdk-overview",
-              "sdk-integration/start-using-tonder-sdkss"
+              "sdk-integration/start-using-tonder-sdkss",
+              "integration/sdks/sdk-examples-portal"
             ]
           },
           {

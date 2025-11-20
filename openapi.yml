@@ -2215,10 +2215,6 @@ paths:
                     brand_color: "#1A2B3C"
                   theme:
                     shapes: "rounded"
-        '401':
-          description: Unauthorized - Invalid API key
-        '400':
-          description: Bad Request - Invalid configuration data
   "/checkout/v1/sessions":
     post:
       summary: Create a Payment Session
@@ -2290,12 +2286,6 @@ paths:
                     product_id: "prod-001"
                 transaction_status: "Pending"
                 provider: "tonder"
-        '400':
-          description: Bad Request - Invalid session data
-        '401':
-          description: Unauthorized - Invalid API key
-        '422':
-          description: Validation Error - Required fields missing or invalid
   "/checkout/v1/sessions/{id}":
     get:
       summary: Get a Session
@@ -2352,10 +2342,6 @@ paths:
                     product_id: "prod-001"
                 transaction_status: "Success"
                 provider: "tonder"
-        '401':
-          description: Unauthorized - Invalid API key
-        '404':
-          description: Session not found
   "/checkout/v1/payments/{payment_id}":
     get:
       summary: Get a Payment Transaction
@@ -2396,10 +2382,6 @@ paths:
                 customer:
                   name: "John Doe"
                   email: "john.doe@example.com"
-        '401':
-          description: Unauthorized - Invalid API key
-        '404':
-          description: Payment transaction not found
 components:
   schemas:
     GeneralError:
