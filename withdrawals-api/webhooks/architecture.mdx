@@ -1,0 +1,153 @@
+---
+title: "System Architecture"
+sidebarTitle: "Architecture"
+'og:description': "Understanding the Withdrawals API system architecture and components"
+---
+
+This document explains the system architecture behind the Tonder Withdrawals API, including the components involved in processing withdrawal requests.
+
+## Architecture Overview
+
+The withdrawal request is handled by a layered system designed for reliability, security, and compliance. The system processes withdrawals through multiple stages, each handled by specialised components.
+
+## Core Components
+
+### Withdrawal Processors
+
+The withdrawal processors handle individual withdrawal requests, including:
+
+- Request validation and parsing
+- Business rule enforcement
+- Status management and transitions
+- Integration with downstream systems
+
+### Currency Converter
+
+The currency converter manages currency exchange when withdrawals involve different currencies than the account balance. It ensures accurate conversion rates and handles currency-specific formatting requirements.
+
+### Compliance Check
+
+The compliance check component validates transactions against regulatory requirements:
+
+- Fraud detection and prevention
+- Regulatory compliance validation
+- KYC (Know Your Customer) checks
+- AML (Anti-Money Laundering) screening
+- Geographic and transaction limit validation
+
+### Fee Calculator
+
+The fee calculator determines fees based on the selected fee model:
+
+- Calculates fees for user-paid (`00`) and merchant-paid (`01`) models
+- Applies fixed fees and tax calculations
+- Handles currency-specific fee structures
+
+### Payment Router
+
+The payment router directs transactions to appropriate payment methods:
+
+- **SPEI**: Routes to Mexican banking network for SPEI transfers
+- **Card Networks**: Routes to card network providers for debit card deposits
+- **Wallet Providers**: Routes to digital wallet providers when applicable
+
+The router ensures optimal routing based on:
+- Transfer method specified
+- Provider availability and capacity
+- Cost optimisation
+- Processing time requirements
+
+## Support Systems
+
+### Balance Checker
+
+The balance checker verifies available funds before processing withdrawals:
+
+- Checks account balances in real-time
+- Validates available funds vs. withdrawal amount
+- Handles currency conversions for balance checks
+- Prevents overdrafts and insufficient fund scenarios
+
+### Beneficiary Database
+
+The beneficiary database validates recipient information:
+
+- Validates account numbers (CLABE for SPEI, card numbers for DEBIT_CARD)
+- Verifies beneficiary names and identification
+- Checks institution codes and routing information
+- Maintains beneficiary records for compliance
+
+### Reporting Engine
+
+The reporting engine tracks and logs transactions:
+
+- Maintains complete transaction audit trails
+- Generates status change history
+- Logs all processing steps for debugging
+- Provides transaction reporting and analytics
+
+### Webhook Service
+
+The webhook service delivers real-time notifications:
+
+- Generates webhook payloads with complete withdrawal information
+- Delivers webhooks to configured merchant endpoints
+- Handles retry logic for failed deliveries
+- Maintains delivery status and audit trails
+
+### STP System
+
+The STP (Straight Through Processing) system processes Mexican bank transfers:
+
+- Handles SPEI transfer processing
+- Manages interbank communication
+- Processes transfer confirmations
+- Handles transfer failures and retries
+
+## Processing Flow
+
+1. **Request Reception**: Withdrawal request received via API
+2. **Validation**: Withdrawal Processors validate the request
+3. **Balance Check**: Balance Checker verifies sufficient funds
+4. **Compliance**: Compliance Check performs security and regulatory checks
+5. **Currency Conversion**: Currency Converter handles any necessary conversions
+6. **Routing**: Payment Router selects and routes to appropriate provider
+7. **Status Updates**: Webhook Service sends status notifications
+8. **Completion**: Final status update sent when withdrawal completes
+
+## Integration Points
+
+The system integrates with:
+
+- **Banking Networks**: For SPEI transfers and bank account validation
+- **Card Networks**: For debit card instant deposits
+- **Payment Providers**: External payment processing services
+- **Compliance Services**: Third-party fraud and compliance checking
+- **Merchant Systems**: Via webhooks for status notifications
+
+## Reliability Features
+
+The architecture includes several reliability features:
+
+- **Redundancy**: Multiple instances of each component for high availability
+- **Queue Management**: Request queuing for handling peak loads
+- **Retry Logic**: Automatic retries for transient failures
+- **Audit Trails**: Complete logging of all processing steps
+- **Status Tracking**: Real-time status updates throughout the process
+
+## Security Features
+
+Security is built into every layer:
+
+- **Authentication**: Token-based API authentication
+- **Encryption**: HTTPS for all communications
+- **Data Validation**: Input validation at every stage
+- **Fraud Prevention**: Multi-layer fraud detection
+- **Compliance**: Regulatory compliance built into the workflow
+
+## Next Steps
+
+- Learn about [webhook payloads](/withdrawals-api/webhooks/webhook-payloads) to understand status notifications
+- Review [withdrawal workflows](/withdrawals-api/guides/workflow-statuses) to see how components interact
+- Check [testing requirements](/withdrawals-api/reference/testing) to validate your integration
+

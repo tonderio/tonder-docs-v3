@@ -1,0 +1,55 @@
+---
+title: "Overview"
+sidebarTitle: "Overview"
+'og:description': "Tonder Withdrawals API: Definitive source document for developers"
+---
+
+This page is the consolidated Single Source of Truth for developers integrating the Tonder Withdrawals API, providing all necessary details, constraints, and process flows.
+
+<Note>
+**Authentication Required**
+
+Every single request to the Withdrawals API requires authentication using a token in the `Authorization` header. This applies to all API requests, Postman requests, and testing scenarios.
+
+**Include this header in every request:**
+```
+Authorization: Token YOUR_API_KEY
+```
+Replace `YOUR_API_KEY` with the token provided in the Developers section of the Tonder platform.
+
+Requests without proper authentication will return a `401 Unauthorized` error.
+</Note>
+
+## What is the Withdrawals API?
+
+The Tonder Withdrawals API enables you to send payouts and withdrawals to beneficiaries, supporting multiple transfer methods including SPEI bank transfers and debit card deposits. The API provides a unified interface for processing withdrawals with real-time status updates via webhooks.
+
+## Key Features
+
+- **Multiple Transfer Methods**: Support for SPEI bank transfers and debit card instant deposits
+- **Real-time Status Updates**: Webhook notifications for withdrawal status changes
+- **Comprehensive Audit Trail**: Complete status change history for each withdrawal
+- **Secure Authentication**: Token-based authentication with HTTPS encryption
+- **Flexible Fee Models**: Support for both user-paid and merchant-paid fee structures
+
+## Quick Start
+
+1. **Set up your environment**: Configure your API credentials for [Stage or Production environments](/withdrawals-api/environments)
+2. **Get your API token**: Retrieve your API token from the **Developers section** in the Tonder platform
+3. **Authenticate your requests**: Learn about [authentication requirements](/withdrawals-api/integration-security) - **every single request** requires the `Authorization` header
+4. **Create your first withdrawal**: Follow the [create withdrawal guide](/withdrawals-api/guides/create-withdrawal)
+5. **Handle webhooks**: Set up [webhook listeners](/withdrawals-api/webhooks/webhook-payloads) to receive status updates
+
+<Warning>
+**Authentication Required**
+
+All API requests, including Postman requests, require the `Authorization: Token YOUR_API_KEY` header. Get your token from the Developers section of the Tonder platform.
+</Warning>
+
+## Next Steps
+
+- Review [Integration & Security Essentials](/withdrawals-api/integration-security) to understand authentication and data requirements
+- Learn about [withdrawal workflows and statuses](/withdrawals-api/guides/workflow-statuses) to understand the complete process
+- Explore the [system architecture](/withdrawals-api/webhooks/architecture) to understand how withdrawals are processed
+- Check [testing requirements](/withdrawals-api/reference/testing) before going live
+

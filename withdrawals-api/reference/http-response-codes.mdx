@@ -1,0 +1,238 @@
+---
+title: "HTTP Response Codes"
+sidebarTitle: "HTTP Response Codes"
+'og:description': "HTTP response codes and error handling for the Withdrawals API"
+---
+
+This reference explains the HTTP response codes returned by the Tonder Withdrawals API and how to handle them.
+
+## Response Code Overview
+
+The API uses standard HTTP status codes to indicate the result of each request. Understanding these codes is essential for proper error handling and user experience.
+
+## Success Codes
+
+### 200 OK
+
+**Meaning**: Request completed successfully.
+
+**When it occurs**:
+- Successful withdrawal creation
+- Successful status retrieval
+- Successful withdrawal updates
+
+**Response body**: Contains the withdrawal object with current status and details.
+
+**Example**:
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440001",
+  "user_id": 12345,
+  "amount": 1000.00,
+  "currency": "MXN",
+  "status": "PENDING",
+  ...
+}
+```
+
+**Action**: Process the response data normally.
+
+## Client Error Codes (4xx)
+
+### 400 Bad Request
+
+**Meaning**: Invalid request parameters or data.
+
+**When it occurs**:
+- Missing required parameters
+- Invalid parameter values
+- Invalid data format
+- Validation errors
+
+**Response body**: Contains error details describing what was wrong.
+
+**Example**:
+```json
+{
+  "error": "Bad Request",
+  "message": "Invalid beneficiary_account format. Expected 18-digit CLABE for SPEI transfers.",
+  "field": "beneficiary_account"
+}
+```
+
+**Action**: 
+- Review the error message
+- Correct the invalid parameters
+- Resubmit the request with valid data
+
+### 401 Unauthorized
+
+**Meaning**: Missing or invalid authentication token.
+
+**When it occurs**:
+- Missing `Authorization` header
+- Invalid API token
+- Expired or revoked token
+- Token format incorrect
+
+**Response body**: Generic error message (does not reveal token validity).
+
+**Example**:
+```json
+{
+  "error": "Unauthorized",
+  "message": "Authentication required"
+}
+```
+
+**Action**:
+- Verify the `Authorization` header is present
+- Check that the token format is correct: `Token YOUR_API_KEY`
+- Verify you're using the correct API key for the environment
+- Contact support if the token should be valid
+
+### 404 Not Found
+
+**Meaning**: Withdrawal ID not found.
+
+**When it occurs**:
+- Querying a withdrawal that doesn't exist
+- Invalid withdrawal ID format
+- Withdrawal belongs to a different business
+
+**Response body**: Error message indicating the resource was not found.
+
+**Example**:
+```json
+{
+  "error": "Not Found",
+  "message": "Withdrawal with ID '550e8400-e29b-41d4-a716-446655440001' not found"
+}
+```
+
+**Action**:
+- Verify the withdrawal ID is correct
+- Check that you're querying the correct environment
+- Ensure the withdrawal belongs to your business
+
+## Server Error Codes (5xx)
+
+### 500 Internal Server Error
+
+**Meaning**: Server-side error occurred.
+
+**When it occurs**:
+- Unexpected server errors
+- Temporary system issues
+- Database or service unavailability
+
+**Response body**: Generic error message (may include error ID for support).
+
+**Example**:
+```json
+{
+  "error": "Internal Server Error",
+  "message": "An unexpected error occurred. Please try again later.",
+  "error_id": "ERR-20240726-123456"
+}
+```
+
+**Action**:
+- Retry the request after a short delay
+- If the error persists, check system status
+- Contact support with the error ID if provided
+- Implement exponential backoff for retries
+
+## Error Response Structure
+
+All error responses follow a consistent structure:
+
+```json
+{
+  "error": "Error Type",
+  "message": "Human-readable error message",
+  "field": "field_name (if applicable)",
+  "error_id": "unique_error_id (for 5xx errors)"
+}
+```
+
+## Handling Errors
+
+### Best Practices
+
+1. **Always check status codes**: Don't assume success based on response body alone
+2. **Parse error messages**: Extract and display user-friendly error messages
+3. **Log errors**: Log all errors with full context for debugging
+4. **Implement retries**: Retry transient errors (5xx) with exponential backoff
+5. **Handle 4xx errors**: Don't retry client errors (4xx) without fixing the issue
+6. **User feedback**: Provide clear feedback to users about what went wrong
+
+### Retry Logic
+
+**Do retry**:
+- `500 Internal Server Error` (with exponential backoff)
+- Network timeouts
+- Connection errors
+
+**Don't retry**:
+- `400 Bad Request` (fix the request first)
+- `401 Unauthorized` (fix authentication first)
+- `404 Not Found` (verify the resource exists)
+
+### Example Error Handling
+
+```python
+import requests
+import time
+
+def create_withdrawal(data, max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(
+                "https://stage.tonder.io/api/v1/withdrawals/",
+                headers={"Authorization": "Token YOUR_API_KEY"},
+                json=data
+            )
+            
+            if response.status_code == 200:
+                return response.json()
+            elif response.status_code == 400:
+                # Don't retry - fix the request
+                error = response.json()
+                raise ValueError(f"Bad Request: {error['message']}")
+            elif response.status_code == 401:
+                # Don't retry - fix authentication
+                raise ValueError("Authentication failed")
+            elif response.status_code >= 500:
+                # Retry server errors
+                if attempt < max_retries - 1:
+                    time.sleep(2 ** attempt)  # Exponential backoff
+                    continue
+                else:
+                    raise Exception("Server error after retries")
+            else:
+                raise Exception(f"Unexpected status: {response.status_code}")
+                
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                time.sleep(2 ** attempt)
+                continue
+            raise
+```
+
+## Status Code Summary
+
+| Code | Meaning | Retry? | Action |
+|------|---------|--------|--------|
+| `200` | Success | No | Process response |
+| `400` | Bad Request | No | Fix request and resubmit |
+| `401` | Unauthorized | No | Fix authentication |
+| `404` | Not Found | No | Verify resource exists |
+| `500` | Internal Server Error | Yes | Retry with backoff |
+
+## Next Steps
+
+- Review [status codes reference](/withdrawals-api/reference/status-codes) for withdrawal statuses
+- Learn about [creating withdrawals](/withdrawals-api/guides/create-withdrawal) to see responses in context
+- Check [testing requirements](/withdrawals-api/reference/testing) to test error scenarios
+

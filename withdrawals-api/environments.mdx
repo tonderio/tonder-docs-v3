@@ -1,0 +1,92 @@
+---
+title: "Environments"
+sidebarTitle: "Environments"
+'og:description': "Stage and Production environment configuration for the Withdrawals API"
+---
+
+Tonder provides two distinct environments for the Withdrawals API: Stage for development and testing, and Production for live transactions.
+
+## Environment Overview
+
+| Environment | Base URL | Purpose |
+|-------------|----------|---------|
+| **Stage** | `https://stage.tonder.io/api/v1` | Development, testing, and integration validation |
+| **Production** | `https://prod.tonder.io/api/v1` | Live withdrawal processing |
+
+## Stage Environment
+
+The Stage environment is designed for development and testing purposes. Use this environment to:
+
+- Test your integration before going live
+- Validate withdrawal request formats
+- Test webhook handling
+- Verify error scenarios
+- Simulate different withdrawal statuses
+
+<Info>
+**Test Institution Code**
+
+When testing in the Stage environment, use institution code **97846** for the `beneficiary_institution` field. This is a special test code that simulates bank responses without processing actual transfers.
+</Info>
+
+## Production Environment
+
+The Production environment processes real withdrawals and transfers funds to actual beneficiary accounts. Only use this environment when:
+
+- Your integration is fully tested and validated
+- You have completed all testing requirements
+- You're ready to process live transactions
+- You have proper error handling and monitoring in place
+
+<Warning>
+**Production Safety**
+
+- Never use production API keys in client-side code
+- Always test thoroughly in Stage before using Production
+- Monitor your first production withdrawals closely
+- Set up proper alerting for production transactions
+</Warning>
+
+## API Credentials
+
+Each environment requires separate API credentials:
+
+- **Stage Credentials**: Available in the **Developers section** of the Tonder Staging Dashboard
+- **Production Credentials**: Available in the **Developers section** of the Tonder Production Dashboard
+
+<Warning>
+**Authentication Required for All Requests**
+
+**Every single request** to the Withdrawals API requires authentication using the `Authorization` header:
+
+```http
+Authorization: Token YOUR_API_KEY
+```
+
+This applies to:
+- All API requests (cURL, HTTP clients, SDKs)
+- All Postman requests
+- All testing requests
+
+Get your API token from the **Developers section** in the Tonder platform. See [Authentication requirements](/withdrawals-api/integration-security) for detailed instructions.
+</Warning>
+
+<Note>
+API keys are environment-specific. Using Stage keys with Production URLs (or vice-versa) will result in authentication errors.
+</Note>
+
+## Environment Switching
+
+When switching between environments, ensure you:
+
+1. Update the base URL in your API client
+2. Use the correct API credentials for that environment
+3. Update webhook endpoints if configured
+4. Verify the environment matches your testing or production needs
+
+## Next Steps
+
+- Review [integration and security essentials](/withdrawals-api/integration-security) for authentication details
+- Check [testing requirements](/withdrawals-api/reference/testing) for Stage environment testing guidelines
+- Learn how to [create withdrawals](/withdrawals-api/guides/create-withdrawal) in your chosen environment
+

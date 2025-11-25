@@ -1,0 +1,364 @@
+---
+title: "Create a Withdrawal"
+sidebarTitle: "Create a Withdrawal"
+'og:description': "How to create a withdrawal request using the Tonder Withdrawals API"
+---
+
+This guide explains how to create a withdrawal request using the Tonder Withdrawals API endpoint `POST /withdrawals/`.
+
+<Warning>
+**Authentication Required**
+
+**Every request** to this endpoint requires authentication. You must include the `Authorization` header with your API token. This applies to all API requests, Postman requests, and testing. See [Authentication requirements](/withdrawals-api/integration-security) for details.
+</Warning>
+
+## Endpoint
+
+```http
+POST /withdrawals/
+```
+
+## Required Parameters
+
+The following table lists all mandatory parameters for creating a new withdrawal request:
+
+| Parameter | Type | Required | Description | Constraints & Values |
+|-----------|------|----------|-------------|---------------------|
+| `user_id` | integer | Yes | User ID in the Tonder system | Get from [Get User ID endpoint](/withdrawals-api/guides/get-user-id) |
+| `amount` | decimal | Yes | Amount to withdraw | - |
+| `currency` | string | Yes | Currency code | `"MXN"` for SPEI transfers |
+| `transfer_method` | string | Yes | Transfer method | Values: `"SPEI"` or `"DEBIT_CARD"` |
+| `beneficiary_account` | string | Yes | Account number of the beneficiary | 18-digit CLABE for SPEI, 16-digit card for DEBIT_CARD |
+| `beneficiary_name` | string | Yes | Name of the beneficiary | - |
+| `beneficiary_rfc` | string | Conditional | RFC identification | Required for SPEI. For DEBIT_CARD, use `beneficiary_rfc`, `beneficiary_curp`, or `"ND"` |
+| `beneficiary_curp` | string | Conditional | CURP identification | Alternative to `beneficiary_rfc` for DEBIT_CARD only |
+| `beneficiary_institution` | string | Yes | Institution code | **CRITICAL**: Use `97846` for testing. See [Institution Codes](/direct-integration/reference/institution-codes) for production |
+| `interbank_code` | string | Yes | Originator account (CLABE) | Required for SPEI transfers |
+| `fee_model` | string | Yes | Fee model code | Values: `00` (User pays fees) or `01` (Merchant pays fees) |
+| `metadata` | object | Yes | Additional required information | Must include `latitude` and `longitude` |
+
+## Optional Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `email` | string | No | Contact email for notifications |
+| `description` | string | No | Transaction description |
+
+<Warning>
+**Testing Institution Code**
+
+When testing in the Stage environment, you must use institution code **97846** for the `beneficiary_institution` field. This is a special test code that simulates bank responses.
+</Warning>
+
+## Request Examples
+
+### SPEI Transfer
+
+```json
+{
+  "user_id": 27055,
+  "amount": 15,
+  "currency": "MXN",
+  "transfer_method": "SPEI",
+  "beneficiary_account": "846180000400000001",
+  "beneficiary_name": "Jhon Doe",
+  "beneficiary_rfc": "ND",
+  "beneficiary_institution": "97846",
+  "interbank_code": "646180567300000006",
+  "email": "fabio@tonder.io",
+  "description": "test",
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "operation_date": "2024-01-15",
+    "customer_email": "fabio@tonder.io",
+    "business_user": "admin_user_001",
+    "customer_id": "CUST_12345",
+    "order_id": "ORDER_ABC_789"
+  },
+  "fee_model": "01"
+}
+```
+
+### Debit Card Transfer with RFC
+
+```json
+{
+  "user_id": 1,
+  "amount": 100,
+  "currency": "MXN",
+  "transfer_method": "DEBIT_CARD",
+  "beneficiary_account": "4111111111111111",
+  "beneficiary_name": "Fabio",
+  "beneficiary_rfc": "FABC800101ABC",
+  "beneficiary_institution": "97846",
+  "interbank_code": "646180567300000006",
+  "email": "fabio@tonder.io",
+  "description": "test",
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "operation_date": "2024-01-15",
+    "customer_email": "fabio@tonder.io",
+    "business_user": "admin_user_001",
+    "customer_id": "CUST_12345",
+    "order_id": "ORDER_ABC_789"
+  },
+  "fee_model": "01"
+}
+```
+
+### Debit Card Transfer with CURP
+
+```json
+{
+  "user_id": 1,
+  "amount": 100,
+  "currency": "MXN",
+  "transfer_method": "DEBIT_CARD",
+  "beneficiary_account": "4111111111111111",
+  "beneficiary_name": "Fabio",
+  "beneficiary_curp": "FABC800101HDFBRD09",
+  "beneficiary_institution": "97846",
+  "interbank_code": "646180567300000006",
+  "email": "fabio@tonder.io",
+  "description": "test",
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "operation_date": "2024-01-15",
+    "customer_email": "fabio@tonder.io",
+    "business_user": "admin_user_001",
+    "customer_id": "CUST_12345",
+    "order_id": "ORDER_ABC_789"
+  },
+  "fee_model": "01"
+}
+```
+
+### Debit Card Transfer without Document (ND)
+
+```json
+{
+  "user_id": 1,
+  "amount": 100,
+  "currency": "MXN",
+  "transfer_method": "DEBIT_CARD",
+  "beneficiary_account": "4111111111111111",
+  "beneficiary_name": "Fabio",
+  "beneficiary_rfc": "ND",
+  "beneficiary_institution": "97846",
+  "interbank_code": "646180567300000006",
+  "email": "fabio@tonder.io",
+  "description": "test",
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "operation_date": "2024-01-15",
+    "customer_email": "fabio@tonder.io",
+    "business_user": "admin_user_001",
+    "customer_id": "CUST_12345",
+    "order_id": "ORDER_ABC_789"
+  },
+  "fee_model": "01"
+}
+```
+
+<Info>
+**DEBIT_CARD Identification Options**
+
+For DEBIT_CARD transfers, you can use:
+- `beneficiary_rfc` with a valid RFC
+- `beneficiary_curp` with a valid CURP
+- `beneficiary_rfc` with value `"ND"` (No Disponible) if no document is available
+
+For SPEI transfers, `beneficiary_rfc` is required (can be `"ND"`).
+</Info>
+
+## cURL Example
+
+```bash
+curl -X POST https://stage.tonder.io/api/v1/withdrawals/ \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 27055,
+    "amount": 15,
+    "currency": "MXN",
+    "transfer_method": "SPEI",
+    "beneficiary_account": "846180000400000001",
+    "beneficiary_name": "Jhon Doe",
+    "beneficiary_rfc": "ND",
+    "beneficiary_institution": "97846",
+    "interbank_code": "646180567300000006",
+    "email": "fabio@tonder.io",
+    "description": "test",
+    "metadata": {
+      "latitude": "22.8870221",
+      "longitude": "-109.911775",
+      "operation_date": "2024-01-15",
+      "customer_email": "fabio@tonder.io",
+      "business_user": "admin_user_001",
+      "customer_id": "CUST_12345",
+      "order_id": "ORDER_ABC_789"
+    },
+    "fee_model": "01"
+  }'
+```
+
+<Note>
+**Postman Configuration**
+
+When testing in Postman, ensure you include the `Authorization` header:
+
+1. **Method**: `POST`
+2. **URL**: `https://stage.tonder.io/api/v1/withdrawals/`
+3. **Headers Tab**:
+   - `Authorization`: `Token YOUR_API_KEY` (replace with your actual token)
+   - `Content-Type`: `application/json`
+4. **Body Tab**: Select `raw` and `JSON`, then paste your request JSON
+
+**Important**: Replace `YOUR_API_KEY` with the token provided in the **Developers section** of the Tonder platform. Every request requires this authentication header.
+</Note>
+
+## Response
+
+Upon successful creation, the API returns a withdrawal object with a `PENDING` status and a unique withdrawal ID:
+
+### SPEI Response Example
+
+```json
+{
+  "id": "40f19a6b-4ce4-424e-92fe-1b564c07dbd7",
+  "user_id": "1",
+  "business_id": "21",
+  "currency": "MXN",
+  "amount": 100.0,
+  "status": "PENDING",
+  "account_data": {
+    "cuenta_ordenante": "646180567300000006",
+    "nombre_ordenante": "TRES_COMAS",
+    "rfc_curp_ordenante": "ND",
+    "cuenta_beneficiario": "846180000400000001",
+    "nombre_beneficiario": "Fabio",
+    "rfc_curp_beneficiario": "ND",
+    "institucion_contraparte": "97846",
+    "tipo_cuenta_beneficiario": 40,
+    "email": "fabio@tonder.io",
+    "concepto_pago": "test"
+  },
+  "status_changes": [],
+  "action": null,
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "operation_date": "2024-01-15",
+    "customer_email": "fabio@tonder.io",
+    "business_user": "admin_user_001",
+    "customer_id": "CUST_12345",
+    "order_id": "ORDER_ABC_789"
+  },
+  "created_at": "2025-10-02T01:09:37.371365Z",
+  "modified_at": "2025-10-02T01:09:37.371365Z",
+  "provider_reference": "PENDING",
+  "transfer_method": "SPEI",
+  "fixed_fee": "3.5",
+  "tax": "16.0",
+  "fee_amount": null
+}
+```
+
+### DEBIT_CARD Response Example
+
+```json
+{
+  "id": "d4b294ba-638e-408b-bc80-c9c7b7023e8c",
+  "user_id": "1",
+  "business_id": "21",
+  "currency": "MXN",
+  "amount": 100.0,
+  "status": "PENDING",
+  "account_data": {
+    "cuenta_ordenante": "646180567300000006",
+    "nombre_ordenante": "TRES_COMAS",
+    "rfc_curp_ordenante": "ND",
+    "cuenta_beneficiario": "4111111111111111",
+    "nombre_beneficiario": "Fabio",
+    "rfc_curp_beneficiario": "ND",
+    "institucion_contraparte": "97846",
+    "tipo_cuenta_beneficiario": 3,
+    "email": "fabio@tonder.io",
+    "concepto_pago": "test"
+  },
+  "status_changes": [],
+  "action": null,
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "operation_date": "2024-01-15",
+    "customer_email": "fabio@tonder.io",
+    "business_user": "admin_user_001",
+    "customer_id": "CUST_12345",
+    "order_id": "ORDER_ABC_789"
+  },
+  "created_at": "2025-10-02T01:32:14.089682Z",
+  "modified_at": "2025-10-02T01:32:14.089682Z",
+  "provider_reference": "PENDING",
+  "transfer_method": "DEBIT_CARD",
+  "fixed_fee": "3.5",
+  "tax": "16.0",
+  "fee_amount": null
+}
+```
+
+<Info>
+**Save the Withdrawal ID**
+
+Always save the `id` field from the response. You'll need it to track the withdrawal status and receive webhook notifications.
+</Info>
+
+## Parameter Details
+
+### Transfer Methods
+
+- **SPEI**: Bank transfers processed same business day during banking hours. Requires 18-digit CLABE.
+- **DEBIT_CARD**: Instant deposits available within 5-15 minutes, 24/7. Requires 16-digit card number.
+
+### Fee Models
+
+- **`00`**: User pays fees - fees are deducted from the withdrawal amount
+- **`01`**: Merchant pays fees - fees are charged separately to the merchant
+
+### Metadata Requirements
+
+The `metadata` object must include:
+- `latitude`: Geographic latitude (string or decimal)
+- `longitude`: Geographic longitude (string or decimal)
+
+Optional metadata fields you can include:
+- `operation_date`: Date of the operation (format: "YYYY-MM-DD")
+- `customer_email`: Customer email address
+- `business_user`: Business user identifier
+- `customer_id`: Your internal customer ID
+- `order_id`: Your internal order ID
+
+These fields are useful for tracking and reporting purposes.
+
+## Institution Codes
+
+For production withdrawals, you need to use valid institution codes. See the [Institution Codes Reference](/direct-integration/reference/institution-codes) for the complete list of Mexican financial institutions.
+
+<Warning>
+**Testing vs Production**
+
+- **Testing**: Always use institution code `97846` in the Stage environment
+- **Production**: Use real institution codes from the [Institution Codes Reference](/direct-integration/reference/institution-codes)
+</Warning>
+
+## Next Steps
+
+- Learn about [withdrawal workflows and statuses](/withdrawals-api/guides/workflow-statuses) to understand what happens after creation
+- Set up [webhook listeners](/withdrawals-api/webhooks/webhook-payloads) to receive real-time status updates
+- Review [HTTP response codes](/withdrawals-api/reference/http-response-codes) to handle errors properly
+- Check [institution codes](/direct-integration/reference/institution-codes) for production use
+

@@ -381,6 +381,60 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Withdrawals",
+        "dropdowns": [
+          {
+            "dropdown": "Documentation",
+            "icon": "book-open",
+            "groups": [
+              {
+                "group": "Introduction",
+                "pages": [
+                  "withdrawals-api/overview",
+                  "withdrawals-api/integration-security",
+                  "withdrawals-api/environments"
+                ]
+              },
+              {
+                "group": "Guides",
+                "pages": [
+                  "withdrawals-api/guides/get-user-id",
+                  "withdrawals-api/guides/create-withdrawal",
+                  "withdrawals-api/guides/workflow-statuses"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "withdrawals-api/webhooks/architecture",
+                  "withdrawals-api/webhooks/webhook-payloads"
+                ]
+              },
+              {
+                "group": "Reference",
+                "pages": [
+                  "withdrawals-api/reference/status-codes",
+                  "withdrawals-api/reference/http-response-codes",
+                  "withdrawals-api/reference/testing"
+                ]
+              }
+            ]
+          },
+          {
+            "dropdown": "Withdrawals API",
+            "icon": "square-terminal",
+            "groups": [
+              {
+                "group": "Withdrawals API",
+                "pages": [
+                  "withdrawals-api/api/create-withdrawal"
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
   },

@@ -1,0 +1,89 @@
+---
+title: "Get User ID"
+sidebarTitle: "Get User ID"
+'og:description': "How to get or create a user ID in the Tonder system"
+---
+
+Before creating a withdrawal, you need a `user_id` in the Tonder system. This endpoint allows you to get or create a user ID.
+
+<Warning>
+**Authentication Required**
+
+This endpoint requires authentication. Include the `Authorization` header with your API token in every request. See [Authentication requirements](/withdrawals-api/integration-security) for details.
+</Warning>
+
+## Endpoint
+
+```http
+POST /customer/
+```
+
+## Request Body
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `email` | string | Yes | Customer email address |
+| `first_name` | string | Yes | Customer first name |
+| `last_name` | string | Yes | Customer last name |
+| `phone` | string | Yes | Customer phone number |
+
+## Request Example
+
+```json
+{
+  "email": "testidcustomer@testuser.com",
+  "first_name": "Paco",
+  "last_name": "Fernandez",
+  "phone": "8161234567"
+}
+```
+
+## Response
+
+The API returns the user information including the `id` and `auth_token`:
+
+```json
+{
+  "id": 6165,
+  "email": "testidcustomer@testuser.com",
+  "auth_token": "fa2a7cbcbbcb6d00e745651c6e21fd6cc5c6a26b",
+  "first_name": "Paco",
+  "last_name": "Fernandez"
+}
+```
+
+<Info>
+**Save the User ID**
+
+Save the `id` field from the response. You'll need this `user_id` when creating withdrawal requests.
+</Info>
+
+## cURL Example
+
+```bash
+curl -X POST https://stage.tonder.io/api/v1/customer/ \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "testidcustomer@testuser.com",
+    "first_name": "Paco",
+    "last_name": "Fernandez",
+    "phone": "8161234567"
+  }'
+```
+
+<Note>
+**Postman Users**
+
+In Postman, add the `Authorization` header manually:
+- **Key**: `Authorization`
+- **Value**: `Token YOUR_API_KEY` (replace with your actual token from the Developers section)
+
+Replace `YOUR_API_KEY` with the token provided in the Developers section of the Tonder platform.
+</Note>
+
+## Next Steps
+
+- Use the returned `id` as the `user_id` when [creating a withdrawal](/withdrawals-api/guides/create-withdrawal)
+- Learn about [authentication requirements](/withdrawals-api/integration-security)
+
