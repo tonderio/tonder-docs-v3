@@ -6,6 +6,12 @@ sidebarTitle: "Create a Withdrawal"
 
 This guide explains how to create a withdrawal request using the Tonder Withdrawals API endpoint `POST /withdrawals/`.
 
+<Warning>
+**Authentication Required**
+
+**Every request** to this endpoint requires authentication. You must include the `Authorization` header with your API token. This applies to all API requests, Postman requests, and testing. See [Authentication requirements](/withdrawals-api/integration-security) for details.
+</Warning>
+
 ## Endpoint
 
 ```http
@@ -199,6 +205,21 @@ curl -X POST https://stage.tonder.io/api/v1/withdrawals/ \
     "fee_model": "01"
   }'
 ```
+
+<Note>
+**Postman Configuration**
+
+When testing in Postman, ensure you include the `Authorization` header:
+
+1. **Method**: `POST`
+2. **URL**: `https://stage.tonder.io/api/v1/withdrawals/`
+3. **Headers Tab**:
+   - `Authorization`: `Token YOUR_API_KEY` (replace with your actual token)
+   - `Content-Type`: `application/json`
+4. **Body Tab**: Select `raw` and `JSON`, then paste your request JSON
+
+**Important**: Replace `YOUR_API_KEY` with the token provided in the **Developers section** of the Tonder platform. Every request requires this authentication header.
+</Note>
 
 ## Response
 

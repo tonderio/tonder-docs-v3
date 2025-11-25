@@ -4,9 +4,18 @@ openapi: "POST /withdrawals/"
 ---
 
 <Warning>
+**Authentication Required for All Requests**
+
+**Every single request** to this endpoint requires authentication. The `Authorization` header must be included in:
+- All API requests (cURL, HTTP clients, SDKs)
+- All Postman requests
+- All testing requests
+
 The Authorization header must be in the following format:
 
 `Authorization: Token <YOUR_API_KEY>`
+
+Replace `<YOUR_API_KEY>` with the token provided in the **Developers section** of the Tonder platform. See [Authentication requirements](/withdrawals-api/integration-security) for detailed instructions.
 </Warning>
 
 Create a new withdrawal request to send funds to a beneficiary. This endpoint supports both SPEI bank transfers and debit card instant deposits.

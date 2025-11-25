@@ -51,8 +51,25 @@ The Production environment processes real withdrawals and transfers funds to act
 
 Each environment requires separate API credentials:
 
-- **Stage Credentials**: Available in the developer section of the Tonder Staging Dashboard
-- **Production Credentials**: Available in the developer section of the Tonder Production Dashboard
+- **Stage Credentials**: Available in the **Developers section** of the Tonder Staging Dashboard
+- **Production Credentials**: Available in the **Developers section** of the Tonder Production Dashboard
+
+<Warning>
+**Authentication Required for All Requests**
+
+**Every single request** to the Withdrawals API requires authentication using the `Authorization` header:
+
+```http
+Authorization: Token YOUR_API_KEY
+```
+
+This applies to:
+- All API requests (cURL, HTTP clients, SDKs)
+- All Postman requests
+- All testing requests
+
+Get your API token from the **Developers section** in the Tonder platform. See [Authentication requirements](/withdrawals-api/integration-security) for detailed instructions.
+</Warning>
 
 <Note>
 API keys are environment-specific. Using Stage keys with Production URLs (or vice-versa) will result in authentication errors.

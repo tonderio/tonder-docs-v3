@@ -6,6 +6,12 @@ sidebarTitle: "Testing"
 
 This guide covers testing requirements, test data, and best practices for validating your Withdrawals API integration.
 
+<Warning>
+**Authentication Required**
+
+**Every single request** during testing requires authentication. Include the `Authorization: Token YOUR_API_KEY` header in all requests, including Postman requests. See [Authentication requirements](/withdrawals-api/integration-security) for details.
+</Warning>
+
 ## Testing Environment
 
 ### Stage Environment
@@ -41,6 +47,13 @@ When testing in the Stage environment, you **must** use institution code **97846
 
 Never use `97846` in production. Use real bank institution codes from the [Mexican Banking Reference](/direct-integration/reference/mexican-banking-reference) for live transactions.
 </Warning>
+
+<Info>
+**Test Environment Interbank Code**
+
+The interbank code (originator account) for the test environment is: `646180567300000006`. Use this value for the `interbank_code` field when testing in the Stage environment.
+</Info>
+
 
 ## Testing Scenarios
 
@@ -86,10 +99,19 @@ Test webhook handling:
 
 Test error handling:
 
-- Invalid authentication (401)
+- **Invalid authentication (401)**: Test with missing or incorrect `Authorization` header
 - Bad request parameters (400)
 - Not found errors (404)
 - Server errors (500) with retry logic
+
+<Info>
+**Testing Authentication**
+
+When testing authentication errors in Postman:
+- Remove the `Authorization` header to test missing authentication
+- Use an invalid token to test incorrect authentication
+- Verify you receive `401 Unauthorized` responses
+</Info>
 
 ## Test Data Examples
 
@@ -97,19 +119,27 @@ Test error handling:
 
 ```json
 {
-  "user_id": 12345,
-  "amount": 1000.00,
+  "user_id": 27055,
+  "amount": 15,
   "currency": "MXN",
   "transfer_method": "SPEI",
-  "beneficiary_account": "012345678901234567",
-  "beneficiary_name": "Test Beneficiary",
-  "beneficiary_rfc": "TEST850920XY1",
+  "beneficiary_account": "846180000400000001",
+  "beneficiary_name": "Jhon Doe",
+  "beneficiary_rfc": "ND",
   "beneficiary_institution": "97846",
-  "fee_model": "00",
+  "interbank_code": "646180567300000006",
+  "email": "test@example.com",
+  "description": "Test withdrawal",
   "metadata": {
-    "latitude": 19.4326,
-    "longitude": -99.1332
-  }
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "operation_date": "2024-01-15",
+    "customer_email": "test@example.com",
+    "business_user": "admin_user_001",
+    "customer_id": "CUST_12345",
+    "order_id": "ORDER_ABC_789"
+  },
+  "fee_model": "01"
 }
 ```
 
@@ -117,21 +147,38 @@ Test error handling:
 
 ```json
 {
-  "user_id": 12345,
-  "amount": 500.00,
+  "user_id": 1,
+  "amount": 100,
   "currency": "MXN",
   "transfer_method": "DEBIT_CARD",
   "beneficiary_account": "4111111111111111",
   "beneficiary_name": "Test Beneficiary",
-  "beneficiary_rfc": "TEST850315AB2",
+  "beneficiary_rfc": "ND",
   "beneficiary_institution": "97846",
-  "fee_model": "01",
+  "interbank_code": "646180567300000006",
+  "email": "test@example.com",
+  "description": "Test debit card withdrawal",
   "metadata": {
-    "latitude": 19.4326,
-    "longitude": -99.1332
-  }
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "operation_date": "2024-01-15",
+    "customer_email": "test@example.com",
+    "business_user": "admin_user_001",
+    "customer_id": "CUST_12345",
+    "order_id": "ORDER_ABC_789"
+  },
+  "fee_model": "01"
 }
 ```
+
+<Note>
+**Complete Test Data**
+
+These examples include all required fields for testing. Remember to:
+- Replace `user_id` with a valid user ID from the [Get User ID endpoint](/withdrawals-api/guides/get-user-id)
+- Include the `Authorization: Token YOUR_API_KEY` header in all requests
+- Use the test institution code `97846` and interbank code `646180567300000006` for Stage environment testing
+</Note>
 
 ## Verification Checklist
 

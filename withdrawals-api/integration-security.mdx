@@ -21,17 +21,33 @@ Always use the correct base URL for your environment. Using production URLs in s
 
 ## Authentication
 
-All requests require a token in the `Authorization` header.
+<Warning>
+**Authentication Required for All Requests**
+
+**Every single request** to the Withdrawals API requires authentication using a token in the `Authorization` header. This applies to:
+- All API requests (cURL, HTTP clients, SDKs)
+- All Postman requests
+- All testing requests
+- All production requests
+
+Requests without proper authentication will return a `401 Unauthorized` error.
+</Warning>
 
 ### Header Format
 
 Include your API token in the Authorization header with the following format:
 
 ```http
-Authorization: Token 304fbdd...
+Authorization: Token 304fbdd63113c009b6ac14c7d230b13909ae11221
 ```
 
-### Example Request
+<Note>
+**Getting Your API Token**
+
+This is a sample token. You need to use the one provided by Tonder in the **Developers section** of our platform. Log in to your Tonder dashboard and navigate to the Developers section to retrieve your API key.
+</Note>
+
+### Example Request (cURL)
 
 ```bash
 curl -X POST https://stage.tonder.io/api/v1/withdrawals/ \
@@ -45,6 +61,37 @@ curl -X POST https://stage.tonder.io/api/v1/withdrawals/ \
     ...
   }'
 ```
+
+### Using Postman
+
+When making requests in Postman:
+
+1. **Set the Authorization Header**:
+   - Go to the **Headers** tab
+   - Add a new header:
+     - **Key**: `Authorization`
+     - **Value**: `Token YOUR_API_KEY` (replace `YOUR_API_KEY` with your actual token)
+
+2. **Alternative: Use Postman Authorization Tab**:
+   - Go to the **Authorization** tab
+   - Select **Type**: `No Auth` (then manually add header) OR use a custom type
+   - Add header: `Authorization: Token YOUR_API_KEY`
+
+3. **Example Postman Setup**:
+   ```
+   Method: POST
+   URL: https://stage.tonder.io/api/v1/withdrawals/
+   Headers:
+     Authorization: Token 304fbdd63113c009b6ac14c7d230b13909ae11221
+     Content-Type: application/json
+   Body: (raw JSON with your request data)
+   ```
+
+<Info>
+**Token Format**
+
+The token must be prefixed with the word "Token" followed by a space, then your actual API key. The format is: `Token <your_api_key>`
+</Info>
 
 <Warning>
 **Security Best Practices**

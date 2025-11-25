@@ -6,6 +6,12 @@ sidebarTitle: "Get User ID"
 
 Before creating a withdrawal, you need a `user_id` in the Tonder system. This endpoint allows you to get or create a user ID.
 
+<Warning>
+**Authentication Required**
+
+This endpoint requires authentication. Include the `Authorization` header with your API token in every request. See [Authentication requirements](/withdrawals-api/integration-security) for details.
+</Warning>
+
 ## Endpoint
 
 ```http
@@ -65,6 +71,16 @@ curl -X POST https://stage.tonder.io/api/v1/customer/ \
     "phone": "8161234567"
   }'
 ```
+
+<Note>
+**Postman Users**
+
+In Postman, add the `Authorization` header manually:
+- **Key**: `Authorization`
+- **Value**: `Token YOUR_API_KEY` (replace with your actual token from the Developers section)
+
+Replace `YOUR_API_KEY` with the token provided in the Developers section of the Tonder platform.
+</Note>
 
 ## Next Steps
 
