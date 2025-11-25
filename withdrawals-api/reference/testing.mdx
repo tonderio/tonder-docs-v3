@@ -1,0 +1,222 @@
+---
+title: "Testing Requirements"
+sidebarTitle: "Testing"
+'og:description': "Testing requirements and guidelines for the Withdrawals API"
+---
+
+This guide covers testing requirements, test data, and best practices for validating your Withdrawals API integration.
+
+## Testing Environment
+
+### Stage Environment
+
+Use the **Stage environment** for all testing, where fund transfers are simulated rather than processed with real money.
+
+**Stage Base URL**: `https://stage.tonder.io/api/v1`
+
+<Info>
+**Simulated Transfers**
+
+In the Stage environment, withdrawals are simulated. No actual funds are transferred, making it safe for comprehensive testing.
+</Info>
+
+## Test Institution Code
+
+### CRITICAL: Use 97846 for Testing
+
+When testing in the Stage environment, you **must** use institution code **97846** for the `beneficiary_institution` field.
+
+**Why**: This is a special test code that simulates bank responses without processing actual transfers.
+
+**Example**:
+```json
+{
+  "beneficiary_institution": "97846",
+  ...
+}
+```
+
+<Warning>
+**Production Institution Codes**
+
+Never use `97846` in production. Use real bank institution codes from the [Mexican Banking Reference](/direct-integration/reference/mexican-banking-reference) for live transactions.
+</Warning>
+
+## Testing Scenarios
+
+### 1. Basic Withdrawal Creation
+
+Test creating withdrawals with valid data:
+
+- **SPEI transfers** with valid 18-digit CLABE
+- **Debit card transfers** with valid 16-digit card numbers
+- Different amounts (small, medium, large)
+- Both fee models (`00` and `01`)
+
+### 2. Parameter Validation
+
+Test error handling for invalid parameters:
+
+- Missing required fields
+- Invalid account formats
+- Invalid currency codes
+- Invalid transfer methods
+- Missing metadata (latitude/longitude for SPEI/MXN)
+
+### 3. Status Transitions
+
+Test and verify all status transitions:
+
+- `PENDING` → `PROCESSING`
+- `PROCESSING` → `SENT_TO_PROVIDER`
+- `SENT_TO_PROVIDER` → `PAID_FULL`
+- Any status → `REJECTED`
+
+### 4. Webhook Receipt
+
+Test webhook handling:
+
+- Verify webhook payload structure
+- Test all status change notifications
+- Validate webhook signatures (if implemented)
+- Handle duplicate webhooks gracefully
+- Test webhook retry scenarios
+
+### 5. Error Scenarios
+
+Test error handling:
+
+- Invalid authentication (401)
+- Bad request parameters (400)
+- Not found errors (404)
+- Server errors (500) with retry logic
+
+## Test Data Examples
+
+### Valid SPEI Withdrawal
+
+```json
+{
+  "user_id": 12345,
+  "amount": 1000.00,
+  "currency": "MXN",
+  "transfer_method": "SPEI",
+  "beneficiary_account": "012345678901234567",
+  "beneficiary_name": "Test Beneficiary",
+  "beneficiary_rfc": "TEST850920XY1",
+  "beneficiary_institution": "97846",
+  "fee_model": "00",
+  "metadata": {
+    "latitude": 19.4326,
+    "longitude": -99.1332
+  }
+}
+```
+
+### Valid Debit Card Withdrawal
+
+```json
+{
+  "user_id": 12345,
+  "amount": 500.00,
+  "currency": "MXN",
+  "transfer_method": "DEBIT_CARD",
+  "beneficiary_account": "4111111111111111",
+  "beneficiary_name": "Test Beneficiary",
+  "beneficiary_rfc": "TEST850315AB2",
+  "beneficiary_institution": "97846",
+  "fee_model": "01",
+  "metadata": {
+    "latitude": 19.4326,
+    "longitude": -99.1332
+  }
+}
+```
+
+## Verification Checklist
+
+Before going to production, verify:
+
+- [ ] Withdrawal creation works with valid data
+- [ ] All required parameters are validated
+- [ ] Error responses are handled correctly
+- [ ] Webhooks are received and processed
+- [ ] All status transitions are handled
+- [ ] Rejection scenarios are handled gracefully
+- [ ] Different amounts work correctly
+- [ ] Both transfer methods (SPEI and DEBIT_CARD) work
+- [ ] Both fee models work
+- [ ] Metadata requirements are met
+- [ ] Authentication works correctly
+- [ ] Retry logic works for transient errors
+
+## Testing Best Practices
+
+### 1. Test Different Amounts
+
+Test with various amounts to ensure:
+- Small amounts (e.g., 10.00 MXN)
+- Medium amounts (e.g., 1000.00 MXN)
+- Large amounts (e.g., 100000.00 MXN)
+- Decimal precision handling
+
+### 2. Test Both Transfer Methods
+
+Verify both transfer methods work:
+- **SPEI**: Test with valid 18-digit CLABE
+- **DEBIT_CARD**: Test with valid 16-digit card numbers
+
+### 3. Test Webhook Receipt
+
+Ensure webhook handling works:
+- Receive webhooks for all status changes
+- Parse webhook payloads correctly
+- Handle duplicate webhooks
+- Process webhooks asynchronously
+
+### 4. Test Error Scenarios
+
+Verify error handling:
+- Invalid parameters return 400
+- Missing auth returns 401
+- Invalid withdrawal ID returns 404
+- Server errors are retried appropriately
+
+### 5. Test Status Monitoring
+
+Verify status tracking:
+- Status transitions are logged
+- Final statuses are handled correctly
+- Rejections are processed appropriately
+
+## Pre-Production Checklist
+
+Before moving to production:
+
+1. **Complete all test scenarios** listed above
+2. **Verify webhook endpoints** are accessible from Tonder's servers
+3. **Test with production-like data** (but in Stage environment)
+4. **Validate error handling** for all error codes
+5. **Review logs** for any unexpected behavior
+6. **Test retry logic** for transient failures
+7. **Verify monitoring** and alerting are set up
+8. **Document any issues** and resolutions
+
+## Production Readiness
+
+You're ready for production when:
+
+- ✅ All test scenarios pass
+- ✅ Webhooks are working reliably
+- ✅ Error handling is comprehensive
+- ✅ Monitoring and alerts are configured
+- ✅ Support team knows how to handle issues
+- ✅ Documentation is complete
+
+## Next Steps
+
+- Review [integration and security essentials](/withdrawals-api/integration-security) before testing
+- Learn about [creating withdrawals](/withdrawals-api/guides/create-withdrawal) to understand the API
+- Check [webhook payloads](/withdrawals-api/webhooks/webhook-payloads) to test webhook handling
+- Review [status codes](/withdrawals-api/reference/status-codes) to understand status transitions
+

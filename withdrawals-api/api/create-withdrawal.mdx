@@ -1,0 +1,121 @@
+---
+title: "Create Withdrawal"
+openapi: "POST /withdrawals/"
+---
+
+<Warning>
+The Authorization header must be in the following format:
+
+`Authorization: Token <YOUR_API_KEY>`
+</Warning>
+
+Create a new withdrawal request to send funds to a beneficiary. This endpoint supports both SPEI bank transfers and debit card instant deposits.
+
+## Request Body
+
+The request requires the following mandatory parameters:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID in the Tonder system (get from [Get User ID](/withdrawals-api/guides/get-user-id)) |
+| `amount` | decimal | Yes | Amount to withdraw |
+| `currency` | string | Yes | Currency code (`"MXN"` for SPEI transfers) |
+| `transfer_method` | string | Yes | Transfer method: `"SPEI"` or `"DEBIT_CARD"` |
+| `beneficiary_account` | string | Yes | Account number (18-digit CLABE for SPEI, 16-digit card for DEBIT_CARD) |
+| `beneficiary_name` | string | Yes | Full name of the beneficiary |
+| `beneficiary_rfc` | string | Conditional | RFC identification. Required for SPEI. For DEBIT_CARD, use `beneficiary_rfc`, `beneficiary_curp`, or `"ND"` |
+| `beneficiary_curp` | string | Conditional | CURP identification. Alternative to `beneficiary_rfc` for DEBIT_CARD only |
+| `beneficiary_institution` | string | Yes | Institution code (use `97846` for testing) |
+| `interbank_code` | string | Yes | Originator account (CLABE) - required for SPEI |
+| `fee_model` | string | Yes | Fee model: `00` (User pays) or `01` (Merchant pays) |
+| `metadata` | object | Yes | Additional information (must include `latitude` and `longitude`) |
+| `email` | string | No | Contact email for notifications |
+| `description` | string | No | Transaction description |
+
+## Response
+
+On success, returns HTTP 200 with the withdrawal object including complete account data and metadata:
+
+```json
+{
+  "id": "40f19a6b-4ce4-424e-92fe-1b564c07dbd7",
+  "user_id": "1",
+  "business_id": "21",
+  "currency": "MXN",
+  "amount": 100.0,
+  "status": "PENDING",
+  "account_data": {
+    "cuenta_ordenante": "646180567300000006",
+    "nombre_ordenante": "TRES_COMAS",
+    "rfc_curp_ordenante": "ND",
+    "cuenta_beneficiario": "846180000400000001",
+    "nombre_beneficiario": "Fabio",
+    "rfc_curp_beneficiario": "ND",
+    "institucion_contraparte": "97846",
+    "tipo_cuenta_beneficiario": 40,
+    "email": "fabio@tonder.io",
+    "concepto_pago": "test"
+  },
+  "status_changes": [],
+  "action": null,
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "operation_date": "2024-01-15",
+    "customer_email": "fabio@tonder.io",
+    "business_user": "admin_user_001",
+    "customer_id": "CUST_12345",
+    "order_id": "ORDER_ABC_789"
+  },
+  "created_at": "2025-10-02T01:09:37.371365Z",
+  "modified_at": "2025-10-02T01:09:37.371365Z",
+  "provider_reference": "PENDING",
+  "transfer_method": "SPEI",
+  "fixed_fee": "3.5",
+  "tax": "16.0",
+  "fee_amount": null
+}
+```
+
+## Transfer Methods
+
+### SPEI
+
+Bank transfers processed same business day during banking hours.
+
+**Requirements**:
+- `beneficiary_account` must be a valid 18-digit CLABE
+- Processing occurs during banking hours (typically 9 AM - 5 PM MXT, Monday-Friday)
+
+### DEBIT_CARD
+
+Instant deposits available within 5-15 minutes, 24/7.
+
+**Requirements**:
+- `beneficiary_account` must be a valid 16-digit debit card number
+- Processing occurs 24/7, including weekends and holidays
+
+## Fee Models
+
+- **`00`**: User pays fees - fees are deducted from the withdrawal amount
+- **`01`**: Merchant pays fees - fees are charged separately to the merchant
+
+## Metadata Requirements
+
+For SPEI/MXN withdrawals, the `metadata` object must include:
+- `latitude`: Geographic latitude (decimal number)
+- `longitude`: Geographic longitude (decimal number)
+
+These coordinates are required for compliance and fraud prevention.
+
+## Testing
+
+When testing in the Stage environment, use institution code **97846** for the `beneficiary_institution` field.
+
+## Related Documentation
+
+- [Create Withdrawal Guide](/withdrawals-api/guides/create-withdrawal) - Step-by-step integration guide
+- [Workflow & Statuses](/withdrawals-api/guides/workflow-statuses) - Understanding withdrawal processing
+- [Status Codes Reference](/withdrawals-api/reference/status-codes) - Complete status code documentation
+- [HTTP Response Codes](/withdrawals-api/reference/http-response-codes) - Error handling reference
+

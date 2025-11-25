@@ -1,0 +1,86 @@
+---
+title: "Integration & Security Essentials"
+sidebarTitle: "Integration & Security"
+'og:description': "Authentication, security, and data format requirements for the Withdrawals API"
+---
+
+This section covers the essential requirements for integrating with the Tonder Withdrawals API, including authentication, security best practices, and data format specifications.
+
+## Base URLs
+
+The Withdrawals API is available in two environments:
+
+| Environment | Base URL (v1) | Purpose |
+|-------------|---------------|---------|
+| Stage | `https://stage.tonder.io/api/v1` | Development and testing |
+| Production | `https://prod.tonder.io/api/v1` | Live transactions |
+
+<Note>
+Always use the correct base URL for your environment. Using production URLs in stage or vice-versa will result in authentication errors.
+</Note>
+
+## Authentication
+
+All requests require a token in the `Authorization` header.
+
+### Header Format
+
+Include your API token in the Authorization header with the following format:
+
+```http
+Authorization: Token 304fbdd...
+```
+
+### Example Request
+
+```bash
+curl -X POST https://stage.tonder.io/api/v1/withdrawals/ \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 12345,
+    "amount": 1000.00,
+    "currency": "MXN",
+    "transfer_method": "SPEI",
+    ...
+  }'
+```
+
+<Warning>
+**Security Best Practices**
+
+- Always use HTTPS for communications
+- Never expose your secret API key in client-side code
+- Store API keys securely on your server
+- Set up alerts for unusual withdrawal patterns
+</Warning>
+
+## Data Format Requirements
+
+### Timestamps
+
+All timestamps must be in **ISO 8601 format**.
+
+Examples:
+- `2024-07-26T10:30:00Z`
+- `2024-07-26T10:30:00+00:00`
+
+### Currency Amounts
+
+Currency amounts must be provided as **decimal numbers**.
+
+Examples:
+- `1000.00` (correct)
+- `1000` (correct)
+- `"1000.00"` (incorrect - should not be a string)
+
+### JSON Content Type
+
+All requests with a body must include the `Content-Type: application/json` header.
+
+## Next Steps
+
+- Learn about [environment configuration](/withdrawals-api/environments)
+- Review the [create withdrawal guide](/withdrawals-api/guides/create-withdrawal) to see authentication in action
+- Check [HTTP response codes](/withdrawals-api/reference/http-response-codes) to understand API responses
+
