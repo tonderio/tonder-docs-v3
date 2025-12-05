@@ -34,7 +34,7 @@ This request obtains a JWT access token required for card tokenization:
 Make sure to include your Tonder API key in the Authorization header.
 
 ```bash
-curl -X GET https://app.tonder.io/api/v1/tokenization/auth/ \
+curl -X POST https://app.tonder.io/api/secure-token/ \
 -H "Authorization: Token <YOUR_TONDER_API_KEY>"
 ```
 </Accordion>

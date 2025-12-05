@@ -1,6 +1,6 @@
 ---
 title: "Get Tokenization Access Token"
-openapi: "GET /tokenization/auth/"
+openapi: "POST /api/secure-token/"
 ---
 
 <Warning>
@@ -19,7 +19,7 @@ Obtain an access token required for card tokenization requests. This token shoul
 
 The complete tokenization process follows these steps:
 
-1. **Get access token** using this endpoint
+1. **Get access token** using this endpoint (POST request)
 2. **Tokenize card data** using the access token with Tonder's vault service
 3. **Use tokens** in payment requests instead of raw card data
 
