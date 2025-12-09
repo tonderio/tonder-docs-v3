@@ -7,23 +7,10 @@ Tonder offers multiple integration models to accept deposits and send withdrawal
 
 This guide will help you understand:
 
-- The four primary integration models for accepting payments.
+- The five integration approaches for accepting payments, including our recommended Hybrid model.
 - The standalone Withdrawals API for sending payouts.
 - The key differences to help you select the right model for your needs.
 - Real-world use cases for platforms like gaming and e-commerce.
-
-## Before You Choose
-
-Consider these key questions to guide your decision:
-
-- Do you have developers available to write code?
-- How quickly do you need to launch and start accepting payments?
-- Is a custom-branded user interface essential for your checkout flow?
-- Does your organization hold a valid PCI DSS certification?
-- Do you need to both accept payments (deposits) and send payouts (withdrawals)?
-
-After answering these questions, review the integration models below to find the best fit for your business.
-
 
 ## Quick Comparison
 
@@ -68,7 +55,16 @@ After answering these questions, review the integration models below to find the
       <td><span className="badge-error">No</span></td>
     </tr>
     <tr>
-      <td><strong>API Direct Integration (S2S)</strong></td>
+      <td><strong>Hybrid </strong> ⭐</td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-success">Yes</span></td>
+      <td><span className="badge-success">Yes*</span></td>
+      <td>1-2 weeks</td>
+      <td><span className="level-high">High</span></td>
+      <td><span className="badge-error">No</span></td>
+    </tr>
+    <tr>
+      <td><strong>Direct (S2S)</strong></td>
       <td><span className="badge-success">Yes</span></td>
       <td><span className="badge-success">Yes</span></td>
       <td><span className="badge-success">Yes</span></td>
@@ -83,7 +79,22 @@ After answering these questions, review the integration models below to find the
   Withdrawals for this model are handled via the Standalone Withdrawals API.
   
   Refunds are initiated from the merchant's dashboard.
+
+  *Refunds in Hybrid mode: Dashboard (recommended) or API Direct for cards only. See Hybrid Integration details below.
 </Note>
+
+# Before You Choose
+
+Consider these key questions to guide your decision:
+
+- Do you have developers available to write code?
+- How quickly do you need to launch and start accepting payments?
+- Is a custom-branded user interface essential for your checkout flow?
+- Does your organization hold a valid PCI DSS certification?
+- Do you need to both accept payments (deposits) and send payouts (withdrawals)?
+- Do you want more control over non-card payment methods without PCI certification?
+
+After answering these questions, review the integration models below to find the best fit for your business.
 
 ## Integration Models in Detail
 
@@ -275,7 +286,93 @@ If you want to learn more about the Lite SDK provided, check out the available S
 </CardGroup>
 
   </Tab>
-  <Tab title="API Direct Integration">
+  <Tab title="Hybrid ⭐ ">
+**The best-of-both-worlds approach:** Combine the simplicity of SDK/Hosted for card payments with the power and flexibility of API Direct for all other payment methods and withdrawals—without requiring PCI certification.
+
+| Aspect             | Details                                                                                                                    |
+| :----------------- | :------------------------------------------------------------------------------------------------------------------------- |
+| **Architecture**   | Dual integration: SDK/Hosted for cards only + API Direct for everything else                                              |
+| **Money Flows**    | (Yes) Deposits (all methods) <br/> (Yes) Withdrawals <br/> (Yes) Refunds (cards via Dashboard or API Direct)                   |
+| **PCI Scope**      | **No PCI certification required.** Tonder handles card PCI compliance through SDK/Hosted.                                  |
+| **Setup Time**     | 1-2 weeks (est.)                                                                                                           |
+| **Customization**  | High - Full API control for non-card methods while maintaining secure card processing                                      |
+
+### How It Works
+
+The Hybrid model allows you to strategically split your payment processing:
+
+1. **For Card Payments:** Use Hosted Checkout, Full SDK, or Lite SDK
+   - Tonder manages all PCI compliance requirements
+   - Secure, pre-built card handling
+   - No certification needed
+
+2. **For All Other Payment Methods:** Use API Direct Integration
+   - SPEI (Bank Transfers)
+   - OxxoPay
+   - Mercado Pago
+   - Cash payments
+   - Any other non-card methods
+
+3. **For Withdrawals:** Use API Direct Integration
+   - Full programmatic control over payouts
+   - No PCI requirements for withdrawal processing
+
+### Valid Hybrid Combinations
+
+Choose **one** of these combinations based on your card payment UI needs:
+
+| Combination    | Cards            | Other Payment Methods | Withdrawals | Best For                                           |
+| :------------- | :--------------- | :-------------------- | :---------- | :------------------------------------------------- |
+| **Hybrid A**   | Hosted Checkout  | API Direct            | API Direct  | Fastest launch with maximum control for non-card methods |
+| **Hybrid B**   | Full SDK         | API Direct            | API Direct  | Embedded card experience with standard UI          |
+| **Hybrid C**   | Lite SDK         | API Direct            | API Direct  | Complete UI customization across all payment types |
+
+### Refunds in Hybrid Mode
+
+Card refunds can be processed in two ways:
+
+1. **Dashboard (Recommended):** Process all card refunds through the Tonder merchant dashboard
+2. **API Direct:** Use the API Direct Integration for card refunds
+
+<Info>
+**Important:** We strongly recommend choosing **one refund method** and using it consistently. Mixing both approaches requires handling different refund flows and can complicate your integration.
+</Info>
+
+### Trade-offs to Consider
+
+**Dual Integration Patterns**
+- You'll implement two different integration styles simultaneously
+- Different request/response formats for cards vs. other methods
+- Requires handling both integration patterns in your codebase
+
+**Dual Webhook Handling**
+- You'll receive Hosted/SDK-style webhooks for card transactions
+- You'll receive API Direct-style webhooks for all other notifications (non-card payments, withdrawals, and refunds)
+- Requires two webhook endpoint configurations and separate handling logic
+
+**Timeline Note**
+- This hybrid approach is a bridge solution until Q1 2026
+- In Q1 2026, Tonder will launch next-generation Hosted Checkout and SDKs with unified request/response/webhook patterns
+- Current hybrid implementations will be supported, but migration paths to the unified platform will be available
+
+### Use This Model If
+
+- You want API Direct control for payment methods and withdrawals **without PCI certification**
+- You need programmatic control over SPEI, cash payments, digital wallets, and withdrawals
+- You're comfortable implementing and maintaining dual integration patterns
+- You want the best balance of control, flexibility, and compliance simplicity
+
+<Note>
+**Limitations**
+
+- Requires managing two different integration patterns simultaneously
+- More complex webhook handling compared to single-model integrations
+- Higher initial development effort than pure SDK/Hosted approaches
+- Refund handling requires careful planning to avoid mixing approaches
+</Note>
+
+  </Tab>
+  <Tab title="Direct (S2S)">
     Direct backend API integration gives you complete control over the payment flow, data handling, and user interface.
 
 | Aspect             | Details                                                        |
@@ -326,7 +423,7 @@ The Withdrawals API is a standalone, server-to-server API designed exclusively f
 | Aspect            | Details                                                                             |
 | :---------------- | :---------------------------------------------------------------------------------- |
 | **Money Flow**    | (Yes) Withdrawals only                                                                 |
-| **Combines With** | Can be used alongside _any_ deposit integration model (Hosted, Full SDK, Lite SDK). |
+| **Combines With** | Can be used alongside _any_ deposit integration model (Hosted, Full SDK, Lite SDK). **Note:** If using Hybrid model, withdrawals are handled via API Direct. |
 | **PCI Scope**     | Tonder manages PCI compliance for this API.                                         |
 | **Setup Time**    | 1-2 days (est.)                                                                     |
 | **Use Cases**     | Player payouts, seller payments, affiliate commissions, etc.                        |
@@ -334,26 +431,27 @@ The Withdrawals API is a standalone, server-to-server API designed exclusively f
 <Note>
   **Key Point** 
   
-  The Withdrawals API is independent of deposit integrations. You
-  can add withdrawal functionality without modifying your existing payment
-  acceptance setup.
+  The Withdrawals API is independent of deposit integrations. You can add withdrawal functionality without modifying your existing payment acceptance setup.
+
+  **Hybrid Integration Note:** When using the Hybrid model, withdrawals are already included through API Direct Integration—no separate Withdrawals API implementation needed.
 </Note>
 
 ## Feature Support Across Models
 
 In this table, we summarize the availability of key features across the different integration models.
 
-| Feature          | Hosted Checkout | Full SDK  | Lite SDK  |   API Integration   |
-| :--------------- | :-------------: | :-------: | :-------: | :-----------------: |
-| Card Payments    |       Yes        |    Yes     |    Yes     |         Yes          |
-| Bank Transfers   |       Yes        |    Yes     |    Yes     |         Yes          |
-| Cash Payments    |       Yes        |    Yes     |    Yes     |         Yes          |
-| Digital Wallets  |       Yes        |    Yes     |    Yes     |         Yes          |
-| 3D Secure        |    Automatic    | Automatic | Automatic |   Manual Control    |
-| Tokenization     |    Automatic    | Automatic | Automatic | Merchant Implements |
-| Saved Cards      |       Yes        |    Yes     |    Yes     | Merchant Implements |
-| Webhooks         |       Yes        |    Yes     |    Yes     |         Yes          |
-| Test Environment |       Yes        |    Yes     |    Yes     |         Yes          |
+| Feature          | Hosted Checkout | Full SDK  | Lite SDK  | Hybrid ⭐| Direct (S2S)   |
+| :--------------- | :-------------: | :-------: | :-------: | :----: | :---------------: |
+| Card Payments    |       Yes        |    Yes     |    Yes     | Yes (via SDK/Hosted) |         Yes          |
+| Bank Transfers   |       Yes        |    Yes     |    Yes     | Yes (via API Direct) |         Yes          |
+| Cash Payments    |       Yes        |    Yes     |    Yes     | Yes (via API Direct) |         Yes          |
+| Digital Wallets  |       Yes        |    Yes     |    Yes     | Yes (via API Direct) |         Yes          |
+| Withdrawals      | Via Standalone API | Via Standalone API | Via Standalone API | Yes (via API Direct) |         Yes          |
+| 3D Secure        |    Automatic    | Automatic | Automatic | Automatic (cards)   | Manual Control      |
+| Tokenization     |    Automatic    | Automatic | Automatic | Automatic (cards)   | Merchant Implements |
+| Saved Cards      |       Yes        |    Yes     |    Yes     | Yes                 | Merchant Implements |
+| Webhooks         |       Yes        |    Yes     |    Yes     | Dual (SDK + API Direct) |         Yes          |
+| Test Environment |       Yes        |    Yes     |    Yes     | Yes                 |         Yes          |
 
 <Note>
 
@@ -366,38 +464,41 @@ Now that you are aware of the different integration models, use the flowchart be
 
 <AccordionGroup>
   <Accordion title="I need to ACCEPT PAYMENTS (Deposits)">
-    Do you have developers?
+    **Do you have developers?**
     - **No** → Hosted Checkout
-    - **Yes** → Continue to question down below
+    - **Yes** → Continue to question below
+    
+    **Do you need withdrawals or API control over non-card payment methods?**
+    - **Yes** → Continue to Hybrid or API Direct decision
+    - **No** → Continue to UI customization decision
+    
+    **Are you PCI certified?**
+    - **Yes** → API Direct Integration (full control)
+    - **No** → **Hybrid Integration** ⭐ (recommended for maximum control without PCI)
+    
+    **If choosing Hybrid, what card UI do you need?**
+    - **Redirect to hosted page** → Hybrid A (Hosted Checkout + API Direct)
+    - **Embedded standard UI** → Hybrid B (Full SDK + API Direct)
+    - **Fully custom UI** → Hybrid C (Lite SDK + API Direct)
+    
+    **If not using Hybrid, do you need a completely custom UI?**
+    - **No** → Full SDK (standard, embeddable UI)
+    - **Yes** → Lite SDK (full UX/UI control)
   </Accordion>
-
-<Accordion title="Do you need a completely custom UI?">
-  - **No** → Full SDK (for a standard, embeddable UI) 
-  - **Yes** → Lite SDK (for full UX/UI control)
-</Accordion>
-
-<Accordion title="Are you PCI certified and need maximum control?">
-  - **Yes** → API Integration 
-  - **No** → Choose between Full SDK or Lite SDK
-  based on UI needs.
-</Accordion>
 
 <Accordion title="I need to ACCEPT AND SEND PAYMENTS (Deposits + Withdrawals)">
-  Are you PCI certified? 
-  - **Yes** → API Integration is the all-in-one 
-  - **No**
-  → Continue to question down below
+  **Are you PCI certified?**
+  - **Yes** → API Direct Integration (all-in-one solution)
+  - **No** → **Hybrid Integration** ⭐ (recommended - choose card UI preference)
+  
+  **Alternative:** Choose a deposit model and pair with the Withdrawals API:
+  - Fastest Launch: Hosted Checkout + Withdrawals API
+  - Standard Embedded UI: Full SDK + Withdrawals API
+  - Custom Branded UI: Lite SDK + Withdrawals API
 </Accordion>
 
-  <Accordion title="Choose a deposit model and pair it with the Withdrawals API:">
-    - Fastest Launch: Hosted Checkout + Withdrawals API
-    - Standard Embedded UI: Full SDK + Withdrawals API
-    - Custom Branded UI: Lite SDK + Withdrawals API
-
-  </Accordion>
-
   <Accordion title="I need to SEND PAYMENTS ONLY (Withdrawals)">
-    -   Use the standalone Withdrawals API.
+    - Use the standalone Withdrawals API
 
   </Accordion> 
 </AccordionGroup>
@@ -407,6 +508,20 @@ Now that you are aware of the different integration models, use the flowchart be
 Every single integration model can be used to support various use cases. Here are some common scenarios and the recommended models for each:
 
 <Tabs>
+  <Tab title="Deposits + Withdrawals (Hybrid) ⭐">
+   An i-Gaming platform wants to accept deposits from multiple payment methods and send player payouts, but does not have PCI certification. They also want programmatic control over SPEI transfers and cash payments.
+
+**Recommended Solution: Hybrid Integration**
+
+- **Card Payments:** Implement Full SDK for embedded card processing (Tonder handles PCI)
+- **Other Methods:** Use API Direct for SPEI, OxxoPay, Mercado Pago (full API control, no PCI required)
+- **Withdrawals:** Use API Direct for automated player payouts
+- **Setup Time:** ~1-2 weeks
+- **Benefits:** Maximum control without PCI certification, unified withdrawal handling, flexible payment method management
+
+**Trade-off:** Must handle dual webhook notifications and different request/response patterns for cards vs. other methods.
+
+</Tab>
   <Tab title="Receiving Deposits">
    An i-Gaming company wants to implement a Platform with secure deposits from players to initiate the user experience. Developers then can choose from multiple endorsed models to meet this need:
    
