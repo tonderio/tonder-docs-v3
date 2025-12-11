@@ -204,22 +204,29 @@
                   "direct-integration/rate-limits"
                 ]
               },
-              {
-                "group": "Direct Integration Guides",
-                "pages": [
-                  {
+            {
+              "group": "Direct Integration Guides",
+              "pages": [
+                  { 
                     "group": "Create Payments",
-                    "pages": [
-                      "direct-integration/guides/create-payments/create-a-payment",
-                      "direct-integration/guides/create-payments/create-a-payment-with-3ds",
-                      "direct-integration/guides/create-payments/create-a-payment-with-a-card-token",
-                      "direct-integration/guides/create-payments/raw-card-processing"
-                    ]
-                  },
-                  "direct-integration/guides/create-a-withdrawal",
-                  "direct-integration/guides/refund-a-payment"
-                ]
-              },
+                  "pages": [
+                    {
+                      "group": "Card Payments",
+                      "pages": [
+                        "direct-integration/guides/create-payments/card-payments-overview",
+                        "direct-integration/guides/create-payments/create-a-payment-with-a-card-token",
+                        "direct-integration/guides/create-payments/raw-card-processing",
+                        "direct-integration/guides/create-payments/create-a-payment-with-3ds"
+                      ]
+                    },
+                    "direct-integration/guides/create-payments/non-card-payments",
+                    "direct-integration/guides/create-payments/create-a-multi-method-payment"
+                  ]
+                },
+                "direct-integration/guides/create-a-withdrawal",
+                "direct-integration/guides/refund-a-payment"
+              ]
+            },
               {
                 "group": "Webhooks",
                 "pages": [

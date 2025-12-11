@@ -17,8 +17,8 @@ Refunds are only available for card payments. SPEI, OXXO Pay, and Mercado Pago t
 <Warning>
 **Important limitations**
 - Refunds work exclusively with credit and debit card transactions.
-- Each transaction can only be refunded once (partial or full).
-- Refunds must be processed within 120 days after payment confirmation.
+- Each transaction can only be refunded and in full).
+- Refunds must be processed within 29 days after payment confirmation.
 </Warning>
 
 ## Processing a Refund
@@ -32,7 +32,7 @@ Gather the required information and send your refund request to the [Process Tra
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `operation_type` | string | Yes | Must be `"refund"` |
-| `amount` | decimal | Yes | Refund amount (can be partial or full) |
+| `amount` | decimal | Yes | Refund amount (must be full) |
 | `currency` | string | Yes | Currency code (must match original transaction) |
 | `original_transaction_id` | string | Yes | ID of the original payment transaction |
 
