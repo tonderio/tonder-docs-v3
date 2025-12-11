@@ -1,6 +1,7 @@
 ---
 title: "Create a Payment with Raw Card Data"
-sidebarTitle: "PCI Compliant Raw Card Processing"
+sidebarTitle: "Raw Card Data Flow"
+description: "Process card payments directly without tokenization for PCI DSS Level 1 certified merchants"
 ---
 
 This guide shows you how to process payments directly with raw card data without tokenization. This approach is designed for merchants who already have full PCI DSS Level 1 compliance and want to eliminate the multi-step tokenization process.
@@ -45,13 +46,24 @@ Content-Type: application/json
 
 Send a POST request with raw card data directly to the PCI compliant endpoint.
 
-The request structure is identical to the [standard process endpoint](/direct-integration/guides/create-payments/create-a-payment), but with raw card data.
+<Tabs>
+  <Tab title="Sandbox">
+    ```
+    POST https://process-sandbox.tonder.io/raw-data
+    ```
+  </Tab>
+  <Tab title="Production">
+    ```
+    POST https://process.tonder.io/raw-data
+    ```
+  </Tab>
+</Tabs>
 
 <Info>
 For testing, use the card numbers and test data available in our [Testing Data guide](/direct-integration/testing-data) to ensure your integration works correctly before going live.
 </Info>
 
-Send a `POST` request to the [Process Transaction](/reference/process-transaction) endpoint with the required parameters below:
+Send a `POST` request to the raw card endpoint with the required parameters below:
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
@@ -66,8 +78,8 @@ Send a `POST` request to the [Process Transaction](/reference/process-transactio
 Here's an example of a request with raw card data:
 
 ```bash cURL Example
-curl -X POST https://process-sandbox.tonder.io/ \
-  -H "Authorization: Token 04fbdd63113c009b6ac14c7d230b13909ae11221" \
+curl -X POST https://process-sandbox.tonder.io/raw-data \
+  -H "Authorization: Token <YOUR_API_KEY>" \
   -H "Content-Type: application/json" \
   -d '{
     "operation_type": "payment",
@@ -90,7 +102,7 @@ curl -X POST https://process-sandbox.tonder.io/ \
   }'
 ```
 
-## Step 4: Handle the Response
+## Step 3: Handle the Response
 
 Process the payment response according to the status received. The API returns a JSON object with the following structure:
 
