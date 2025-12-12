@@ -8,7 +8,7 @@ CLABE (Clave Bancaria Estandarizada) is Mexico's standardized bank account numbe
 
 CLABE numbers contain four distinct components that can be extracted for processing:
 
-- Total length: 18 digits
+- **Total length: 18 digits**
 - Bank code: 3 digits (positions 1-3)
 - Branch code: 3 digits (positions 4-6)
 - Account number: 11 digits (positions 7-17)
@@ -16,21 +16,51 @@ CLABE numbers contain four distinct components that can be extracted for process
 
 Here is an example of a CLABE number and a breakdown of its components:
 
-```
-CLABE: 012345678901234567
-│││└─────────────────── Account number (11 digits)
-││└─────────────────────── Branch code (3 digits)
-│└──────────────────────── Bank code (3 digits)
-└───────────────────────── Check digit (1 digit)
-```
+**CLABE: 012345678901234567**
 
-In the example, the components of the CLABE number are displayed as follows:
+<CardGroup cols={4}>
+  <Card icon="building-columns" iconColor="#3B82F6">
+    <span style={{color: '#3B82F6', fontSize: '1.0rem', fontWeight: 'bold'}}>012</span>
+    
+    
+    **Bank Code**
+    
+    3 digits (positions 1-3)
+    
+    Identifies the financial institution. See [Institution Codes](/direct-integration/reference/institution-codes).
+  </Card>
+  <Card icon="code-branch" iconColor="#10B981">
+    <span style={{color: '#10B981', fontSize: '1.0rem', fontWeight: 'bold'}}>345</span>
+    
+    **Branch Code**
+    
+    3 digits (positions 4-6)
+    
+    Identifies the specific branch or plaza.
+  </Card>
+  <Card icon="hashtag" iconColor="#F59E0B">
+    <span style={{color: '#F59E0B', fontSize: '1.0rem', fontWeight: 'bold'}}>67890123456</span>
+    
+    **Account Number**
+    
+    11 digits (positions 7-17)
+    
+    Unique account identifier within the branch.
+  </Card>
+  <Card icon="circle-check" iconColor="#8B5CF6">
+    <span style={{color: '#8B5CF6', fontSize: '1.0rem', fontWeight: 'bold'}}>7</span>
+    
+    **Check Digit**
+    
+    1 digit (position 18)
+    
+    Validates the entire CLABE using a weighted algorithm.
+  </Card>
+</CardGroup>
 
-- 012: BBVA México bank code
-- 345: Branch code (specific branch)
-- 67890123456: Account number (11 digits)
-- 7: Check digit (calculated using algorithm)
-
+<Tip>
+The first 3 digits of a CLABE correspond to the last 3 digits of the institution code. For example, `012` in the CLABE maps to institution code `40012` (BBVA Mexico).
+</Tip>
 ## CLABE Validation Algorithm
 
 The CLABE validation algorithm uses a weighted sum calculation to verify account number integrity. Each of the first 17 digits is multiplied by a specific weight (following the pattern 3, 7, 1 repeatedly), then all products are summed. The check digit is calculated as `(10 - (sum % 10)) % 10` and must match the 18th digit for the CLABE to be valid:
