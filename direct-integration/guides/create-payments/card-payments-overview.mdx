@@ -21,7 +21,7 @@ Tonder offers two paths for processing card payments through Direct Integration.
 | --- | --- | --- |
 | **PCI Requirement** | SAQ A or SAQ A-EP | Full PCI DSS Level 1 |
 | **Best For** | Most merchants, startups, mid-market | Enterprise, payment processors, high-volume platforms |
-| **Integration Steps** | 3 steps (get token → tokenize → process) | 1 step (process directly) |
+| **Integration Steps** | 3 steps (get token → tokenize → process) | 2 steps (get token → process) |
 | **Latency** | Slightly higher (extra tokenization call) | Lower (direct processing) |
 | **Card Data Handling** | Never touches your servers | Passes through your servers |
 | **Compliance Cost** | Lower | Significantly higher |
@@ -61,14 +61,14 @@ The tokenized flow requires three endpoints: one for access tokens, one for toke
   <Tab title="Sandbox">
     | Purpose | Endpoint |
     | --- | --- |
-    | Get Access Token | `POST https://stage.tonder.io/api/secure-token/` |
+    | Get Access Token | `POST https://stage.tonder.io/tokenization/auth` |
     | Tokenize Card Data | `POST https://token-sandbox.tonder.io/v1/gateway/inboundRoutes/{route_id}/token` |
     | Process Payment | `POST https://stage.tonder.io/api/v1/process/` |
   </Tab>
   <Tab title="Production">
     | Purpose | Endpoint |
     | --- | --- |
-    | Get Access Token | `POST https://app.tonder.io/api/secure-token/` |
+    | Get Access Token | `POST https://app.tonder.io/tokenization/auth` |
     | Tokenize Card Data | `POST https://token.tonder.io/v1/gateway/inboundRoutes/{route_id}/token` |
     | Process Payment | `POST https://app.tonder.io/api/v1/process/` |
   </Tab>
@@ -80,17 +80,19 @@ Your `route_id` is provided in your Tonder dashboard after onboarding. Contact s
 
 ### Raw Card Data Flow Endpoints
 
-The raw card flow uses a single endpoint for direct processing.
+The raw card flow requires two endpoints: one for access tokens and one for direct processing.
 
 <Tabs>
   <Tab title="Sandbox">
     | Purpose | Endpoint |
     | --- | --- |
+    | Get Access Token | `POST https://stage.tonder.io/tokenization/auth` |
     | Process Payment | `POST https://process-sandbox.tonder.io/raw-data` |
   </Tab>
   <Tab title="Production">
     | Purpose | Endpoint |
     | --- | --- |
+    | Get Access Token | `POST https://app.tonder.io/tokenization/auth` |
     | Process Payment | `POST https://process.tonder.io/raw-data` |
   </Tab>
 </Tabs>
@@ -119,9 +121,12 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant Client as Your Server (PCI L1)
+    participant Auth as Tonder Auth
     participant Process as Raw Card API
 
-    Client->>Process: 1. Process payment with raw card data
+    Client->>Auth: 1. Request access token
+    Auth-->>Client: Return JWT token
+    Client->>Process: 2. Process payment with raw card data + JWT
     Process-->>Client: Payment response
 ```
 

@@ -31,20 +31,40 @@ It is not recommended for:
 - Cost-conscious merchants (compliance maintenance is expensive).
 </Info>
 
-## Step 1: Configure API Authentication
+## Step 1: Get an Access Token
 
-Configure your authentication headers to access the PCI-compliant processing endpoints.
+Before you can process raw card payments, you must obtain a short-lived access token. This token authenticates your requests to the raw card processing endpoint.
 
-Include these headers in every request:
+Send a `POST` request to the tokenization auth endpoint:
 
-```http
-Authorization: Token <YOUR_API_KEY>
-Content-Type: application/json
+<Tabs>
+  <Tab title="Sandbox">
+    ```bash
+    curl -X POST https://stage.tonder.io/tokenization/auth \
+      -H "Authorization: Token <YOUR_API_KEY>"
+    ```
+  </Tab>
+  <Tab title="Production">
+    ```bash
+    curl -X POST https://app.tonder.io/tokenization/auth \
+      -H "Authorization: Token <YOUR_API_KEY>"
+    ```
+  </Tab>
+</Tabs>
+
+The server will respond with a JWT access token:
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
 ```
+
+You will use this `access_token` to authorize your payment request in the next step.
 
 ## Step 2: Process the Payment
 
-Send a POST request with raw card data directly to the PCI compliant endpoint.
+Send a POST request with raw card data directly to the PCI compliant endpoint. Include the access token from Step 1 in your request.
 
 <Tabs>
   <Tab title="Sandbox">
@@ -79,7 +99,7 @@ Here's an example of a request with raw card data:
 
 ```bash cURL Example
 curl -X POST https://process-sandbox.tonder.io/raw-data \
-  -H "Authorization: Token <YOUR_API_KEY>" \
+  -H "Authorization: Bearer <YOUR_ACCESS_TOKEN_FROM_STEP_1>" \
   -H "Content-Type: application/json" \
   -d '{
     "operation_type": "payment",
