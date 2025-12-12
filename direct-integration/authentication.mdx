@@ -1,7 +1,7 @@
 ---
 title: "Authentication"
 sidebarTitle: "Authentication"
-'og:description': "How to authenticate your API requests"
+description: "How to authenticate your API requests with API keys and HMAC signatures"
 ---
 
 All requests to the Tonder API must be authenticated. We use a combination of an API key and an HMAC-SHA256 signature to ensure that all communication is secure and comes from a trusted source.
@@ -12,8 +12,19 @@ An unauthenticated request will result in a `401 Unauthorized` error.
 
 There are two key components to authenticating your requests:
 
-1.  API Key: A unique token that identifies your business.
-2.  HMAC Signature: A hash calculated from your request body and your secret key, which verifies the integrity and authenticity of the request.
+1. **API Key**: A unique token that identifies your business.
+2. **HMAC Signature**: A hash calculated from your request body and your secret key, which verifies the integrity and authenticity of the request.
+
+<Info>
+**Where to find your credentials**
+
+| Credential | Sandbox | Production |
+|------------|---------|------------|
+| API Key | [Sandbox Dashboard](https://stage.tonder.io) → Developers → API Keys | [Production Dashboard](https://app.tonder.io) → Developers → API Keys |
+| Secret Key | [Sandbox Dashboard](https://stage.tonder.io) → Developers → Secret Keys | [Production Dashboard](https://app.tonder.io) → Developers → Secret Keys |
+
+For more details on environments and endpoints, see the [Environment](/direct-integration/environment) page.
+</Info>
 
 ## Required Headers
 
@@ -21,7 +32,7 @@ You must include these headers in every API request:
 
 | Header                    | Description                                                                                              |
 | ------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `Authorization`           | Your API key, prefixed with ` Token  `.                                                                     |
+| `Authorization`           | Your API key, prefixed with `Token `.                                                                    |
 | `X-Signature-Transaction` | The Base64-encoded HMAC-SHA256 signature calculated from the request body. Required for `POST` requests. |
 | `Content-Type`            | Must be `application/json` for requests with a body.                                                     |
 
@@ -37,16 +48,18 @@ Content-Type: application/json
 
 The HMAC signature ensures that the request body has not been tampered with in transit. It is calculated using the `HMAC-SHA256` algorithm.
 
-The HMAC signature is calculated using the following steps:
+### Signature Generation Steps
 
 1. Get the raw JSON payload of your POST request.
-2. Serialise the JSON object as a string, sorting keys alphabetically and removing all whitespace between separators (for example, use `{"a":1,"b":2}` not `{"b": 2, "a": 1}`).
+2. Serialize the JSON object as a string, sorting keys alphabetically and removing all whitespace between separators (e.g., use `{"a":1,"b":2}` not `{"b": 2, "a": 1}`).
 3. Retrieve your secret key from the Tonder dashboard.
-4. Use the HMAC-SHA256 algorithm with your secret key to hash the serialised JSON string. The output should be in binary format.
+4. Use the HMAC-SHA256 algorithm with your secret key to hash the serialized JSON string. The output should be in binary format.
 5. Encode the binary digest as a Base64 string. This is your final signature.
 
-This Python example demonstrates the full process for generating a valid signature by serializing the JSON payload with sorted keys, calculating the HMAC-SHA256 digest using your secret key, and encoding the result as a Base64 string.
+### Code Examples
 
+<Tabs>
+  <Tab title="Python">
 ```python
 import json
 import hmac
@@ -64,21 +77,21 @@ def create_signature(secret_key, request_body):
     Returns:
         str: The Base64-encoded signature.
     """
-    # Step 2: Serialize the JSON payload with sorted keys and no whitespace.
+    # Serialize the JSON payload with sorted keys and no whitespace
     json_payload = json.dumps(
         request_body, 
         separators=(',', ':'), 
         sort_keys=True
     )
     
-    # Step 4: Calculate the HMAC-SHA256 digest.
+    # Calculate the HMAC-SHA256 digest
     signature_bytes = hmac.new(
         secret_key.encode('utf-8'),
         json_payload.encode('utf-8'),
         hashlib.sha256
     ).digest()
     
-    # Step 5: Convert the digest to a Base64 string.
+    # Convert the digest to a Base64 string
     return base64.b64encode(signature_bytes).decode('utf-8')
 
 # Example Usage
@@ -92,23 +105,251 @@ my_request_body = {
         "email": "test@example.com"
     },
     "payment_method": {
-        "type": "CARD",
-        "card_number": "4242424242424242" 
-    }
+        "type": "SPEI"
+    },
+    "client_reference": "order-123"
 }
 
 signature = create_signature(my_secret_key, my_request_body)
 print(f"Generated Signature: {signature}")
 ```
+  </Tab>
+  <Tab title="Node.js">
+```javascript
+const crypto = require('crypto');
+
+function createSignature(secretKey, requestBody) {
+  // Serialize JSON with sorted keys and no whitespace
+  const jsonPayload = JSON.stringify(requestBody, Object.keys(requestBody).sort());
+  
+  // For nested objects, use a deep sort function
+  const sortedPayload = JSON.stringify(sortObjectKeys(requestBody));
+  
+  // Calculate HMAC-SHA256 digest and encode as Base64
+  const signature = crypto
+    .createHmac('sha256', secretKey)
+    .update(sortedPayload)
+    .digest('base64');
+  
+  return signature;
+}
+
+// Helper function to recursively sort object keys
+function sortObjectKeys(obj) {
+  if (typeof obj !== 'object' || obj === null) return obj;
+  if (Array.isArray(obj)) return obj.map(sortObjectKeys);
+  
+  return Object.keys(obj)
+    .sort()
+    .reduce((sorted, key) => {
+      sorted[key] = sortObjectKeys(obj[key]);
+      return sorted;
+    }, {});
+}
+
+// Example Usage
+const secretKey = 'your_secret_key_from_dashboard';
+const requestBody = {
+  operation_type: 'payment',
+  amount: 100.00,
+  currency: 'MXN',
+  customer: {
+    name: 'Test Customer',
+    email: 'test@example.com'
+  },
+  payment_method: {
+    type: 'SPEI'
+  },
+  client_reference: 'order-123'
+};
+
+const signature = createSignature(secretKey, requestBody);
+console.log(`Generated Signature: ${signature}`);
+```
+  </Tab>
+  <Tab title="PHP">
+```php
+<?php
+
+function createSignature(string $secretKey, array $requestBody): string {
+    // Recursively sort array keys
+    $sortedBody = sortArrayKeys($requestBody);
+    
+    // Serialize to JSON with no whitespace
+    $jsonPayload = json_encode($sortedBody, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    
+    // Calculate HMAC-SHA256 and encode as Base64
+    $signature = base64_encode(
+        hash_hmac('sha256', $jsonPayload, $secretKey, true)
+    );
+    
+    return $signature;
+}
+
+function sortArrayKeys(array $array): array {
+    ksort($array);
+    foreach ($array as $key => $value) {
+        if (is_array($value)) {
+            $array[$key] = sortArrayKeys($value);
+        }
+    }
+    return $array;
+}
+
+// Example Usage
+$secretKey = 'your_secret_key_from_dashboard';
+$requestBody = [
+    'operation_type' => 'payment',
+    'amount' => 100.00,
+    'currency' => 'MXN',
+    'customer' => [
+        'name' => 'Test Customer',
+        'email' => 'test@example.com'
+    ],
+    'payment_method' => [
+        'type' => 'SPEI'
+    ],
+    'client_reference' => 'order-123'
+];
+
+$signature = createSignature($secretKey, $requestBody);
+echo "Generated Signature: " . $signature;
+```
+  </Tab>
+</Tabs>
+
+## Complete Request Example
+
+Here's a complete example showing how to make an authenticated request to the Tonder API:
+
+<Tabs>
+  <Tab title="Python">
+```python
+import requests
+import json
+import hmac
+import hashlib
+import base64
+
+# Configuration
+API_KEY = "your_api_key_from_dashboard"
+SECRET_KEY = "your_secret_key_from_dashboard"
+BASE_URL = "https://stage.tonder.io/api/v1"  # Use https://app.tonder.io for production
+
+def create_signature(secret_key, request_body):
+    json_payload = json.dumps(request_body, separators=(',', ':'), sort_keys=True)
+    signature_bytes = hmac.new(
+        secret_key.encode('utf-8'),
+        json_payload.encode('utf-8'),
+        hashlib.sha256
+    ).digest()
+    return base64.b64encode(signature_bytes).decode('utf-8')
+
+# Prepare the request
+request_body = {
+    "operation_type": "payment",
+    "amount": 100.00,
+    "currency": "MXN",
+    "customer": {
+        "name": "Test Customer",
+        "email": "test@example.com"
+    },
+    "payment_method": {
+        "type": "SPEI"
+    },
+    "client_reference": "order-123"
+}
+
+# Generate signature and headers
+signature = create_signature(SECRET_KEY, request_body)
+headers = {
+    "Authorization": f"Token {API_KEY}",
+    "X-Signature-Transaction": signature,
+    "Content-Type": "application/json"
+}
+
+# Make the request
+response = requests.post(
+    f"{BASE_URL}/process/",
+    headers=headers,
+    json=request_body
+)
+
+print(f"Status: {response.status_code}")
+print(f"Response: {response.json()}")
+```
+  </Tab>
+  <Tab title="cURL">
+```bash
+# First, generate your signature using one of the code examples above
+# Then use it in your cURL request:
+
+curl -X POST https://stage.tonder.io/api/v1/process/ \
+  -H "Authorization: Token <YOUR_API_KEY>" \
+  -H "X-Signature-Transaction: <YOUR_GENERATED_SIGNATURE>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "operation_type": "payment",
+    "amount": 100.00,
+    "currency": "MXN",
+    "customer": {
+      "name": "Test Customer",
+      "email": "test@example.com"
+    },
+    "payment_method": {
+      "type": "SPEI"
+    },
+    "client_reference": "order-123"
+  }'
+```
+
+<Warning>
+Remember that cURL doesn't sort JSON keys automatically. Ensure your JSON payload has keys in alphabetical order when calculating the signature, or use a script to generate the signature before making the cURL request.
+</Warning>
+  </Tab>
+</Tabs>
 
 <Warning>
 **HMAC Configuration**
 
-HMAC validation can be enabled or disabled on a per-business basis. The specific fields from the request body used to generate the signature are also configurable. The example above assumes the entire request body is used. If you encounter authentication issues, verify your HMAC configuration with your Tonder Customer Success Manager or check your dashboard settings.
+HMAC validation can be enabled or disabled on a per-business basis. The specific fields from the request body used to generate the signature are also configurable. The examples above assume the entire request body is used. If you encounter authentication issues, verify your HMAC configuration with your Tonder Customer Success Manager or check your dashboard settings.
 </Warning>
+
+## Security Best Practices
+
+<Warning>
+**Protect your credentials**
+
+- **Never expose your Secret Key** in client-side code, mobile apps, or version control
+- **Use environment variables** to store credentials instead of hardcoding them
+- **Rotate keys immediately** if you suspect they have been compromised
+- **Use separate keys** for Sandbox and Production environments
+- **Restrict access** to credentials on a need-to-know basis within your team
+</Warning>
+
+## Troubleshooting Authentication Errors
+
+| Error Code | Error Message | Cause | Solution |
+|------------|---------------|-------|----------|
+| `401` | `Unauthorized` | Invalid or missing API key | Verify your API key is correct and includes the `Token ` prefix (with space) |
+| `401` | `Invalid signature` | HMAC signature doesn't match | Ensure JSON is serialized with sorted keys and no whitespace |
+| `401` | `Signature required` | Missing `X-Signature-Transaction` header | Add the HMAC signature header to your POST request |
+| `403` | `Forbidden` | API key doesn't have permission for this endpoint | Check your account permissions or contact support |
+
+<Tip>
+**Debugging signature issues**
+
+If you're getting signature errors, try these steps:
+
+1. Print the serialized JSON payload before hashing to verify the format
+2. Ensure all keys are sorted alphabetically, including nested objects
+3. Verify there's no whitespace in the serialized JSON (no spaces after `:` or `,`)
+4. Confirm you're using the correct Secret Key for your environment (Sandbox vs Production)
+</Tip>
 
 ## Next Steps
 
-- Test different scenarios using our [test data](/direct-integration/testing-data).
-- Learn how to [process payments](/direct-integration/guides/create-payments/create-a-payment) with other methods like SPEI and OXXO Pay.
-- Check out the [full guide to going live](/direct-integration/process-overview).
+- Review [Environment](/direct-integration/environment) for Sandbox and Production endpoints
+- Explore [Card Payments](/direct-integration/guides/create-payments/card-payments-overview) or [Non-Card Payments](/direct-integration/guides/create-payments/non-card-payments) to process your first transaction
+- Test different scenarios using our [testing data](/direct-integration/testing-data)
+- Check out the [Process Overview](/direct-integration/process-overview) for the full integration guide
