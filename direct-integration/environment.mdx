@@ -1,51 +1,117 @@
 ---
 title: "Environment"
 sidebarTitle: "Environment"
-'og:description': "Tonder API environments and configuration"
+description: "Tonder API environments, base URLs, and endpoint configuration"
 ---
 
 Tonder provides two distinct environments for your integration: 
 
-- **Stage** for development and testing
-- **Production** for processing live transactions. 
+- **Sandbox** for development and testing
+- **Production** for processing live transactions
 
-Each environment has its own base URL and API credentials.
+Each environment has its own set of base URLs and API credentials.
+
+<Warning>
+Use the correct base URL and API keys for each environment. Using production keys in the sandbox environment (or vice-versa) will result in authentication errors.
+</Warning>
+
+## Environment Overview
+
+| Environment | Purpose | Dashboard |
+|-------------|---------|-----------|
+| Sandbox | Development, testing, and integration validation | [Tonder Sandbox Dashboard](https://stage.tonder.io) |
+| Production | Live transactions with real funds | [Tonder Production Dashboard](https://app.tonder.io) |
+
+## API Endpoints by Integration Type
+
+Tonder uses different base URLs depending on your integration type. The table below provides a complete reference for all endpoints.
+
+### Payment Processing Endpoints
+
+<Tabs>
+  <Tab title="Sandbox">
+    | Purpose | Endpoint |
+    |---------|----------|
+    | Process Payment (Tokenized Flow) | `POST https://stage.tonder.io/api/v1/process/` |
+    | Process Payment (Raw Card Data) | `POST https://process-sandbox.tonder.io/raw-data` |
+    | Get Transaction Status | `GET https://stage.tonder.io/api/v1/transactions/{id}/` |
+  </Tab>
+  <Tab title="Production">
+    | Purpose | Endpoint |
+    |---------|----------|
+    | Process Payment (Tokenized Flow) | `POST https://app.tonder.io/api/v1/process/` |
+    | Process Payment (Raw Card Data) | `POST https://process.tonder.io/raw-data` |
+    | Get Transaction Status | `GET https://app.tonder.io/api/v1/transactions/{id}/` |
+  </Tab>
+</Tabs>
+
+### Authentication & Tokenization Endpoints
+
+<Tabs>
+  <Tab title="Sandbox">
+    | Purpose | Endpoint |
+    |---------|----------|
+    | Get Access Token | `POST https://stage.tonder.io/tokenization/auth` |
+    | Tokenize Card Data | `POST https://token-sandbox.tonder.io/v1/gateway/inboundRoutes/{route_id}/token` |
+  </Tab>
+  <Tab title="Production">
+    | Purpose | Endpoint |
+    |---------|----------|
+    | Get Access Token | `POST https://app.tonder.io/tokenization/auth` |
+    | Tokenize Card Data | `POST https://token.tonder.io/v1/gateway/inboundRoutes/{route_id}/token` |
+  </Tab>
+</Tabs>
+
+<Info>
+Your `route_id` for the tokenization endpoint is provided in your Tonder dashboard after onboarding. Contact [support](/direct-integration/resources/support) if you don't have one.
+</Info>
+
+## Choosing the Right Endpoint
+
+The endpoint you use depends on your integration approach:
+
+| Integration Type | Auth Endpoint | Processing Endpoint | Guide |
+|------------------|---------------|---------------------|-------|
+| **Tokenized Card Payments** | `tokenization/auth` | `stage.tonder.io/api/v1/process/` | [Tokenized Flow](/direct-integration/guides/create-payments/create-a-payment-with-a-card-token) |
+| **Raw Card Data (PCI L1)** | `tokenization/auth` | `process-sandbox.tonder.io/raw-data` | [Raw Card Data Flow](/direct-integration/guides/create-payments/raw-card-processing) |
+| **Non-Card Payments (APMs)** | Not required | `stage.tonder.io/api/v1/process/` | [Non-Card Payments](/direct-integration/guides/create-payments/non-card-payments) |
 
 <Note>
-It is crucial to use the correct base URL and API keys for each environment. Using production keys in the stage environment or vice-versa will result in authentication errors.
+For a detailed comparison of card payment integration options, see the [Card Payments Overview](/direct-integration/guides/create-payments/card-payments-overview).
 </Note>
-
-## Base URLs
-
-The base URL is the root for all API requests. Append the specific endpoint paths (e.g., [Process Transaction](/reference/process-transaction)) to the appropriate base URL.
-
-| Environment    | Base URL                          | Purpose                               |
-| -------------- | --------------------------------- | ------------------------------------- |
-| Stage | `process-sandbox` | For all development and testing.      |
-| Production | `process`   | For processing live transactions.     |
-
-For example, a request to the process endpoint in the Stage environment would use the following URL:
-
-```POST https://stage.tonder.io/api/v1/process/```
-
-The same request in the Production environment would use the following URL:
-
-```POST https://app.tonder.io/api/v1/process/```
 
 ## API Credentials
 
 Each environment uses a separate set of API credentials (API Key and Secret Key).
 
-  * **Stage Credentials**: Use these for all your testing in the sandbox. They can be found in the developer section of the [Tonder Staging Dashboard](https://app.tonder.io).
-  * **Production Credentials**: Use these only for live transactions. They are available in the developer section of the [Tonder Production Dashboard](https://app.tonder.io).
+| Credential Type | Sandbox | Production |
+|-----------------|---------|------------|
+| API Key | Found in [Sandbox Dashboard](https://stage.tonder.io) → Developers | Found in [Production Dashboard](https://app.tonder.io) → Developers |
+| Secret Key | Found in [Sandbox Dashboard](https://stage.tonder.io) → Developers | Found in [Production Dashboard](https://app.tonder.io) → Developers |
 
 <Warning>
-Never use your production API keys in your testing environment or expose them in client-side code. Store them securely on your server.
+**Security Best Practices**
+
+- Never use production API keys in your testing environment
+- Never expose API keys in client-side code
+- Store credentials securely on your server
+- Rotate keys immediately if compromised
 </Warning>
+
+## Quick Reference: Base Domains
+
+| Domain | Environment | Usage |
+|--------|-------------|-------|
+| `stage.tonder.io` | Sandbox | Standard API, Auth |
+| `app.tonder.io` | Production | Standard API, Auth |
+| `token-sandbox.tonder.io` | Sandbox | Card tokenization service |
+| `token.tonder.io` | Production | Card tokenization service |
+| `process-sandbox.tonder.io` | Sandbox | Raw card data processing (PCI L1) |
+| `process.tonder.io` | Production | Raw card data processing (PCI L1) |
 
 ## Next Steps
 
-- Check out [authentication methods](/direct-integration/authentication) to secure your API requests.
-- Follow the [create a payment](/direct-integration/guides/create-payments/create-a-payment) guide to make your first transaction.
-- Use [testing data](/direct-integration/testing-data) to simulate different payment scenarios.
-
+- Review [authentication methods](/direct-integration/authentication) to secure your API requests
+- Explore [Card Payments Overview](/direct-integration/guides/create-payments/card-payments-overview) to choose your integration path
+- Use [testing data](/direct-integration/testing-data) to simulate different payment scenarios
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) for real-time payment notifications
