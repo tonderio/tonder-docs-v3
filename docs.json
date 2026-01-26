@@ -259,6 +259,7 @@
                     "pages": [
                       "direct-integration/payment-methods/card-payments",
                       "direct-integration/payment-methods/spei-bank-transfers",
+                      "direct-integration/payment-methods/frictionless-spei-deposits",
                       "direct-integration/payment-methods/oxxo-cash-payments",
                       "direct-integration/payment-methods/mercado-pago-digital-wallet",
                       "direct-integration/payment-methods/safetypay-cash-payments"

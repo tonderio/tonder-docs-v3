@@ -1,0 +1,420 @@
+---
+title: "Frictionless SPEI Deposits"
+sidebarTitle: "Frictionless SPEI"
+'og:description': "Advanced SPEI feature for processing mismatched amounts and direct transfers"
+---
+
+## Overview
+
+Frictionless SPEI automatically processes bank transfers even when they don't match an existing pending transaction. This feature enables two key scenarios:
+
+1. **Mismatched amounts:** Customer deposits a different amount than expected
+2. **Direct transfers:** Customer transfers directly without initiating a checkout
+
+<Info>
+**Prerequisites**
+
+This feature builds on standard SPEI payments. If you haven't integrated SPEI yet, start with the [SPEI Bank Transfers guide](/direct-integration/payment-methods/spei-bank-transfers).
+</Info>
+
+---
+
+## How It Works
+
+### CLABE + Identifier System
+
+Every SPEI deposit uses two identification layers:
+
+**CLABE (Tonder-managed)**
+- Unique 18-digit account assigned by Tonder for each merchant + customer
+- Primary deposit identifier
+- Used for lookups and matching
+
+**Identifier Fields (Merchant-provided)**
+- `external_id`: Your internal reference (customer ID, transaction ID, etc.)
+- `additional_external_id`: Optional second identifier for advanced use cases
+- Enables your reconciliation logic
+
+---
+
+## Use Cases
+
+### Use Case 1: Mismatched Amount Deposits
+
+**Scenario:** Customer initiates checkout but deposits a different amount.
+
+**Example:**
+- Customer creates checkout for 100 MXN
+- Actually deposits 600 MXN
+- System matches by CLABE and processes automatically
+
+**Webhook Response:**
+```json
+{
+  "data": {
+    "amount": 600.0,
+    "metadata": {
+      "external_id": "ORDER-12345",
+      "mismatched_deposit": "True",
+      "original_expected_amount": "100"
+    }
+  }
+}
+```
+
+
+
+---
+
+### Use Case 2: Direct Transfers (No Checkout)
+
+**Scenario:** Customer transfers directly to their CLABE without initiating checkout.
+
+**Example:**
+- Customer uses saved CLABE from previous deposit
+- Transfers 700 MXN directly from banking app
+- System finds last successful transaction for that CLABE
+- Extracts identifier and creates new deposit
+
+**Webhook Response:**
+```json
+{
+  "data": {
+    "amount": 700.0,
+    "metadata": {
+      "external_id": "CUSTOMER-12345",
+      "concept": "Frictionless deposit - auto-created"
+    }
+  }
+}
+```
+
+
+
+---
+
+## Implementation
+
+### Choose Your Strategy
+
+**Single Identifier (Recommended)**
+
+Use the same identifier for both use cases - simplest approach.
+
+**Example: Gaming platform using `player_id`**
+
+```json
+{
+  "metadata": {
+    "external_id": "PLAYER-12345"
+  }
+}
+```
+
+**Both Use Cases Return:**
+```json
+{
+  "metadata": {
+    "external_id": "PLAYER-12345"
+  }
+}
+```
+
+**Benefits:**
+- ✅ Simpler integration
+- ✅ One reconciliation flow
+- ✅ Always credit the same customer account
+
+**When to use:**
+- Customer-centric reconciliation (gaming, wallets, accounts)
+- Don't need order-level tracking
+- Manual handling of mismatched amounts is acceptable
+
+---
+
+### Basic Setup (Single Identifier)
+
+**Payment Request:**
+```json
+{
+  "amount": 500,
+  "currency": "MXN",
+  "payment_method": "spei",
+  "metadata": {
+    "external_id": "PLAYER-12345"
+  }
+}
+```
+
+**Webhook Processing (example):**
+
+```javascript
+const playerId = webhook.data.metadata.external_id;
+await creditPlayer(playerId, webhook.data.amount);
+
+// Handle mismatched amounts if needed
+if (webhook.data.metadata.mismatched_deposit === "True") {
+  await notifyPlayer(playerId, "amount_mismatch");
+}
+```
+
+---
+
+### Advanced Setup (Dual Identifiers)
+
+For merchants needing **different identifiers per use case** - enables transaction tracking for checkouts and customer tracking for frictionless deposits.
+
+**When to use:**
+
+- Need order-level tracking for checkouts (UC1)
+- Need customer-level tracking for direct transfers (UC2)
+- Want automatic order completion vs. manual top-ups
+- More complex reconciliation requirements
+
+**Payment Request:**
+
+```json
+{
+  "amount": 500,
+  "currency": "MXN",
+  "payment_method": "spei",
+  "metadata": {
+    "external_id": "ORDER-12345",              // For UC1
+    "additional_external_id": "PLAYER-98765"   // For UC2
+  }
+}
+```
+
+**Use Case 1 Webhook** (Pending transaction exists):
+```json
+{
+  "metadata": {
+    "external_id": "ORDER-12345",
+    "additional_external_id": "PLAYER-98765",
+    "mismatched_deposit": "True"
+  }
+}
+```
+
+**Webhook Processing (UC1):**
+```javascript
+const orderId = webhook.data.metadata.external_id;
+await completeOrder(orderId, webhook.data.amount);
+```
+
+**Use Case 2 Webhook** (No pending transaction):
+```json
+{
+  "metadata": {
+    "additional_external_id": "PLAYER-98765"
+    // Note: external_id (order_id) not included - no order exists
+  }
+}
+```
+
+**Webhook Processing (UC2):**
+```javascript
+const playerId = webhook.data.metadata.additional_external_id;
+await manualTopUp(playerId, webhook.data.amount);
+```
+
+---
+
+### Strategy Comparison
+
+| Approach | UC1 Returns | UC2 Returns | Complexity | Best For |
+|----------|-------------|-------------|------------|----------|
+| **Single Identifier** | `player_id` | `player_id` (history) | Simple | Customer-centric platforms |
+| **Dual Identifier** | `order_id` | `player_id` (history) | Advanced | Order + customer tracking |
+
+**Key Differences:**
+- **Single:** Same field both use cases, simpler integration, one reconciliation flow
+- **Dual:** Different fields per use case, enables automatic order completion (UC1) and manual top-ups (UC2)
+
+---
+
+## Custom Field Aliases
+
+Use domain-specific field names instead of generic `external_id` terms.
+
+**Configuration Example:**
+```json
+{
+  "field_aliases": {
+    "order_id": "external_id",
+    "player_id": "additional_external_id"
+  }
+}
+```
+
+**Your Request:**
+```json
+{
+  "metadata": {
+    "order_id": "ORDER-12345",
+    "player_id": "PLAYER-98765"
+  }
+}
+```
+
+**Webhook Response:**
+```json
+{
+  "metadata": {
+    "order_id": "ORDER-12345",
+    "player_id": "PLAYER-98765"
+  }
+}
+```
+
+**Common Patterns:**
+
+| Industry | UC1 Identifier | UC2 Identifier |
+|----------|----------------|----------------|
+| Gaming | `order_id` | `player_id` |
+| E-commerce | `order_id` | `customer_id` |
+| Services | `transaction_id` | `account_id` |
+
+<Note>
+Custom aliases are agreed and configured during integration with Tonder support.
+</Note>
+
+---
+
+## Webhook Fields Reference
+
+### Standard Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `clabe` | string | CLABE that received the deposit |
+| `amount` | number | Actual amount deposited |
+| `transaction_status` | string | "Success" for completed deposits |
+
+### Identifier Fields
+
+| Field | Type | Use Case | Description |
+|-------|------|----------|-------------|
+| `external_id` | string | UC1, UC2 (standard) | Primary identifier |
+| `additional_external_id` | string | UC2 (dual mode) | Secondary identifier for frictionless |
+
+### Special Flags (UC1 Only)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `mismatched_deposit` | string | "True" if amount differed |
+| `original_expected_amount` | string | Expected amount from checkout |
+
+---
+
+## Best Practices
+
+### 1. Choose Your Strategy
+
+**Start Simple:**
+- Use single identifier (`external_id` only) for most use cases
+- Add dual identifiers only if you need different tracking per use case
+- Custom aliases are optional enhancements
+
+**Decision Framework:**
+```
+Need same customer credited regardless of use case?
+→ Single Identifier (external_id only)
+
+Need order completion for UC1 + manual top-ups for UC2?
+→ Dual Identifier (external_id + additional_external_id)
+
+Want domain-specific field names?
+→ Add Custom Aliases to either approach
+```
+
+### 2. Always Validate
+
+```javascript
+// Verify webhook signature
+// Check identifier exists in your system
+// Prevent duplicate processing
+// Validate amount is reasonable
+```
+
+### 3. Handle Edge Cases
+
+- Very large amount mismatches (>500%)
+- Multiple deposits in short timeframe
+- Unknown/invalid identifiers
+- Missing `additional_external_id` when expected
+
+### 4. Logging
+
+Log for audit trail:
+- CLABE used
+- Identifiers received
+- Amount mismatches
+- Auto-creation events
+- Reconciliation results
+
+---
+
+## FAQ
+
+<AccordionGroup>
+
+<Accordion title="Should I use single or dual identifiers?">
+Start with single identifier (just `external_id`) - it's simpler and works for most use cases. Only use dual identifiers if you specifically need different tracking for checkouts vs. frictionless deposits (e.g., automatic order completion vs. manual account top-ups).
+</Accordion>
+
+<Accordion title="Do I need to store CLABEs in my database?">
+Optional. Tonder manages CLABEs and includes them in webhooks. Store them only if needed for customer service or analytics.
+</Accordion>
+
+<Accordion title="Can I use the same customer ID for both use cases?">
+Yes! This is the recommended "single identifier" approach. Use `external_id: "PLAYER-12345"` for everything, and both UC1 and UC2 will return the same player ID.
+</Accordion>
+
+<Accordion title="What's the difference between external_id and additional_external_id?">
+`external_id` is returned for UC1 (when checkout exists). `additional_external_id` is returned for UC2 (no checkout). If you use single identifier strategy, you only need `external_id` for both.
+</Accordion>
+
+<Accordion title="Can I use transaction UUIDs instead of customer IDs?">
+Yes, but this is less common. Most merchants use customer IDs (single identifier) or order IDs + customer IDs (dual identifier).
+</Accordion>
+
+<Accordion title="What happens if Use Case 2 can't find a historical transaction?">
+The deposit will fail to process automatically. Contact Tonder support to manually reconcile.
+</Accordion>
+
+<Accordion title="Can I change my field aliases after integration?">
+Contact Tonder support. Changes require configuration updates.
+</Accordion>
+
+<Accordion title="How do I know which use case was triggered?">
+Check the webhook:
+- UC1: Includes `mismatched_deposit` flag
+- UC2: Includes `concept: "Frictionless deposit - auto-created"`
+</Accordion>
+
+</AccordionGroup>
+
+---
+
+## Integration Checklist
+
+<Check>Choose identifier strategy (single or dual)</Check>
+<Check>Decide on custom field aliases (optional)</Check>
+<Check>Update payment requests to include identifiers</Check>
+<Check>Update webhook handler to read identifiers</Check>
+<Check>Implement reconciliation logic</Check>
+<Check>Test UC1 in staging (mismatched amounts)</Check>
+<Check>Test UC2 in staging (direct transfers)</Check>
+<Check>Add logging and monitoring</Check>
+<Check>Deploy to production</Check>
+
+---
+
+## Next Steps
+
+After implementing Frictionless SPEI:
+
+- Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications for deposit events
+- Review the [Process Transaction API](/reference/process-transaction) for complete request/response details
+- Learn about [SPEI Bank Transfers](/direct-integration/payment-methods/spei-bank-transfers) for standard SPEI setup
