@@ -37,6 +37,12 @@ The following table lists all mandatory parameters for creating a new withdrawal
 | `fee_model` | string | Yes | Fee model code | Values: `00` (User pays fees) or `01` (Merchant pays fees) |
 | `metadata` | object | Yes | Additional required information | Must include `latitude` and `longitude` |
 
+<Warning>
+**Critical: Latitude and Longitude Required for Mexico**
+
+The `metadata.latitude` and `metadata.longitude` fields are **mandatory** for processing withdrawals in Mexico. Omitting these fields or providing erroneous coordinates will result in a **failed transaction**. Ensure you collect and validate accurate geolocation data from your customers.
+</Warning>
+
 ## Optional Parameters
 
 | Parameter | Type | Required | Description |
