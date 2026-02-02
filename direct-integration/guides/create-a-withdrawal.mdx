@@ -21,6 +21,12 @@ There are two transfer methods available:
 - Debit Card: Instant deposits available within 5-15 minutes, 24/7.
 </Info>
 
+<Warning>
+**Critical: Geolocation Required for Mexico**
+
+The `metadata.latitude` and `metadata.longitude` fields are **mandatory** for processing withdrawals in Mexico. Omitting these fields or providing erroneous coordinates will result in a **failed transaction**. Ensure you collect and validate accurate geolocation data from your customers.
+</Warning>
+
 ## Step 1: Choose Your Transfer Method
 
 Select the transfer method that fits your payout needs. Here you can find a quick comparison between the two methods:
@@ -85,6 +91,7 @@ The request must have the following fields:
 | `currency` | Currency code (currently only `"MXN"` is supported) |
 | `transfer_method` | Either `"SPEI"` or `"DEBIT_CARD"` |
 | `beneficiary` | Complete beneficiary information object |
+| `metadata` | Additional required information (must include `latitude` and `longitude`) |
 
 The `beneficiary` object contains the recipient's information for the withdrawal. This object specifies who will receive the funds and how they should be delivered. You can see the properties of the `beneficiary` object in the table below:
 
@@ -114,6 +121,10 @@ Here are examples for both transfer methods:
     "rfc": "MAGR850920XY1",
     "institution": "40012",
     "email": "roberto.martinez@email.com"
+  },
+  "metadata": {
+    "latitude": "19.4326077",
+    "longitude": "-99.133208"
   }
 }
 ```
@@ -132,11 +143,31 @@ Here are examples for both transfer methods:
     "rfc": "GOAN850315AB2",
     "institution": "40012",
     "email": "ana.gonzalez@email.com"
+  },
+  "metadata": {
+    "latitude": "19.4326077",
+    "longitude": "-99.133208"
   }
 }
 ```
 
 </CodeGroup>
+
+### Metadata Requirements
+
+The `metadata` object is required for all withdrawal requests and must include geolocation information:
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `latitude` | string | Yes | Geographic latitude coordinate of the transaction origin |
+| `longitude` | string | Yes | Geographic longitude coordinate of the transaction origin |
+
+You can also include optional fields in the metadata object for tracking purposes:
+- `operation_date`: Date of the operation (format: "YYYY-MM-DD")
+- `customer_email`: Customer email address
+- `business_user`: Business user identifier
+- `customer_id`: Your internal customer ID
+- `order_id`: Your internal order ID
 
 Make a POST request to the [Process Transaction](/reference/process-transaction) endpoint with your withdrawal data:
 
@@ -157,6 +188,10 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
       "rfc": "MAGR850920XY1",
       "institution": "40012",
       "email": "roberto.martinez@email.com"
+    },
+    "metadata": {
+      "latitude": "19.4326077",
+      "longitude": "-99.133208"
     }
   }'
 ```
