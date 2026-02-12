@@ -1,0 +1,217 @@
+---
+title: "Idempotency"
+description: "Prevent duplicate charges by safely retrying failed payment requests"
+sidebarTitle: "Idempotency"
+---
+
+Idempotency ensures that a payment request is processed only once, even if the same request is sent multiple times. When a network timeout or server error occurs, you can safely retry the request without risking a duplicate charge.
+
+<Note>
+  Include the `X-Request-Id` header in every `POST` request to the `/process/` endpoint. Tonder stores the request and response so that retries with the same key and identical body always return the original result.
+</Note>
+
+## How It Works
+
+When Tonder receives a request with an `X-Request-Id` header, it checks whether it has already processed a request with that key and an identical body:
+
+- **First request** — Tonder processes the payment and stores the response against the key.
+- **Subsequent request with the same key and body** — Tonder returns the stored response without creating a new transaction.
+- **Request with the same key but a different body** — Tonder rejects the request. Generate a new key for any modified payload.
+
+## Implementation
+
+### Required Header
+
+Add `X-Request-Id` alongside your other authentication headers:
+
+```http
+POST /api/v1/process/
+Authorization: Token <YOUR_API_KEY>
+X-Signature-Transaction: <HMAC_SIGNATURE>
+X-Request-Id: <UNIQUE_IDEMPOTENCY_KEY>
+Content-Type: application/json
+```
+
+<Tip>
+  See [Authentication](/direct-integration/authentication) for full details on generating the required `Authorization` and `X-Signature-Transaction` headers.
+</Tip>
+
+### Generating Keys
+
+Use a UUID v4 for every distinct payment operation. UUIDs are globally unique, easy to generate in any language, and safe to store for debugging.
+
+<Tabs>
+  <Tab title="JavaScript">
+    ```javascript
+    import { v4 as uuidv4 } from 'uuid';
+
+    const idempotencyKey = uuidv4();
+    // Example: "550e8400-e29b-41d4-a716-446655440000"
+
+    const response = await fetch('https://stage.tonder.io/api/v1/process/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Token YOUR_API_KEY',
+        'X-Signature-Transaction': 'YOUR_HMAC_SIGNATURE',
+        'X-Request-Id': idempotencyKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(paymentData)
+    });
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import uuid
+    import requests
+
+    idempotency_key = str(uuid.uuid4())
+    # Example: "550e8400-e29b-41d4-a716-446655440000"
+
+    response = requests.post(
+        'https://stage.tonder.io/api/v1/process/',
+        headers={
+            'Authorization': 'Token YOUR_API_KEY',
+            'X-Signature-Transaction': 'YOUR_HMAC_SIGNATURE',
+            'X-Request-Id': idempotency_key,
+            'Content-Type': 'application/json'
+        },
+        json=payment_data
+    )
+    ```
+  </Tab>
+  <Tab title="cURL">
+    ```bash
+    curl -X POST https://stage.tonder.io/api/v1/process/ \
+      -H "Authorization: Token YOUR_API_KEY" \
+      -H "X-Signature-Transaction: YOUR_HMAC_SIGNATURE" \
+      -H "X-Request-Id: 550e8400-e29b-41d4-a716-446655440000" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "operation_type": "payment",
+        "amount": 100.00,
+        "currency": "MXN"
+      }'
+    ```
+  </Tab>
+</Tabs>
+
+As an alternative to UUID, you can compose a key from order and attempt data. This makes keys human-readable in logs:
+
+```javascript
+const idempotencyKey = `${orderId}-${attemptNumber}-${timestamp}`;
+// Example: "ORDER-12345-1-1738234567890"
+```
+
+## When to Reuse vs. Regenerate a Key
+
+The rule is straightforward: the key must match the intent. If the operation is identical, keep the key. If anything about the payment has changed, generate a new one.
+
+### Reuse the same key when retrying
+
+Preserve the original key any time you retry the exact same payment after a failure:
+
+```javascript
+const idempotencyKey = uuidv4();
+
+async function processWithRetry(paymentData, key, maxAttempts = 3) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await processPayment(paymentData, key); // same key every attempt
+    } catch (error) {
+      if (attempt === maxAttempts) throw error;
+      // Exponential backoff before next retry
+      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
+    }
+  }
+}
+```
+
+<Warning>
+  Always preserve the original key across retries. Generating a new key on each retry defeats idempotency protection and can result in duplicate charges.
+</Warning>
+
+### Generate a new key when the payment changes
+
+Any modification to the request body requires a fresh key:
+
+```javascript
+// Attempt 1: customer pays by card
+const key1 = uuidv4();
+await processPayment({
+  amount: 100,
+  currency: 'MXN',
+  payment_method: { type: 'CARD' }
+}, key1);
+
+// Attempt 2: customer switches to SPEI — body changed, new key required
+const key2 = uuidv4();
+await processPayment({
+  amount: 100,
+  currency: 'MXN',
+  payment_method: { type: 'SPEI' }
+}, key2);
+```
+
+## Error Handling
+
+### Key mismatch (same key, different body)
+
+If you send the same `X-Request-Id` with a modified request body, Tonder will reject the request. Generate a new key for the updated payload.
+
+### Common errors
+
+<AccordionGroup>
+  <Accordion title="Duplicate charge despite idempotency key">
+    **Cause**: A new key was generated on retry instead of reusing the original.
+
+    **Solution**: Store the idempotency key in your database before making the first request. Retrieve and reuse it on every subsequent retry for the same operation.
+  </Accordion>
+  <Accordion title="Request rejected after modifying the payload">
+    **Cause**: The same `X-Request-Id` was sent with a different request body.
+
+    **Solution**: Generate a new key whenever any field in the request body changes — including amount, currency, payment method, or customer data.
+  </Accordion>
+  <Accordion title="Unexpected response on retry">
+    **Cause**: The stored response from the first attempt is being returned, which may show a `Pending` or `Failed` status.
+
+    **Solution**: This is expected behaviour. Check the transaction status using the [Get Transaction Status](/reference/get-transaction-status) endpoint and act on the current state rather than assuming the retry succeeded.
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+Always include `X-Request-Id` in every `POST` request to `/process/`, not just in retry logic. This protects against silent network failures where your client never received a response but the server processed the request successfully.
+
+Store idempotency keys in your database alongside the order or transaction record before sending the request. This lets you recover the correct key after an application crash or restart.
+
+Use exponential backoff between retries to avoid overwhelming the API during transient failures. Start with a 1-second delay and double it on each subsequent attempt, up to a reasonable ceiling.
+
+Do not use predictable values such as sequential integers, order IDs alone, or timestamps as keys. These increase the risk of accidental key collisions across different operations.
+
+## Integration Coverage
+
+Idempotency via `X-Request-Id` applies to **Direct Integration** only — this is where you control the request headers directly.
+
+| Integration | Idempotency Handling |
+|---|---|
+| **Direct Integration** | You manage `X-Request-Id` on every `/process/` request |
+| **SDK** | Handled internally by the SDK — contact support for details |
+| **Hosted Checkout** | Tonder manages payment deduplication; use `external_id` on session creation to prevent duplicate sessions |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="key" href="/direct-integration/authentication">
+    Set up the full set of required headers for API requests
+  </Card>
+  <Card title="HTTP Response Codes" icon="code" href="/direct-integration/http-response-codes">
+    Handle success and error responses from the API
+  </Card>
+  <Card title="Rate Limits" icon="gauge" href="/direct-integration/rate-limits">
+    Understand request limits and how to implement backoff
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/direct-integration/webhooks/how-webhooks-works">
+    Receive reliable transaction status updates without polling
+  </Card>
+</CardGroup>

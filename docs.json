@@ -201,7 +201,8 @@
                   "direct-integration/environment",
                   "direct-integration/authentication",
                   "direct-integration/http-response-codes",
-                  "direct-integration/rate-limits"
+                  "direct-integration/rate-limits",
+                  "direct-integration/idempotency"
                 ]
               },
             {
