@@ -1,6 +1,6 @@
 ---
 title: "Get Tokenization Access Token"
-openapi: "POST /api/secure-token/"
+openapi: "GET /tokenization/auth/"
 ---
 
 <Warning>
@@ -19,7 +19,7 @@ Obtain an access token required for card tokenization requests. This token shoul
 
 The complete tokenization process follows these steps:
 
-1. **Get access token** using this endpoint (POST request)
+1. **Get access token** using this endpoint
 2. **Tokenize card data** using the access token with Tonder's vault service
 3. **Use tokens** in payment requests instead of raw card data
 
@@ -29,6 +29,70 @@ The complete tokenization process follows these steps:
 - **Validity**: Short-lived (typically 15-30 minutes)
 - **Usage**: Single-use recommended for security
 - **Scope**: Card tokenization operations only
+
+## Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `format` | string | Optional. Set to `api` to return API-formatted response. Example: `?format=api` |
+
+## Examples
+
+### Request
+
+Make a GET request to the endpoint with your API key in the Authorization header:
+
+<Tabs>
+<Tab title="Stage">
+
+```bash
+curl -X GET "https://stage.tonder.io/api/v1/tokenization/auth/?format=api" \
+-H "Authorization: Token <YOUR_API_KEY>"
+```
+
+</Tab>
+<Tab title="Production">
+
+```bash
+curl -X GET "https://app.tonder.io/api/v1/tokenization/auth/?format=api" \
+-H "Authorization: Token <YOUR_API_KEY>"
+```
+
+</Tab>
+</Tabs>
+
+### Success Response
+
+<ResponseField name="access_token" type="string">
+JWT access token for tokenization service. Use this token immediately to authorize tokenization requests.
+</ResponseField>
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+### Error Responses
+
+#### 401 Unauthorized
+
+This error occurs when authentication credentials are not provided or are invalid.
+
+**Response Headers:**
+- `WWW-Authenticate: Bearer realm="api"`
+
+**Response Body:**
+
+```json
+{
+  "detail": "Las credenciales de autenticación no se proveyeron."
+}
+```
+
+<Note>
+**Translation**: "Authentication credentials were not provided."
+</Note>
 
 ## Security Requirements
 
