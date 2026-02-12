@@ -153,7 +153,8 @@
                   "direct-integration/authentication",
                   "direct-integration/http-response-codes",
                   "direct-integration/testing-data",
-                  "direct-integration/rate-limits"
+                  "direct-integration/rate-limits",
+                  "direct-integration/idempotency"
                 ]
               },
               {
