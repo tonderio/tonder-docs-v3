@@ -86,6 +86,12 @@ The response contains key fields you need to handle the OXXO payment flow:
 Check that you received a valid `id` and `status` before proceeding. If either is missing or invalid, do not display payment instructions and handle the error appropriately.
 </Warning>
 
+<Note>
+**Payment confirmation is near-instant under normal conditions.** Once a customer pays at an OXXO store, confirmation typically arrives within minutes. However, OXXO's system may hold a payment in `pending` status for up to 3 hours while it checks for internal failures or potential refund scenarios. This is expected behaviour and does not indicate a problem.
+
+If a payment remains `pending` beyond 3 hours, contact [soporte@tonder.io](mailto:soporte@tonder.io) so the team can investigate with the payment provider.
+</Note>
+
 ## Step 3: Display Payment Instructions to Your Customer
 
 Present the payment voucher clearly to help customers complete their OXXO payment successfully. Create a user-friendly page that displays all necessary information for the customer to pay at any OXXO store:
@@ -177,11 +183,13 @@ There are some specificities to consider when using OXXO payments:
 
 <AccordionGroup>
 <Accordion title="Payment Timing">
-The processing time for OXXO payments follows these rules:
+OXXOPay confirmations are near-instant under normal conditions:
 
-- Payments are processed 24-48 hours after customer pays at store.
-- OXXO stores typically open 24/7.
-- Vouchers usually expire after 3-7 days.
+- Confirmation typically arrives within 10 minutes of the customer paying at the store.
+- In some cases, OXXO's system holds the status in `pending` for up to 3 hours while processing internal checks. This is normal.
+- If a payment remains `pending` beyond 3 hours and customer claims payment was made, report it to [soporte@tonder.io](mailto:soporte@tonder.io).
+- OXXO stores are typically open 24/7.
+- Vouchers expire after 5 days if unpaid.
 </Accordion>
 
 <Accordion title="Amount Limits">
