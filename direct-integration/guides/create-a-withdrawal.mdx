@@ -100,8 +100,15 @@ The `beneficiary` object contains the recipient's information for the withdrawal
 | `account` | The destination account number (18-digit CLABE for SPEI transfers, or 16-digit card number for debit card deposits) |
 | `name` | Full legal name of the beneficiary as it appears on their bank account or card |
 | `rfc` | Mexican tax identification number (RFC) - required for compliance and verification |
+| `curp` | Mexican Unique Population Registry Code (CURP) – 18-character alphanumeric personal identification number assigned to citizens and residents for official identification and compliance |
 | `institution` | Bank institution code (you can find codes in our [Mexican Banking Reference](/direct-integration/reference/mexican-banking-reference)) |
 | `email` | Beneficiary's email address for notifications and record-keeping |
+
+<Note>
+**RFC and CURP requirements**
+
+Either `rfc` or `curp` must be provided for every withdrawal request — omitting both will result in a rejected transaction. If both fields are provided, `rfc` takes precedence.
+</Note>
 
 Here are examples for both transfer methods:
 
@@ -119,6 +126,7 @@ Here are examples for both transfer methods:
     "account": "012345678901234567", // 18-digit CLABE
     "name": "Roberto Martínez García",
     "rfc": "MAGR850920XY1",
+    "curp": "MARG850920HDFTNB01",
     "institution": "40012",
     "email": "roberto.martinez@email.com"
   },
@@ -141,6 +149,7 @@ Here are examples for both transfer methods:
     "account": "4111111111111111", // 16-digit card number
     "name": "Ana María González",
     "rfc": "GOAN850315AB2",
+    "curp": "GOAN850315MDFNZN02",
     "institution": "40012",
     "email": "ana.gonzalez@email.com"
   },
