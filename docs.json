@@ -411,7 +411,8 @@
                 "pages": [
                   "withdrawals-api/guides/get-user-id",
                   "withdrawals-api/guides/create-withdrawal",
-                  "withdrawals-api/guides/workflow-statuses"
+                  "withdrawals-api/guides/workflow-statuses",
+                  "withdrawals-api/guides/withdrawal-refund-handling"
                 ]
               },
               {

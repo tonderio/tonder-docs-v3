@@ -1,0 +1,280 @@
+---
+title: "Withdrawal Refund Handling"
+description: "Learn when and why disbursed withdrawals are reversed, and how to handle refund notifications in your integration."
+sidebarTitle: "Refund Handling"
+---
+
+When a withdrawal is successfully disbursed, it can still be reversed by the SPEI system. This guide explains when refunds occur, how Tonder handles them automatically, and how your integration should respond.
+
+<Note>
+A withdrawal refund (`refunded`) is distinct from a payment refund. It means the disbursed funds were returned to your merchant sub-account — not to the end customer's bank.
+</Note>
+
+## Prerequisites
+
+Before reading this guide, ensure you are familiar with:
+
+- [Withdrawal API overview](/withdrawals-api/overview) — how to create and manage withdrawals
+- [Withdrawal webhooks](/withdrawals-api/webhooks/webhook-payloads) — how status change notifications are delivered
+- [Withdrawal status reference](#withdrawal-status-reference) — the full lifecycle
+
+---
+
+## How Withdrawal Refunds Work
+
+A refund occurs when the SPEI system reverses a previously completed disbursement. Tonder detects this automatically and transitions the withdrawal to `refunded` — no action is required from your integration to trigger it.
+
+<Steps>
+  <Step title="Withdrawal completes">
+    The withdrawal reaches `paid_full` status, and a webhook notification is dispatched to your endpoint (after a brief delay — see [PAID_FULL notification delay](#paid_full-notification-delay)).
+  </Step>
+
+  <Step title="Provider signals reversal">
+    The SPEI system notifies Tonder that the disbursement has been reversed. Tonder processes this automatically and transitions the withdrawal to `refunded`.
+  </Step>
+
+  <Step title="Status transitions to refunded">
+    The withdrawal moves from `paid_full` → `refunded`. This is a terminal state — no further transitions are possible.
+  </Step>
+
+  <Step title="Webhook notification delivered">
+    A webhook is sent to your configured endpoint with `status: "refunded"`. The `refunded` terminal notification also suppresses any pending `paid_full` webhook that has not yet been dispatched.
+  </Step>
+
+  <Step title="Funds returned to sub-account">
+    The refunded amount is credited back to your merchant sub-account. You should notify the withdrawal recipient and initiate a new withdrawal request if appropriate.
+  </Step>
+</Steps>
+
+---
+
+## Withdrawal Status Reference
+
+Understanding the full status lifecycle helps you handle refunds correctly. The statuses relevant to the refund flow are:
+
+| Status | Type | Description |
+|---|---|---|
+| `pending` | Initial | Withdrawal request created |
+| `processing` | Intermediate | Approved and being sent to provider |
+| `sent_to_provider` | Intermediate | Submitted to SPEI network |
+| `in_transit` | Intermediate | Funds actively transferring |
+| `on_hold` | Intermediate | Paused for manual review |
+| `paid_full` | Intermediate | Disbursement confirmed by provider |
+| `refunded` | **Terminal** | Funds reversed and returned to sub-account |
+| `failed` | **Terminal** | Withdrawal failed |
+| `cancelled` | **Terminal** | Withdrawal cancelled |
+| `expired` | **Terminal** | Withdrawal timed out |
+
+<Note>
+Terminal statuses (`refunded`, `failed`, `cancelled`, `expired`) are final. Once a withdrawal reaches a terminal state, no further transitions can occur — including via the API.
+</Note>
+
+The complete transition path to a refund is:
+
+```
+pending → processing → sent_to_provider → paid_full → refunded
+```
+
+---
+
+## Webhook Notifications for Refunds
+
+### Refund webhook payload
+
+When a withdrawal is refunded, your webhook endpoint receives a notification with `status: "refunded"`:
+
+```json
+{
+  "withdrawal_id": "wdr_xxxxxxxxxxxxxxxx",
+  "status": "refunded",
+  "amount": 1500.00,
+  "currency": "MXN",
+  "provider_reference": "12345678",
+  "reason": "Cuenta inexistente",
+  "created_at": "2025-02-10T14:22:00Z",
+  "updated_at": "2025-02-10T15:47:33Z"
+}
+```
+
+<ResponseField name="withdrawal_id" type="string">
+  Unique identifier for the withdrawal.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Will be `refunded` for a reversed disbursement.
+</ResponseField>
+
+<ResponseField name="reason" type="string">
+  The reversal reason provided by the SPEI system (e.g., `"Cuenta inexistente"`, `"CLABE incorrecta"`). May be `"Unknown error"` if no reason was provided.
+</ResponseField>
+
+<ResponseField name="provider_reference" type="string">
+  The SPEI system transaction reference used to identify the inbound notification.
+</ResponseField>
+
+### PAID_FULL notification delay
+
+Tonder applies a short delay (default: 60 seconds) before sending the `paid_full` webhook. This is intentional: it allows time for the SPEI system to signal a reversal and suppress the `paid_full` notification if the disbursement is immediately reversed.
+
+This means your integration may observe only a `refunded` webhook — with no preceding `paid_full` webhook — for very fast reversals.
+
+<Tip>
+Design your integration to handle `refunded` arriving without a prior `paid_full` notification. Do not assume `paid_full` will always be received before `refunded`.
+</Tip>
+
+### Notification ordering guarantees
+
+| Scenario | Webhooks you receive |
+|---|---|
+| Successful disbursement, no reversal | `pending` → ... → `paid_full` |
+| Fast reversal (before `paid_full` webhook dispatches) | `pending` → ... → `refunded` |
+| Reversal after `paid_full` webhook was already sent | `pending` → ... → `paid_full` → `refunded` |
+
+Once a terminal webhook (`refunded`, `failed`, `cancelled`) has been sent, no further webhooks are dispatched for that withdrawal — including any delayed `paid_full` that may still be queued.
+
+---
+
+## Handling Refunds in Your Integration
+
+### Recommended response to a `refunded` webhook
+
+<Steps>
+  <Step title="Acknowledge the webhook">
+    Respond with HTTP `200` immediately upon receipt. Do not delay the response while processing business logic.
+  </Step>
+
+  <Step title="Check idempotency">
+    Use the `withdrawal_id` to look up the withdrawal in your system. If you have already processed a `refunded` event for this withdrawal, skip further processing.
+  </Step>
+
+  <Step title="Credit funds to your customer">
+    The refunded amount has been returned to your merchant sub-account. Credit the corresponding amount to the withdrawal recipient in your system.
+  </Step>
+
+  <Step title="Notify the recipient">
+    Inform the withdrawal recipient that the transfer was reversed and provide the reason if available (from the `reason` field).
+  </Step>
+
+  <Step title="Create a new withdrawal if appropriate">
+    If the reversal was due to a correctable error (e.g., incorrect CLABE), allow the recipient to submit a new withdrawal request after verifying their account details.
+  </Step>
+</Steps>
+
+### Querying withdrawal status via API
+
+You can confirm a withdrawal's current status at any time using the Withdrawals API:
+
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    curl -X GET https://app.tonder.io/api/v1/withdrawals/{withdrawal_id}/ \
+      -H "Authorization: Token YOUR_API_KEY" \
+      -H "Content-Type: application/json"
+    ```
+  </Tab>
+
+  <Tab title="JavaScript">
+    ```javascript
+    const response = await fetch(
+      `https://app.tonder.io/api/v1/withdrawals/${withdrawalId}/`,
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Token YOUR_API_KEY',
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    const withdrawal = await response.json();
+    console.log(withdrawal.status); // "refunded"
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    import requests
+
+    response = requests.get(
+        f'https://app.tonder.io/api/v1/withdrawals/{withdrawal_id}/',
+        headers={
+            'Authorization': 'Token YOUR_API_KEY',
+            'Content-Type': 'application/json'
+        }
+    )
+
+    withdrawal = response.json()
+    print(withdrawal['status'])  # "refunded"
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Error Handling
+
+<AccordionGroup>
+  <Accordion title="409 Conflict — attempt to transition a terminal withdrawal">
+    **Cause**: Your integration attempted to perform an action (e.g., `CANCEL`) on a withdrawal that is already in a terminal state (`refunded`, `failed`, `cancelled`).
+
+    **Solution**: Check the current withdrawal status before attempting any action. Once a withdrawal is `refunded`, no further actions are valid. Poll the status endpoint or rely on webhooks to stay up to date.
+  </Accordion>
+
+  <Accordion title="Refunded webhook received without prior paid_full webhook">
+    **Cause**: The SPEI provider reversed the disbursement before Tonder's delayed `paid_full` notification was dispatched. This is expected behavior, not an error.
+
+    **Solution**: Ensure your webhook handler can process `refunded` independently of `paid_full`. Do not rely on `paid_full` being received first. Use the `withdrawal_id` to correlate events regardless of order.
+  </Accordion>
+
+  <Accordion title="Duplicate refunded webhook received">
+    **Cause**: Webhook delivery uses at-least-once semantics. In rare cases, the same event may be delivered more than once.
+
+    **Solution**: Implement idempotent webhook handling. Store processed `withdrawal_id` + `status` combinations and skip re-processing if the pair has already been handled.
+  </Accordion>
+
+  <Accordion title="reason field is 'Unknown error'">
+    **Cause**: The SPEI system returned a reversal notification without a reason value.
+
+    **Solution**: Treat this as an unspecified reversal. Present a generic message to the recipient (e.g., "The transfer was returned by the recipient's bank. Please verify the account details and try again."). Contact [soporte@tonder.io](mailto:soporte@tonder.io) if you need additional details for investigation.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Common Refund Reasons
+
+The `reason` field in the webhook payload reflects the reversal reason returned by the SPEI system. Common values include:
+
+| Reason | Description |
+|---|---|
+| `Cuenta inexistente` | The destination account does not exist |
+| `CLABE incorrecta` | The CLABE number is invalid or formatted incorrectly |
+| `Cuenta cancelada` | The destination account has been closed |
+| `Fondos insuficientes` | Insufficient funds at the receiving institution |
+| `Operación no permitida` | The transfer type is not permitted for this account |
+
+<Note>
+This list is not exhaustive. The SPEI system may return additional reason values. Always surface the `reason` field to your operations team for investigation.
+</Note>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Withdrawal Webhooks" icon="bell" href="/withdrawals-api/webhooks/webhook-payloads">
+    Configure and verify webhook delivery for all withdrawal status changes
+  </Card>
+
+  <Card title="Create a Withdrawal" icon="paper-plane" href="/withdrawals-api/guides/create-withdrawal">
+    Learn how to initiate a new withdrawal after a refund
+  </Card>
+
+  <Card title="Withdrawal Status Reference" icon="list" href="/withdrawals-api/reference/status-codes">
+    Full status definitions, transitions, and terminal state behavior
+  </Card>
+
+  <Card title="Dashboard — Transactions" icon="table" href="/dashboard/transactions">
+    Monitor and investigate refunded withdrawals in the Tonder Dashboard
+  </Card>
+</CardGroup>
