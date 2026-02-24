@@ -137,32 +137,33 @@ To generate a voucher for a cash payment at an OXXO store, set the `type` to `ox
 }
 ```
 
-A successful OXXO Pay response will have a status of `pending` and includes payment instructions with a barcode and reference for the customer:
+A successful OXXO Pay response will have a status of `pending` and includes a url to payment instructions and reference for the customer:
 
 ```json OXXO Payment Response
 {
-  "id": "550e8400-e29b-41d4-a716-446655440002",
+  "id": "887e3ff0-4f28-456d-bf33-857de2cdf788",
   "operation_type": "payment",
-  "status": "pending",
-  "amount": 250.00,
+  "status": "Pending",
+  "amount": 34.0,
   "currency": "MXN",
-  "merchant_reference": "oxxopay-test-001",
-  "payment_id": 12347,
-  "transaction_id": "txn_oxxo789",
-  "provider": "oxxopay_provider",
-  "created_at": "2024-07-26T10:40:00Z",
+  "client_reference": "oxxo deposit test",
+  "metadata": {
+    "id_casino": "id Lidem"
+  },
+  "provider": "tonder",
+  "created_at": "2026-02-17T21:32:28.887557Z",
   "status_code": 201,
-  "payment_instructions": {
-    "reference": "98765432109876543210",
-    "barcode": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
-    "expires_at": "2024-08-02T10:40:00Z",
-    "store_name": "oxxopay"
-  }
+  "next_action": {
+    "redirect_to_url": {
+      "url": "https://stage-payflow.tonder.io/oxxo-pay?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+  },
+  "verify_transaction_status_url": "/transactions/887e3ff0-4f28-456d-bf33-857de2cdf788/"
 }
 ```
 
 <Tip>
-Display the barcode image and reference number to your customer. They can present either at any OXXO store to complete the payment. Note that OXXO payments typically have a longer expiration window (usually 7 days).
+Display the voucher image and reference number to your customer. They can present either at any OXXO store to complete the payment. Note that OXXO payments typically have a longer expiration window (usually 7 days).
 </Tip>
 </Accordion>
 </AccordionGroup>
