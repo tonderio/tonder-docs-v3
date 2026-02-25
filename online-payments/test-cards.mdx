@@ -2,33 +2,25 @@
 title: "Test Cards"
 'og:description': "This page provides a list of test cards for use along with their 3-D Secure results and transaction outcomes. Use these test cards for simulating various payment scenarios when testing your integration with Tonder."
 ---
+Use these test cards to simulate payment scenarios in the Stage environment before going live. All cards work exclusively in `https://stage.tonder.io` — they will not work in production.
 
 
 <Tip>
-  For a better experience we recommend getting in touch with your Tonder representative to obtain test cards specific to your integration and region.
+  For a better experience, we recommend getting in touch with your Tonder representative to obtain test cards specific to your integration and region.
 </Tip>
 
-# Tonder Platform Test Cards
-
-<Note> CVV should be **3 digits** and expiration date can be **any future date**.</Note>
-
-## Bank 1
-
-| Card Number | Expected Result |
-| :--- | :--- |
-| `4000 0000 0000 0077` | Successful payment |
-| `4444 4444 4444 9777` | Card declined |
-| `4000 0000 0000 0085` | 3ds authentication required |
-| `4242 4242 4242 4242` | Processing error (Does not generate a log in Tonder) |
-| *Not Available* | Insufficient funds |
-
-
-## Bank 2
+## Test Cards
 
 | Card Number | Expected Result |
 | :--- | :--- |
 | `4000 0000 0000 0077` | Successful payment |
 | `5451 9515 7492 5480` | Card declined |
-| `4456 5280 8038 9860` | 3ds authentication required |
-| `4574 4412 1519 0335` | Processing error (Does not generate a log in Tonder) |
+| `4456 5280 8038 9860` | 3DS authentication required |
+| `4456 5400 0000 0063` | Non-3DS flow |
+| `4574 4412 1519 0335` | Processing error (does not generate a log in Tonder) |
 | `4349 0012 1084 6432` | Insufficient funds |
+
+
+<Note>
+  CVV should be **3 digits** and expiration date can be **any future date** from the date of your test.
+</Note>
