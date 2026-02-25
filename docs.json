@@ -271,7 +271,10 @@
               },
               {
                 "group": "Resources",
-                "pages": ["direct-integration/resources/support"]
+                "pages": [
+                  "direct-integration/testing-data",
+                  "direct-integration/resources/support"
+                ]
               }
             ]
           },
