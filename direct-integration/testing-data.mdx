@@ -1,0 +1,45 @@
+---
+title: "Testing Data"
+description: "Test cards and scenarios for validating your Direct Integration implementation before going live."
+sidebarTitle: "Testing Data"
+---
+
+Use these test cards to simulate payment scenarios in the Stage environment before going live. All cards work exclusively in `https://stage.tonder.io` — they will not work in production.
+
+<Note>
+  CVV should be **3 digits** and expiration date can be **any future date** from the date of your test.
+</Note>
+
+<Tip>
+  For a better experience, we recommend getting in touch with your Tonder representative to obtain test cards specific to your integration and region.
+</Tip>
+
+## Test Cards
+
+| Card Number | Expected Result |
+| :--- | :--- |
+| `4000 0000 0000 0077` | Successful payment |
+| `5451 9515 7492 5480` | Card declined |
+| `4456 5280 8038 9860` | 3DS authentication required |
+| `4456 5400 0000 0063` | Non-3DS flow |
+| `4574 4412 1519 0335` | Processing error (does not generate a log in Tonder) |
+| `4349 0012 1084 6432` | Insufficient funds |
+
+## Next Steps
+
+Once you've validated your integration, return to where you left off:
+
+<CardGroup cols={2}>
+  <Card title="Card Payments" icon="credit-card" href="/direct-integration/guides/create-payments/card-payments-overview">
+    Continue implementing card payments
+  </Card>
+  <Card title="Non-Card Payments" icon="building-columns" href="/direct-integration/guides/create-payments/non-card-payments">
+    Continue implementing SPEI, OXXO, or other methods
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/direct-integration/quickstart">
+    Back to the Quick Start guide
+  </Card>
+  <Card title="Go to Production" icon="circle-check" href="/direct-integration/environment#moving-to-production">
+    Ready to go live? Switch to the production environment
+  </Card>
+</CardGroup>
