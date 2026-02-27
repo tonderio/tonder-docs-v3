@@ -10,24 +10,24 @@ info:
     email: hello@tonder.io
   version: v1
 servers:
-- url: https://stage.tonder.io/api/v1
-  description: Stage server
-- url: https://stoplight.io/mocks/tonder/tonder-api-v1-2/3152148
-  description: Stoplight server
+  - url: https://api-stage.tonder.io/api/v1
+    description: Staging
+  - url: https://api.tonder.io/api/v1
+    description: Production
 security: []
 paths:
   "/payments/business/{api_key}":
     get:
-      description: ''
+      description: ""
       parameters:
-      - in: path
-        description: Your Tonder API Key. You can recover it on Tonder's dashboard.
-        name: api_key
-        required: true
-        schema:
-          type: string
+        - in: path
+          description: Your Tonder API Key. You can recover it on Tonder's dashboard.
+          name: api_key
+          required: true
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
@@ -86,7 +86,8 @@ paths:
                       checkout_mode:
                         type: boolean
                         example: false
-                        description: A boolean indicating whether the business has
+                        description:
+                          A boolean indicating whether the business has
                           a checkout mode.
                       textCheckoutColor:
                         type: string
@@ -99,7 +100,7 @@ paths:
                       checkout_logo:
                         type: string
                         format: uri
-                        example: 
+                        example:
                         description: The URL of the checkout logo.
                   openpay_keys:
                     type: object
@@ -119,7 +120,7 @@ paths:
                     properties:
                       public_key:
                         type: string
-                        example: ''
+                        example: ""
                         description: The public key associated with Fintoc.
                   vault_id:
                     type: string
@@ -138,23 +139,23 @@ paths:
                     type: boolean
                     example: false
                     description: A boolean indicating whether installments are available.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               example:
                 detail: Invalid token.
-        '404':
+        "404":
           description: Not found
           content:
             application/json:
               example:
                 detail: Not found.
       tags:
-      - payments
+        - payments
   "/customer/":
     post:
-      description: ''
+      description: ""
       parameters: []
       requestBody:
         content:
@@ -167,9 +168,9 @@ paths:
                   format: email
                   description: The client's email address.
               required:
-              - email
+                - email
       responses:
-        '201':
+        "201":
           description: Created
           content:
             application/jsons:
@@ -189,24 +190,24 @@ paths:
                     type: string
                     example: 86706c507e9ca032c91771a26819d69e91402fc9
                     description: The authorization token for the client.
-        '400':
+        "400":
           description: Bad Request
           content:
             Bad Request:
               example:
                 email:
-                - Enter a valid email address.
-        '403':
+                  - Enter a valid email address.
+        "403":
           description: Forbidden
           content:
             application/json:
               example:
                 detail: Invalid token.
       tags:
-      - payments
+        - payments
   "/orders/":
     post:
-      description: ''
+      description: ""
       parameters: []
       requestBody:
         content:
@@ -223,16 +224,16 @@ paths:
                   type: string
                   default: "<YOUR_CLIENT_AUTH_TOKEN>"
                   example: "<YOUR_CLIENT_AUTH_TOKEN>"
-                  description: 'The client authorization token: `auth_token`'
+                  description: "The client authorization token: `auth_token`"
                 billing_address_id:
                   type: string
-                  default: 
-                  example: 
+                  default:
+                  example:
                   description: The identifier for the billing address.
                 shipping_address_id:
                   type: string
-                  default: 
-                  example: 
+                  default:
+                  example:
                   description: The identifier for the shipping address.
                 amount:
                   type: integer
@@ -242,15 +243,18 @@ paths:
                   description: A code indicating the status of the transaction.
                 reference:
                   type: string
-                  description: A unique identifier or reference number associated
+                  description:
+                    A unique identifier or reference number associated
                     with the transaction.
                 is_oneclick:
                   type: boolean
-                  description: A boolean value indicating whether the transaction
+                  description:
+                    A boolean value indicating whether the transaction
                     involves a one-click purchase.
                 items:
                   type: array
-                  description: An array containing details about the items included
+                  description:
+                    An array containing details about the items included
                     in the transaction.
                   items:
                     type: object
@@ -278,27 +282,28 @@ paths:
                         description: " The name or title of the product."
                       amount_total:
                         type: integer
-                        description: The total monetary value of this specific cart
+                        description:
+                          The total monetary value of this specific cart
                           item.
                     required:
-                    - description
-                    - quantity
-                    - price_unit
-                    - discount
-                    - taxes
-                    - product_reference
-                    - name
-                    - amount_total
+                      - description
+                      - quantity
+                      - price_unit
+                      - discount
+                      - taxes
+                      - product_reference
+                      - name
+                      - amount_total
               required:
-              - business
-              - client
-              - amount
-              - status
-              - reference
-              - is_oneclick
-              - items
+                - business
+                - client
+                - amount
+                - status
+                - reference
+                - is_oneclick
+                - items
       responses:
-        '201':
+        "201":
           description: Successful response
           content:
             application/json:
@@ -312,12 +317,13 @@ paths:
                   created:
                     type: string
                     format: date-time
-                    example: '2024-01-18T10:09:36.499975-06:00'
-                    description: The timestamp indicating the creation date and time
+                    example: "2024-01-18T10:09:36.499975-06:00"
+                    description:
+                      The timestamp indicating the creation date and time
                       of the order.
                   amount:
                     type: string
-                    example: '1200.0000'
+                    example: "1200.0000"
                     description: The total monetary value of the order.
                   status:
                     type: string
@@ -325,21 +331,24 @@ paths:
                     description: The status of the order.
                   payment_method:
                     type: string
-                    example: 
+                    example:
                     description: The payment method used in the order.
                   reference:
                     type: string
-                    example: '1234556'
-                    description: A unique identifier or reference number associated
+                    example: "1234556"
+                    description:
+                      A unique identifier or reference number associated
                       with the order.
                   is_oneclick:
                     type: boolean
                     example: true
-                    description: A boolean value indicating whether the order involves
+                    description:
+                      A boolean value indicating whether the order involves
                       a one-click purchase.
                   items:
                     type: array
-                    description: An array containing details about the items included
+                    description:
+                      An array containing details about the items included
                       in the order.
                     items:
                       type: object
@@ -350,29 +359,31 @@ paths:
                           description: A description of the item in the order.
                         product_reference:
                           type: string
-                          example: '1'
-                          description: A reference number or identifier for the product
+                          example: "1"
+                          description:
+                            A reference number or identifier for the product
                             in the order.
                         quantity:
                           type: string
-                          example: '1.0000'
+                          example: "1.0000"
                           description: The quantity of the item in the order.
                         price_unit:
                           type: string
-                          example: '1.0000'
+                          example: "1.0000"
                           description: The unit price of the item in the order.
                         discount:
                           type: string
-                          example: '0.0000'
+                          example: "0.0000"
                           description: The discount applied to the item in the order.
                         taxes:
                           type: string
-                          example: '0.0000'
+                          example: "0.0000"
                           description: The taxes associated with the item in the order.
                         amount_total:
                           type: string
-                          example: '1200.0000'
-                          description: The total monetary value of the specific item
+                          example: "1200.0000"
+                          description:
+                            The total monetary value of the specific item
                             in the order.
                   billing_address:
                     type: string
@@ -391,55 +402,56 @@ paths:
                         description: The email address of the client.
                       name:
                         type: string
-                        example: ''
+                        example: ""
                         description: The full name of the client.
                       first_name:
                         type: string
-                        example: ''
+                        example: ""
                         description: The first name of the client.
                       last_name:
                         type: string
-                        example: ''
+                        example: ""
                         description: The last name of the client.
                       client_profile:
                         type: object
                         properties:
                           gender:
                             type: string
-                            example: ''
+                            example: ""
                             description: Gender information about the client.
                           date_birth:
                             type: string
                             format: date
-                            example: 
+                            example:
                             description: Date of birth of the client.
                           terms:
                             type: boolean
                             example: false
-                            description: A boolean indicating whether the client has
+                            description:
+                              A boolean indicating whether the client has
                               agreed to terms.
                           phone:
                             type: string
-                            example: ''
+                            example: ""
                             description: Phone number of the client.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               example:
                 detail: Invalid token.
       tags:
-      - payments
+        - payments
   "/business/{business}/payments/":
     post:
-      description: ''
+      description: ""
       parameters:
-      - in: path
-        name: business
-        description: A business unique identifier.
-        required: true
-        schema:
-          type: string
+        - in: path
+          name: business
+          description: A business unique identifier.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -453,19 +465,20 @@ paths:
                 date:
                   type: string
                   format: date-time
-                  example: '2023-12-15T22:45:06.506Z'
-                  description: The timestamp representing the date and time of the
+                  example: "2023-12-15T22:45:06.506Z"
+                  description:
+                    The timestamp representing the date and time of the
                     order.
                 order:
                   type: integer
                   example: 5728
                   description: The unique identifier number for the order.
               required:
-              - amount
-              - date
-              - order
+                - amount
+                - date
+                - order
       responses:
-        '201':
+        "201":
           description: Successful response
           content:
             application/json:
@@ -475,16 +488,18 @@ paths:
                   pk:
                     type: integer
                     example: 5943
-                    description: The primary key or identifier associated with the
+                    description:
+                      The primary key or identifier associated with the
                       payment.
                   order:
                     type: integer
-                    example: 
-                    description: The unique identifier number associated with the
+                    example:
+                    description:
+                      The unique identifier number associated with the
                       order.
                   amount:
                     type: string
-                    example: '1200.0000'
+                    example: "1200.0000"
                     description: The total monetary value of the order.
                   status:
                     type: string
@@ -493,14 +508,16 @@ paths:
                   date:
                     type: string
                     format: date-time
-                    example: '2024-01-18T10:18:39.800536-06:00'
-                    description: The timestamp indicating the date and time the payment
+                    example: "2024-01-18T10:18:39.800536-06:00"
+                    description:
+                      The timestamp indicating the date and time the payment
                       was created.
                   paid_date:
                     type: string
                     format: date-time
-                    example: 
-                    description: The timestamp indicating the date and time the order
+                    example:
+                    description:
+                      The timestamp indicating the date and time the order
                       was paid, or null if not paid.
                   shipping_address:
                     type: object
@@ -513,7 +530,8 @@ paths:
                       number:
                         type: string
                         example: N/a
-                        description: The house or building number in the shipping
+                        description:
+                          The house or building number in the shipping
                           information.
                       suburb:
                         type: string
@@ -527,7 +545,7 @@ paths:
                             example: N/a
                             description: The name of the city in the shipping information.
                         required:
-                        - name
+                          - name
                         description: The city information in the shipping details.
                       state:
                         type: object
@@ -535,7 +553,8 @@ paths:
                           name:
                             type: string
                             example: N/a
-                            description: The name of the state or region in the shipping
+                            description:
+                              The name of the state or region in the shipping
                               information.
                           country:
                             type: object
@@ -543,7 +562,8 @@ paths:
                               name:
                                 type: string
                                 example: N/a
-                                description: The name of the country in the shipping
+                                description:
+                                  The name of the country in the shipping
                                   information.
                             description: The country information in the shipping details.
                         description: The state information in the shipping details.
@@ -553,8 +573,9 @@ paths:
                         description: The ZIP code or postal code in the shipping information.
                   shipping_address_id:
                     type: integer
-                    example: 
-                    description: The identifier associated with the shipping address
+                    example:
+                    description:
+                      The identifier associated with the shipping address
                       in the order.
                   billing_address:
                     type: object
@@ -586,7 +607,8 @@ paths:
                           name:
                             type: string
                             example: N/a
-                            description: The name of the state or region in the billing
+                            description:
+                              The name of the state or region in the billing
                               information.
                           country:
                             type: object
@@ -594,7 +616,8 @@ paths:
                               name:
                                 type: string
                                 example: N/a
-                                description: The name of the country in the billing
+                                description:
+                                  The name of the country in the billing
                                   information.
                             description: The country information in the billing details.
                         description: The state information in the billing details.
@@ -604,30 +627,33 @@ paths:
                         description: The ZIP code or postal code in the billing information.
                   billing_address_id:
                     type: string
-                    example: 
-                    description: The identifier associated with the billing address
+                    example:
+                    description:
+                      The identifier associated with the billing address
                       in the order.
                   client:
                     type: string
-                    example: 
-                    description: The identifier or reference associated with the client
+                    example:
+                    description:
+                      The identifier or reference associated with the client
                       or customer.
                   customer_order_reference:
                     type: string
-                    example: 
-                    description: The customer's reference or identifier associated
+                    example:
+                    description:
+                      The customer's reference or identifier associated
                       with the order.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               example:
                 detail: Invalid token.
       tags:
-      - payments
+        - payments
   "/checkout-router/":
     post:
-      description: ''
+      description: ""
       parameters: []
       requestBody:
         content:
@@ -637,18 +663,21 @@ paths:
               properties:
                 card:
                   type: object
-                  description: Contains information related to the payment card used
+                  description:
+                    Contains information related to the payment card used
                     in the transaction.
                   properties:
                     cvv:
                       type: string
                       example: 69f4d206-ceb6-4be8-82d8-7a39dceb9f87
-                      description: The Card Verification Value (CVV) associated with
+                      description:
+                        The Card Verification Value (CVV) associated with
                         the card.
                     skyflow_id:
                       type: string
                       example: 702faf3c-26f9-41c1-a287-cec20aa43929
-                      description: The unique identifier associated with the card
+                      description:
+                        The unique identifier associated with the card
                         in Skyflow's secure vault.
                     card_number:
                       type: string
@@ -667,12 +696,12 @@ paths:
                       example: 5c6bef6c-9642-4403-9ce6-215b0d3f85b0
                       description: The expiration month of the card.
                   required:
-                  - cvv
-                  - skyflow_id
-                  - card_number
-                  - cardholder_name
-                  - expiration_year
-                  - expiration_month
+                    - cvv
+                    - skyflow_id
+                    - card_number
+                    - cardholder_name
+                    - expiration_year
+                    - expiration_month
                 name:
                   type: string
                   example: Jhon
@@ -688,13 +717,14 @@ paths:
                   description: The email address of the client.
                 phone_number:
                   type: string
-                  example: '6181234567'
+                  example: "6181234567"
                   description: The phone number of the client.
                 return_url:
                   type: string
                   format: uri
                   example: http://tonder.io
-                  description: The URL to which the user will be redirected after
+                  description:
+                    The URL to which the user will be redirected after
                     completing the transaction.
                 id_product:
                   type: string
@@ -706,11 +736,11 @@ paths:
                   description: The quantity of the product in the transaction.
                 id_ship:
                   type: string
-                  example: '0'
+                  example: "0"
                   description: The identifier for the shipping information.
                 instance_id_ship:
                   type: string
-                  example: '0'
+                  example: "0"
                   description: The instance identifier for the shipping information.
                 amount:
                   type: integer
@@ -730,7 +760,7 @@ paths:
                   description: The identifier for the device session.
                 token_id:
                   type: string
-                  example: ''
+                  example: ""
                   description: A token identifier associated with the transaction.
                 order_id:
                   type: integer
@@ -749,26 +779,26 @@ paths:
                   example: sdk
                   description: The source of the transaction.
               required:
-              - card
-              - name
-              - last_name
-              - email_client
-              - phone_number
-              - return_url
-              - id_product
-              - quantity_product
-              - id_ship
-              - instance_id_ship
-              - amount
-              - title_ship
-              - description
-              - device_session_id
-              - order_id
-              - business_id
-              - payment_id
-              - source
+                - card
+                - name
+                - last_name
+                - email_client
+                - phone_number
+                - return_url
+                - id_product
+                - quantity_product
+                - id_ship
+                - instance_id_ship
+                - amount
+                - title_ship
+                - description
+                - device_session_id
+                - order_id
+                - business_id
+                - payment_id
+                - source
       responses:
-        '201':
+        "201":
           description: Successful response
           content:
             application/json:
@@ -777,62 +807,73 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: '200'
-                    description: The HTTP status code indicating the success or failure
+                    example: "200"
+                    description:
+                      The HTTP status code indicating the success or failure
                       of the response.
                   message:
                     type: string
                     example: Success
-                    description: A message providing additional information about
+                    description:
+                      A message providing additional information about
                       the success or failure of the response.
                   psp_response:
                     type: object
-                    description: The response from the payment service provider (PSP)
+                    description:
+                      The response from the payment service provider (PSP)
                       containing detailed information about the payment transaction.
                     properties:
                       id:
                         type: string
                         example: ch_3OZyPSK5zRUzLwaW0CyXUIVQ
-                        description: A unique identifier for the payment transaction
+                        description:
+                          A unique identifier for the payment transaction
                           within the payment service provider (PSP) system.
                       object:
                         type: string
                         example: charge
-                        description: The type of object, representing the nature of
+                        description:
+                          The type of object, representing the nature of
                           the transaction (e.g., 'charge' for a payment charge).
                       amount:
                         type: integer
                         example: 120000
-                        description: The total amount of the transaction, expressed
+                        description:
+                          The total amount of the transaction, expressed
                           in the smallest currency unit (e.g., cents or pence).
                       amount_captured:
                         type: integer
                         example: 120000
-                        description: The amount that has been captured or collected
+                        description:
+                          The amount that has been captured or collected
                           from the customer as part of the transaction.
                       amount_refunded:
                         type: integer
                         example: 0
-                        description: The amount that has been refunded to the customer
+                        description:
+                          The amount that has been refunded to the customer
                           as part of the transaction.
                       application:
                         type: string
-                        example: 
-                        description: The identifier of the application associated
+                        example:
+                        description:
+                          The identifier of the application associated
                           with the transaction, if applicable.
                       application_fee:
                         type: string
-                        example: 
+                        example:
                         description: The application fee, if any, applied to the transaction.
                       application_fee_amount:
                         type: string
-                        example: 
-                        description: The amount of the application fee, if any, applied
+                        example:
+                        description:
+                          The amount of the application fee, if any, applied
                           to the transaction.
                       balance_transaction:
                         type: string
                         example: txn_3OZyPSK5zRUzLwaW0iZIaxjx
-                        description: The identifier of the balance transaction associated
+                        description:
+                          The identifier of the balance transaction associated
                           with the payment charge.
                       billing_details:
                         type: object
@@ -842,63 +883,73 @@ paths:
                             properties:
                               city:
                                 type: string
-                                example: 
-                                description: The city associated with the billing
+                                example:
+                                description:
+                                  The city associated with the billing
                                   address.
                               country:
                                 type: string
-                                example: 
-                                description: The country associated with the billing
+                                example:
+                                description:
+                                  The country associated with the billing
                                   address.
                               line1:
                                 type: string
-                                example: 
+                                example:
                                 description: The first line of the billing address.
                               line2:
                                 type: string
-                                example: 
+                                example:
                                 description: The second line of the billing address.
                               postal_code:
                                 type: string
-                                example: 
-                                description: The postal code associated with the billing
+                                example:
+                                description:
+                                  The postal code associated with the billing
                                   address.
                               state:
                                 type: string
-                                example: 
-                                description: The state or region associated with the
+                                example:
+                                description:
+                                  The state or region associated with the
                                   billing address.
-                            description: Object containing details about the address
+                            description:
+                              Object containing details about the address
                               in the billing details.
                           email:
                             type: string
-                            example: 
-                            description: The email address associated with the billing
+                            example:
+                            description:
+                              The email address associated with the billing
                               details.
                           name:
                             type: string
-                            example: 
+                            example:
                             description: The name associated with the billing details.
                           phone:
                             type: string
-                            example: 
-                            description: The phone number associated with the billing
+                            example:
+                            description:
+                              The phone number associated with the billing
                               details.
                         description: Object containing details about the billing information.
                       calculated_statement_descriptor:
                         type: string
                         example: GOLFMANAGER.COM
-                        description: The calculated statement descriptor associated
+                        description:
+                          The calculated statement descriptor associated
                           with the transaction.
                       captured:
                         type: boolean
                         example: true
-                        description: Indicates whether the payment has been captured
+                        description:
+                          Indicates whether the payment has been captured
                           (true) or not (false).
                       created:
                         type: integer
                         example: 1705595142
-                        description: The timestamp representing the creation date
+                        description:
+                          The timestamp representing the creation date
                           and time of the transaction.
                       currency:
                         type: string
@@ -907,55 +958,64 @@ paths:
                       customer:
                         type: string
                         example: cus_PBoeaxFGw6mZFF
-                        description: The identifier of the customer associated with
+                        description:
+                          The identifier of the customer associated with
                           the transaction.
                       description:
                         type: string
                         example: transaction
-                        description: A description or additional information about
+                        description:
+                          A description or additional information about
                           the transaction.
                       destination:
                         type: string
-                        example: 
+                        example:
                         description: The destination of the transaction, if applicable.
                       dispute:
                         type: string
-                        example: 
-                        description: The identifier of any dispute associated with
+                        example:
+                        description:
+                          The identifier of any dispute associated with
                           the transaction, if applicable.
                       disputed:
                         type: boolean
                         example: false
-                        description: Indicates whether the transaction is disputed
+                        description:
+                          Indicates whether the transaction is disputed
                           (true) or not (false).
                       failure_balance_transaction:
                         type: string
-                        example: 
-                        description: The identifier of the balance transaction in
+                        example:
+                        description:
+                          The identifier of the balance transaction in
                           case of failure, if applicable.
                       failure_code:
                         type: string
-                        example: 
+                        example:
                         description: The code associated with the failure, if applicable.
                       failure_message:
                         type: string
-                        example: 
-                        description: A message providing details about the failure,
+                        example:
+                        description:
+                          A message providing details about the failure,
                           if applicable.
                       fraud_details:
                         type: object
                         example: {}
-                        description: Details about any fraud associated with the transaction,
+                        description:
+                          Details about any fraud associated with the transaction,
                           if applicable.
                       invoice:
                         type: string
-                        example: 
-                        description: The identifier of the invoice associated with
+                        example:
+                        description:
+                          The identifier of the invoice associated with
                           the transaction, if applicable.
                       livemode:
                         type: boolean
                         example: false
-                        description: Indicates whether the transaction was created
+                        description:
+                          Indicates whether the transaction was created
                           in live mode (true) or test mode (false).
                       metadata:
                         type: object
@@ -963,13 +1023,15 @@ paths:
                         description: Additional metadata associated with the transaction.
                       on_behalf_of:
                         type: string
-                        example: 
-                        description: The identifier of the account on behalf of which
+                        example:
+                        description:
+                          The identifier of the account on behalf of which
                           the transaction is performed, if applicable.
                       order:
                         type: string
-                        example: 
-                        description: The identifier of the order associated with the
+                        example:
+                        description:
+                          The identifier of the order associated with the
                           transaction, if applicable.
                       outcome:
                         type: object
@@ -978,57 +1040,67 @@ paths:
                           network_status:
                             type: string
                             example: approved_by_network
-                            description: The network status of the payment, indicating
+                            description:
+                              The network status of the payment, indicating
                               whether it was approved by the payment network.
                           reason:
                             type: string
-                            example: 
-                            description: The reason for the outcome, if available.
+                            example:
+                            description:
+                              The reason for the outcome, if available.
                               For example, it might contain details if the payment
                               was declined.
                           risk_level:
                             type: string
                             example: normal
-                            description: The risk level associated with the payment,
+                            description:
+                              The risk level associated with the payment,
                               indicating the perceived risk of the transaction.
                           risk_score:
                             type: integer
                             example: 15
-                            description: The numerical risk score assigned to the
+                            description:
+                              The numerical risk score assigned to the
                               payment transaction, providing a quantitative measure
                               of risk.
                           seller_message:
                             type: string
                             example: Payment complete.
-                            description: A message for the seller providing information
+                            description:
+                              A message for the seller providing information
                               about the outcome of the payment, typically for display
                               purposes.
                           type:
                             type: string
                             example: authorized
-                            description: The type of outcome, indicating the result
+                            description:
+                              The type of outcome, indicating the result
                               of the payment authorization process (e.g., 'authorized',
                               'manual_review', 'issuer_declined').
                       paid:
                         type: boolean
                         example: true
-                        description: A boolean indicating whether the payment has
+                        description:
+                          A boolean indicating whether the payment has
                           been successfully paid.
                       payment_intent:
                         type: string
                         example: pi_3OZyPSK5zRUzLwaW0xfmGAjx
-                        description: The unique identifier of the payment intent associated
+                        description:
+                          The unique identifier of the payment intent associated
                           with this payment transaction. This is relevant for payments
                           using payment methods that involve a two-step confirmation
                           process.
                       payment_method:
                         type: string
                         example: pm_1OZyPRK5zRUzLwaWC5WKIOJC
-                        description: The unique identifier of the payment method used
+                        description:
+                          The unique identifier of the payment method used
                           for this transaction, such as a credit card or debit card.
                       payment_method_details:
                         type: object
-                        description: Details about the payment method used for the
+                        description:
+                          Details about the payment method used for the
                           transaction, including card details and type.
                         properties:
                           card:
@@ -1037,34 +1109,40 @@ paths:
                               amount_authorized:
                                 type: integer
                                 example: 120000
-                                description: The amount authorized on the card, represented
+                                description:
+                                  The amount authorized on the card, represented
                                   as an integer value.
                               brand:
                                 type: string
                                 example: visa
-                                description: The brand or type of the card used for
+                                description:
+                                  The brand or type of the card used for
                                   the payment (e.g., Visa, MasterCard).
                               checks:
                                 type: object
                                 properties:
                                   address_line1_check:
                                     type: string
-                                    example: 
-                                    description: The result of the address line 1
+                                    example:
+                                    description:
+                                      The result of the address line 1
                                       check, indicating if it matches the card's billing
                                       address.
                                   address_postal_code_check:
                                     type: string
-                                    example: 
-                                    description: The result of the postal code check,
+                                    example:
+                                    description:
+                                      The result of the postal code check,
                                       indicating if it matches the card's billing
                                       postal code.
                                   cvc_check:
                                     type: string
-                                    example: 
-                                    description: The result of the card security code
+                                    example:
+                                    description:
+                                      The result of the card security code
                                       (CVC) check.
-                                description: Various checks performed on the card
+                                description:
+                                  Various checks performed on the card
                                   details for validation purposes.
                               country:
                                 type: string
@@ -1084,19 +1162,23 @@ paths:
                                   status:
                                     type: string
                                     example: disabled
-                                    description: The status of extended authorization,
+                                    description:
+                                      The status of extended authorization,
                                       indicating if it is enabled or disabled.
-                                description: Information about extended authorization
+                                description:
+                                  Information about extended authorization
                                   status.
                               fingerprint:
                                 type: string
                                 example: g8tpcAz042MueZFZ
-                                description: A unique identifier (fingerprint) for
+                                description:
+                                  A unique identifier (fingerprint) for
                                   the card.
                               funding:
                                 type: string
                                 example: credit
-                                description: The funding source of the card, such
+                                description:
+                                  The funding source of the card, such
                                   as 'credit'.
                               incremental_authorization:
                                 type: object
@@ -1104,23 +1186,27 @@ paths:
                                   status:
                                     type: string
                                     example: unavailable
-                                    description: The status of incremental authorization,
+                                    description:
+                                      The status of incremental authorization,
                                       indicating if it is available or unavailable.
-                                description: Information about incremental authorization
+                                description:
+                                  Information about incremental authorization
                                   status.
                               installments:
                                 type: string
-                                example: 
-                                description: The number of installments for the payment,
+                                example:
+                                description:
+                                  The number of installments for the payment,
                                   if applicable.
                               last4:
                                 type: string
-                                example: '4242'
+                                example: "4242"
                                 description: The last four digits of the card number.
                               mandate:
                                 type: string
-                                example: 
-                                description: The mandate associated with the payment,
+                                example:
+                                description:
+                                  The mandate associated with the payment,
                                   if applicable.
                               multicapture:
                                 type: object
@@ -1128,7 +1214,8 @@ paths:
                                   status:
                                     type: string
                                     example: unavailable
-                                    description: The status of multicapture, indicating
+                                    description:
+                                      The status of multicapture, indicating
                                       if it is available or unavailable.
                                 description: Information about multicapture status.
                               network:
@@ -1141,9 +1228,11 @@ paths:
                                   used:
                                     type: boolean
                                     example: false
-                                    description: A boolean indicating whether the
+                                    description:
+                                      A boolean indicating whether the
                                       network token has been used.
-                                description: Information about the usage status of
+                                description:
+                                  Information about the usage status of
                                   the network token.
                               overcapture:
                                 type: object
@@ -1151,25 +1240,30 @@ paths:
                                   maximum_amount_capturable:
                                     type: integer
                                     example: 120000
-                                    description: The maximum amount that can be captured
+                                    description:
+                                      The maximum amount that can be captured
                                       for the payment.
                                   status:
                                     type: string
                                     example: unavailable
-                                    description: The status of overcapture, indicating
+                                    description:
+                                      The status of overcapture, indicating
                                       if it is available or unavailable.
                                 description: Information about overcapture status.
                               three_d_secure:
                                 type: string
-                                example: 
-                                description: The status of 3D Secure authentication,
+                                example:
+                                description:
+                                  The status of 3D Secure authentication,
                                   if applicable.
                               wallet:
                                 type: string
-                                example: 
-                                description: The type of wallet used for the payment,
+                                example:
+                                description:
+                                  The type of wallet used for the payment,
                                   if applicable.
-                            description: Details about the card used for the payment,
+                            description:
+                              Details about the card used for the payment,
                               including brand, checks, country, expiration, and more.
                           type:
                             type: string
@@ -1178,32 +1272,38 @@ paths:
                       radar_options:
                         type: object
                         example: {}
-                        description: Options related to Stripe Radar, which provides
+                        description:
+                          Options related to Stripe Radar, which provides
                           advanced fraud protection.
                       receipt_email:
                         type: string
-                        example: 
-                        description: The email address to which the receipt for the
+                        example:
+                        description:
+                          The email address to which the receipt for the
                           transaction was sent, or null if no receipt was sent.
                       receipt_number:
                         type: string
-                        example: 
-                        description: The receipt number associated with the transaction,
+                        example:
+                        description:
+                          The receipt number associated with the transaction,
                           or null if no receipt number is available.
                       receipt_url:
                         type: string
                         example: https://pay.stripe.com/receipts/payment/CAcaFwoVYWNjdF8xREl5WTRLNXpSVXpMd2FXKIeipa0GMgbREzVbrVQ6LBZdZFnB8ZFMPXXaJlPrlgymIpkqBm3-pd3x-lnhgqwlKAC3AWrN3kEYGDep
-                        description: The URL to view the receipt for the payment,
+                        description:
+                          The URL to view the receipt for the payment,
                           or null if no receipt is available.
                       refunded:
                         type: boolean
                         example: false
-                        description: A boolean indicating whether the payment has
+                        description:
+                          A boolean indicating whether the payment has
                           been refunded.
                       review:
                         type: string
-                        example: 
-                        description: The status of the payment review, or null if
+                        example:
+                        description:
+                          The status of the payment review, or null if
                           no review is in progress.
                       shipping:
                         type: object
@@ -1211,17 +1311,20 @@ paths:
                           street:
                             type: string
                             example: N/a
-                            description: The street address for shipping. If not applicable,
+                            description:
+                              The street address for shipping. If not applicable,
                               set to 'N/a'.
                           number:
                             type: string
                             example: N/a
-                            description: The street number for shipping. If not applicable,
+                            description:
+                              The street number for shipping. If not applicable,
                               set to 'N/a'.
                           suburb:
                             type: string
                             example: N/a
-                            description: The suburb or neighborhood for shipping.
+                            description:
+                              The suburb or neighborhood for shipping.
                               If not applicable, set to 'N/a'.
                           city:
                             type: object
@@ -1229,7 +1332,8 @@ paths:
                               name:
                                 type: string
                                 example: N/a
-                                description: The name of the city for shipping. If
+                                description:
+                                  The name of the city for shipping. If
                                   not applicable, set to 'N/a'.
                             description: The city information for shipping.
                           state:
@@ -1238,7 +1342,8 @@ paths:
                               name:
                                 type: string
                                 example: N/a
-                                description: The name of the state for shipping. If
+                                description:
+                                  The name of the state for shipping. If
                                   not applicable, set to 'N/a'.
                               country:
                                 type: object
@@ -1246,51 +1351,61 @@ paths:
                                   name:
                                     type: string
                                     example: N/a
-                                    description: The name of the country for shipping.
+                                    description:
+                                      The name of the country for shipping.
                                       If not applicable, set to 'N/a'.
                                 description: The country information for shipping.
                             description: The state information for shipping.
                           zip_code:
                             type: string
                             example: N/a
-                            description: The ZIP code for shipping. If not applicable,
+                            description:
+                              The ZIP code for shipping. If not applicable,
                               set to 'N/a'.
-                        description: Information about the shipping address associated
+                        description:
+                          Information about the shipping address associated
                           with the transaction.
                       source:
                         type: string
-                        example: 
-                        description: The ID of the payment source. If not applicable
+                        example:
+                        description:
+                          The ID of the payment source. If not applicable
                           or available, set to null.
                       source_transfer:
                         type: string
-                        example: 
-                        description: The ID of the transfer made from the payment
+                        example:
+                        description:
+                          The ID of the transfer made from the payment
                           source. If not applicable or available, set to null.
                       statement_descriptor:
                         type: string
-                        example: 
-                        description: A custom statement descriptor for the payment.
+                        example:
+                        description:
+                          A custom statement descriptor for the payment.
                           If not applicable or available, set to null.
                       statement_descriptor_suffix:
                         type: string
-                        example: 
-                        description: A custom statement descriptor suffix for the
+                        example:
+                        description:
+                          A custom statement descriptor suffix for the
                           payment. If not applicable or available, set to null.
                       status:
                         type: string
                         example: succeeded
-                        description: The status of the payment transaction, e.g.,
+                        description:
+                          The status of the payment transaction, e.g.,
                           'succeeded'.
                       transfer_data:
                         type: string
-                        example: 
-                        description: Information about the transfer associated with
+                        example:
+                        description:
+                          Information about the transfer associated with
                           the payment. If not applicable or available, set to null.
                       transfer_group:
                         type: string
-                        example: 
-                        description: The ID of the transfer group. If not applicable
+                        example:
+                        description:
+                          The ID of the transfer group. If not applicable
                           or available, set to null.
                   transaction_status:
                     type: string
@@ -1303,17 +1418,20 @@ paths:
                   payment_id:
                     type: integer
                     example: 5744
-                    description: The unique identifier for the payment associated
+                    description:
+                      The unique identifier for the payment associated
                       with the transaction.
                   provider:
                     type: string
                     example: stripe
-                    description: The payment provider used for the transaction, e.g.,
+                    description:
+                      The payment provider used for the transaction, e.g.,
                       'stripe'.
                   next_action:
                     type: object
                     example: {}
-                    description: Details about the next action required for the transaction.
+                    description:
+                      Details about the next action required for the transaction.
                       If not applicable, an empty object is provided.
                   actions:
                     type: array
@@ -1334,39 +1452,40 @@ paths:
                           description: The HTTP method for the action, e.g., 'GET'.
                       description: An array of actions associated with the transaction.
                     example:
-                    - name: verify_transaction_status
-                      url: "/api/v1/stripe/business/89/payments/5744/transactions/11044"
-                      method: GET
-                    - name: refund_transaction
-                      url: "/api/v1/stripe/business/89/payments/ch_3OZyPSK5zRUzLwaW0CyXUIVQ/refunds"
-                      method: POST
-                    description: An array of actions that can be performed for the
+                      - name: verify_transaction_status
+                        url: "/api/v1/stripe/business/89/payments/5744/transactions/11044"
+                        method: GET
+                      - name: refund_transaction
+                        url: "/api/v1/stripe/business/89/payments/ch_3OZyPSK5zRUzLwaW0CyXUIVQ/refunds"
+                        method: POST
+                    description:
+                      An array of actions that can be performed for the
                       transaction, each represented by an object with 'name', 'url',
                       and 'method' properties.
-        '403':
+        "403":
           description: Forbidden
           content:
             application/json:
               example:
                 detail: Invalid token.
       tags:
-      - payments
+        - payments
   "/business/{business}/payments/{transaction_reference}/refunds":
     post:
       summary: Create a refund for a transaction.
       parameters:
-      - in: path
-        name: business
-        description: The unique identifier of the business.
-        required: true
-        schema:
-          type: string
-      - in: path
-        name: transaction_reference
-        description: The unique reference of the transaction to be refunded.
-        required: true
-        schema:
-          type: string
+        - in: path
+          name: business
+          description: The unique identifier of the business.
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: transaction_reference
+          description: The unique reference of the transaction to be refunded.
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1379,9 +1498,9 @@ paths:
                   example: 10.50
                   description: The monetary value to be refunded.
               required:
-              - amount
+                - amount
       responses:
-        '200':
+        "200":
           description: Refund processed successfully
           content:
             application/json:
@@ -1869,7 +1988,7 @@ paths:
       tags:
         - Token
       responses:
-        '200':
+        "200":
           description: Secure token generated successfully.
           content:
             application/json:
@@ -1894,7 +2013,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DirectTransactionRequest'
+              $ref: "#/components/schemas/DirectTransactionRequest"
             examples:
               card_payment:
                 summary: Card Payment
@@ -1942,60 +2061,60 @@ paths:
                     institution: "40012"
                     email: "roberto.martinez@email.com"
       responses:
-        '200':
+        "200":
           description: Transaction processed successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectTransactionResponse'
-        '201':
+                $ref: "#/components/schemas/DirectTransactionResponse"
+        "201":
           description: Transaction created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectTransactionResponse'
-        '202':
+                $ref: "#/components/schemas/DirectTransactionResponse"
+        "202":
           description: Transaction accepted for processing
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectTransactionResponse'
-        '400':
+                $ref: "#/components/schemas/DirectTransactionResponse"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
-        '401':
+                $ref: "#/components/schemas/DirectErrorResponse"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
-        '402':
+                $ref: "#/components/schemas/DirectErrorResponse"
+        "402":
           description: Payment Required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
-        '422':
+                $ref: "#/components/schemas/DirectErrorResponse"
+        "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
-        '429':
+                $ref: "#/components/schemas/DirectErrorResponse"
+        "429":
           description: Rate Limited
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
-        '500':
+                $ref: "#/components/schemas/DirectErrorResponse"
+        "500":
           description: Server Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
+                $ref: "#/components/schemas/DirectErrorResponse"
   "/transactions/{transaction_id}/":
     get:
       summary: Get Transaction Status
@@ -2016,12 +2135,12 @@ paths:
             format: uuid
             example: "550e8400-e29b-41d4-a716-446655440000"
       responses:
-        '200':
+        "200":
           description: Transaction status retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectTransactionStatusResponse'
+                $ref: "#/components/schemas/DirectTransactionStatusResponse"
               examples:
                 payment_success:
                   summary: Successful Payment
@@ -2052,30 +2171,30 @@ paths:
                       transfer_method: "SPEI"
                       beneficiary_account: "***************4567"
                       estimated_completion: "2024-07-26T18:00:00Z"
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
-        '401':
+                $ref: "#/components/schemas/DirectErrorResponse"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
-        '404':
+                $ref: "#/components/schemas/DirectErrorResponse"
+        "404":
           description: Transaction Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
-        '500':
+                $ref: "#/components/schemas/DirectErrorResponse"
+        "500":
           description: Server Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
+                $ref: "#/components/schemas/DirectErrorResponse"
   "/tokenization/auth/":
     get:
       summary: Get Tokenization Access Token
@@ -2087,7 +2206,7 @@ paths:
       tags:
         - Direct Integration
       responses:
-        '200':
+        "200":
           description: Access token retrieved successfully
           content:
             application/json:
@@ -2098,19 +2217,19 @@ paths:
                     type: string
                     description: JWT access token for tokenization service
                     example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
+                $ref: "#/components/schemas/DirectErrorResponse"
   "/tokenization/":
     post:
       summary: Tokenize Card Data
       description: |
         Securely tokenize card data using Tonder's vault service. This endpoint converts sensitive 
         card information into individual field tokens that can be safely stored and used for payments.
-        
+
         **Authentication**: Requires access token from `/tokenization/auth/` endpoint.
       operationId: tokenizeCardData
       tags:
@@ -2125,7 +2244,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenizationRequest'
+              $ref: "#/components/schemas/TokenizationRequest"
             example:
               card_number: "4242424242424242"
               cardholder_name: "John Doe"
@@ -2133,36 +2252,36 @@ paths:
               expiration_month: "07"
               expiration_year: "2025"
       responses:
-        '200':
+        "200":
           description: Card data tokenized successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenizationResponse'
+                $ref: "#/components/schemas/TokenizationResponse"
               example:
                 card_number: "9230-0892-4469-1474"
                 cardholder_name: "c05d89b2-299c-4f93-b49a-42be00d3b64b"
                 cvv: "d31f0da3-0ed3-4ad8-8b68-14c2669a99a7"
                 expiration_month: "e401a32e-4174-424f-9688-727005f6a80e"
                 expiration_year: "bd9ccc23-3d00-4109-9626-fc6581389063"
-        '400':
+        "400":
           description: Bad Request - Invalid card data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
-        '401':
+                $ref: "#/components/schemas/DirectErrorResponse"
+        "401":
           description: Unauthorized - Invalid or expired access token
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
-        '422':
+                $ref: "#/components/schemas/DirectErrorResponse"
+        "422":
           description: Validation Error - Card data validation failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectErrorResponse'
+                $ref: "#/components/schemas/DirectErrorResponse"
   "/checkout/v1/business/config":
     post:
       summary: Set Business Configuration
@@ -2187,7 +2306,7 @@ paths:
                   description: A publicly accessible URL for your business logo
                   example: "https://cdn.my-store.com/logo.png"
                 ui_config:
-                  $ref: '#/components/schemas/UIConfig'
+                  $ref: "#/components/schemas/UIConfig"
             example:
               logo_url: "https://cdn.my-store.com/logo.png"
               ui_config:
@@ -2196,7 +2315,7 @@ paths:
                 theme:
                   shapes: "rounded"
       responses:
-        '200':
+        "200":
           description: Configuration saved successfully
           content:
             application/json:
@@ -2207,7 +2326,7 @@ paths:
                     type: string
                     format: uri
                   ui_config:
-                    $ref: '#/components/schemas/UIConfig'
+                    $ref: "#/components/schemas/UIConfig"
               example:
                 logo_url: "https://cdn.my-store.com/logo.png"
                 ui_config:
@@ -2231,7 +2350,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateSessionRequest'
+              $ref: "#/components/schemas/CreateSessionRequest"
             example:
               customer:
                 first_name: "John"
@@ -2251,12 +2370,12 @@ paths:
               return_url: "https://my-store.com/checkout/complete"
               external_id: "ORD-12345"
       responses:
-        '201':
+        "201":
           description: Session created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CheckoutSession'
+                $ref: "#/components/schemas/CheckoutSession"
               example:
                 id: "cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d"
                 url: "https://stage-payflow.tonder.io/checkout/cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d"
@@ -2306,12 +2425,12 @@ paths:
             type: string
             example: "sess_a1b2c3d4e5f6"
       responses:
-        '200':
+        "200":
           description: Session retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CheckoutSession'
+                $ref: "#/components/schemas/CheckoutSession"
               example:
                 id: "cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d"
                 url: "https://stage-payflow.tonder.io/checkout/cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d"
@@ -2362,12 +2481,12 @@ paths:
             type: string
             example: "pay_x1y2z3a4b5"
       responses:
-        '200':
+        "200":
           description: Payment transaction retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaymentTransaction'
+                $ref: "#/components/schemas/PaymentTransaction"
               example:
                 payment_id: "pay_x1y2z3a4b5"
                 session_id: "sess_a1b2c3d4e5f6"
@@ -2392,7 +2511,7 @@ components:
           format: int32
         message:
           type: string
-    
+
     # Direct Integration Schemas
     DirectTransactionRequest:
       type: object
@@ -2418,7 +2537,7 @@ components:
           enum: [MXN, USD]
           description: Currency code
         customer:
-          $ref: '#/components/schemas/DirectCustomer'
+          $ref: "#/components/schemas/DirectCustomer"
         client_reference:
           type: string
           maxLength: 255
@@ -2432,7 +2551,7 @@ components:
           format: uri
           description: URL for redirection after 3DS processing
         payment_method:
-          $ref: '#/components/schemas/DirectPaymentMethod'
+          $ref: "#/components/schemas/DirectPaymentMethod"
         transfer_method:
           type: string
           enum: [SPEI, DEBIT_CARD]
@@ -2445,7 +2564,7 @@ components:
           maxLength: 500
           description: Withdrawal description
         beneficiary:
-          $ref: '#/components/schemas/DirectBeneficiary'
+          $ref: "#/components/schemas/DirectBeneficiary"
 
     DirectCustomer:
       type: object
@@ -2502,7 +2621,7 @@ components:
       properties:
         account:
           type: string
-          pattern: '^[0-9]{18}$'
+          pattern: "^[0-9]{18}$"
           description: Account number or CLABE (18 digits)
         name:
           type: string
@@ -2532,7 +2651,23 @@ components:
           description: Type of transaction
         status:
           type: string
-          enum: [pending, on_hold, processing, sent_to_provider, success, paid_full, in_transit, authorized, canceled, declined, rejected, failed, Unknown, expired]
+          enum:
+            [
+              pending,
+              on_hold,
+              processing,
+              sent_to_provider,
+              success,
+              paid_full,
+              in_transit,
+              authorized,
+              canceled,
+              declined,
+              rejected,
+              failed,
+              Unknown,
+              expired,
+            ]
           description: Current transaction status
         amount:
           type: number
@@ -2561,13 +2696,13 @@ components:
           type: integer
           description: HTTP status code
         next_action:
-          $ref: '#/components/schemas/DirectNextAction'
+          $ref: "#/components/schemas/DirectNextAction"
         payment_instructions:
-          $ref: '#/components/schemas/DirectPaymentInstructions'
+          $ref: "#/components/schemas/DirectPaymentInstructions"
 
     DirectTransactionStatusResponse:
       allOf:
-        - $ref: '#/components/schemas/DirectTransactionResponse'
+        - $ref: "#/components/schemas/DirectTransactionResponse"
         - type: object
           properties:
             updated_at:
@@ -2575,9 +2710,9 @@ components:
               format: date-time
               description: ISO 8601 timestamp of last update
             completion_details:
-              $ref: '#/components/schemas/DirectCompletionDetails'
+              $ref: "#/components/schemas/DirectCompletionDetails"
             transfer_details:
-              $ref: '#/components/schemas/DirectTransferDetails'
+              $ref: "#/components/schemas/DirectTransferDetails"
 
     DirectNextAction:
       type: object
@@ -2708,7 +2843,7 @@ components:
       properties:
         card_number:
           type: string
-          pattern: '^[0-9]{13,19}$'
+          pattern: "^[0-9]{13,19}$"
           description: The full card number (13-19 digits)
           example: "4242424242424242"
         cardholder_name:
@@ -2718,17 +2853,17 @@ components:
           example: "John Doe"
         cvv:
           type: string
-          pattern: '^[0-9]{3,4}$'
+          pattern: "^[0-9]{3,4}$"
           description: Card security code (3-4 digits)
           example: "123"
         expiration_month:
           type: string
-          pattern: '^(0[1-9]|1[0-2])$'
+          pattern: "^(0[1-9]|1[0-2])$"
           description: Card expiration month (MM format)
           example: "07"
         expiration_year:
           type: string
-          pattern: '^[0-9]{4}$'
+          pattern: "^[0-9]{4}$"
           description: Card expiration year (YYYY format)
           example: "2025"
 
@@ -2765,7 +2900,7 @@ components:
           properties:
             brand_color:
               type: string
-              pattern: '^#[0-9A-Fa-f]{6}$'
+              pattern: "^#[0-9A-Fa-f]{6}$"
               description: Primary brand color (hex code)
               example: "#1A2B3C"
         theme:
@@ -2888,7 +3023,7 @@ components:
           description: Version of the UI config. Defaults to "V1"
           example: "V1"
         ui_config:
-          $ref: '#/components/schemas/UIConfig'
+          $ref: "#/components/schemas/UIConfig"
 
     CheckoutSession:
       type: object
