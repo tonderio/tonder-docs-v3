@@ -72,15 +72,12 @@ The [API](/reference/overview) response will include payment instructions and st
   "status": "pending",
   "amount": 500.00,
   "currency": "MXN",
-  "payment_instructions": {
-    "bank_account": "123456789012345678",
-    "bank_name": "Banco Receptor",
-    "reference": "SPEI789456123",
-    "instructions": [
-      "Realiza una transferencia SPEI a la cuenta indicada",
-      "Usa la referencia proporcionada",
-      "El pago será procesado inmediatamente"
-    ]
+  "next_action": {
+    "redirect_to_url": {
+      "url": "https://stage-payflow.tonder.io/spei?clabe=710969000000629935&transaction_reference=B030516028bb286&amount=100.0&return_url=https%3A%2F%2Ftonder.io%3Ftndr_payment_id%3D63772&debug=true&business_id=117&acquirer=SPEIV2",
+      "return_url": "https://tonder.io?tndr_payment_id=63772",
+      "verify_transaction_status_url": "/transactions/21cbe500-b320-4e0d-9186-9fb63c3d9617/"
+    }
   },
   "created_at": "2024-07-26T10:30:00Z"
 }
