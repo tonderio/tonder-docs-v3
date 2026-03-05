@@ -2223,7 +2223,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DirectErrorResponse"
-  "/tokenization/":
+  "/token":
     post:
       summary: Tokenize Card Data
       description: |
@@ -2240,6 +2240,21 @@ paths:
       security:
         - TokenizationAuth: []
           Authorization: []
+      x-codeSamples:
+        - lang: cURL
+          source: |
+            curl --request POST \
+              --url https://token-sandbox.tonder.io/v1/gateway/inboundRoutes/f6eb7af640b041b590a0b2f095a83fa4/token \
+              --header 'Authorization: Token YOUR_API_KEY' \
+              --header 'X-Skyflow-Authorization: YOUR_SKYFLOW_TOKEN' \
+              --header 'Content-Type: application/json' \
+              --data '{
+                "card_number": "4242424242424242",
+                "cardholder_name": "John Doe",
+                "cvv": "123",
+                "expiration_month": "07",
+                "expiration_year": "2025"
+              }'
       requestBody:
         required: true
         content:
