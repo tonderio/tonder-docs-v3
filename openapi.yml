@@ -2235,7 +2235,7 @@ paths:
       tags:
         - Direct Integration
       servers:
-        - url: https://token.tonder.io/v1/gateway/inboundRoutes/f6eb7af640b041b590a0b2f095a83fa4
+        - url: https://token-sandbox.tonder.io/v1/gateway/inboundRoutes/f6eb7af640b041b590a0b2f095a83fa4/token
           description: Tokenization service
       security:
         - TokenizationAuth: []
