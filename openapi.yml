@@ -2236,9 +2236,10 @@ paths:
         - Direct Integration
       servers:
         - url: https://token-sandbox.tonder.io/v1/gateway/inboundRoutes/f6eb7af640b041b590a0b2f095a83fa4/token
-          description: Tokenization service
+          description: Tokenization service (sandbox)
       security:
         - TokenizationAuth: []
+          Authorization: []
       requestBody:
         required: true
         content:
