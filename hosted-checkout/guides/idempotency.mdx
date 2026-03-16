@@ -1,0 +1,104 @@
+---
+title: "Idempotency"
+sidebarTitle: "Idempotency"
+'og:description': "Use x-idempotency-key to prevent duplicate sessions when creating Hosted Checkout payments"
+---
+
+When creating a Hosted Checkout session via [`POST /checkout/v1/sessions`](/hosted-checkout/api/create-session), you can include the `x-idempotency-key` header to prevent duplicate charges in case of network errors or client retries.
+
+<Note>
+  `x-idempotency-key` is optional but recommended for any integration that retries session creation requests.
+</Note>
+
+## How It Works
+
+If the server receives two requests with the same `x-idempotency-key` within the protection window, it treats the second as a retry and returns the original session without creating a new charge. After the window expires, a new request with the same key creates a new session.
+
+| Scenario | Result |
+|---|---|
+| Same key, within 5 seconds | Returns the same session — no duplicate created |
+| Same key, after 5 seconds | Creates a new session |
+| Different key | Always creates a new session |
+
+## Implementation
+
+### Header Configuration
+
+Add `x-idempotency-key` alongside your other headers when calling the session endpoint:
+
+| Header | Value | Required | Description |
+|---|---|---|---|
+| `Authorization` | `Token <API_PUBLIC_KEY>` | Yes | Your Public API Key from the Tonder Dashboard |
+| `Content-Type` | `application/json` | Yes | Required for JSON body |
+| `x-idempotency-key` | `<unique_id>` | No | Unique key to guarantee idempotency. Default protection window: 5 seconds |
+
+<Tip>
+  You can find your Public API Key in your [Tonder Dashboard](https://app.tonder.io).
+</Tip>
+
+### Generating a Key
+
+Use a combination of your internal order identifier and a timestamp to create a key that is unique per session attempt and human-readable in logs:
+
+```
+x-idempotency-key: {external_id}-{timestamp}
+```
+
+**Example:**
+```
+x-idempotency-key: ORD-2025-A9B8-1739876543
+```
+
+### Full Request Example
+
+<CodeGroup>
+```bash cURL
+curl -X POST 'https://api-stage.tonder.io/checkout/v1/sessions' \
+  -H 'Authorization: Token YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -H 'x-idempotency-key: ORD-2025-A9B8-1739876543' \
+  -d '{
+    "customer": {
+      "first_name": "Juan",
+      "last_name": "Perez",
+      "email": "juan.perez@example.com"
+    },
+    "amount_total": 25000,
+    "currency": "MXN",
+    "line_items": [
+      {
+        "name": "Blue T-Shirt",
+        "quantity": 1,
+        "unit_price": 25000
+      }
+    ],
+    "return_url": "https://your-store.com/checkout/complete",
+    "external_id": "ORD-2025-A9B8"
+  }'
+```
+
+```javascript Node.js
+const response = await fetch('https://api-stage.tonder.io/checkout/v1/sessions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Token YOUR_API_KEY',
+    'Content-Type': 'application/json',
+    'x-idempotency-key': `${externalId}-${Date.now()}`
+  },
+  body: JSON.stringify(sessionDetails)
+});
+```
+</CodeGroup>
+
+## When to Reuse vs. Regenerate a Key
+
+Reuse the same key only when retrying the exact same session creation request after a network error or timeout. Generate a new key whenever the request body changes — for example, if the customer updates their cart or switches currency before retrying.
+
+<Warning>
+  Generating a new key on each retry defeats idempotency protection. Store the key alongside your order record before sending the first request so you can retrieve it on retry.
+</Warning>
+
+## Next Steps
+
+- [Create a Payment Session](/hosted-checkout/guides/create-payment-session) — see the full session request structure
+- [Set Up Webhooks](/hosted-checkout/guides/setup-listen-webhooks) — receive real-time status updates instead of relying on retries

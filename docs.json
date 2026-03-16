@@ -318,6 +318,7 @@
                 "group": "Guides",
                 "pages": [
                   "hosted-checkout/guides/create-payment-session",
+                  "hosted-checkout/guides/idempotency",
                   "hosted-checkout/guides/customize-checkout-ui",
                   "hosted-checkout/guides/setup-listen-webhooks",
                   "hosted-checkout/guides/manually-check-payment-status"
