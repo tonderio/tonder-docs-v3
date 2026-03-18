@@ -19,11 +19,13 @@ Create a JSON object with the payment details. At a minimum, you must include `c
 | customer | object | Yes | Object containing customer details (first\_name, last\_name, email). |
 | amount\_total | number | Yes | Total charge amount. |
 | currency | string | Yes | Currency code (e.g., "MXN"). |
-| line\_items | array | Yes | Array of objects detailing the items in the cart (name, quantity, unit\_price). |
+| line\_items | array | Yes | Array of objects detailing the items in the cart (name, quantity, unit\_price, product\_id). |
 | return\_url | string | Conditional | Required if success\_url is not set. Fallback redirect URL. |
 | success\_url | string | No | Redirect URL after successful payment. |
 | external\_id | string | No | Your unique identifier for the order (e.g., order ID). |
 | expires\_at | integer | No | Unix timestamp (seconds). Must be 30 min to 24h in future. Default 24h. |
+| payment\_method\_types | array | No | Payment methods to enable for this session. Accepted values: `card`, `mercadopago`, `oxxopay`, `spei`, `safetypayCash`, `safetypayTransfer`. Defaults to `card` if not specified. |
+| metadata | object | No | Optional key-value object for storing additional data with the session. All fields are optional. |
 | ui\_config | object | No | Optional. An object to override the default UI settings for this session. |
 
 See the [API Reference](/hosted-checkout/api/create-session) for a full list of all available fields.
@@ -49,11 +51,14 @@ curl -X POST 'https://api-stage.tonder.io/checkout/v1/sessions' \
       {
         "name": "Blue T-Shirt",
         "quantity": 1,
-        "unit_price": 25000
+        "unit_price": 25000,
+        "product_id": "your-internal-product-id"
       }
     ],
+    "payment_method_types": ["card"],
     "return_url": "https://your-store.com/checkout/complete",
     "external_id": "ORD-2025-A9B8",
+    "metadata": {},
     "ui_config": {
       "branding": {
         "brand_color": "#0066FF"
@@ -77,11 +82,14 @@ const sessionDetails = {
     {
       name: "Blue T-Shirt",
       quantity: 1,
-      unit_price: 25000
+      unit_price: 25000,
+      product_id: "your-internal-product-id"
     }
   ],
+  payment_method_types: ["card"],
   return_url: "https://your-store.com/checkout/complete",
   external_id: "ORD-2025-A9B8",
+  metadata: {},
   ui_config: {
     branding: {
       brand_color: "#0066FF"
