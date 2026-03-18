@@ -41,29 +41,24 @@ curl -X POST 'https://api-stage.tonder.io/checkout/v1/sessions' \
   -H 'Content-Type: application/json' \
   -d '{
     "customer": {
-      "first_name": "Juan",
-      "last_name": "Perez",
-      "email": "juan.perez@example.com"
+      "first_name": "Vicente",
+      "last_name": "Quintero",
+      "email": "vquintero@testuser.com"
     },
-    "amount_total": 25000,
+    "amount_total": 300,
     "currency": "MXN",
     "line_items": [
       {
-        "name": "Blue T-Shirt",
+        "name": "Deposit",
         "quantity": 1,
-        "unit_price": 25000,
-        "product_id": "your-internal-product-id"
+        "unit_price": 10,
+        "product_id": "your_internal_product_id"
       }
     ],
-    "payment_method_types": ["card"],
-    "return_url": "https://your-store.com/checkout/complete",
-    "external_id": "ORD-2025-A9B8",
-    "metadata": {},
-    "ui_config": {
-      "branding": {
-        "brand_color": "#0066FF"
-      }
-    }
+    "payment_method_types": ["spei"],
+    "return_url": "https://tonder.io",
+    "external_id": "ORD-12345-1",
+    "metadata": {}
   }'
 ```
 
@@ -72,29 +67,24 @@ const fetch = require('node-fetch');
 
 const sessionDetails = {
   customer: {
-    first_name: "Juan",
-    last_name: "Perez",
-    email: "juan.perez@example.com"
+    first_name: "Vicente",
+    last_name: "Quintero",
+    email: "vquintero@testuser.com"
   },
-  amount_total: 25000,
+  amount_total: 300,
   currency: "MXN",
   line_items: [
     {
-      name: "Blue T-Shirt",
+      name: "Deposit",
       quantity: 1,
-      unit_price: 25000,
-      product_id: "your-internal-product-id"
+      unit_price: 10,
+      product_id: "your_internal_product_id"
     }
   ],
-  payment_method_types: ["card"],
-  return_url: "https://your-store.com/checkout/complete",
-  external_id: "ORD-2025-A9B8",
-  metadata: {},
-  ui_config: {
-    branding: {
-      brand_color: "#0066FF"
-    }
-  }
+  payment_method_types: ["spei"],
+  return_url: "https://tonder.io",
+  external_id: "ORD-12345-1",
+  metadata: {}
 };
 
 const response = await fetch('https://api-stage.tonder.io/checkout/v1/sessions', {
@@ -110,6 +100,25 @@ const data = await response.json();
 console.log(data);
 ```
 </CodeGroup>
+
+### Payment Method Types
+
+The `payment_method_types` field defines which payment methods are available in the checkout. You should only include the method(s) you want to enable — there is no need to send all of them.
+
+**Available options:**
+
+| Value | Description |
+|---|---|
+| `card` | Credit / Debit card |
+| `mercadopago` | MercadoPago |
+| `oxxopay` | OXXO Pay |
+| `spei` | SPEI (bank transfer) |
+| `safetypayCash` | SafetyPay Cash |
+| `safetypayTransfer` | SafetyPay Transfer |
+
+<Note>
+  In this example, only `spei` is included in `payment_method_types`. Include only the methods relevant to your integration.
+</Note>
 
 ### Step 3: Handle the Response
 
