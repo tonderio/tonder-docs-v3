@@ -25,6 +25,20 @@ The table below describes the top-level fields present in every webhook:
 | type | string | The checkout type, always `checkout.hosted` for Hosted Checkout. |
 | data | object | Event-specific data containing session or transaction details. |
 
+<Note>
+**Order Reference in Webhooks**
+
+The `external_id` sent in the session creation request is visible in the Tonder dashboard as **Order ID** and in transaction reports as **Business Transaction ID**, but it is **not returned in webhook payloads**. To receive your order reference in a webhook, include it inside the `metadata` object — **in addition to the existing `external_id` field** — when creating the session. It will then be available under `data.metadata` in the webhook payload.
+
+```json
+{
+  "metadata": {
+    "external_id": "YOUR-ORDER-ID"
+  }
+}
+```
+</Note>
+
 ## Session Events
 
 ### session.created
@@ -37,7 +51,6 @@ The table below describes the fields in the `data` object for this event:
 | :---- | :---- | :---- |
 | id | string | The unique session ID. |
 | url | string | The checkout URL where the customer completes payment. |
-| external_id | string | Your unique identifier for this order. |
 | amount_total | number | Total charge amount. |
 | currency | string | Currency code (e.g., "MXN"). |
 | status | string | Session status, will be `pending` for this event. |
@@ -45,6 +58,7 @@ The table below describes the fields in the `data` object for this event:
 | transaction_status | string | Transaction status, will be `Pending` for this event. |
 | created_at | number | Unix timestamp in milliseconds when the session was created. |
 | customer | object | Customer details including `first_name`, `last_name`, and `email`. |
+| metadata | object | Custom key-value pairs sent by the merchant in the session request. |
 
 <AccordionGroup>
 <Accordion title="View Full JSON Payload Example">
@@ -56,7 +70,6 @@ The table below describes the fields in the `data` object for this event:
   "data": {
     "id": "cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
     "url": "https://stage-payflow.tonder.io/checkout/cs_97_41521_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
-    "external_id": "ORD-A1B2-NEW",
     "amount_total": 5000,
     "currency": "MXN",
     "status": "pending",
@@ -67,6 +80,9 @@ The table below describes the fields in the `data` object for this event:
       "first_name": "New",
       "last_name": "Customer",
       "email": "new@example.com"
+    },
+    "metadata": {
+      "external_id": "ORD-A1B2-NEW"
     }
   }
 }
@@ -85,7 +101,6 @@ The table below describes the fields in the `data` object for this event:
 | :---- | :---- | :---- |
 | id | string | The unique session ID. |
 | url | string | The checkout URL where the customer completed payment. |
-| external_id | string | Your unique identifier for this order. |
 | amount_total | number | Total charge amount. |
 | currency | string | Currency code (e.g., "MXN"). |
 | status | string | Session status, will be `completed` for this event. |
@@ -93,6 +108,7 @@ The table below describes the fields in the `data` object for this event:
 | transaction_status | string | Transaction status, will be `Success` for this event. |
 | paid_at | number | Unix timestamp in milliseconds when the payment was completed. |
 | customer | object | Customer details including `first_name`, `last_name`, and `email`. |
+| metadata | object | Custom key-value pairs sent by the merchant in the session request. |
 
 <AccordionGroup>
 <Accordion title="View Full JSON Payload Example">
@@ -104,7 +120,6 @@ The table below describes the fields in the `data` object for this event:
   "data": {
     "id": "cs_97_41528_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
     "url": "https://stage-payflow.tonder.io/checkout/cs_97_41528_d11ba771527b4056c7f85786cfbb980bc105efaf42af113d",
-    "external_id": "ORD-G7H8-PAID",
     "amount_total": 15000,
     "currency": "MXN",
     "status": "completed",
@@ -115,6 +130,9 @@ The table below describes the fields in the `data` object for this event:
       "first_name": "Jane",
       "last_name": "Doe",
       "email": "jane.doe@example.com"
+    },
+    "metadata": {
+      "external_id": "ORD-G7H8-PAID"
     }
   }
 }
@@ -133,13 +151,13 @@ The table below describes the fields in the `data` object for this event:
 | :---- | :---- | :---- |
 | id | string | The unique session ID. |
 | url | string | The checkout URL that expired. |
-| external_id | string | Your unique identifier for this order. |
 | amount_total | number | Total charge amount. |
 | currency | string | Currency code (e.g., "MXN"). |
 | status | string | Session status, will be `expired` for this event. |
 | payment_id | number | The payment transaction ID. |
 | transaction_status | string | Transaction status, will be `Expired` for this event. |
 | customer | object | Customer details including `first_name`, `last_name`, and `email`. |
+| metadata | object | Custom key-value pairs sent by the merchant in the session request. |
 
 <AccordionGroup>
 <Accordion title="View Full JSON Payload Example">
@@ -151,7 +169,6 @@ The table below describes the fields in the `data` object for this event:
   "data": {
     "id": "cs_97_41529_k1j2h3g4f5e6d7c8b9a0",
     "url": "https://stage-payflow.tonder.io/checkout/cs_97_41529_k1j2h3g4f5e6d7c8b9a0",
-    "external_id": "ORD-L9M8-EXPIRED",
     "amount_total": 2500,
     "currency": "MXN",
     "status": "expired",
@@ -161,6 +178,9 @@ The table below describes the fields in the `data` object for this event:
       "first_name": "Tom",
       "last_name": "Abandoned",
       "email": "tom@example.com"
+    },
+    "metadata": {
+      "external_id": "ORD-L9M8-EXPIRED"
     }
   }
 }
@@ -192,6 +212,7 @@ The table below describes the fields in the `data` object for this event:
 | created_at | string | ISO 8601 timestamp when the transaction was created. |
 | card_details | object | Card information including `brand` and `last4` digits. |
 | customer | object | Customer details including `name` and `email`. |
+| metadata | object | Custom key-value pairs sent by the merchant in the session request. |
 
 <AccordionGroup>
 <Accordion title="View Full JSON Payload Example (Declined)">
@@ -214,6 +235,9 @@ The table below describes the fields in the `data` object for this event:
     "customer": {
       "name": "Test Retry",
       "email": "retry@example.com"
+    },
+    "metadata": {
+      "external_id": "ORD-F1G2-RETRY"
     }
   }
 }
