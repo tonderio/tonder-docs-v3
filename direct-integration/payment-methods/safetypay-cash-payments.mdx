@@ -1,10 +1,10 @@
 ---
-title: "How to Accept SafetyPay Cash Payments"
+title: "How to Accept SafetyPay Payments"
 sidebarTitle: "SafetyPay"
-'og:description': "Step-by-step guide to process cash payments with SafetyPay across Latin America"
+'og:description': "Step-by-step guide to process SafetyPay Cash and Transfer payments across Latin America"
 ---
 
-This guide shows you how to accept cash payments using SafetyPay, an alternative cash payment network that operates across Latin America. SafetyPay is ideal for regions without OXXO coverage or when you want to offer additional cash payment options to your customers.
+This guide shows you how to accept payments using SafetyPay, an alternative payment network that operates across Latin America. SafetyPay supports two payment types: Cash (`safetypayCash`) for payments at physical locations, and Transfer (`safetypayTransfer`) for online bank transfers.
 
 ## When to Use SafetyPay
 
@@ -12,344 +12,164 @@ SafetyPay is ideal for:
 
 - Customers in regions without OXXO coverage.
 - Expanding cash payment options beyond convenience stores.
-- Markets where SafetyPay has established payment networks.
-- Customers who prefer alternative payment locations.
+- Customers who prefer to pay via online bank transfer without a card.
 
 ## Step 1: Create a SafetyPay Payment Request
 
-SafetyPay payments are straightforward - just specify the payment type and the API will generate payment instructions:
+SafetyPay requires an `apm_config` object with `channel` and `bank_ids` to specify the payment network and collection point.
+
+### SafetyPay Cash
+
+Use `type: "safetypayCash"` and `channel: "WP"` for cash payments at physical locations.
 
 ```json
 {
   "operation_type": "payment",
-  "amount": 180.00,
+  "amount": "150.00",
   "currency": "MXN",
   "customer": {
-    "name": "Patricia Morales Vega",
-    "email": "patricia.morales@email.com"
+    "name": "John Doe",
+    "email": "john.doe@email.com"
   },
   "payment_method": {
-    "type": "SAFETYPAY"
+    "type": "safetypayCash",
+    "apm_config": {
+      "country": "Mexico",
+      "channel": "WP",
+      "bank_ids": [
+        { "id": "8178" }
+      ]
+    }
   },
-  "client_reference": "order-789"
+  "client_reference": "ORD-001",
+  "return_url": "https://yoursite.com/return"
+}
+```
+
+### SafetyPay Transfer
+
+Use `type: "safetypayTransfer"` and `channel: "OL"` for online bank transfer payments.
+
+```json
+{
+  "operation_type": "payment",
+  "amount": "150.00",
+  "currency": "MXN",
+  "customer": {
+    "name": "John Doe",
+    "email": "john.doe@email.com"
+  },
+  "payment_method": {
+    "type": "safetypayTransfer",
+    "apm_config": {
+      "country": "Mexico",
+      "channel": "OL",
+      "bank_ids": [
+        { "id": "1020" }
+      ]
+    }
+  },
+  "client_reference": "ORD-001",
+  "return_url": "https://yoursite.com/return"
 }
 ```
 
 ## Step 2: Send the Payment Request
 
-Create and send a POST request to the [Process Transaction](/reference/process-transaction) endpoint to initiate a SafetyPay payment. This request creates a payment voucher that your customer can use at authorized SafetyPay locations:
+Send a POST request to the [Process Transaction](/reference/process-transaction) endpoint to initiate the payment:
 
 ```bash
 curl -X POST https://stage.tonder.io/api/v1/process/ \
   -H "Authorization: Token YOUR_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "operation_type": "payment",
-    "amount": 180.00,
-    "currency": "MXN",
-    "customer": {
-      "name": "Patricia Morales Vega",
-      "email": "patricia.morales@email.com"
-    },
-    "payment_method": {
-      "type": "SAFETYPAY"
-    },
-    "client_reference": "order-789"
-  }'
+  -d '{ ... }'
 ```
 
 ## Step 3: Handle the Response
 
-After sending the payment request, you'll receive a response containing the payment voucher details and instructions. SafetyPay payments start with a `pending` status and include comprehensive payment information for your customer:
+Both Cash and Transfer return a `Pending` status with a redirect URL where the customer completes the payment.
+
+### SafetyPay Cash response
 
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "id": "ce2c0f55-763b-4da9-9ca4-36b66960f80d",
   "operation_type": "payment",
-  "status": "pending",
-  "amount": 180.00,
+  "status": "Pending",
+  "amount": 150.0,
   "currency": "MXN",
-  "payment_instructions": {
-    "reference_code": "SP180456789",
-    "payment_locations": [
-      "Tiendas de conveniencia autorizadas",
-      "Farmacias participantes", 
-      "Supermercados afiliados"
-    ],
-    "expiration_date": "2024-07-29T23:59:59Z",
-    "instructions": [
-      "Acude a un punto de pago SafetyPay autorizado",
-      "Presenta el código de referencia",
-      "Paga exactamente $180.00 MXN en efectivo"
-    ]
-  },
-  "voucher_url": "https://api.safetypay.com/vouchers/abc123",
-  "store_locator": "https://safetypay.com/locator?ref=SP180456789",
-  "created_at": "2024-07-26T10:30:00Z"
+  "client_reference": "ORD-001",
+  "metadata": {},
+  "provider": "tonder",
+  "created_at": "2026-06-24T23:27:30.746969Z",
+  "status_code": 201,
+  "next_action": {
+    "redirect_to_url": {
+      "url": "https://sandbox-gateway.safetypay.com/Express4/Checkout/index?TokenID=a09a7953-f62a-40da-a0b5-7be671b2fabb&CountryID=MEX&ChannelID=CASH",
+      "verify_transaction_status_url": "/transactions/ce2c0f55-763b-4da9-9ca4-36b66960f80d/"
+    }
+  }
 }
 ```
 
-## Step 4: Provide Payment Instructions to Your Customer
+### SafetyPay Transfer response
 
-Present the payment voucher clearly to help customers complete their SafetyPay payment successfully. Create a user-friendly page that displays all necessary information for the customer to pay at any SafetyPay location:
-
-<Steps>
-<Step title="Show the reference code prominently">
-Display the `reference_code` that customers need to present at payment locations.
-</Step>
-<Step title="List payment locations">
-Show the types of locations where customers can pay using `payment_locations`.
-</Step>
-<Step title="Provide store locator">
-Include a link to the `store_locator` to help customers find nearby payment locations.
-</Step>
-<Step title="Set clear expectations">
-Explain the payment process and timeline using the `instructions` array.
-</Step>
-<Step title="Include expiration date">
-Clearly show when the payment voucher expires.
-</Step>
-</Steps>
-
-### Customer Instructions Template
-
-Create a comprehensive payment page that includes all the information customers need to complete their SafetyPay payment. This HTML template demonstrates how to structure and present the payment voucher information effectively:
-
-```html
-<div class="safetypay-voucher">
-  <h2>Completa tu pago con SafetyPay</h2>
-  
-  <div class="reference-code">
-    <h3>Código de referencia: SP180456789</h3>
-    <p>Presenta este código en el punto de pago</p>
-  </div>
-  
-  <div class="amount">
-    <h3>Monto a pagar: $180.00 MXN</h3>
-  </div>
-  
-  <div class="locations">
-    <h4>Dónde puedes pagar:</h4>
-    <ul>
-      <li>Tiendas de conveniencia autorizadas</li>
-      <li>Farmacias participantes</li>
-      <li>Supermercados afiliados</li>
-    </ul>
-    <a href="{STORE_LOCATOR_URL}" target="_blank">
-      Encontrar puntos de pago cercanos
-    </a>
-  </div>
-  
-  <div class="instructions">
-    <h4>Instrucciones:</h4>
-    <ol>
-      <li>Acude a un punto de pago SafetyPay autorizado</li>
-      <li>Presenta el código de referencia</li>
-      <li>Paga exactamente $180.00 MXN en efectivo</li>
-    </ol>
-  </div>
-  
-  <div class="expiration">
-    <p><strong>Válido hasta:</strong> 29 de julio, 2024</p>
-  </div>
-  
-  <a href="{VOUCHER_URL}" class="voucher-link">
-    Ver comprobante completo
-  </a>
-</div>
+```json
+{
+  "id": "1c93f512-c6c7-42cb-a280-fea1bdab53ee",
+  "operation_type": "payment",
+  "status": "Pending",
+  "amount": 150.0,
+  "currency": "MXN",
+  "client_reference": "ORD-001",
+  "metadata": {},
+  "provider": "tonder",
+  "created_at": "2026-06-24T23:27:09.232913Z",
+  "status_code": 201,
+  "next_action": {
+    "redirect_to_url": {
+      "url": "https://sandbox-gateway.safetypay.com/Express4/Checkout/index?TokenID=f42dc286-14f7-448b-b32f-0016ffbff350&CountryID=MEX&ChannelID=ONLINE",
+      "verify_transaction_status_url": "/transactions/1c93f512-c6c7-42cb-a280-fea1bdab53ee/"
+    }
+  }
+}
 ```
 
-This HTML template creates a complete payment voucher interface that:
+Redirect the customer to the `url` inside `next_action.redirect_to_url` to complete the payment on the SafetyPay gateway. Use `verify_transaction_status_url` to poll the transaction status.
 
-- **Displays the reference code prominently** for easy customer reference
-- **Shows the exact amount** to prevent payment errors
-- **Lists all payment locations** where customers can complete their payment
-- **Provides a store locator link** to help customers find nearby locations
-- **Includes step-by-step instructions** for the payment process
-- **Shows the expiration date** to create urgency and prevent expired payments
-- **Offers a voucher link** for customers who want to see the complete payment details
-
-## Step 5: Track Payment Status
+## Step 4: Track Payment Status
 
 SafetyPay payments follow this status flow:
 
-1. **`pending`** - Waiting for customer to pay at authorized location
-2. **`success`** - Cash payment received and confirmed by SafetyPay network
+1. **`Pending`** - Waiting for the customer to complete payment at the SafetyPay gateway.
+2. **`Success`** - Payment confirmed.
 
-[Webhooks](/direct-integration/webhooks/how-webhooks-works) provide real-time notifications when payment status changes. Set up webhooks to receive payment confirmations:
-
-```json
-{
-  "event": "payment.status_changed",
-  "data": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "status": "success", 
-    "amount": 180.00,
-    "completed_at": "2024-07-27T15:45:00Z",
-    "payment_location": "Farmacia San Pablo - Sucursal Centro"
-  }
-}
-```
-
-If you prefer not to use webhooks, you can check payment status periodically by polling the API:
+Set up [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time notifications, or poll the status endpoint:
 
 ```bash
-curl -X GET https://stage.tonder.io/api/v1/transactions/550e8400-e29b-41d4-a716-446655440000/ \
+curl -X GET https://stage.tonder.io/api/v1/transactions/{id}/ \
   -H "Authorization: Token YOUR_API_KEY"
 ```
 
-## Step 6: Handle SafetyPay-Specific Scenarios
+## Available Bank IDs - Mexico
 
-There are some specificities to consider when using SafetyPay payments:
+### Cash only (channel: "WP")
 
-<AccordionGroup>
-<Accordion title="Payment Locations">
-SafetyPay partners with various types of businesses to provide convenient payment options for customers:
+| Bank ID | Collection Points |
+| --- | --- |
+| 8178 | Bodega Aurrera, Circle K, OpenPay, Super Farmacia Guadalajara, 7-Eleven, Farmacias de Ahorro, Sam's Club, Walmart, Extra, Waldo's, GestoPago, Kiosko, Pago Rápido |
+| 8419 | Calimax, Super Farmacia Santa Maria, Farmacia la Más Barata, Roma, PayCash, Soriana |
 
-- Regional chains and independent stores.
-- Major pharmacy chains.
-- Selected supermarket locations.
-- Some bank branches (varies by region).
-</Accordion>
+### Cash + Online (channel: "WP" or "OL")
 
-<Accordion title="Processing Timeline">
-The processing time for SafetyPay payments follows these rules:
+| Bank ID | Bank |
+| --- | --- |
+| 8186 | Banco Azteca |
+| 8395 | Santander |
+| 1020 | BBVA Bancomer |
+| 1007 | Scotiabank |
 
-- Payment window is usually 3-7 days from voucher generation.
-- Confirmation time is 24-48 hours after customer pays at location.
-- Business hours vary by payment location (many 24/7 options available).
-</Accordion>
-
-<Accordion title="Amount Limits">
-Regarding the amount limits, SafetyPay has the following restrictions:
-
-- Minimum amount is typically $10 MXN (varies by location).
-- Maximum amount is usually $5,000-10,000 MXN per transaction.
-- Daily limits may apply depending on payment location.
-</Accordion>
-</AccordionGroup>
-
-## Common Scenarios and Solutions
-
-Here you can find some common scenarios and solutions:
-
-<AccordionGroup>
-<Accordion title="Customer Can't Find Payment Location">
-This is an example of how to provide store locator assistance:
-
-```javascript
-// Provide store locator assistance
-function helpFindPaymentLocation(referenceCode) {
-  const locatorUrl = `https://safetypay.com/locator?ref=${referenceCode}`;
-  const customerSupport = "1-800-SAFETYPAY";
-  
-  return {
-    message: "Use our store locator to find nearby payment locations",
-    locatorUrl: locatorUrl,
-    supportPhone: customerSupport,
-    alternatives: [
-      "Try searching for 'SafetyPay' at nearby convenience stores",
-      "Ask at pharmacy counters if they accept SafetyPay",
-      "Contact customer support for location assistance"
-    ]
-  };
-}
-```
-</Accordion>
-
-<Accordion title="Payment Voucher Expired">
-This is an example of how to handle expired vouchers:
-
-```javascript
-// Handle expired vouchers
-function handleExpiredVoucher(originalTransactionId) {
-  return {
-    message: "This payment voucher has expired",
-    actions: [
-      "Create a new payment request",
-      "Contact customer support if payment was already made",
-      "Consider alternative payment methods"
-    ],
-    newPaymentUrl: "/create-new-payment",
-    supportContact: "support@yourstore.com"
-  };
-}
-```
-</Accordion>
-</AccordionGroup>
-
-## Best Practices for SafetyPay Integration
-
-Follow these best practices to integrate SafetyPay payments:
-
-<AccordionGroup>
-<Accordion title="Customer Experience">
-- Explain that SafetyPay is different from OXXO Pay.
-- Always provide links to find payment locations.
-- Send instructions via email and SMS.
-- Keep customers informed about payment status.
-</Accordion>
-
-<Accordion title="Technical Implementation">
-- Offer alternative payment methods.
-- Prioritize SafetyPay in regions where it's strong.
-- Handle network timeouts and API errors.
-- Ensure vouchers display well on mobile devices.
-</Accordion>
-
-<Accordion title="Business Considerations">
-- Check SafetyPay availability in your target markets.
-- Some customers may be unfamiliar with SafetyPay.
-- Factor in 24-48 hour processing time for order fulfillment.
-- Train support team on SafetyPay-specific questions.
-</Accordion>
-</AccordionGroup>
-
-## Integration Example
-
-This complete JavaScript implementation demonstrates how to integrate SafetyPay payments into your application. The example includes payment creation, voucher display, and status checking functionality:
-
-```javascript
-class SafetyPayHandler {
-  async createPayment(orderData) {
-    const paymentRequest = {
-      operation_type: "payment",
-      amount: orderData.total,
-      currency: "MXN",
-      customer: orderData.customer,
-      payment_method: { type: "SAFETYPAY" },
-      client_reference: orderData.orderId
-    };
-    
-    try {
-      const response = await this.apiClient.post('/process/', paymentRequest);
-      return this.displayVoucher(response);
-    } catch (error) {
-      console.error('SafetyPay payment creation failed:', error);
-      throw error;
-    }
-  }
-  
-  displayVoucher(response) {
-    const instructions = response.payment_instructions;
-    
-    return {
-      referenceCode: instructions.reference_code,
-      amount: response.amount,
-      locations: instructions.payment_locations,
-      storeLocator: response.store_locator,
-      voucherUrl: response.voucher_url,
-      expirationDate: instructions.expiration_date,
-      instructions: instructions.instructions
-    };
-  }
-  
-  async checkPaymentStatus(transactionId) {
-    const response = await this.apiClient.get(`/transactions/${transactionId}/`);
-    return response.status;
-  }
-}
-```
+Banks listed under Cash + Online support both `channel: "WP"` and `channel: "OL"`.
 
 ## Next Steps
 
