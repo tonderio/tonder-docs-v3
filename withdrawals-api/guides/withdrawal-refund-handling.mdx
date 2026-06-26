@@ -90,7 +90,6 @@ When a withdrawal is refunded, your webhook endpoint receives a notification wit
   "amount": 1500.00,
   "currency": "MXN",
   "provider_reference": "12345678",
-  "reason": "Cuenta inexistente",
   "created_at": "2025-02-10T14:22:00Z",
   "updated_at": "2025-02-10T15:47:33Z"
 }
@@ -102,10 +101,6 @@ When a withdrawal is refunded, your webhook endpoint receives a notification wit
 
 <ResponseField name="status" type="string">
   Will be `refunded` for a reversed disbursement.
-</ResponseField>
-
-<ResponseField name="reason" type="string">
-  The reversal reason provided by the SPEI system (e.g., `"Cuenta inexistente"`, `"CLABE incorrecta"`). May be `"Unknown error"` if no reason was provided.
 </ResponseField>
 
 <ResponseField name="provider_reference" type="string">
@@ -152,7 +147,7 @@ Once a terminal webhook (`refunded`, `failed`, `cancelled`) has been sent, no fu
   </Step>
 
   <Step title="Notify the recipient">
-    Inform the withdrawal recipient that the transfer was reversed and provide the reason if available (from the `reason` field).
+    Inform the withdrawal recipient that the transfer was reversed and that the funds have been returned to your sub-account.
   </Step>
 
   <Step title="Create a new withdrawal if appropriate">
@@ -232,30 +227,7 @@ You can confirm a withdrawal's current status at any time using the Withdrawals 
     **Solution**: Implement idempotent webhook handling. Store processed `withdrawal_id` + `status` combinations and skip re-processing if the pair has already been handled.
   </Accordion>
 
-  <Accordion title="reason field is 'Unknown error'">
-    **Cause**: The SPEI system returned a reversal notification without a reason value.
-
-    **Solution**: Treat this as an unspecified reversal. Present a generic message to the recipient (e.g., "The transfer was returned by the recipient's bank. Please verify the account details and try again."). Contact [soporte@tonder.io](mailto:soporte@tonder.io) if you need additional details for investigation.
-  </Accordion>
 </AccordionGroup>
-
----
-
-## Common Refund Reasons
-
-The `reason` field in the webhook payload reflects the reversal reason returned by the SPEI system. Common values include:
-
-| Reason | Description |
-|---|---|
-| `Cuenta inexistente` | The destination account does not exist |
-| `CLABE incorrecta` | The CLABE number is invalid or formatted incorrectly |
-| `Cuenta cancelada` | The destination account has been closed |
-| `Fondos insuficientes` | Insufficient funds at the receiving institution |
-| `Operación no permitida` | The transfer type is not permitted for this account |
-
-<Note>
-This list is not exhaustive. The SPEI system may return additional reason values. Always surface the `reason` field to your operations team for investigation.
-</Note>
 
 ---
 
