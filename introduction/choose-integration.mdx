@@ -8,7 +8,7 @@ Tonder offers multiple integration models to accept deposits and send withdrawal
 This guide will help you understand:
 
 - The five integration approaches for accepting payments, including our recommended Hybrid model.
-- The standalone Withdrawals API for sending payouts.
+- How to add withdrawal capability to any deposit model using API Direct.
 - The key differences to help you select the right model for your needs.
 - Real-world use cases for platforms like gaming and e-commerce.
 
@@ -76,7 +76,7 @@ This guide will help you understand:
 </table>
 
 <Note>
-  Withdrawals for this model are handled via the Standalone Withdrawals API.
+  Withdrawals for the Hybrid model are handled via API Direct.
   
   Refunds are initiated from the merchant's dashboard.
 
@@ -416,24 +416,24 @@ If you want to learn more about API Integration, check out the API reference bel
   </Tab>
 </Tabs>
 
-## Withdrawals API
+## Withdrawals with Any Deposit Model
 
-The Withdrawals API is a standalone, server-to-server API designed exclusively for sending payments to recipients.
+You can add withdrawal capability to any deposit integration model (Hosted Checkout, Full SDK, or Lite SDK) by implementing [API Direct](/direct-integration/guides/create-a-withdrawal) exclusively for withdrawals. Since no card data is processed in this scenario, PCI certification is not required.
 
 | Aspect            | Details                                                                             |
 | :---------------- | :---------------------------------------------------------------------------------- |
 | **Money Flow**    | (Yes) Withdrawals only                                                                 |
-| **Combines With** | Can be used alongside _any_ deposit integration model (Hosted, Full SDK, Lite SDK). **Note:** If using Hybrid model, withdrawals are handled via API Direct. |
-| **PCI Scope**     | Tonder manages PCI compliance for this API.                                         |
+| **Combines With** | Any deposit integration model (Hosted Checkout, Full SDK, Lite SDK). **Note:** If using Hybrid or Direct (S2S), withdrawals are already included via API Direct. |
+| **PCI Scope**     | Not required for withdrawal-only usage, since no card data is processed.            |
 | **Setup Time**    | 1-2 days (est.)                                                                     |
 | **Use Cases**     | Player payouts, seller payments, affiliate commissions, etc.                        |
 
 <Note>
   **Key Point** 
   
-  The Withdrawals API is independent of deposit integrations. You can add withdrawal functionality without modifying your existing payment acceptance setup.
+  Adding withdrawal capability via API Direct is independent of your deposit integration. You can add it without modifying your existing payment acceptance setup.
 
-  **Hybrid Integration Note:** When using the Hybrid model, withdrawals are already included through API Direct Integration—no separate Withdrawals API implementation needed.
+  **Hybrid Integration Note:** When using the Hybrid model, withdrawals are already included through API Direct Integration—no separate withdrawal-only implementation needed.
 </Note>
 
 ## Feature Support Across Models
@@ -446,7 +446,7 @@ In this table, we summarize the availability of key features across the differen
 | Bank Transfers   |       Yes        |    Yes     |    Yes     | Yes (via API Direct) |         Yes          |
 | Cash Payments    |       Yes        |    Yes     |    Yes     | Yes (via API Direct) |         Yes          |
 | Digital Wallets  |       Yes        |    Yes     |    Yes     | Yes (via API Direct) |         Yes          |
-| Withdrawals      | Via Standalone API | Via Standalone API | Via Standalone API | Yes (via API Direct) |         Yes          |
+| Withdrawals      | Via API Direct | Via API Direct | Via API Direct | Yes (via API Direct) |         Yes          |
 | 3D Secure        |    Automatic    | Automatic | Automatic | Automatic (cards)   | Manual Control      |
 | Tokenization     |    Automatic    | Automatic | Automatic | Automatic (cards)   | Merchant Implements |
 | Saved Cards      |       Yes        |    Yes     |    Yes     | Yes                 | Merchant Implements |
@@ -491,14 +491,14 @@ Now that you are aware of the different integration models, use the flowchart be
   - **Yes** → API Direct Integration (all-in-one solution)
   - **No** → **Hybrid Integration** ⭐ (recommended - choose card UI preference)
   
-  **Alternative:** Choose a deposit model and pair with the Withdrawals API:
-  - Fastest Launch: Hosted Checkout + Withdrawals API
-  - Standard Embedded UI: Full SDK + Withdrawals API
-  - Custom Branded UI: Lite SDK + Withdrawals API
+  **Alternative:** Choose a deposit model and pair it with API Direct for withdrawals only:
+  - Fastest Launch: Hosted Checkout + API Direct (withdrawals only)
+  - Standard Embedded UI: Full SDK + API Direct (withdrawals only)
+  - Custom Branded UI: Lite SDK + API Direct (withdrawals only)
 </Accordion>
 
   <Accordion title="I need to SEND PAYMENTS ONLY (Withdrawals)">
-    - Use the standalone Withdrawals API
+    - Use [API Direct Integration](/direct-integration/guides/create-a-withdrawal) for withdrawals only. No PCI certification is required, since no card data is processed.
 
   </Accordion> 
 </AccordionGroup>
@@ -533,10 +533,10 @@ Every single integration model can be used to support various use cases. Here ar
 
 </Tab>
   <Tab title="Sending Payouts">
-    To satisfy the need to send winnings to players, an i-Gaming Platform must implement robust withdrawal capabilities. The two primary endorsed models for this outflow are:
+    To satisfy the need to send winnings to players, an i-Gaming Platform must implement robust withdrawal capabilities using API Direct:
     
-    - Withdrawals API: This standalone, independent API is for Withdrawals only and can be combined with any deposit model. Implementation is a server-to-server API with an estimated setup of 1-2 days.
-    - API Integration (Direct Connect): This single integration handles all three money flows (Deposits, Withdrawals, Refunds), but is only suitable if the platform is PCI certified.
+    - API Direct (withdrawals only): Combine with any deposit model (Hosted Checkout, Full SDK, Lite SDK, or Hybrid) to add payout capability. No PCI certification required, since no card data is processed. Estimated setup of 1-2 days.
+    - API Direct (full integration): Handles all three money flows (Deposits, Withdrawals, Refunds) in a single integration, but is only suitable if the platform is PCI certified.
     
     This flexible approach simplifies integration, compliance and transaction monitoring.
 

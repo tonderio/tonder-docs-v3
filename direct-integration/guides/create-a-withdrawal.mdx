@@ -24,7 +24,7 @@ There are two transfer methods available:
 <Warning>
 **Critical: Geolocation Required for Mexico**
 
-The `metadata.latitude` and `metadata.longitude` fields are **mandatory** for processing withdrawals in Mexico. Omitting these fields or providing erroneous coordinates will result in a **failed transaction**. Ensure you collect and validate accurate geolocation data from your customers.
+The `metadata.latitude` and `metadata.longitude` fields are **mandatory** for processing withdrawals in Mexico. Omitting these fields or providing erroneous coordinates will result in a **failed transaction**. If the merchant cannot obtain the user's device geolocation, the merchant's own office location can be used instead, as long as it is within Mexican territory.
 </Warning>
 
 ## Step 1: Choose Your Transfer Method
@@ -43,7 +43,7 @@ Select the transfer method that fits your payout needs. Here you can find a quic
 SPEI (Sistema de Pagos Electrónicos Interbancarios) is Mexico's standard electronic payment system for bank-to-bank transfers.
 
 You should use SPEI when:
-- Making regular business payments like commissions or vendor payments.
+- Making regular business payments, such as commissions or vendor payments.
 - Processing payroll and salary transfers.
 - Sending larger amounts where cost-effectiveness is important.
 - Same-day processing during business hours is acceptable.
@@ -89,6 +89,7 @@ The request must have the following fields:
 | `operation_type` | Always set to `"withdrawal"` for payout operations |
 | `amount` | The withdrawal amount in the specified currency |
 | `currency` | Currency code (currently only `"MXN"` is supported) |
+| `client_reference` | Your internal reference identifier for this withdrawal |
 | `transfer_method` | Either `"SPEI"` or `"DEBIT_CARD"` |
 | `beneficiary` | Complete beneficiary information object |
 | `metadata` | Additional required information (must include `latitude` and `longitude`) |
@@ -99,68 +100,41 @@ The `beneficiary` object contains the recipient's information for the withdrawal
 |-------|-------------|
 | `account` | The destination account number (18-digit CLABE for SPEI transfers, or 16-digit card number for debit card deposits) |
 | `name` | Full legal name of the beneficiary as it appears on their bank account or card |
-| `rfc` | Mexican tax identification number (RFC) - required for compliance and verification |
-| `curp` | Mexican Unique Population Registry Code (CURP) – 18-character alphanumeric personal identification number assigned to citizens and residents for official identification and compliance |
 | `institution` | Bank institution code (you can find codes in our [Mexican Banking Reference](/direct-integration/reference/mexican-banking-reference)) |
 | `email` | Beneficiary's email address for notifications and record-keeping |
+| `rfc` | Mexican tax ID (RFC), used for compliance and verification |
+| `curp` | Mexican CURP, 18-character alphanumeric personal identification number |
 
 <Note>
 **RFC and CURP requirements**
 
-Either `rfc` or `curp` must be provided for every withdrawal request — omitting both will result in a rejected transaction. If both fields are provided, `rfc` takes precedence.
+Either `rfc` or `curp` must be provided for every withdrawal request. If neither is available, send `"ND"` (No Disponible) as the value for one of the two fields.
 </Note>
 
-Here are examples for both transfer methods:
-
-<CodeGroup>
+Here is a confirmed working example for a SPEI transfer:
 
 ```json SPEI Transfer
 {
   "operation_type": "withdrawal",
-  "amount": 750.00,
+  "amount": 6.00,
   "currency": "MXN",
-  "reference": "payout-001",
+  "client_reference": "card-payout-002",
   "transfer_method": "SPEI",
-  "description": "Commission payment",
+  "description": "Instant payout",
   "beneficiary": {
-    "account": "012345678901234567", // 18-digit CLABE
-    "name": "Roberto Martínez García",
-    "rfc": "MAGR850920XY1",
-    "curp": "MARG850920HDFTNB01",
-    "institution": "40012",
-    "email": "roberto.martinez@email.com"
-  },
-  "metadata": {
-    "latitude": "19.4326077",
-    "longitude": "-99.133208"
-  }
-}
-```
-
-```json Debit Card Transfer
-{
-  "operation_type": "withdrawal",
-  "amount": 500.00,
-  "currency": "MXN",
-  "reference": "card-payout-002",
-  "transfer_method": "DEBIT_CARD",
-  "description": "Instant payout to debit card",
-  "beneficiary": {
-    "account": "4111111111111111", // 16-digit card number
+    "account": "846180000400000001",
     "name": "Ana María González",
     "rfc": "GOAN850315AB2",
-    "curp": "GOAN850315MDFNZN02",
     "institution": "40012",
     "email": "ana.gonzalez@email.com"
   },
   "metadata": {
-    "latitude": "19.4326077",
-    "longitude": "-99.133208"
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "orderId": "pruebaTonderPayout-00001"
   }
 }
 ```
-
-</CodeGroup>
 
 ### Metadata Requirements
 
@@ -171,12 +145,7 @@ The `metadata` object is required for all withdrawal requests and must include g
 | `latitude` | string | Yes | Geographic latitude coordinate of the transaction origin |
 | `longitude` | string | Yes | Geographic longitude coordinate of the transaction origin |
 
-You can also include optional fields in the metadata object for tracking purposes:
-- `operation_date`: Date of the operation (format: "YYYY-MM-DD")
-- `customer_email`: Customer email address
-- `business_user`: Business user identifier
-- `customer_id`: Your internal customer ID
-- `order_id`: Your internal order ID
+You can also include optional fields in the metadata object for tracking purposes: `operation_date`, `customer_email`, `business_user`, `customer_id`, or `order_id` (sent as `orderId` in the confirmed example above).
 
 Make a POST request to the [Process Transaction](/reference/process-transaction) endpoint with your withdrawal data:
 
@@ -186,21 +155,22 @@ curl -X POST https://stage.tonder.io/api/v1/process/ \
   -H "Content-Type: application/json" \
   -d '{
     "operation_type": "withdrawal",
-    "amount": 750.00,
+    "amount": 6.00,
     "currency": "MXN",
-    "reference": "payout-001",
+    "client_reference": "card-payout-002",
     "transfer_method": "SPEI",
-    "description": "Commission payment",
+    "description": "Instant payout",
     "beneficiary": {
-      "account": "012345678901234567",
-      "name": "Roberto Martínez García",
-      "rfc": "MAGR850920XY1",
+      "account": "846180000400000001",
+      "name": "Ana María González",
+      "rfc": "GOAN850315AB2",
       "institution": "40012",
-      "email": "roberto.martinez@email.com"
+      "email": "ana.gonzalez@email.com"
     },
     "metadata": {
-      "latitude": "19.4326077",
-      "longitude": "-99.133208"
+      "latitude": "22.8870221",
+      "longitude": "-109.911775",
+      "orderId": "pruebaTonderPayout-00001"
     }
   }'
 ```
@@ -213,7 +183,7 @@ Upon successful request, the API will return an immediate acknowledgment. Here y
 |-------|-------------|
 | `id` | Unique transaction identifier |
 | `operation_type` | Confirms this is a withdrawal operation |
-| `status` | Current transaction status (initially `processing`) |
+| `status` | Current transaction status (initially `PENDING`) |
 | `amount` | Withdrawal amount as submitted |
 | `currency` | Currency code |
 | `merchant_reference` | Your internal reference identifier |
@@ -226,10 +196,10 @@ The response structure is as follows:
 {
   "id": "550e8400-e29b-41d4-a716-446655440001",
   "operation_type": "withdrawal",
-  "status": "processing",
-  "amount": 750.00,
+  "status": "PENDING",
+  "amount": 6.00,
   "currency": "MXN",
-  "merchant_reference": "payout-001",
+  "merchant_reference": "card-payout-002",
   "created_at": "2024-07-26T10:30:00Z",
   "status_code": 201
 }
@@ -237,25 +207,35 @@ The response structure is as follows:
 
 After receiving the response, save the transaction ID from the `id` field to monitor progress.
 
-## Step 4: Check the Transaction Status
+## Step 4: Withdrawal Lifecycle and Statuses
 
-Since withdrawals are asynchronous operations, you need to monitor the transaction to check the final status. Use the transaction `id` from the response to query the [Get Transaction Status](/reference/get-transaction-status) endpoint.
+Withdrawals are asynchronous operations. As your withdrawal progresses, it moves through the following statuses:
+
+| Status | Type | Description |
+|--------|------|-------------|
+| `PENDING` | Initial | The withdrawal request has been received and is queued |
+| `PROCESSING` | Intermediate | The transfer is currently being approved and prepared |
+| `SENT_TO_PROVIDER` | Intermediate | The request has been sent to the bank or payment provider |
+| `PAID_FULL` | Success | The transfer was completed successfully |
+| `REJECTED` | Terminal | The transfer was declined (for example, invalid account) |
+| `REFUNDED` | Terminal | Funds from a previously paid withdrawal were reversed by SPEI |
 
 <Warning>
-**Important**
-
-Always check the `id` and `status` fields from the response. The `id` is required to monitor the withdrawal progress, and the `status` tells you the current state of the transaction.
+`PAID_FULL` is not always final. A `PAID_FULL` (Success) withdrawal, and also a declined one, can still transition to `REFUNDED` if the SPEI system reverses the disbursement afterward. Do not treat `PAID_FULL` as the end of the lifecycle in your integration logic. See [Refunds](#refunds) below.
 </Warning>
 
-As your withdrawal progresses, it will move through different statuses. Here's what each status means and what you should do:
+### Internal Status vs Webhook Status
 
-| Status | Description | Next Steps |
-|--------|-------------|------------|
-| `pending` | The withdrawal request has been received and is queued | Monitor for status change |
-| `processing` | The transfer is currently being processed by the bank | Wait for completion |
-| `success` | The transfer was completed successfully | The transaction is complete |
-| `failed` | The transfer failed due to a processing or system error | Check the error details and retry if appropriate |
-| `declined` | The transfer was declined by the bank (e.g., invalid account) | Correct beneficiary data and create a new withdrawal |
+Only two webhook notifications are sent per withdrawal: an initial Pending notification, and one terminal notification.
+
+| Internal stage | Webhook status you receive |
+|----------------|----------------------------|
+| `PENDING` | Pending |
+| `PROCESSING`, `SENT_TO_PROVIDER` | No separate webhook, internal only |
+| `PAID_FULL` | Success |
+| `REJECTED` (rejected before reaching the provider) | Declined |
+| Failure after being sent to the provider | Failed |
+| `REFUNDED` (can follow either a Success or a Declined withdrawal) | See [Refunds](#refunds) below |
 
 ### Monitoring Options
 
@@ -264,6 +244,234 @@ You can monitor withdrawal status using one of these methods:
 - Webhooks (Recommended): configure [webhooks](/direct-integration/webhooks/how-webhooks-works) to receive real-time status updates automatically.
 
 - Status Polling: check transaction status periodically using the [Get Transaction Status](/reference/get-transaction-status) endpoint.
+
+## Refunds
+
+A withdrawal refund (`REFUNDED`) is distinct from a payment refund. It means the disbursed funds were returned to the merchant's sub account, not to the end customer's bank.
+
+A refund occurs when the SPEI system reverses a previously completed or declined disbursement. Tonder detects this automatically and transitions the withdrawal to `REFUNDED` — no action is required from your integration to trigger it. This can happen after a `PAID_FULL` (Success) withdrawal, and also after a Declined one.
+
+### How It Works
+
+1. The withdrawal reaches `PAID_FULL` status. A webhook notification is dispatched to your endpoint after a brief delay.
+2. If SPEI notifies Tonder that the disbursement has been reversed before that delay elapses, Tonder suppresses the pending `PAID_FULL` webhook and moves the withdrawal directly to `REFUNDED`.
+3. If the reversal happens after the `PAID_FULL` webhook has already been sent, you will receive a separate `REFUNDED` webhook afterward.
+4. `REFUNDED` is a terminal state — no further transitions occur.
+5. The refunded amount is credited back to the merchant's sub account. Notify the withdrawal recipient and initiate a new withdrawal request if appropriate.
+
+<Tip>
+Design your integration to handle a `REFUNDED` notification arriving without a prior `PAID_FULL` notification. Do not assume `PAID_FULL` will always be received first.
+</Tip>
+
+### Notification Ordering
+
+| Scenario | Notifications you receive |
+|----------|---------------------------|
+| Successful disbursement, no reversal | `PENDING` → `PAID_FULL` |
+| Fast reversal, before the `PAID_FULL` webhook is dispatched | `PENDING` → `REFUNDED` |
+| Reversal after the `PAID_FULL` webhook was already sent | `PENDING` → `PAID_FULL` → `REFUNDED` |
+
+### Common Refund Reasons
+
+| Reason | Description |
+|--------|-------------|
+| Cuenta inexistente | The destination account does not exist |
+| CLABE incorrecta | The CLABE number is invalid or formatted incorrectly |
+| Cuenta cancelada | The destination account has been closed |
+| Fondos insuficientes | Insufficient funds at the receiving institution |
+| Operación no permitida | The transfer type is not permitted for this account |
+
+This list is not exhaustive. Always surface the reason to your operations team for investigation.
+
+### Handling a Refund Notification
+
+1. Acknowledge the notification immediately (HTTP 200) — do not delay the response while processing business logic.
+2. Use the withdrawal `id` to check for idempotency. If you already processed a `REFUNDED` event for this withdrawal, skip further processing.
+3. Credit the refunded amount to the withdrawal recipient in your own system.
+4. Notify the recipient that the transfer was reversed, including the reason if available.
+5. If the reversal was due to a correctable error (for example, an incorrect CLABE), allow the recipient to submit a new withdrawal request after verifying their account details.
+
+## Webhooks
+
+Withdrawal webhooks for API Direct follow the same format as API Direct [payment webhooks](/direct-integration/webhooks/how-webhooks-works), with a few differences:
+
+- `operation_type` is `"withdrawal"`
+- `transfer_method_type` is used instead of `payment_method_type`
+- `event_type` uses the `withdrawal_` prefix (for example, `withdrawal_Pending`, `withdrawal_Success`)
+- `provider` is `"STP"`
+- `metadata` contains the withdrawal fields defined by the merchant (`latitude`, `longitude`, `beneficiary_rfc`, and so on)
+
+Two webhooks are always generated per withdrawal: first a Pending notification, then a terminal notification (Success, Declined, or Failed).
+
+### Successful SPEI Withdrawal
+
+<CodeGroup>
+
+```json Pending
+{
+  "id": "f50e4a1f-7145-4737-836f-32250eee38c2",
+  "operation_type": "withdrawal",
+  "amount": "55",
+  "currency": "MXN",
+  "client_reference": "card-payout-002",
+  "status": "Pending",
+  "provider": "STP",
+  "transfer_method_type": "SPEI",
+  "created": "2026-02-27T06:41:50.338733Z",
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "beneficiary_rfc": "QUIG850315H42"
+  },
+  "event_type": "withdrawal_Pending",
+  "action": "MODIFY"
+}
+```
+
+```json Success
+{
+  "id": "f50e4a1f-7145-4737-836f-32250eee38c2",
+  "operation_type": "withdrawal",
+  "amount": "55",
+  "currency": "MXN",
+  "client_reference": "card-payout-002",
+  "status": "Success",
+  "provider": "STP",
+  "transfer_method_type": "SPEI",
+  "created": "2026-02-27T06:41:50.338733Z",
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "beneficiary_rfc": "QUIG850315H42"
+  },
+  "event_type": "withdrawal_Success",
+  "action": "MODIFY"
+}
+```
+
+</CodeGroup>
+
+### Declined SPEI Withdrawal
+
+A Declined withdrawal means the transfer was rejected by Tonder before being handed off to the provider.
+
+<CodeGroup>
+
+```json Pending
+{
+  "id": "c7b14546-84bd-4a81-89fb-3dc660f47011",
+  "operation_type": "withdrawal",
+  "amount": "60",
+  "currency": "MXN",
+  "client_reference": "card-payout-002",
+  "status": "Pending",
+  "provider": "STP",
+  "transfer_method_type": "SPEI",
+  "created": "2026-02-27T06:47:09.205388Z",
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "beneficiary_rfc": "QUIG850315H42"
+  },
+  "event_type": "withdrawal_Pending",
+  "action": "MODIFY"
+}
+```
+
+```json Declined
+{
+  "id": "c7b14546-84bd-4a81-89fb-3dc660f47011",
+  "operation_type": "withdrawal",
+  "amount": "60",
+  "currency": "MXN",
+  "client_reference": "card-payout-002",
+  "status": "Declined",
+  "provider": "STP",
+  "transfer_method_type": "SPEI",
+  "created": "2026-02-27T06:47:09.205388Z",
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "beneficiary_rfc": "QUIG850315H42"
+  },
+  "event_type": "withdrawal_Declined",
+  "action": "MODIFY"
+}
+```
+
+</CodeGroup>
+
+### Failed SPEI Withdrawal
+
+A Failed withdrawal is sent to the provider but STP is unable to process the transfer, which is different from Declined.
+
+<Note>
+The examples below are illustrative and follow the standard API Direct webhook pattern.
+</Note>
+
+<CodeGroup>
+
+```json Pending
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "operation_type": "withdrawal",
+  "amount": "75",
+  "currency": "MXN",
+  "client_reference": "card-payout-003",
+  "status": "Pending",
+  "provider": "STP",
+  "transfer_method_type": "SPEI",
+  "created": "2026-02-27T07:00:00.000000Z",
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "beneficiary_rfc": "QUIG850315H42"
+  },
+  "event_type": "withdrawal_Pending",
+  "action": "MODIFY"
+}
+```
+
+```json Failed
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "operation_type": "withdrawal",
+  "amount": "75",
+  "currency": "MXN",
+  "client_reference": "card-payout-003",
+  "status": "Failed",
+  "provider": "STP",
+  "transfer_method_type": "SPEI",
+  "created": "2026-02-27T07:00:00.000000Z",
+  "metadata": {
+    "latitude": "22.8870221",
+    "longitude": "-109.911775",
+    "beneficiary_rfc": "QUIG850315H42"
+  },
+  "event_type": "withdrawal_Failed",
+  "action": "MODIFY"
+}
+```
+
+</CodeGroup>
+
+### Best Practices
+
+1. Idempotency: handle duplicate notifications gracefully using the withdrawal `id`.
+2. Acknowledgment: return HTTP 200 quickly, then process asynchronously.
+3. Two notifications per withdrawal: always expect a Pending notification followed by exactly one terminal notification (Success, Declined, or Failed).
+4. Logging: log all notification receipts for debugging and audit purposes.
+
+## Testing
+
+Use the following institution codes in the Stage environment:
+
+| Method | Institution code |
+|--------|------------------|
+| SPEI | `97846` |
+| DEBIT_CARD | `97846` |
+
+For production, use real institution codes from the [Mexican Banking Reference](/direct-integration/reference/mexican-banking-reference).
 
 ## Next Steps
 
