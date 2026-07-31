@@ -21,7 +21,7 @@ All payment methods in Tonder work through the same unified [Process Transaction
   "currency": "MXN",
   "customer": { /* customer data */ },
   "payment_method": {
-    "type": "CARD" // or "SPEI", "oxxopay", "MERCADOPAGO", "SAFETYPAY"
+    "type": "CARD" // or "SPEI", "oxxopay", "mercadopago", "SAFETYPAY"
   },
   "client_reference": "order-123"
 }
@@ -184,7 +184,7 @@ const handlePaymentResponse = (response, paymentType) => {
       displayBankInstructions(response.payment_instructions);
       break;
       
-    case 'MERCADOPAGO':
+    case 'mercadopago':
       // Redirect to Mercado Pago
       redirectToWallet(response.next_action.redirect_to_url.url);
       break;

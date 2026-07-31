@@ -15,7 +15,7 @@ Tonder supports five main payment methods, each designed for different customer 
 | **Card Payments** | `CARD` | Instant | Credit and debit cards (Visa, Mastercard, American Express) |
 | **SPEI Bank Transfers** | `SPEI` | Real-time | Mexican bank transfers (24/7 availability) |
 | **OXXO Cash Payments** | `OXXO` | 24-48 hours | Cash payments at OXXO convenience stores |
-| **Mercado Pago Digital Wallet** | `MERCADOPAGO` | Instant | Digital wallet popular in Latin America |
+| **Mercado Pago Digital Wallet** | `mercadopago` | Instant | Digital wallet popular in Latin America |
 | **SafetyPay Cash Payments** | `SAFETYPAY` | 24-48 hours | Alternative cash payment method |
 
 ## Common Parameters
@@ -74,12 +74,12 @@ OXXO cash payments require minimal setup and generate payment instructions for c
 - `voucher_pdf` - Downloadable payment voucher
 </Accordion>
 
-<Accordion title="Mercado Pago (MERCADOPAGO)">
+<Accordion title="Mercado Pago (mercadopago)">
 Mercado Pago digital wallet integration provides a seamless payment experience for Latin American customers. The integration supports both direct and redirect flows:
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `payment_method.type` | string | Yes | Must be `"MERCADOPAGO"` |
+| `payment_method.type` | string | Yes | Must be `"mercadopago"` |
 | `return_url` | string | No | Required for redirect flow |
 </Accordion>
 

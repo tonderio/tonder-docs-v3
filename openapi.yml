@@ -2605,7 +2605,7 @@ components:
       properties:
         type:
           type: string
-          enum: [CARD, SPEI, OXXO, MERCADOPAGO, SAFETYPAY]
+          enum: [CARD, SPEI, OXXO, mercadopago, SAFETYPAY]
           description: Payment method type
         token:
           type: string
